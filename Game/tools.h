@@ -1,7 +1,7 @@
 //
 //  tools.h
 //  Game
-//  commit test
+//
 //  Created by Valentin Imbach on 2019-09-19.
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
