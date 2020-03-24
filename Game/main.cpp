@@ -7,9 +7,22 @@
 //
 
 #include <iostream>
+#include "tools.h"
+#include "Window.hpp"
+#include "Game.hpp"
+#include "Camera.hpp"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+int main() {
+    
+    std::srand((int)time(nullptr));
+    
+    Window window("Game",1024,640);
+    Game game;
+    
+    while (window.isRunning()) {
+        window.update();
+        game.update();
+        game.render();
+    }
     return 0;
 }
