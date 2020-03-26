@@ -7,12 +7,13 @@
 //
 
 #include "Game.hpp"
-#include "GameObject.hpp"
 
 Game::Game() {
     Tile::loadTypes();
     world = new Map(50,50);
     player = new Player(3,3,3);
+    
+    newPlayer.addComponent<PositionComponent>();
 }
 
 Game::~Game() {
@@ -21,6 +22,7 @@ Game::~Game() {
 }
 
 void Game::update() {
+    manager.update();
     world -> update();
     player -> update(world);
     Camera::update();

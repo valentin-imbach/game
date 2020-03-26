@@ -14,6 +14,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <algorithm>
+#include <array>
 
 #define v(x) std::vector<x>
 #define vv(x) std::vector<std::vector<x>>
@@ -21,6 +23,8 @@
 #define pout std::pair<float,float>
 #define X first
 #define Y second
+
+#define vup(x) std::vector<std::unique_ptr<x>>
 
 #define PRINT(x) std::cout << x << std::endl
 #define LOG(x) std::cout << "  LOG: " << x << std::endl

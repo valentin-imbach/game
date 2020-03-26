@@ -14,6 +14,7 @@
 #include "Map.hpp"
 #include "Camera.hpp"
 #include "Player.hpp"
+#include "PositionComponent.h"
 
 class Game {
 public:
@@ -24,4 +25,6 @@ public:
 private:
     Map* world;
     Player* player;
+    Manager manager;
+    Entity& newPlayer = manager.addEntity();
 };

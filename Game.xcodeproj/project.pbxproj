@@ -39,6 +39,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		040CAB9C242D084D009A2728 /* ECS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECS.h; sourceTree = "<group>"; };
+		040CAB9D242D123D009A2728 /* PositionComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PositionComponent.h; sourceTree = "<group>"; };
 		04168891233425C70060DBDA /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
 		04168892233425C70060DBDA /* Window.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Window.hpp; sourceTree = "<group>"; };
 		041688942334336D0060DBDA /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
@@ -108,6 +110,8 @@
 			isa = PBXGroup;
 			children = (
 				04C7CC8E233411F80053C2E7 /* tools.h */,
+				040CAB9C242D084D009A2728 /* ECS.h */,
+				040CAB9D242D123D009A2728 /* PositionComponent.h */,
 				04C7CC872334119F0053C2E7 /* main.cpp */,
 				04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */,
 				04E8D3BC239D6DF2002D0079 /* FastNoise.h */,
