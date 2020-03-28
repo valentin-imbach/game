@@ -10,8 +10,8 @@
 
 #define TILE_SIZE 16
 
-#include <SDL2_image/SDL_image.h>
 #include "Window.hpp"
+#include <SDL2_image/SDL_image.h>
 
 struct TextureManager {
     static void Init();

@@ -11,29 +11,34 @@
 Game::Game() {
     Tile::loadTypes();
     world = new Map(50,50);
-    player = new Player(3,3,3);
+
+    player.addComponent<PositionComponent>(5,5);
+    player.addComponent<SpriteComponent>();
+    player.addComponent<DirectionComponent>(SOUTH);
+    player.addComponent<PlayerInputComponent>();
+    player.addComponent<PlayerAnimationComponent>();
+    player.addComponent<CollisionComponent>(1,1);
     
-    newPlayer.addComponent<PositionComponent>();
+    
 }
 
 Game::~Game() {
     delete world;
-    delete player;
 }
 
 void Game::update() {
-    manager.update();
     world -> update();
-    player -> update(world);
+    manager.refresh();
+    manager.update();
     Camera::update();
+
 }
 
 void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 255, 255, 255, 255);
     SDL_RenderClear(Window::renderer);
     world -> render();
-    player -> render();
-    player -> renderHotbar(3);
+    manager.render();
     TextManager::drawText(std::to_string(Window::FPS).c_str(), 20, 10);
     SDL_RenderPresent(Window::renderer);
 }

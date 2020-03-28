@@ -1,0 +1,92 @@
+//
+//  PlayerInputComponent.h
+//  Game
+//
+//  Created by Valentin Imbach on 27.03.20.
+//  Copyright © 2020 Valentin Imbach. All rights reserved.
+//
+
+#pragma once
+#include "Components.h"
+#include "Window.hpp"
+
+class PlayerInputComponent : public Component {
+    
+private:
+    PositionComponent *positionComponent;
+    DirectionComponent *directionComponent;
+    
+public:
+    
+    int ticks = 0;
+    bool walking = false;
+    
+    void init() override {
+        assert(entity -> hasComponent<PositionComponent>());
+        positionComponent = &entity -> getComponent<PositionComponent>();
+        assert(entity -> hasComponent<DirectionComponent>());
+        directionComponent = &entity -> getComponent<DirectionComponent>();
+    }
+    
+    void update() override {
+        
+        bool walk = false;
+        int dir = -1;
+        
+        float xoff = 0;
+        float yoff = 0;
+        
+        float speed = 0.07;
+        
+        if (Window::keys[SDL_SCANCODE_W]) {
+            yoff = -speed;
+            dir = NORTH;
+            walk = true;
+        } else if (Window::keys[SDL_SCANCODE_S]) {
+            yoff = speed;
+            dir = SOUTH;
+            walk = true;
+        }
+        
+        if (Window::keys[SDL_SCANCODE_A]) {
+            xoff = -speed;
+            if (dir == -1) {
+                dir = WEST;
+            } else if (dir == NORTH) {
+                dir = NWEST;
+            } else {
+                dir = SWEST;
+            }
+            walk = true;
+        } else if (Window::keys[SDL_SCANCODE_D]) {
+            xoff = speed;
+            if (dir == -1) {
+                dir = EAST;
+            } else if (dir == NORTH) {
+                dir = NEAST;
+            } else {
+                dir = SEAST;
+            }
+            walk = true;
+        }
+        
+        if (xoff != 0 && yoff != 0) {
+            xoff /= sqrt(2);
+            yoff /= sqrt(2);
+        }
+        
+        positionComponent -> x += xoff;
+        positionComponent -> y += yoff;
+        
+        if (dir != -1) {
+            directionComponent -> direction = (Direction)dir;
+        }
+        
+        if (walk) {
+            ticks += 1;
+        } else {
+            ticks = 0;
+        }
+    }
+    
+};

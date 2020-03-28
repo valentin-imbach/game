@@ -9,12 +9,11 @@
 #pragma once
 
 #include <stdio.h>
-#include "Window.hpp"
 
 #include "Map.hpp"
 #include "Camera.hpp"
 #include "Player.hpp"
-#include "PositionComponent.h"
+#include "Components.h"
 
 class Game {
 public:
@@ -24,7 +23,7 @@ public:
     void update();
 private:
     Map* world;
-    Player* player;
+    //Player* player;
     Manager manager;
-    Entity& newPlayer = manager.addEntity();
+    Entity& player = manager.addEntity();
 };

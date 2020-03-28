@@ -20,6 +20,8 @@ class Camera {
 public:
     inline static void setPos(pint p) { pos = p; }
     static void placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pout pos);
+    static void renderTexture(SDL_Texture* tex, SDL_Rect src, float x, float y);
+    static void renderRect(float x, float y, float w, float h);
     static void setTarget(pint* t);
     static pint getPosition(pint);
     static void update();

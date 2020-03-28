@@ -7,7 +7,6 @@
 //
 
 #pragma once
-
 #include "tools.h"
 
 class Entity;

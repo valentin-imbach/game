@@ -7,22 +7,14 @@
 //
 
 #pragma once
-#include "ECS.h"
+#include "Components.h"
 
 class PositionComponent : public Component {
-    
 public:
-    int x;
-    int y;
-    
-    void init() override {
-        x = 0;
-        y = 0;
+    float x;
+    float y;
+    PositionComponent(int xpos, int ypos) {
+        x = xpos;
+        y = ypos;
     }
-    
-    void update() override {
-        x++;
-        y++;
-    }
-    
 };
