@@ -12,7 +12,6 @@
 
 #include "Map.hpp"
 #include "Camera.hpp"
-#include "Player.hpp"
 #include "Components.h"
 
 class Game {
@@ -23,7 +22,7 @@ public:
     void update();
 private:
     Map* world;
-    //Player* player;
-    Manager manager;
+    EntityManager manager;
     Entity& player = manager.addEntity();
+    Entity& wall = manager.addEntity();
 };

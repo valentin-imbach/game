@@ -8,20 +8,22 @@
 
 #include "Camera.hpp"
 
-pint Camera::pos = {512,512};
+pint Camera::pos = {0,0};
 int Camera::speed = 6;
-pint Camera::target = {512,512};
+pint Camera::target = {0,0};
 int Camera::mode = 0;
 
 void Camera::placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pout p) {
-    int dx = ZOOM*p.X-pos.X+Window::size.X/2;
-    int dy = ZOOM*p.Y-pos.Y+Window::size.Y/2;
+    int dx = ZOOM*p.X-pos.X+Window::size.X/2-ZOOM/2;
+    int dy = ZOOM*p.Y-pos.Y+Window::size.Y/2-ZOOM/2;
     TextureManager::drawTexture(tex,TILE_SIZE*x,TILE_SIZE*y,TILE_SIZE*w,TILE_SIZE*h,dx,dy,ZOOM*w,ZOOM*h);
 }
 
-void Camera::renderTexture(SDL_Texture *tex, SDL_Rect src, float x, float y) {
-    int dx = ZOOM*x-pos.X+Window::size.X/2;
-    int dy = ZOOM*y-pos.Y+Window::size.Y/2;
+void Camera::renderTexture(SDL_Texture *tex, SDL_Rect src, float x, float y, float offset) {
+    float w = float(src.w);
+    float h = float(src.h);
+    float dx = ZOOM*x-pos.X+Window::size.X/2-w/2*ZOOM/TILE_SIZE;
+    float dy = ZOOM*y-pos.Y+Window::size.Y/2-h/2*ZOOM/TILE_SIZE-ZOOM*offset/2;
     TextureManager::drawTexture(tex,src.x,src.y,src.w,src.h,dx,dy,ZOOM*src.w/TILE_SIZE,ZOOM*src.h/TILE_SIZE);
 }
 

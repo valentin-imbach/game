@@ -10,6 +10,9 @@
 
 class InventoryComponent : public Component {
 public:
+    InvetnoryComponent() {
+        
+    }
     InventoryComponent(int w, int h) {
         
     }

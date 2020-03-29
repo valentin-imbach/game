@@ -22,10 +22,8 @@ public:
     bool walking = false;
     
     void init() override {
-        assert(entity -> hasComponent<PositionComponent>());
-        positionComponent = &entity -> getComponent<PositionComponent>();
-        assert(entity -> hasComponent<DirectionComponent>());
-        directionComponent = &entity -> getComponent<DirectionComponent>();
+        positionComponent = &entity -> addComponent<PositionComponent>();
+        directionComponent = &entity -> addComponent<DirectionComponent>();
     }
     
     void update() override {

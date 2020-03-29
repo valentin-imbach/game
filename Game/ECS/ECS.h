@@ -39,25 +39,35 @@ public:
 };
 
 class Entity {
+    
 private:
     vup(Component) components;
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
+    
 public:
     bool active = true;
+    
     void update() {
         for (auto& c : components) { c -> update(); }
     }
+    
     void render() {
         for (auto& c : components) { c -> render(); }
     }
-    void destroy() { active = false; }
+    
+    void destroy() {
+        active = false;
+    }
     
     template <typename T> bool hasComponent() const {
         return componentBitSet[getComponentType<T>()];
     }
     
     template <typename T, typename... TArgs> T& addComponent(TArgs&&... mArgs) {
+        if (hasComponent<T>()) {
+            return getComponent<T>();
+        }
         T* component( new T(std::forward<TArgs>(mArgs)...));
         component -> entity = this;
         std::unique_ptr<Component> uPtr{component};
@@ -73,7 +83,7 @@ public:
     }
 };
 
-class Manager {
+class EntityManager {
 private:
     vup(Entity) entities;
 public:

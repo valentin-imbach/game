@@ -24,7 +24,7 @@ Window::Window(const char *title, int width, int height, bool fullscreen) {
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
         LOG("SDL initialized");
         int flags = fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
-        win = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
+        win = SDL_CreateWindow(title, 2040, SDL_WINDOWPOS_CENTERED, width, height, flags);
         if (win) {
             LOG("Window created");
             SDL_SetWindowMinimumSize(win, 1024, 640);

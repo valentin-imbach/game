@@ -16,12 +16,10 @@ public:
     PlayerInputComponent *playerInputComponent;
     
     void init() override {
-        assert(entity -> hasComponent<SpriteComponent>());
-        spriteComponent = &entity -> getComponent<SpriteComponent>();
-        assert(entity -> hasComponent<DirectionComponent>());
-        directionComponent = &entity -> getComponent<DirectionComponent>();
-        assert(entity -> hasComponent<PlayerInputComponent>());
-        playerInputComponent = &entity -> getComponent<PlayerInputComponent>();
+        
+        spriteComponent = &entity -> addComponent<SpriteComponent>();
+        directionComponent = &entity -> addComponent<DirectionComponent>();
+        playerInputComponent = &entity -> addComponent<PlayerInputComponent>();
         
         spriteComponent -> texture = TextureManager::loadTexture("assets/character2.png");
         spriteComponent -> src.w = 16;

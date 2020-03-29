@@ -24,5 +24,6 @@ int main() {
         game.update();
         game.render();
     }
+    
     return 0;
 }

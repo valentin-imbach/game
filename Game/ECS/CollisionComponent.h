@@ -18,19 +18,25 @@ public:
     PositionComponent *positionComponent;
     bool visible = true;
     
-    CollisionComponent(float w, float h) {
-        collider.w = w;
-        collider.h = h;
+    float offsetX;
+    float offsetY;
+    
+    CollisionComponent() {}
+    
+    CollisionComponent(float e, float n, float w, float s) {
+        collider.w = e+w;
+        collider.h = n+s;
+        offsetX = w;
+        offsetY = n;
     }
     
     void init() override {
-        assert(entity -> hasComponent<PositionComponent>());
-        positionComponent = &entity -> getComponent<PositionComponent>();
+        positionComponent = &entity -> addComponent<PositionComponent>();
     }
     
     void update() override {
-        collider.x = positionComponent -> x;
-        collider.y = positionComponent -> y;
+        collider.x = positionComponent -> x - offsetX;
+        collider.y = positionComponent -> y - offsetY;
     }
     
     void render() override {

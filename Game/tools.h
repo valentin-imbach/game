@@ -25,6 +25,7 @@
 #define Y second
 
 #define vup(x) std::vector<std::unique_ptr<x>>
+#define vvup(x) std::vector<std::vector<std::unique_ptr<x>>>
 
 #define PRINT(x) std::cout << x << std::endl
 #define LOG(x) std::cout << "  LOG: " << x << std::endl

@@ -14,6 +14,9 @@ enum Direction {EAST,NEAST,NORTH,NWEST,WEST,SWEST,SOUTH,SEAST};
 class DirectionComponent : public Component {
 public:
     Direction direction;
+    DirectionComponent() {
+        direction = SOUTH;
+    }
     DirectionComponent(Direction dir) {
         direction = dir;
     }
