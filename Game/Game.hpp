@@ -10,8 +10,8 @@
 
 #include <stdio.h>
 
-#include "Map.hpp"
 #include "Camera.hpp"
+#include "Map.hpp"
 #include "Components.h"
 
 class Game {

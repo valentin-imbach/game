@@ -12,6 +12,7 @@ Map::Map(int w, int h) {
     size = {w,h};
     tiles = vv(Tile)(w,v(Tile)(h));
     objects = vv(GameObject*)(w,v(GameObject*)(h,nullptr));
+    entities = vv(Entity*)(w,v(Entity*)(h,nullptr));
     generate();
 }
 

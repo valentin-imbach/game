@@ -7,6 +7,7 @@
 //
 
 #pragma once
+#include "Components.h"
 
 class PlayerAnimationComponent : public Component {
 public:

@@ -44,9 +44,14 @@ private:
     vup(Component) components;
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
+    //Map* map;
     
 public:
     bool active = true;
+    
+    /*Entity(Map* m) {
+        map = m;
+    }*/
     
     void update() {
         for (auto& c : components) { c -> update(); }

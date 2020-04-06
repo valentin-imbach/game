@@ -12,6 +12,7 @@
 #include "Resource.hpp"
 #include "tools.h"
 #include "FastNoise.h"
+#include "ECS/ECS.h"
 
 class Map {
 public:
@@ -20,6 +21,7 @@ public:
     void update();
     bool check(int x, int y);
     inline bool hasSolid(int x, int y) { return check(x,y) ? objects[x][y] != nullptr : false; }
+    vv(Entity*) entities;
 private:
     void updateTile(int x, int y);
     void generate();

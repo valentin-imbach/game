@@ -15,9 +15,8 @@ Game::Game() {
     player.addComponent<PlayerAnimationComponent>();
     player.addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
     
-    wall.addComponent<PositionComponent>(3,3);
+    wall.addComponent<GridComponent>(3,3,world);
     wall.addComponent<SpriteComponent>();
-    wall.addComponent<CollisionComponent>(0.5,0.5,0.5,0.5);
     
 }
 

@@ -15,3 +15,4 @@
 #include "PlayerInputComponent.h"
 #include "PlayerAnimationComponent.h"
 #include "CollisionComponent.h"
+#include "GridComponent.h"

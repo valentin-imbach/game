@@ -7,7 +7,7 @@
 //
 
 #pragma once
-
+#include "Components.h"
 #include "../CollisionManager.h"
 #include "../Camera.hpp"
 
@@ -21,7 +21,10 @@ public:
     float offsetX;
     float offsetY;
     
-    CollisionComponent() {}
+    CollisionComponent() {
+        offsetX = 0.5;
+        offsetY = 0.5;
+    }
     
     CollisionComponent(float e, float n, float w, float s) {
         collider.w = e+w;

@@ -56,6 +56,7 @@
 		0416889823343ACC0060DBDA /* TextureManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TextureManager.hpp; sourceTree = "<group>"; };
 		0416889A23344F9A0060DBDA /* TextManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextManager.cpp; sourceTree = "<group>"; };
 		0416889B23344F9A0060DBDA /* TextManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TextManager.hpp; sourceTree = "<group>"; };
+		041E0BA4243B4919007435A3 /* GridComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridComponent.h; sourceTree = "<group>"; };
 		04795BB62334F5F8005C6FDE /* Map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
 		04795BB72334F5F8005C6FDE /* Map.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Map.hpp; sourceTree = "<group>"; };
 		04795BB92334F6BA005C6FDE /* Tile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tile.cpp; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 				040CABA5242E37A2009A2728 /* PlayerAnimationComponent.h */,
 				040CABA6242F95B8009A2728 /* InventoryComponent.h */,
 				040CABA7242F964A009A2728 /* CollisionComponent.h */,
+				041E0BA4243B4919007435A3 /* GridComponent.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";
