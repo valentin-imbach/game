@@ -142,8 +142,6 @@
 				04168891233425C70060DBDA /* Window.cpp */,
 				0416889823343ACC0060DBDA /* TextureManager.hpp */,
 				0416889723343ACC0060DBDA /* TextureManager.cpp */,
-				0416889B23344F9A0060DBDA /* TextManager.hpp */,
-				0416889A23344F9A0060DBDA /* TextManager.cpp */,
 				04795BB72334F5F8005C6FDE /* Map.hpp */,
 				04795BB62334F5F8005C6FDE /* Map.cpp */,
 				04795BBA2334F6BA005C6FDE /* Tile.hpp */,
@@ -158,6 +156,8 @@
 				04D20D9823A9659F0076C5A3 /* ItemStack.cpp */,
 				04D20D9C23A969360076C5A3 /* Inventory.hpp */,
 				04D20D9B23A969360076C5A3 /* Inventory.cpp */,
+				0416889B23344F9A0060DBDA /* TextManager.hpp */,
+				0416889A23344F9A0060DBDA /* TextManager.cpp */,
 				04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */,
 				04E8D3BC239D6DF2002D0079 /* FastNoise.h */,
 			);

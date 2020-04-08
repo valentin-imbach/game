@@ -14,21 +14,12 @@
 #include "Camera.hpp"
 #include "TextureManager.hpp"
 
-class Tile {
-public:
+struct Tile {
     Tile();
-    Tile(int x, int y, std::string t);
+    Tile(int x, int y, TileID id);
     void render();
     void update();
-    void updateStyle(int neig[8]);
-    inline int getId() { return id; }
-    static v(std::string) types;
-    static std::map<std::string,int> priority;
-    static void loadTypes();
-private:
-    std::string type;
-    int id;
+    TileID tileID;
     pint pos;
     std::vector<std::pair<int,pint>> textures;
-    v(pint) positions;
 };

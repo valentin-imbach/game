@@ -9,7 +9,6 @@
 #include "Game.hpp"
 
 Game::Game() {
-    Tile::loadTypes();
     world = new Map(50,50);
 
     player.addComponent<PlayerAnimationComponent>();
@@ -29,6 +28,7 @@ void Game::update() {
     manager.refresh();
     manager.update();
     Camera::update();
+    Camera::pos = {player.getComponent<PositionComponent>().x*64,player.getComponent<PositionComponent>().y*64};
 }
 
 void Game::render() {

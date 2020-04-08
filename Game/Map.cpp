@@ -11,7 +11,6 @@
 Map::Map(int w, int h) {
     size = {w,h};
     tiles = vv(Tile)(w,v(Tile)(h));
-    objects = vv(GameObject*)(w,v(GameObject*)(h,nullptr));
     entities = vv(Entity*)(w,v(Entity*)(h,nullptr));
     generate();
 }
@@ -27,29 +26,13 @@ void Map::generate() {
     for (int x = 0; x < size.X; x++) {
         for (int y = 0; y < size.Y; y++) {
             if (noise.GetNoise(x*2,y*2) < 0) {
-                tiles[x][y] = Tile(x,y,"grass");
+                tiles[x][y] = Tile(x,y,GRASS);
             } else {
-                tiles[x][y] = Tile(x,y,"sand");
+                tiles[x][y] = Tile(x,y,SAND);
             }
         }
     }
-    for (int x = 0; x < size.X; x++) {
-        for (int y = 0; y < size.Y; y++) {
-            int neig[8];
-            for (int i = 0; i < 8; i++) {
-                if (check(x+dirs2[i].X, y+dirs2[i].Y)) {
-                    neig[i] = tiles[x+dirs2[i].X][y+dirs2[i].Y].getId();
-                } else {
-                    neig[i] = tiles[x][y].getId();
-                }
-            }
-            tiles[x][y].updateStyle(neig);
-        }
-    }
-    
-    objects[1][1] = new Resource(1,1,1,4,3);
-    objects[3][1] = new Resource(3,1,1,4,3);
-    
+    updateStyle();
 }
 
 void Map::render() {
@@ -58,12 +41,45 @@ void Map::render() {
             tiles[x][y].render();
         }
     }
-    for (int y = 0; y < size.Y; y++) {
-        for (int x = 0; x < size.X; x++) {
-            if (objects[x][y] == nullptr) {
-                continue;
+}
+
+void Map::updateStyle() {
+    for (int x = 0; x < size.X; x++) {
+        for (int y = 0; y < size.Y; y++) {
+            int neig[8];
+            for (int i = 0; i < 8; i++) {
+                if (check(x+dirs2[i].X, y+dirs2[i].Y)) {
+                    neig[i] = tiles[x+dirs2[i].X][y+dirs2[i].Y].tileID;
+                } else {
+                    neig[i] = tiles[x][y].tileID;
+                }
             }
-            objects[x][y] -> render();
+            tiles[x][y].textures.clear();
+            tiles[x][y].textures.push_back({tiles[x][y].tileID,{1,1}});
+            
+            for (int d = 0; d < 8; d += 2) {
+                int l = neig[(d+2) % 8];
+                int r = neig[(d+6) % 8];
+                if (neig[d] < tiles[x][y].tileID && l != neig[d] && r != neig[d]) {
+                    pint p = {1-dirs2[d].X,1-dirs2[d].Y};
+                    tiles[x][y].textures.emplace_back(neig[d],p);
+                }
+            }
+            
+            for (int d = 1; d < 8; d += 2) {
+                int l = neig[(d+1) % 8];
+                int r = neig[(d+7) % 8];
+                if (neig[d] < tiles[x][y].tileID && l != neig[d] && r != neig[d]) {
+                    pint p = {1-dirs2[d].X,1-dirs2[d].Y};
+                    tiles[x][y].textures.emplace_back(neig[d],p);
+                }
+                if (l < tiles[x][y].tileID && l == r) {
+                    pint p = {1-dirs2[d].X,4-dirs2[d].Y};
+                    tiles[x][y].textures.emplace_back(l,p);
+                }
+            }
+            
+            std::sort(tiles[x][y].textures.rbegin(), tiles[x][y].textures.rend());
         }
     }
 }

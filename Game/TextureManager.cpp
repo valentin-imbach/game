@@ -8,15 +8,15 @@
 
 #include "TextureManager.hpp"
 
-auto TextureManager::tilesets = std::map<std::string,SDL_Texture*>();
+auto TextureManager::tilesets = std::vector<SDL_Texture*>(maxTileID,nullptr);
 SDL_Texture* TextureManager::character = nullptr;
 SDL_Texture* TextureManager::spriteSheet = nullptr;
 SDL_Texture* TextureManager::itemSheet = nullptr;
 SDL_Texture* TextureManager::hotbar = nullptr;
 
 void TextureManager::Init() {
-    loadTileset("grass", "assets/grass.png");
-    loadTileset("sand", "assets/sand.png");
+    TextureManager::loadTileset(GRASS,"assets/grass.png");
+    TextureManager::loadTileset(SAND,"assets/sand.png");
 }
 
 SDL_Texture* TextureManager::loadTexture(const char* path) {
@@ -35,6 +35,6 @@ void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int s
     SDL_RenderCopy(Window::renderer, tex, &src, &dest);
 }
 
-void TextureManager::loadTileset(std::string name, const char* path) {
-    tilesets[name] = loadTexture(path);
+void TextureManager::loadTileset(int a, const char* path) {
+    tilesets[a] = loadTexture(path);
 }

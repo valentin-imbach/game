@@ -20,13 +20,12 @@ public:
     void render();
     void update();
     bool check(int x, int y);
-    inline bool hasSolid(int x, int y) { return check(x,y) ? objects[x][y] != nullptr : false; }
+    inline bool hasSolid(int x, int y) { return check(x,y) ? entities[x][y] != nullptr : false; }
     vv(Entity*) entities;
 private:
-    void updateTile(int x, int y);
+    void updateStyle();
     void generate();
     pint size;
     vv(Tile) tiles;
-    vv(GameObject*) objects;
 };
 
