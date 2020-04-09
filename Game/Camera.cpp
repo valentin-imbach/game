@@ -8,29 +8,28 @@
 
 #include "Camera.hpp"
 
-pint Camera::pos = {0,0};
+pout Camera::pos = {0,0};
 int Camera::speed = 6;
-pint Camera::target = {0,0};
 int Camera::mode = 0;
 
 void Camera::placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pout p) {
-    int dx = ZOOM*p.X-pos.X+Window::size.X/2-ZOOM/2;
-    int dy = ZOOM*p.Y-pos.Y+Window::size.Y/2-ZOOM/2;
+    int dx = ZOOM*(p.X-pos.X)+Window::size.X/2-ZOOM/2;
+    int dy = ZOOM*(p.Y-pos.Y)+Window::size.Y/2-ZOOM/2;
     TextureManager::drawTexture(tex,TILE_SIZE*x,TILE_SIZE*y,TILE_SIZE*w,TILE_SIZE*h,dx,dy,ZOOM*w,ZOOM*h);
 }
 
 void Camera::renderTexture(SDL_Texture *tex, SDL_Rect src, float x, float y, float offset) {
     float w = float(src.w);
     float h = float(src.h);
-    float dx = ZOOM*x-pos.X+Window::size.X/2-w/2*ZOOM/TILE_SIZE;
-    float dy = ZOOM*y-pos.Y+Window::size.Y/2-h/2*ZOOM/TILE_SIZE-ZOOM*offset/2;
+    float dx = ZOOM*(x-pos.X)+Window::size.X/2-w/2*ZOOM/TILE_SIZE;
+    float dy = ZOOM*(y-pos.Y)+Window::size.Y/2-h/2*ZOOM/TILE_SIZE-ZOOM*offset/2;
     TextureManager::drawTexture(tex,src.x,src.y,src.w,src.h,dx,dy,ZOOM*src.w/TILE_SIZE,ZOOM*src.h/TILE_SIZE);
 }
 
 void Camera::renderRect(float x, float y, float w, float h) {
     SDL_Rect rect;
-    rect.x = x*ZOOM-pos.X+Window::size.X/2-1;
-    rect.y = y*ZOOM-pos.Y+Window::size.Y/2-1;
+    rect.x = ZOOM*(x-pos.X)+Window::size.X/2-1;
+    rect.y = ZOOM*(y-pos.Y)+Window::size.Y/2-1;
     rect.w = w*ZOOM+2;
     rect.h = h*ZOOM+2;
     SDL_RenderDrawRect(Window::renderer, &rect);
@@ -46,7 +45,6 @@ void Camera::handleEvents() {
                             mode = 1;
                         } else {
                             mode = 0;
-                            pos = target;
                         }
                         break;
                 }
@@ -57,22 +55,9 @@ void Camera::handleEvents() {
     }
 }
 
-pint Camera::getPosition(pint mouse) {
-    int x = pos.X+mouse.X-Window::size.X/2;
-    int y = pos.Y+mouse.Y-Window::size.Y/2;
-    //LOG2(x/ZOOM,y/ZOOM);
-    return {x/ZOOM,y/ZOOM};
-}
-
 void Camera::update() {
     handleEvents();
-    if (mode == 0) {
-        float d = DIST(pos,target);
-        if (d > RADIUS*fmin(Window::size.X,Window::size.Y)) {
-            pos.X += speed*(target.X-pos.X)/d;
-            pos.Y += speed*(target.Y-pos.Y)/d;
-        }
-    } else if (mode == 1) {
+    if (mode == 1) {
         if (Window::keys[SDL_SCANCODE_W]) { pos.Y -= speed*3; }
         if (Window::keys[SDL_SCANCODE_A]) { pos.X -= speed*3; }
         if (Window::keys[SDL_SCANCODE_S]) { pos.Y += speed*3; }

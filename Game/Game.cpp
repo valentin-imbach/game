@@ -9,13 +9,14 @@
 #include "Game.hpp"
 
 Game::Game() {
-    world = new Map(50,50);
+    world = new Map("map.txt");
 
+    player.addComponent<PositionComponent>(50,50);
     player.addComponent<PlayerAnimationComponent>();
     player.addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
     
-    wall.addComponent<GridComponent>(3,3,world);
-    wall.addComponent<SpriteComponent>();
+    //wall.addComponent<GridComponent>(3,3,world);
+    //wall.addComponent<SpriteComponent>();
     
 }
 
@@ -28,7 +29,7 @@ void Game::update() {
     manager.refresh();
     manager.update();
     Camera::update();
-    Camera::pos = {player.getComponent<PositionComponent>().x*64,player.getComponent<PositionComponent>().y*64};
+    Camera::pos = {player.getComponent<PositionComponent>().x,player.getComponent<PositionComponent>().y};
 }
 
 void Game::render() {

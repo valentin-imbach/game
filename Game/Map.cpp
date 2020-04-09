@@ -7,6 +7,49 @@
 //
 
 #include "Map.hpp"
+#include <fstream>
+#include <string>
+
+Map::Map(const char* path) {
+    
+    std::ifstream file;
+    file.open(path);
+    if (!file) {
+        ERROR("Map file not found");
+        file.close();
+    }
+    
+    file >> size.X;
+    file >> size.Y;
+    
+    tiles = vv(Tile)(size.X,v(Tile)(size.Y));
+    entities = vv(Entity*)(size.X,v(Entity*)(size.Y,nullptr));
+    
+    for (int y = 0; y < size.Y; y++) {
+        std::string s;
+        file >> s;
+        for (int x = 0; x < size.X; x++) {
+            TileID id = WATER;
+            switch (s[x]) {
+                case '0':
+                    id = WATER;
+                    break;
+                case '1':
+                    id = SAND;
+                    break;
+                case '2':
+                    id = STONE;
+                    break;
+                case '3':
+                    id = GRASS;
+                    break;
+            }
+            tiles[x][y] = Tile(x,y,id);
+        }
+    }
+    file.close();
+    updateStyle();
+}
 
 Map::Map(int w, int h) {
     size = {w,h};
@@ -25,10 +68,14 @@ void Map::generate() {
     noise.SetSeed(rand());
     for (int x = 0; x < size.X; x++) {
         for (int y = 0; y < size.Y; y++) {
-            if (noise.GetNoise(x*2,y*2) < 0) {
-                tiles[x][y] = Tile(x,y,GRASS);
-            } else {
+            if (noise.GetNoise(x*2,y*2) < -0.5) {
+                tiles[x][y] = Tile(x,y,WATER);
+            } else if (noise.GetNoise(x*2,y*2) < 0) {
+                tiles[x][y] = Tile(x,y,STONE);
+            } else if (noise.GetNoise(x*2,y*2) < 0.5) {
                 tiles[x][y] = Tile(x,y,SAND);
+            } else {
+                tiles[x][y] = Tile(x,y,GRASS);
             }
         }
     }
@@ -44,6 +91,16 @@ void Map::render() {
 }
 
 void Map::updateStyle() {
+    for (int x = 1; x < size.X-1; x++) {
+        for (int y = 1; y < size.Y-1; y++) {
+            if (tiles[x-1][y].tileID == tiles[x+1][y].tileID) {
+                tiles[x][y].tileID = tiles[x-1][y].tileID;
+            }
+            if (tiles[x][y-1].tileID == tiles[x][y+1].tileID) {
+                tiles[x][y].tileID = tiles[x][y-1].tileID;
+            }
+        }
+    }
     for (int x = 0; x < size.X; x++) {
         for (int y = 0; y < size.Y; y++) {
             int neig[8];

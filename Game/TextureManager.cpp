@@ -17,6 +17,8 @@ SDL_Texture* TextureManager::hotbar = nullptr;
 void TextureManager::Init() {
     TextureManager::loadTileset(GRASS,"assets/grass.png");
     TextureManager::loadTileset(SAND,"assets/sand.png");
+    TextureManager::loadTileset(WATER,"assets/water.png");
+    TextureManager::loadTileset(STONE,"assets/stone.png");
 }
 
 SDL_Texture* TextureManager::loadTexture(const char* path) {

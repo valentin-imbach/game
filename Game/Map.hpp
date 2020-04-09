@@ -17,6 +17,7 @@
 class Map {
 public:
     Map(int w, int h);
+    Map(const char* path);
     void render();
     void update();
     bool check(int x, int y);

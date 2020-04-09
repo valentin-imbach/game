@@ -22,12 +22,9 @@ public:
     static void placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pout pos);
     static void renderTexture(SDL_Texture* tex, SDL_Rect src, float x, float y, float offset);
     static void renderRect(float x, float y, float w, float h);
-    static void setTarget(pint* t);
-    static pint getPosition(pint);
     static void update();
-    static pint pos;
+    static pout pos;
     static int mode;
     static int speed;
-    static pint target;
     static void handleEvents();
 };
