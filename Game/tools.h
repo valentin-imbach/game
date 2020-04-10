@@ -30,6 +30,7 @@
 #define PRINT(x) std::cout << x << std::endl
 #define LOG(x) std::cout << "  LOG: " << x << std::endl
 #define LOG2(x,y) std::cout << "  LOG: " << x << " " << y << std::endl
+#define LOGP(x) std::cout << "  LOG: " << x.first << " " << x.second << std::endl
 #define ERROR(x) std::cout << "ERROR: " << x << std::endl
 #define ERROR2(x,y) std::cout << "ERROR: " << x << " (" << y << ")" << std::endl
 

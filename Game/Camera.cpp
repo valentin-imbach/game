@@ -35,6 +35,14 @@ void Camera::renderRect(float x, float y, float w, float h) {
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 
+pout Camera::gtos(pout p) {
+    return {ZOOM*(p.X-pos.X)+Window::size.X/2,ZOOM*(p.Y-pos.Y)+Window::size.Y/2};
+}
+
+pout Camera::stog(pout p) {
+    return {(p.X-Window::size.X/2)/ZOOM+pos.X,(p.Y-Window::size.Y/2)/ZOOM+pos.Y};
+}
+
 void Camera::handleEvents() {
     for (SDL_Event e : Window::events) {
         switch (e.type) {
@@ -50,6 +58,7 @@ void Camera::handleEvents() {
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
+                //LOGP(stog(Window::mousePos));
                 break;
         }
     }
@@ -57,11 +66,9 @@ void Camera::handleEvents() {
 
 void Camera::update() {
     handleEvents();
-    if (mode == 1) {
-        if (Window::keys[SDL_SCANCODE_W]) { pos.Y -= speed*3; }
-        if (Window::keys[SDL_SCANCODE_A]) { pos.X -= speed*3; }
-        if (Window::keys[SDL_SCANCODE_S]) { pos.Y += speed*3; }
-        if (Window::keys[SDL_SCANCODE_D]) { pos.X += speed*3; }
+}
 
-    }
+void Camera::render() {
+    pout p = stog(Window::mousePos);
+    renderRect(round(p.X)-0.5, round(p.Y)-0.5, 1, 1);
 }

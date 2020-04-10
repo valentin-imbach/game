@@ -37,6 +37,7 @@ void Game::render() {
     SDL_RenderClear(Window::renderer);
     world -> render();
     manager.render();
+    Camera::render();
     TextManager::drawText(std::to_string(Window::FPS).c_str(), 20, 10);
     SDL_RenderPresent(Window::renderer);
 }
