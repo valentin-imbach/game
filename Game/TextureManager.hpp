@@ -18,8 +18,8 @@ constexpr std::size_t maxTileID = 10;
 enum TileID {
     GRASS,
     STONE,
-    SAND,
-    WATER
+    WATER,
+    SAND
 };
 
 struct TextureManager {

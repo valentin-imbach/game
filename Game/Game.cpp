@@ -14,6 +14,11 @@ Game::Game() {
     player.addComponent<PositionComponent>(50,50);
     player.addComponent<PlayerAnimationComponent>();
     player.addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
+    player.addComponent<InventoryComponent>(9,5);
+    player.getComponent<InventoryComponent>().items[0][0] = new ItemStack(0,5);
+    player.getComponent<InventoryComponent>().items[1][0] = new ItemStack(1,2);
+    player.getComponent<InventoryComponent>().items[1][1] = new ItemStack(2,77);
+    player.getComponent<InventoryComponent>().items[0][1] = new ItemStack(3,5);
     
     //wall.addComponent<GridComponent>(3,3,world);
     //wall.addComponent<SpriteComponent>();

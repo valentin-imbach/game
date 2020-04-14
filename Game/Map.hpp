@@ -9,7 +9,6 @@
 #pragma once
 
 #include "Tile.hpp"
-#include "Resource.hpp"
 #include "tools.h"
 #include "FastNoise.h"
 #include "ECS/ECS.h"

@@ -14,7 +14,7 @@
 class TextManager {
 public:
     static void Init();
-    static void drawText(const char* text, int x, int y);
+    static void drawText(std::string text, int x, int y);
     static TTF_Font* font;
     static SDL_Color color;
     static void loadFont(const char* path, int size);

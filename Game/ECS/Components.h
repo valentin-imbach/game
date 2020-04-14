@@ -16,3 +16,4 @@
 #include "PlayerAnimationComponent.h"
 #include "CollisionComponent.h"
 #include "GridComponent.h"
+#include "InventoryComponent.h"

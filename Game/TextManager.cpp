@@ -9,16 +9,16 @@
 #include "TextManager.hpp"
 
 TTF_Font* TextManager::font = nullptr;
-SDL_Color TextManager::color = {0,0,0};
+SDL_Color TextManager::color = {255,255,255};
 
 void TextManager::Init() {
     if (TTF_Init() == 0) { LOG("TTF initialized"); } else { ERROR("Failed to initialize TTF"); }
     TextManager::loadFont("assets/font.ttf", 16);
 }
 
-void TextManager::drawText(const char* text, int x, int y) {
+void TextManager::drawText(std::string text, int x, int y) {
     if (!font) { ERROR("No font loaded"); return; }
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, textSurface);
     int text_width = textSurface -> w;
     int text_height = textSurface -> h;
