@@ -34,7 +34,7 @@
 #define ERROR(x) std::cout << "ERROR: " << x << std::endl
 #define ERROR2(x,y) std::cout << "ERROR: " << x << " (" << y << ")" << std::endl
 
-#define DIST(a,b) sqrt(pow(a.X-b.X,2)+pow(a.Y-b.Y,2))
+#define DIST(a,b) (sqrt(pow(a.X-b.X,2)+pow(a.Y-b.Y,2)))
 #define sign(x) (x == 0 ? 0 : abs(x)/x)
 
 const pint dirs[4] = {{1,0},{0,-1},{-1,0},{0,1}};

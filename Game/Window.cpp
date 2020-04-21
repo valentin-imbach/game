@@ -61,36 +61,11 @@ void Window::handleEvents() {
     events.clear();
     while (SDL_PollEvent(&event)) {
         events.push_back(event);
-        switch(event.type) {
-            case SDL_QUIT:
-                LOG("Window closed");
-                running = false;
-                break;
-            case SDL_KEYDOWN:
-                keyPressed(event.key);
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                mousePressed(event.button);
-                break;
-            default:
-                break;
+        if (event.type == SDL_QUIT) {
+            LOG("Window closed");
+            running = false;
+            break;
         }
-    }
-}
-
-void Window::keyPressed(SDL_KeyboardEvent &k) {
-    switch (k.keysym.sym) {
-        case SDLK_c:
-            break;
-    }
-}
-
-void Window::mousePressed(SDL_MouseButtonEvent& b) {
-    switch (b.button) {
-        case SDL_BUTTON_LEFT:
-            break;
-        case SDL_BUTTON_RIGHT:
-            break;
     }
 }
 

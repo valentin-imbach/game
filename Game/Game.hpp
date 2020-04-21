@@ -14,6 +14,9 @@
 #include "Map.hpp"
 #include "Components.h"
 #include "GuiManager.hpp"
+#include "LayerManager.h"
+#include "EntityLayer.h"
+#include "TileLayer.h"
 
 class Game {
 public:
@@ -21,10 +24,8 @@ public:
     ~Game();
     void render();
     void update();
+    void handleEvents();
 private:
-    Map* world;
-    EntityManager entityManager;
-    GuiManager guiManager;
-    Entity& player = entityManager.addEntity();
-    Entity& wall = entityManager.addEntity();
+    LayerManager layerManager;
+    Entity* player;
 };

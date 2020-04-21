@@ -12,5 +12,5 @@
 struct GuiManager {
     static GuiComponent *activeGui;
     static void update();
-    static void handleEvents();
+    static bool handleEvent(SDL_Event event);
 };

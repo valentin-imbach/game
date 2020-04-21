@@ -16,3 +16,7 @@ void GuiManager::update() {
         activeGui -> render();
     }
 }
+
+bool GuiManager::handleEvent(SDL_Event event) {
+    return true;
+}

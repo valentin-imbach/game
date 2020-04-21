@@ -67,10 +67,13 @@
 		04795BBD2334FAD2005C6FDE /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		04C7CC842334119F0053C2E7 /* Game */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Game; sourceTree = BUILT_PRODUCTS_DIR; };
 		04C7CC872334119F0053C2E7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		04C7CC8E233411F80053C2E7 /* tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tools.h; sourceTree = "<group>"; };
+		04C7CC8E233411F80053C2E7 /* tools.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp.preprocessed; path = tools.h; sourceTree = "<group>"; };
 		04C7CC902334190E0053C2E7 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
 		04C7CC912334190E0053C2E7 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = ../../../../Library/Frameworks/SDL2_ttf.framework; sourceTree = "<group>"; };
 		04C7CC922334190E0053C2E7 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		04CBB4FF244F37F700A8BC69 /* LayerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LayerManager.h; sourceTree = "<group>"; };
+		04CBB500244F500500A8BC69 /* EntityLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EntityLayer.h; sourceTree = "<group>"; };
+		04CBB501244F545A00A8BC69 /* TileLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileLayer.h; sourceTree = "<group>"; };
 		04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		04E8D3BC239D6DF2002D0079 /* FastNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastNoise.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,6 +137,9 @@
 				040CABAB242FD090009A2728 /* CollisionManager.h */,
 				045CCF29244E9BAD005A0566 /* GuiManager.hpp */,
 				045CCF28244E9BAD005A0566 /* GuiManager.cpp */,
+				04CBB4FF244F37F700A8BC69 /* LayerManager.h */,
+				04CBB500244F500500A8BC69 /* EntityLayer.h */,
+				04CBB501244F545A00A8BC69 /* TileLayer.h */,
 				04C7CC872334119F0053C2E7 /* main.cpp */,
 				041688952334336D0060DBDA /* Game.hpp */,
 				041688942334336D0060DBDA /* Game.cpp */,
