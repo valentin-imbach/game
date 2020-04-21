@@ -31,6 +31,12 @@
 #ifndef FASTNOISE_H
 #define FASTNOISE_H
 
+#include <math.h>
+#include <assert.h>
+
+#include <algorithm>
+#include <random>
+
 // Uncomment the line below to use doubles throughout FastNoise instead of floats
 //#define FN_USE_DOUBLES
 

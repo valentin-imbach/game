@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <stdio.h>
 #include "tools.h"
 #include "TextureManager.hpp"
 #include "Window.hpp"

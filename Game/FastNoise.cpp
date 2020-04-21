@@ -30,11 +30,7 @@
 
 #include "FastNoise.h"
 
-#include <math.h>
-#include <assert.h>
 
-#include <algorithm>
-#include <random>
 
 const FN_DECIMAL GRAD_X[] =
 {
@@ -185,7 +181,6 @@ const FN_DECIMAL CELL_3D_Z[] =
 
 static int FastFloor(FN_DECIMAL f) { return (f >= 0 ? (int)f : (int)f - 1); }
 static int FastRound(FN_DECIMAL f) { return (f >= 0) ? (int)(f + FN_DECIMAL(0.5)) : (int)(f - FN_DECIMAL(0.5)); }
-static int FastAbs(int i) { return abs(i); }
 static FN_DECIMAL FastAbs(FN_DECIMAL f) { return fabs(f); }
 static FN_DECIMAL Lerp(FN_DECIMAL a, FN_DECIMAL b, FN_DECIMAL t) { return a + t * (b - a); }
 static FN_DECIMAL InterpHermiteFunc(FN_DECIMAL t) { return t*t*(3 - 2 * t); }
@@ -1698,7 +1693,7 @@ FN_DECIMAL FastNoise::SingleCellular(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z) c
 	int zr = FastRound(z);
 
 	FN_DECIMAL distance = 999999;
-	int xc, yc, zc;
+    int xc = 0, yc = 0, zc = 0;
 
 	switch (m_cellularDistanceFunction)
 	{
@@ -1922,7 +1917,7 @@ FN_DECIMAL FastNoise::SingleCellular(FN_DECIMAL x, FN_DECIMAL y) const
 	int yr = FastRound(y);
 
 	FN_DECIMAL distance = 999999;
-	int xc, yc;
+    int xc = 0, yc = 0;
 
 	switch (m_cellularDistanceFunction)
 	{

@@ -1,5 +1,5 @@
 //
-//  TileLayer.h
+//  GuiLayer.h
 //  Game
 //
 //  Created by Valentin Imbach on 21.04.20.
@@ -7,20 +7,19 @@
 //
 
 #pragma once
-#include "LayerManager.h"
-#include "Map.hpp"
+#include "Layers.h"
 
-class TileLayer : public Layer {
+class GuiLayer : public Layer {
 public:
-    TileLayer() {
-        map = new Map("map.txt");
+    GuiLayer() {
+        
     }
     void update() override {
-        map -> update();
+        
     }
     void render() override {
-        map -> render();
+        
     }
 private:
-    Map* map;
+    
 };

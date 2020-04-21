@@ -6,16 +6,20 @@
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
 
-#pragma once
+#ifndef TOOLS
+#define TOOLS
 
 #include <ctime>
 #include <stdio.h>
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
 #include <algorithm>
 #include <array>
+
+#include "FastNoise.h"
 
 #define v(x) std::vector<x>
 #define vv(x) std::vector<std::vector<x>>
@@ -50,3 +54,4 @@ struct Timer {
     }
 };
 
+#endif

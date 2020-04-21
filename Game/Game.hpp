@@ -11,12 +11,7 @@
 #include <stdio.h>
 
 #include "Camera.hpp"
-#include "Map.hpp"
-#include "Components.h"
-#include "GuiManager.hpp"
-#include "LayerManager.h"
-#include "EntityLayer.h"
-#include "TileLayer.h"
+#include "LayerSystem/Layers.h"
 
 class Game {
 public:

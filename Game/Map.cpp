@@ -7,8 +7,7 @@
 //
 
 #include "Map.hpp"
-#include <fstream>
-#include <string>
+#include "tools.h"
 
 Map::Map(const char* path) {
     

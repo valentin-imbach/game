@@ -10,8 +10,6 @@
 
 #define MAX_FPS 60
 
-#include <stdio.h>
-#include <iostream>
 #include <SDL2/SDL.h>
 #include "tools.h"
 #include "TextManager.hpp"
