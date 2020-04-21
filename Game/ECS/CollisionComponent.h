@@ -16,7 +16,6 @@ public:
     
     Collider collider;
     PositionComponent *positionComponent;
-    bool visible = true;
     
     float offsetX;
     float offsetY;
@@ -42,10 +41,8 @@ public:
         collider.y = positionComponent -> y - offsetY;
     }
     
-    void render() override {
-        if (visible) {
-            Camera::renderRect(collider.x,collider.y,collider.w,collider.h);
-        }
+    void debugRender() override {
+        Camera::renderRect(collider.x,collider.y,collider.w,collider.h);
     }
     
 };

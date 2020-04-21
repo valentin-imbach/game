@@ -34,6 +34,7 @@ public:
     virtual void init() {};
     virtual void update() {};
     virtual void render() {};
+    virtual void debugRender() {};
     
     virtual ~Component() {};
 };
@@ -59,6 +60,10 @@ public:
     
     void render() {
         for (auto& c : components) { c -> render(); }
+    }
+    
+    void debugRender() {
+        for (auto& c : components) { c -> debugRender(); }
     }
     
     void destroy() {
@@ -97,6 +102,9 @@ public:
     }
     void render() {
         for (auto& e : entities) {e -> render(); }
+    }
+    void debugRender() {
+        for (auto& e : entities) {e -> debugRender(); }
     }
     void refresh() {
         entities.erase(std::remove_if(std::begin(entities), std::end(entities),

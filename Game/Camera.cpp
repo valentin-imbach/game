@@ -28,10 +28,10 @@ void Camera::renderTexture(SDL_Texture *tex, SDL_Rect src, float x, float y, flo
 
 void Camera::renderRect(float x, float y, float w, float h) {
     SDL_Rect rect;
-    rect.x = ZOOM*(x-pos.X)+Window::size.X/2-1;
-    rect.y = ZOOM*(y-pos.Y)+Window::size.Y/2-1;
-    rect.w = w*ZOOM+2;
-    rect.h = h*ZOOM+2;
+    rect.x = ZOOM*(x-pos.X)+Window::size.X/2;
+    rect.y = ZOOM*(y-pos.Y)+Window::size.Y/2;
+    rect.w = w*ZOOM;
+    rect.h = h*ZOOM;
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 

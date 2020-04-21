@@ -7,20 +7,18 @@
 //
 
 #pragma once
+
 #include "Components.h"
 
 class GridComponent : public Component {
 public:
     int x, y;
-    Map* map;
     PositionComponent *positionComponent;
     CollisionComponent *collisionComponent;
     
-    GridComponent(int x, int y, Map* m) {
+    GridComponent(int x, int y) {
         this -> x = x;
         this -> y = y;
-        map = m;
-        (map -> entities)[x][y] = entity;
     }
     
     void init() override {

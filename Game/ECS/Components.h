@@ -17,3 +17,6 @@
 #include "CollisionComponent.h"
 #include "GridComponent.h"
 #include "InventoryComponent.h"
+#include "GuiComponent.h"
+#include "PlayerGuiComponent.h"
+
