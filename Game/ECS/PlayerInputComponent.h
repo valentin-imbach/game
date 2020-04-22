@@ -73,8 +73,8 @@ public:
             yoff /= sqrt(2);
         }
         
-        positionComponent -> x += xoff;
-        positionComponent -> y += yoff;
+        positionComponent -> pos.X += xoff;
+        positionComponent -> pos.Y += yoff;
         
         if (dir != -1) {
             directionComponent -> direction = (Direction)dir;

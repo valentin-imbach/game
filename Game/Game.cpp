@@ -10,14 +10,10 @@
 
 Game::Game() {
     
-    layerManager.addLayer(new TileLayer());
-    EntityLayer* entityLayer = new EntityLayer();
-    layerManager.addLayer(entityLayer);
-    player = entityLayer -> player;
-    
-}
-
-Game::~Game() {
+    //Timer("Game Constructor");
+    layerManager.addLayer(&tileLayer);
+    layerManager.addLayer(&entityLayer);
+    layerManager.addLayer(&debugLayer);
     
 }
 
@@ -32,15 +28,12 @@ void Game::handleEvents() {
 
 void Game::update() {
     layerManager.update();
-    Camera::update();
-    Camera::pos = {player -> getComponent<PositionComponent>().x,player -> getComponent<PositionComponent>().y};
+    Camera::update(entityLayer.player -> getComponent<PositionComponent>().pos);
 }
 
 void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 255, 255, 255, 255);
     SDL_RenderClear(Window::renderer);
     layerManager.render();
-    Camera::render();
-    TextManager::drawText(std::to_string(Window::FPS).c_str(), 20, 10);
     SDL_RenderPresent(Window::renderer);
 }

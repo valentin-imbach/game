@@ -8,19 +8,18 @@
 
 #pragma once
 
-#include <stdio.h>
-
 #include "Camera.hpp"
 #include "LayerSystem/Layers.h"
 
 class Game {
 public:
     Game();
-    ~Game();
     void render();
     void update();
     void handleEvents();
 private:
     LayerManager layerManager;
-    Entity* player;
+    TileLayer tileLayer;
+    EntityLayer entityLayer;
+    DebugLayer debugLayer;
 };

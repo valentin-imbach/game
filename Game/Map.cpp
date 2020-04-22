@@ -117,7 +117,7 @@ void Map::updateStyle() {
                 int l = neig[(d+2) % 8];
                 int r = neig[(d+6) % 8];
                 if (neig[d] < tiles[x][y].tileID && l != neig[d] && r != neig[d]) {
-                    pint p = {1-dirs2[d].X,1-dirs2[d].Y};
+                    pair<int> p = {1-dirs2[d].X,1-dirs2[d].Y};
                     tiles[x][y].textures.emplace_back(neig[d],p);
                 }
             }
@@ -126,11 +126,11 @@ void Map::updateStyle() {
                 int l = neig[(d+1) % 8];
                 int r = neig[(d+7) % 8];
                 if (neig[d] < tiles[x][y].tileID && l != neig[d] && r != neig[d]) {
-                    pint p = {1-dirs2[d].X,1-dirs2[d].Y};
+                    pair<int> p = {1-dirs2[d].X,1-dirs2[d].Y};
                     tiles[x][y].textures.emplace_back(neig[d],p);
                 }
                 if (l < tiles[x][y].tileID && l == r) {
-                    pint p = {1-dirs2[d].X,4-dirs2[d].Y};
+                    pair<int> p = {1-dirs2[d].X,4-dirs2[d].Y};
                     tiles[x][y].textures.emplace_back(l,p);
                 }
             }

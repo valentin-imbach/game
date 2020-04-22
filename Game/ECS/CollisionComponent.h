@@ -37,8 +37,8 @@ public:
     }
     
     void update() override {
-        collider.x = positionComponent -> x - offsetX;
-        collider.y = positionComponent -> y - offsetY;
+        collider.x = positionComponent -> pos.X - offsetX;
+        collider.y = positionComponent -> pos.Y - offsetY;
     }
     
     void debugRender() override {

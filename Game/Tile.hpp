@@ -20,6 +20,6 @@ struct Tile {
     void render();
     void update();
     TileID tileID;
-    pint pos;
-    std::vector<std::pair<int,pint>> textures;
+    pair<int> pos;
+    std::vector<std::pair<int,pair<int>>> textures;
 };

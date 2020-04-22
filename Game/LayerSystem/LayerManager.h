@@ -9,7 +9,7 @@
 #pragma once
 
 struct Layer {
-    virtual void init() {};
+    bool active = true;
     virtual void update() {};
     virtual void render() {};
     virtual bool handleEvent(SDL_Event event) { return true; };
@@ -29,20 +29,26 @@ public:
     
     void update() {
         for (Layer* l: layerStack) {
-            l -> update();
+            if (l -> active) {
+                l -> update();
+            }
         }
     }
     
     void render() {
         for (Layer* l: layerStack) {
-            l -> render();
+            if (l -> active) {
+                l -> render();
+            }
         }
     }
     
     bool handleEvent(SDL_Event event) {
         for (auto i = layerStack.size()-1; i >= 0; i--) {
-            if (layerStack[i] -> handleEvent(event)) {
-                return true;
+            if (layerStack[i] -> active) {
+                if (layerStack[i] -> handleEvent(event)) {
+                    return true;
+                }
             }
         }
         return false;

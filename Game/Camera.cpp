@@ -8,11 +8,11 @@
 
 #include "Camera.hpp"
 
-pout Camera::pos = {0,0};
+pair<float> Camera::pos = {0,0};
 int Camera::speed = 6;
 int Camera::mode = 0;
 
-void Camera::placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pout p) {
+void Camera::placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pair<float> p) {
     int dx = ZOOM*(p.X-pos.X)+Window::size.X/2-ZOOM/2;
     int dy = ZOOM*(p.Y-pos.Y)+Window::size.Y/2-ZOOM/2;
     TextureManager::drawTexture(tex,TILE_SIZE*x,TILE_SIZE*y,TILE_SIZE*w,TILE_SIZE*h,dx,dy,ZOOM*w,ZOOM*h);
@@ -35,40 +35,19 @@ void Camera::renderRect(float x, float y, float w, float h) {
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 
-pout Camera::gtos(pout p) {
+pair<float> Camera::gtos(pair<float> p) {
     return {ZOOM*(p.X-pos.X)+Window::size.X/2,ZOOM*(p.Y-pos.Y)+Window::size.Y/2};
 }
 
-pout Camera::stog(pout p) {
+pair<float> Camera::stog(pair<float> p) {
     return {(p.X-Window::size.X/2)/ZOOM+pos.X,(p.Y-Window::size.Y/2)/ZOOM+pos.Y};
 }
 
-void Camera::handleEvents() {
-    for (SDL_Event e : Window::events) {
-        switch (e.type) {
-            case SDL_KEYDOWN:
-                switch (e.key.keysym.sym) {
-                    case (SDLK_c):
-                        if (mode == 0) {
-                            mode = 1;
-                        } else {
-                            mode = 0;
-                        }
-                        break;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                //LOGP(stog(Window::mousePos));
-                break;
-        }
-    }
-}
-
-void Camera::update() {
-    handleEvents();
+void Camera::update(pair<float> p) {
+    pos = p;
 }
 
 void Camera::render() {
-    pout p = stog(Window::mousePos);
+    pair<float> p = stog(Window::mousePos);
     renderRect(round(p.X)-0.5, round(p.Y)-0.5, 1, 1);
 }

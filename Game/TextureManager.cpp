@@ -9,10 +9,8 @@
 #include "TextureManager.hpp"
 
 auto TextureManager::tilesets = std::vector<SDL_Texture*>(maxTileID,nullptr);
-SDL_Texture* TextureManager::character = nullptr;
-SDL_Texture* TextureManager::spriteSheet = nullptr;
 SDL_Texture* TextureManager::itemSheet = nullptr;
-SDL_Texture* TextureManager::hotbar = nullptr;
+
 
 void TextureManager::Init() {
     loadTileset(GRASS,"assets/grass.png");

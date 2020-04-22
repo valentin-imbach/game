@@ -24,7 +24,7 @@ public:
 private:
     void updateStyle();
     void generate();
-    pint size;
+    pair<int> size;
     vv(Tile) tiles;
 };
 

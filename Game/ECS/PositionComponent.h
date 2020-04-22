@@ -11,14 +11,9 @@
 
 class PositionComponent : public Component {
 public:
-    float x;
-    float y;
-    PositionComponent() {
-        x = 0;
-        y = 0;
-    }
-    PositionComponent(float xpos, float ypos) {
-        x = xpos;
-        y = ypos;
+    pair<float> pos;
+    PositionComponent() {}
+    PositionComponent(float x, float y) {
+        pos = {x,y};
     }
 };

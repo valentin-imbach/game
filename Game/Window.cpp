@@ -12,8 +12,8 @@ SDL_Renderer* Window::renderer = nullptr;
 const Uint8* Window::keys = nullptr;
 v(SDL_Event) Window::events = v(SDL_Event)();
 int Window::FPS = NULL;
-pint Window::size = {0,0};
-pint Window::mousePos = {0,0};
+pair<int> Window::size = {0,0};
+pair<int> Window::mousePos = {0,0};
 
 Window::Window(const char *title, int width, int height, bool fullscreen) {
     
@@ -44,10 +44,6 @@ Window::Window(const char *title, int width, int height, bool fullscreen) {
     
     update();
 };
-
-Window::~Window() {
-    
-}
 
 void Window::update() {
     SDL_GetWindowSize(win, &size.X, &size.Y);

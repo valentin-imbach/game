@@ -11,7 +11,7 @@
 Tile::Tile() {}
 
 Tile::Tile(int x, int y, TileID id) {
-    textures = std::vector<std::pair<int,pint>>();
+    textures = std::vector<std::pair<int,pair<int>>>();
     pos = {x,y};
     tileID = id;
 }
@@ -22,6 +22,6 @@ void Tile::update() {
 
 void Tile::render() {
     for (auto t : textures) {
-        Camera::placeTexture(TextureManager::tilesets[t.X],t.Y.X,t.Y.Y,1,1,pos);
+        Camera::placeTexture(TextureManager::tilesets[t.first],t.second.X,t.second.Y,1,1,pos);
     }
 }

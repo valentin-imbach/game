@@ -19,7 +19,6 @@ class Window {
 public:
     
     Window(const char *title, int width, int height, bool fullscreen = false);
-    ~Window();
     
     static SDL_Renderer* renderer;
     
@@ -28,8 +27,8 @@ public:
     
     static const Uint8* keys;
     static v(SDL_Event) events;
-    static pint size;
-    static pint mousePos;
+    static pair<int> size;
+    static pair<int> mousePos;
     static int FPS;
     
 private:

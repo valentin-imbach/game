@@ -74,6 +74,8 @@
 		04CBB501244F545A00A8BC69 /* TileLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileLayer.h; sourceTree = "<group>"; };
 		04CBB502244F57E600A8BC69 /* GuiLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuiLayer.h; sourceTree = "<group>"; };
 		04CBB504244F589D00A8BC69 /* Layers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Layers.h; sourceTree = "<group>"; };
+		04CBB50624503B5700A8BC69 /* DebugLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DebugLayer.h; sourceTree = "<group>"; };
+		04CBB50A2450437000A8BC69 /* maths.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = maths.h; sourceTree = "<group>"; };
 		04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		04E8D3BC239D6DF2002D0079 /* FastNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastNoise.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,6 +137,7 @@
 				040CAB9E242E24AB009A2728 /* ECS */,
 				04CBB503244F587100A8BC69 /* LayerSystem */,
 				0439263C244492750057C83C /* Item.h */,
+				04CBB50A2450437000A8BC69 /* maths.h */,
 				040CABAB242FD090009A2728 /* CollisionManager.h */,
 				04C7CC872334119F0053C2E7 /* main.cpp */,
 				041688952334336D0060DBDA /* Game.hpp */,
@@ -175,6 +178,7 @@
 				04CBB501244F545A00A8BC69 /* TileLayer.h */,
 				04CBB500244F500500A8BC69 /* EntityLayer.h */,
 				04CBB502244F57E600A8BC69 /* GuiLayer.h */,
+				04CBB50624503B5700A8BC69 /* DebugLayer.h */,
 			);
 			path = LayerSystem;
 			sourceTree = "<group>";

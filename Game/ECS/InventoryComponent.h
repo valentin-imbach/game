@@ -12,7 +12,7 @@
 
 class InventoryComponent : public Component {
 public:
-    pint size;
+    pair<int> size;
     vv(ItemStack*) items;
     InventoryComponent(int w, int h) {
         size = {w,h};

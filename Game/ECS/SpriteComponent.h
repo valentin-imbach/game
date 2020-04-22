@@ -36,7 +36,7 @@ public:
         if (texture == nullptr) {
             texture = TextureManager::loadTexture("assets/default.png");
         }
-        Camera::renderTexture(texture, src, positionComponent -> x, positionComponent -> y, offset);
+        Camera::renderTexture(texture, src, positionComponent -> pos.X, positionComponent -> pos.Y, offset);
     }
     
     ~SpriteComponent() override {
