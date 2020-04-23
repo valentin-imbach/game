@@ -18,6 +18,7 @@ int main() {
     
     while (window.isRunning()) {
         window.update();
+        game.handleEvents();
         game.update();
         game.render();
     }

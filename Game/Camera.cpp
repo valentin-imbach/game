@@ -7,6 +7,8 @@
 //
 
 #include "Camera.hpp"
+#include "TextureManager.hpp"
+#include "Window.hpp"
 
 pair<float> Camera::pos = {0,0};
 int Camera::speed = 6;

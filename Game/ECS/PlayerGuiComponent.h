@@ -12,12 +12,17 @@
 class PlayerGuiComponent : public GuiComponent {
 private:
     InventoryComponent* inventoryComponent;
-    
 public:
-    void init () override {
+    void init() override {
         inventoryComponent = &entity -> addComponent<InventoryComponent>(9,4);
     }
-    void render () override {
+    
+    PlayerGuiComponent() {
+        size = {200,200};
+        position = {300,300};
+    }
+
+    void guiRender() override {
         int x = 200;
         int y = 200;
         int d = 60;
@@ -31,4 +36,11 @@ public:
             }
         }
     }
+    
+    void guiUpdate() override {}
+    
+    bool guiHandleEvent(SDL_Event event) override {
+        return false;
+    }
+    
 };

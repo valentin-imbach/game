@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "Layers.h"
+
 #include "../TextManager.hpp"
 #include "../Window.hpp"
 #include "../Camera.hpp"
@@ -15,7 +15,7 @@
 class DebugLayer : public Layer {
 public:
     DebugLayer() {
-        
+        LOG("Debug Layer constructed");
     }
     void update() override {
         

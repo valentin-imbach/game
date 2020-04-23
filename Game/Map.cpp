@@ -7,7 +7,6 @@
 //
 
 #include "Map.hpp"
-#include "tools.h"
 
 Map::Map(const char* path) {
     
@@ -48,6 +47,9 @@ Map::Map(const char* path) {
     }
     file.close();
     updateStyle();
+    
+    LOG("Map loaded from",path);
+    
 }
 
 Map::Map(int w, int h) {

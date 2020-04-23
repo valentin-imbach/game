@@ -7,19 +7,41 @@
 //
 
 #pragma once
-#include "Layers.h"
+
+#include "../ECS/GuiComponent.h"
 
 class GuiLayer : public Layer {
 public:
-    GuiLayer() {
-        
-    }
-    void update() override {
-        
-    }
-    void render() override {
-        
-    }
-private:
     
+    GuiLayer() {
+        LOG("Gui Layer constructed");
+    }
+    
+    void update() override {
+        for (auto g : guiStack) {
+            g -> guiUpdate();
+        }
+    }
+    
+    void render() override {
+        for (auto g : guiStack) {
+            g -> guiRender();
+        }
+    }
+    
+    void addGui(GuiComponent* gui) {
+        guiStack.push_back(gui);
+    }
+    
+    bool handleEvent(SDL_Event event) override {
+        for (auto g : guiStack) {
+            if (g -> guiHandleEvent(event)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+private:
+    v(GuiComponent*) guiStack;
 };

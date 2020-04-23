@@ -7,33 +7,37 @@
 //
 
 #include "Game.hpp"
+#include "Camera.hpp"
 
 Game::Game() {
     
-    //Timer("Game Constructor");
-    layerManager.addLayer(&tileLayer);
-    layerManager.addLayer(&entityLayer);
-    layerManager.addLayer(&debugLayer);
+    LayerManager::addLayer(&tileLayer);
+    LayerManager::addLayer(&entityLayer);
+    LayerManager::addLayer(&debugLayer);
+    LayerManager::addLayer(&guiLayer);
     
+    LOG("Game initialized");
 }
 
 void Game::handleEvents() {
     for (auto e : Window::events) {
-        if (layerManager.handleEvent(e)) {
+        if (LayerManager::handleEvent(e)) {
             continue;
         }
-        //Leftover events
+        if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_KEYDOWN && !e.key.repeat)) {
+            PRINT("  Event: ", e.type);
+        }
     }
 }
 
 void Game::update() {
-    layerManager.update();
+    LayerManager::update();
     Camera::update(entityLayer.player -> getComponent<PositionComponent>().pos);
 }
 
 void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 255, 255, 255, 255);
     SDL_RenderClear(Window::renderer);
-    layerManager.render();
+    LayerManager::render();
     SDL_RenderPresent(Window::renderer);
 }

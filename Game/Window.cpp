@@ -7,6 +7,8 @@
 //
 
 #include "Window.hpp"
+#include "TextManager.hpp"
+#include "TextureManager.hpp"
 
 SDL_Renderer* Window::renderer = nullptr;
 const Uint8* Window::keys = nullptr;
@@ -49,8 +51,8 @@ void Window::update() {
     SDL_GetWindowSize(win, &size.X, &size.Y);
     keys = SDL_GetKeyboardState(NULL);
     SDL_GetMouseState(&mousePos.X, &mousePos.Y);
-    FPS = limitFrameRate(MAX_FPS);
     handleEvents();
+    FPS = limitFrameRate(MAX_FPS);
 };
 
 void Window::handleEvents() {

@@ -7,10 +7,11 @@
 //
 
 #include "TextureManager.hpp"
+#include <SDL2_image/SDL_image.h>
+#include "Window.hpp"
 
 auto TextureManager::tilesets = std::vector<SDL_Texture*>(maxTileID,nullptr);
 SDL_Texture* TextureManager::itemSheet = nullptr;
-
 
 void TextureManager::Init() {
     loadTileset(GRASS,"assets/grass.png");
@@ -18,11 +19,12 @@ void TextureManager::Init() {
     loadTileset(WATER,"assets/water.png");
     loadTileset(STONE,"assets/stone.png");
     itemSheet = loadTexture("assets/test.png");
+    LOG("TextureManager initialized");
 }
 
 SDL_Texture* TextureManager::loadTexture(const char* path) {
     SDL_Surface* tmpSurface = IMG_Load(path);
-    if (tmpSurface) { LOG("Texture loaded from " << path); } else { ERROR("Failed to load SDL_Texture from " << path); }
+    if (tmpSurface) { LOG("Texture loaded from",path); } else { ERROR("Failed to load SDL_Texture from",path); }
     SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
     return tex;

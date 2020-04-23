@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "Camera.hpp"
 #include "LayerSystem/Layers.h"
 
 class Game {
@@ -18,8 +17,8 @@ public:
     void update();
     void handleEvents();
 private:
-    LayerManager layerManager;
     TileLayer tileLayer;
     EntityLayer entityLayer;
     DebugLayer debugLayer;
+    GuiLayer guiLayer;
 };

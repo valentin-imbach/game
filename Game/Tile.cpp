@@ -7,6 +7,7 @@
 //
 
 #include "Tile.hpp"
+#include "Camera.hpp"
 
 Tile::Tile() {}
 

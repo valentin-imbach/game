@@ -7,11 +7,7 @@
 //
 
 #pragma once
-
-#include <stdio.h>
 #include "tools.h"
-#include "Window.hpp"
-#include "Camera.hpp"
 #include "TextureManager.hpp"
 
 struct Tile {

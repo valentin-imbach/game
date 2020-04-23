@@ -7,13 +7,13 @@
 //
 
 #pragma once
-#include "Layers.h"
 #include "Map.hpp"
 
 class TileLayer : public Layer {
 public:
     TileLayer() {
         map = new Map("map.txt");
+        LOG("Tile Layer constructed");
     }
     void update() override {
         map -> update();

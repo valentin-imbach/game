@@ -19,7 +19,11 @@
 #include <algorithm>
 #include <array>
 
+#include <SDL2/SDL.h>
+
 #include "FastNoise.h"
+
+#include "logger.h"
 #include "maths.h"
 
 #define v(x) std::vector<x>
@@ -27,10 +31,6 @@
 
 #define vup(x) std::vector<std::unique_ptr<x>>
 #define vvup(x) std::vector<std::vector<std::unique_ptr<x>>>
-
-#define PRINT(x) std::cout << x << std::endl
-#define LOG(x) std::cout << "  LOG: " << x << std::endl
-#define ERROR(x) std::cout << "    ERROR: " << x << std::endl
 
 const pair<int> dirs[4] = {{1,0},{0,-1},{-1,0},{0,1}};
 const pair<int> dirs2[8] = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};

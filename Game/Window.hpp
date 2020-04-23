@@ -10,10 +10,7 @@
 
 #define MAX_FPS 60
 
-#include <SDL2/SDL.h>
 #include "tools.h"
-#include "TextManager.hpp"
-#include "TextureManager.hpp"
 
 class Window {
 public:
@@ -41,6 +38,7 @@ private:
     SDL_Window* win;
     bool running;
 };
+
 
 
 

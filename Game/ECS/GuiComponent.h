@@ -11,5 +11,9 @@
 
 class GuiComponent : public Component {
 public:
-    virtual void handleEvents() {};
+    virtual void guiUpdate() {};
+    virtual void guiRender() = 0;
+    virtual bool guiHandleEvent(SDL_Event event) = 0;
+    pair<int> position;
+    pair<int> size;
 };

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LayerManager.h"
+#include "LayerManager.hpp"
 
 #include "TileLayer.h"
 #include "EntityLayer.h"

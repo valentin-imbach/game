@@ -7,7 +7,6 @@
 //
 
 #pragma once
-#include "tools.h"
 
 template<typename T> struct pair {
     
@@ -46,15 +45,12 @@ template<typename T> struct pair {
     }
     
     bool operator<(const pair<T> other) const {
-        if (X == other.X) {
-            return Y < other.Y;
-        }
-        return X < other.X;
+        return ((X == other.X) ? (Y < other.Y) : (X < other.X));
     }
     
 };
 
 template<typename T> std::ostream& operator<<(std::ostream& stream, const pair<T> p) {
-    stream << p.X << ", " << p.Y;
+    stream << "(" << p.X << ", " << p.Y << ")";
     return stream;
 }

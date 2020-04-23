@@ -9,8 +9,6 @@
 #pragma once
 
 #include "tools.h"
-#include "TextureManager.hpp"
-#include "Window.hpp"
 
 #define ZOOM 64
 #define RADIUS 0.1f

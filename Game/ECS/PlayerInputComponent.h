@@ -10,6 +10,8 @@
 #include "Components.h"
 #include "Window.hpp"
 
+#include "../LayerSystem/GuiLayer.h"
+
 class PlayerInputComponent : public Component {
     
 private:
@@ -85,6 +87,21 @@ public:
         } else {
             ticks = 0;
         }
+    }
+    
+    bool handleEvent(SDL_Event event) override {
+        
+        if (event.type == SDL_KEYDOWN) {
+            if (!event.key.repeat) {
+                if (event.key.keysym.scancode == SDL_SCANCODE_E) {
+                    LOG("E");
+                    
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
     
 };

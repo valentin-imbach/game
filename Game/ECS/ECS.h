@@ -34,6 +34,7 @@ public:
     virtual void init() {};
     virtual void update() {};
     virtual void render() {};
+    virtual bool handleEvent(SDL_Event event) { return false; }
     virtual void debugRender() {};
     
     virtual ~Component() {};
@@ -50,10 +51,6 @@ private:
 public:
     bool active = true;
     
-    /*Entity(Map* m) {
-        map = m;
-    }*/
-    
     void update() {
         for (auto& c : components) { c -> update(); }
     }
@@ -64,6 +61,15 @@ public:
     
     void debugRender() {
         for (auto& c : components) { c -> debugRender(); }
+    }
+    
+    bool handleEvent(SDL_Event event) {
+        for (auto& c : components) {
+            if (c -> handleEvent(event)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     void destroy() {
@@ -105,6 +111,14 @@ public:
     }
     void debugRender() {
         for (auto& e : entities) {e -> debugRender(); }
+    }
+    bool handleEvent(SDL_Event event) {
+        for (auto& e : entities) {
+            if (e -> handleEvent(event)) {
+                return true;
+            }
+        }
+        return false;
     }
     void refresh() {
         entities.erase(std::remove_if(std::begin(entities), std::end(entities),

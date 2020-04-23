@@ -7,8 +7,7 @@
 //
 
 #pragma once
-
-#include "Window.hpp"
+#include "tools.h"
 #include <SDL2_ttf/SDL_ttf.h>
 
 class TextManager {

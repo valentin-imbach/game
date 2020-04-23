@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "Layers.h"
+
 #include "Components.h"
 
 class EntityLayer : public Layer {
@@ -22,6 +22,7 @@ public:
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
         player -> addComponent<InventoryComponent>(9,5);
+        player -> addComponent<PlayerGuiComponent>();
         
         player -> getComponent<InventoryComponent>().items[0][0] = new ItemStack(0,5);
         player -> getComponent<InventoryComponent>().items[1][0] = new ItemStack(1,2);
@@ -31,6 +32,7 @@ public:
         //wall.addComponent<GridComponent>(3,3);
         //wall.addComponent<SpriteComponent>();
         
+        LOG("Entity Layer constructed");
     }
     void update() override {
         entityManager.refresh();
@@ -40,6 +42,11 @@ public:
         entityManager.render();
         entityManager.debugRender();
     }
+    
+    bool handleEvent(SDL_Event event) override {
+        return entityManager.handleEvent(event);
+    }
+    
 private:
     EntityManager entityManager;
 };

@@ -7,11 +7,9 @@
 //
 
 #pragma once
+#include "tools.h"
 
 #define TILE_SIZE 16
-
-#include "Window.hpp"
-#include <SDL2_image/SDL_image.h>
 
 struct Sprite {
     SDL_Texture* texture;
