@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../ECS/GuiComponent.h"
+#include "../GuiSystem/GuiManager.hpp"
 
 class GuiLayer : public Layer {
 public:
@@ -18,30 +18,14 @@ public:
     }
     
     void update() override {
-        for (auto g : guiStack) {
-            g -> guiUpdate();
-        }
+        GuiManager::update();
     }
     
     void render() override {
-        for (auto g : guiStack) {
-            g -> guiRender();
-        }
-    }
-    
-    void addGui(GuiComponent* gui) {
-        guiStack.push_back(gui);
+        GuiManager::render();
     }
     
     bool handleEvent(SDL_Event event) override {
-        for (auto g : guiStack) {
-            if (g -> guiHandleEvent(event)) {
-                return true;
-            }
-        }
-        return false;
+        return GuiManager::handleEvent(event);
     }
-    
-private:
-    v(GuiComponent*) guiStack;
 };

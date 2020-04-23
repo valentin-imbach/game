@@ -16,7 +16,7 @@
 class Item {
 public:
     bool stack = false;
-    virtual void render(int x, int y, float scale) {}
+    virtual void render(int x, int y, int scale) {};
 };
 
 class ItemStack : public Item {
@@ -29,8 +29,8 @@ public:
         count = c;
         stack = true;
     }
-    void render(int x, int y, float scale) override {
-        TextureManager::drawTexture(TextureManager::itemSheet, TILE_SIZE*type, 0, TILE_SIZE, TILE_SIZE, x, y, scale*TILE_SIZE, scale*TILE_SIZE);
-        TextManager::drawText(std::to_string(count), x+TILE_SIZE*scale, y+TILE_SIZE*scale/2);
+    void render(int x, int y, int scale) override {
+        TextureManager::drawTexture(TextureManager::itemSheet, TILE_SIZE*type, 0, TILE_SIZE, TILE_SIZE, x, y, scale, scale);
+        TextManager::drawText(std::to_string(count), x+scale, y+scale/2);
     }
 };

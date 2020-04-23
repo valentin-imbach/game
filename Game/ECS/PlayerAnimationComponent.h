@@ -18,9 +18,9 @@ public:
     
     void init() override {
         
-        spriteComponent = &entity -> addComponent<SpriteComponent>();
-        directionComponent = &entity -> addComponent<DirectionComponent>();
-        playerInputComponent = &entity -> addComponent<PlayerInputComponent>();
+        spriteComponent = &entity -> getComponent<SpriteComponent>();
+        directionComponent = &entity -> getComponent<DirectionComponent>();
+        playerInputComponent = &entity -> getComponent<PlayerInputComponent>();
         
         spriteComponent -> texture = TextureManager::loadTexture("assets/character2.png");
         spriteComponent -> src.w = 16;

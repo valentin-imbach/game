@@ -21,10 +21,13 @@ Game::Game() {
 
 void Game::handleEvents() {
     for (auto e : Window::events) {
+        if (e.key.repeat) {
+            continue;
+        }
         if (LayerManager::handleEvent(e)) {
             continue;
         }
-        if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_KEYDOWN && !e.key.repeat)) {
+        if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN) {
             PRINT("  Event: ", e.type);
         }
     }

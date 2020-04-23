@@ -10,13 +10,14 @@
 #include "Components.h"
 #include "Window.hpp"
 
-#include "../LayerSystem/GuiLayer.h"
+#include "../GuiSystem/Guis.h"
 
 class PlayerInputComponent : public Component {
     
 private:
     PositionComponent *positionComponent;
     DirectionComponent *directionComponent;
+    InventoryComponent *inventoryComponent;
     
 public:
     
@@ -26,6 +27,7 @@ public:
     void init() override {
         positionComponent = &entity -> addComponent<PositionComponent>();
         directionComponent = &entity -> addComponent<DirectionComponent>();
+        inventoryComponent = &entity -> getComponent<InventoryComponent>();
     }
     
     void update() override {
@@ -95,7 +97,7 @@ public:
             if (!event.key.repeat) {
                 if (event.key.keysym.scancode == SDL_SCANCODE_E) {
                     LOG("E");
-                    
+                    GuiManager::addGui(new InventoryGui(inventoryComponent,Window::size.X/2 ,Window::size.Y/2));
                     return true;
                 }
             }

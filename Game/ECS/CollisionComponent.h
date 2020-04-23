@@ -33,7 +33,7 @@ public:
     }
     
     void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>();
+        positionComponent = &entity -> getComponent<PositionComponent>();
     }
     
     void update() override {

@@ -9,6 +9,8 @@
 #include "Window.hpp"
 #include "Game.hpp"
 
+#include "GuiSystem/InventoryGui.h"
+
 int main() {
     
     std::srand(1);
