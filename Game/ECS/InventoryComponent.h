@@ -13,9 +13,9 @@
 class InventoryComponent : public Component {
 public:
     pair<int> size;
-    vv(ItemStack*) items;
+    vv(Item*) items;
     InventoryComponent(int w, int h) {
         size = {w,h};
-        items = vv(ItemStack*)(w,v(ItemStack*)(h,nullptr));
+        items = vv(Item*)(w,v(Item*)(h,nullptr));
     }
 };

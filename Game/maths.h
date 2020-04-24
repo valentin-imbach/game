@@ -40,12 +40,12 @@ template<typename T> struct pair {
         return {X*other.X,Y*other.Y};
     }
     
-    pair<T> operator/(const pair<T> other) const {
-        return {X/other.X,Y/other.Y};
-    }
-    
     pair<T> operator*(const int other) const {
         return {X*other,Y*other};
+    }
+    
+    pair<T> operator/(const int other) const {
+        return {X/other,Y/other};
     }
     
     bool operator<(const pair<T> other) const {

@@ -8,6 +8,7 @@
 
 #pragma once
 #include "../tools.h"
+#include "../Item.h"
 
 class Gui {
 public:
@@ -18,6 +19,9 @@ public:
 protected:
     pair<int> position;
     pair<int> size;
+    bool check(pair<int> p) {
+        return (position.X-size.X/2 <= p.X) && (p.X <= position.X+size.X/2) && (position.Y-size.Y/2 <= p.Y) && (p.Y <= position.Y+size.Y/2);
+    }
 };
 
 class GuiManager {
@@ -27,6 +31,7 @@ public:
     static void render();
     static bool handleEvent(SDL_Event event);
     static void addGui(Gui*);
+    static Item* mouseItem;
 private:
     static v(Gui*) guiStack;
 };

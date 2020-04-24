@@ -7,8 +7,10 @@
 //
 
 #include "GuiManager.hpp"
+#include "../Window.hpp"
 
 v(Gui*) GuiManager::guiStack = v(Gui*)();
+Item* GuiManager::mouseItem = new ItemStack(3,6);
 
 void GuiManager::Init() {
     LOG("Gui Manager initialized");
@@ -24,6 +26,9 @@ void GuiManager::update() {
 void GuiManager::render() {
     for (auto g : guiStack) {
         g -> render();
+    }
+    if (mouseItem != nullptr) {
+        mouseItem -> render(Window::mousePos.X, Window::mousePos.Y, 48);
     }
 }
 

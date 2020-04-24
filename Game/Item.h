@@ -16,13 +16,12 @@
 class Item {
 public:
     bool stack = false;
+    int type;
+    int count;
     virtual void render(int x, int y, int scale) {};
 };
 
 class ItemStack : public Item {
-private:
-    int type;
-    int count;
 public:
     ItemStack(int t, int c) {
         type = t;
@@ -31,6 +30,8 @@ public:
     }
     void render(int x, int y, int scale) override {
         TextureManager::drawTexture(TextureManager::itemSheet, TILE_SIZE*type, 0, TILE_SIZE, TILE_SIZE, x, y, scale, scale);
-        TextManager::drawText(std::to_string(count), x+scale, y+scale/2);
+        if (count > 1) {
+            TextManager::drawText(std::to_string(count), x+3*scale/4, y+scale/2);
+        }
     }
 };

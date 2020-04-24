@@ -28,7 +28,7 @@ void Game::handleEvents() {
             continue;
         }
         if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN) {
-            PRINT("  Event: ", e.type);
+            
         }
     }
 }

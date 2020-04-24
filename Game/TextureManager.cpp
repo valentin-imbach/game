@@ -30,11 +30,15 @@ SDL_Texture* TextureManager::loadTexture(const char* path) {
     return tex;
 };
 
-void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
+void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered) {
     SDL_Rect src;
     src.x = sx; src.y = sy; src.w = sw; src.h = sh;
     SDL_Rect dest;
     dest.x = dx; dest.y = dy; dest.w = dw; dest.h = dh;
+    if (centered) {
+        dest.x -= dw/2;
+        dest.y -= dh/2;
+    }
     SDL_RenderCopy(Window::renderer, tex, &src, &dest);
 }
 
