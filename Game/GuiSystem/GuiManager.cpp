@@ -10,7 +10,7 @@
 #include "../Window.hpp"
 
 v(Gui*) GuiManager::guiStack = v(Gui*)();
-Item* GuiManager::mouseItem = new ItemStack(3,6);
+Item* GuiManager::mouseItem = nullptr;
 
 void GuiManager::Init() {
     LOG("Gui Manager initialized");

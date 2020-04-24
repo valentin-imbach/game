@@ -18,4 +18,25 @@ public:
         size = {w,h};
         items = vv(Item*)(w,v(Item*)(h,nullptr));
     }
+    Item* addItem(Item* item) {
+        if (item == nullptr) {
+            return nullptr;
+        }
+        for (int y = 0; y < size.Y; y++) {
+            for (int x = 0; x < size.X; x++) {
+                if (items[x][y] == nullptr) {
+                    items[x][y] = item;
+                    return nullptr;
+                } else if (items[x][y] -> stack && item -> stack) {
+                    if (items[x][y] -> type == item -> type) {
+                        items[x][y] -> count += item -> count;
+                        delete item;
+                        return nullptr;
+                    }
+                }
+                
+            }
+        }
+        return item;
+    }
 };

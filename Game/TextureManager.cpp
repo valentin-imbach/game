@@ -12,13 +12,17 @@
 
 auto TextureManager::tilesets = std::vector<SDL_Texture*>(maxTileID,nullptr);
 SDL_Texture* TextureManager::itemSheet = nullptr;
+SDL_Texture* TextureManager::inventoryTexture = nullptr;
 
 void TextureManager::Init() {
+    
     loadTileset(GRASS,"assets/grass.png");
     loadTileset(SAND,"assets/sand.png");
     loadTileset(WATER,"assets/water.png");
     loadTileset(STONE,"assets/stone.png");
+    
     itemSheet = loadTexture("assets/test.png");
+    inventoryTexture = loadTexture("assets/inventory.png");
     LOG("TextureManager initialized");
 }
 

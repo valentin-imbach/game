@@ -18,11 +18,9 @@ private:
     InventoryComponent* inventory;
     int offset = 57;
     int scale = 48;
-    SDL_Texture* texture;
     
 public:
     InventoryGui(InventoryComponent* inv, int x, int y) {
-        texture = TextureManager::loadTexture("assets/inventory.png");
         inventory = inv;
         size = {(inv -> size.X-1) * offset + scale, (inv -> size.Y-1) * offset + scale};
         position = {x,y};
@@ -30,7 +28,7 @@ public:
     
     void render() override {
         
-        TextureManager::drawTexture(texture, 0, 0, 178, 102, position.X, position.Y, 534, 306, true);
+        TextureManager::drawTexture(TextureManager::inventoryTexture, 0, 0, 178, 102, position.X, position.Y, 534, 306, true);
         for (int i = 0; i < inventory -> size.X; i++) {
             for (int j = 0; j < inventory -> size.Y; j++) {
                 if (inventory -> items[i][j] != nullptr) {
@@ -46,6 +44,8 @@ public:
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
                 alive = false;
+                inventory -> addItem(GuiManager::mouseItem);
+                GuiManager::mouseItem = nullptr;
                 return true;
             }
         }

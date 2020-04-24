@@ -94,12 +94,11 @@ public:
     bool handleEvent(SDL_Event event) override {
         
         if (event.type == SDL_KEYDOWN) {
-            if (!event.key.repeat) {
-                if (event.key.keysym.scancode == SDL_SCANCODE_E) {
-                    LOG("E");
-                    GuiManager::addGui(new InventoryGui(inventoryComponent,Window::size.X/2 ,Window::size.Y/2));
-                    return true;
-                }
+            if (event.key.keysym.scancode == SDL_SCANCODE_E) {
+                GuiManager::addGui(new InventoryGui(inventoryComponent,Window::size.X/2 ,Window::size.Y/2));
+                return true;
+            } else if (event.key.keysym.scancode == SDL_SCANCODE_F) {
+                
             }
         }
         

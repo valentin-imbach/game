@@ -15,7 +15,7 @@ int main() {
     
     std::srand(1);
     
-    Window window("Game",1024,640);
+    Window window("Game",1224,840);
     Game game;
     
     while (window.isRunning()) {
