@@ -13,6 +13,7 @@
 auto TextureManager::tilesets = std::vector<SDL_Texture*>(maxTileID,nullptr);
 SDL_Texture* TextureManager::itemSheet = nullptr;
 SDL_Texture* TextureManager::inventoryTexture = nullptr;
+SDL_Texture* TextureManager::hotbarTexture = nullptr;
 
 void TextureManager::Init() {
     
@@ -23,6 +24,7 @@ void TextureManager::Init() {
     
     itemSheet = loadTexture("assets/test.png");
     inventoryTexture = loadTexture("assets/inventory.png");
+    hotbarTexture = loadTexture("assets/hotbar.png");
     LOG("TextureManager initialized");
 }
 

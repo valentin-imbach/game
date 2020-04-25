@@ -11,3 +11,4 @@
 #include "GuiManager.hpp"
 
 #include "InventoryGui.h"
+#include "HotbarGui.h"

@@ -82,6 +82,8 @@
 		04CBB514245232BF00A8BC69 /* GuiManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiManager.hpp; sourceTree = "<group>"; };
 		04CBB517245235D900A8BC69 /* InventoryGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InventoryGui.h; sourceTree = "<group>"; };
 		04CBB518245238D300A8BC69 /* Guis.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Guis.h; sourceTree = "<group>"; };
+		04CBB51924544F1800A8BC69 /* HotbarGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotbarGui.h; sourceTree = "<group>"; };
+		04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerGuiComponent.h; sourceTree = "<group>"; };
 		04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		04E8D3BC239D6DF2002D0079 /* FastNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastNoise.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,6 +115,7 @@
 				040CABA6242F95B8009A2728 /* InventoryComponent.h */,
 				040CABA7242F964A009A2728 /* CollisionComponent.h */,
 				041E0BA4243B4919007435A3 /* GridComponent.h */,
+				04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 				04CBB513245232BF00A8BC69 /* GuiManager.cpp */,
 				04CBB518245238D300A8BC69 /* Guis.h */,
 				04CBB517245235D900A8BC69 /* InventoryGui.h */,
+				04CBB51924544F1800A8BC69 /* HotbarGui.h */,
 			);
 			path = GuiSystem;
 			sourceTree = "<group>";

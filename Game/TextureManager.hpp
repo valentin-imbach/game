@@ -37,6 +37,7 @@ struct TextureManager {
     static std::vector<SDL_Texture*> tilesets;
     static SDL_Texture* itemSheet;
     static SDL_Texture* inventoryTexture;
+    static SDL_Texture* hotbarTexture;
     static SDL_Texture* loadTexture(const char* path);
     static void loadTileset(int a, const char* path);
     static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered = false);

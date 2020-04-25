@@ -38,8 +38,6 @@ public:
         }
     }
     
-    void update() override {}
-    
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {

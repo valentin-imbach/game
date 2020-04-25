@@ -27,6 +27,7 @@ public:
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
+        player -> addComponent<PlayerGuiComponent>();
         
         player -> getComponent<InventoryComponent>().items[0][0] = new ItemStack(0,5);
         player -> getComponent<InventoryComponent>().items[8][4] = new ItemStack(1,2);
