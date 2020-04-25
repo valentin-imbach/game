@@ -8,6 +8,9 @@
 
 #pragma once
 #include "Map.hpp"
+#include "Camera.hpp"
+#include "Window.hpp"
+#include "../GuiSystem/GuiManager.hpp"
 
 class TileLayer : public Layer {
 public:
@@ -20,6 +23,18 @@ public:
     }
     void render() override {
         map -> render();
+    }
+    bool handleEvent(SDL_Event event) override {
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            pair<int> pos = Camera::stog(Window::mousePos).rounded();
+            int t = -1;
+            if (GuiManager::hotbarSlot -> item != nullptr) {
+                t = GuiManager::hotbarSlot -> item -> type;
+            }
+            LOG("Tile",pos,"clicked with item type",t);
+            return true;
+        }
+        return false;
     }
 private:
     Map* map;

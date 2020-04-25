@@ -70,7 +70,7 @@
 		04C7CC912334190E0053C2E7 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = ../../../../Library/Frameworks/SDL2_ttf.framework; sourceTree = "<group>"; };
 		04C7CC922334190E0053C2E7 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		04CBB500244F500500A8BC69 /* EntityLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EntityLayer.h; sourceTree = "<group>"; };
-		04CBB501244F545A00A8BC69 /* TileLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileLayer.h; sourceTree = "<group>"; };
+		04CBB501244F545A00A8BC69 /* TileLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileLayer.h; sourceTree = "<group>"; usesTabs = 0; };
 		04CBB502244F57E600A8BC69 /* GuiLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuiLayer.h; sourceTree = "<group>"; };
 		04CBB504244F589D00A8BC69 /* Layers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Layers.h; sourceTree = "<group>"; };
 		04CBB50624503B5700A8BC69 /* DebugLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DebugLayer.h; sourceTree = "<group>"; };

@@ -31,8 +31,8 @@ public:
         TextureManager::drawTexture(TextureManager::inventoryTexture, 0, 0, 178, 102, position.X, position.Y, 534, 306, true);
         for (int i = 0; i < inventory -> size.X; i++) {
             for (int j = 0; j < inventory -> size.Y; j++) {
-                if (inventory -> items[i][j] != nullptr) {
-                    inventory -> items[i][j] -> render(position.X-size.X/2+i*offset,position.Y-size.Y/2+j*offset,scale);
+                if (inventory -> itemSlots[i][j].item != nullptr) {
+                    inventory -> itemSlots[i][j].item -> render(position.X-size.X/2+i*offset,position.Y-size.Y/2+j*offset,scale);
                 }
             }
         }
@@ -42,8 +42,8 @@ public:
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
                 alive = false;
-                inventory -> addItem(GuiManager::mouseItem);
-                GuiManager::mouseItem = nullptr;
+                inventory -> addItem(GuiManager::mouseSlot -> item);
+                GuiManager::mouseSlot -> item = nullptr;
                 return true;
             }
         }
@@ -52,59 +52,25 @@ public:
                 
                 pair<int> relPos = Window::mousePos-position+size/2;
                 pair<int> slot = relPos/offset;
-                Item* item = inventory -> items[slot.X][slot.Y];
+                ItemSlot* itemSlot = &(inventory -> itemSlots[slot.X][slot.Y]);
                 
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    if (GuiManager::mouseItem != nullptr && item != nullptr) {
-                        if (GuiManager::mouseItem -> stack  && item -> stack) {
-                            if (GuiManager::mouseItem -> type == item -> type) {
-                                item -> count += GuiManager::mouseItem -> count;
-                                delete GuiManager::mouseItem;
-                                GuiManager::mouseItem = nullptr;
-                                return true;
-                            }
-                        }
-                    }
-                    Item* temp = item;
-                    inventory -> items[slot.X][slot.Y] = GuiManager::mouseItem;
-                    GuiManager::mouseItem = temp;
-                    return true;
-                } else if (event.button.button == SDL_BUTTON_RIGHT) {
-                    if (GuiManager::mouseItem != nullptr && item != nullptr) {
-                        if (GuiManager::mouseItem -> stack && item -> stack) {
-                            if (GuiManager::mouseItem -> type == item -> type) {
-                                item -> count += 1;
-                                GuiManager::mouseItem -> count -= 1;
-                                if (GuiManager::mouseItem -> count == 0) {
-                                    delete GuiManager::mouseItem;
-                                    GuiManager::mouseItem = nullptr;
-                                }
-                                return true;
-                            }
-                        }
-                    } else if (GuiManager::mouseItem != nullptr) {
-                        if (GuiManager::mouseItem -> stack) {
-                            inventory -> items[slot.X][slot.Y] = new ItemStack(GuiManager::mouseItem -> type, 1);
-                            GuiManager::mouseItem -> count -= 1;
-                            if (GuiManager::mouseItem -> count == 0) {
-                                delete GuiManager::mouseItem;
-                                GuiManager::mouseItem = nullptr;
-                            }
-                            return true;
-                        }
-                    } else if (item != nullptr) {
-                        if (item -> stack) {
-                            int count = (item -> count + 1)/2;
-                            GuiManager::mouseItem = new ItemStack(item -> type, count);
-                            item -> count -= count;
-                            if (item -> count == 0) {
-                                delete item;
-                                inventory -> items[slot.X][slot.Y] = nullptr;
-                            }
-                            return true;
-                        }
-                    }
                     
+                    if (inventory -> itemSlots[slot.X][slot.Y].similar(GuiManager::mouseSlot -> item)) {
+                        GuiManager::mouseSlot -> item = inventory -> itemSlots[slot.X][slot.Y].addFullItem(GuiManager::mouseSlot -> item);
+                    } else {
+                        Item* temp = itemSlot -> item;
+                        itemSlot -> item = GuiManager::mouseSlot -> item;
+                        GuiManager::mouseSlot -> item = temp;
+                    }
+                    return true;
+                    
+                } else if (event.button.button == SDL_BUTTON_RIGHT) {
+                    if (GuiManager::mouseSlot -> item == nullptr) {
+                        GuiManager::mouseSlot -> item = itemSlot -> takeHalf();
+                    } else {
+                        GuiManager::mouseSlot -> item = itemSlot -> addOneItem(GuiManager::mouseSlot -> item);
+                    }
                 }
                 return true;
             }

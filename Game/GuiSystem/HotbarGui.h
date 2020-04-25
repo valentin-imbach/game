@@ -21,19 +21,20 @@ private:
     
 public:
     
-    int selected = 0;
+    int selected;
     
     HotbarGui(InventoryComponent* inv, int x, int y) {
         inventory = inv;
         size = {(inv -> size.X-1) * offset + scale, scale};
         position = {x,y};
+        setSelection(0);
     }
     
     void render() override {
         TextureManager::drawTexture(TextureManager::hotbarTexture, 0, 0, 178, 26, position.X, position.Y, 534, 78, true);
         for (int i = 0; i < inventory -> size.X; i++) {
-            if (inventory -> items[i][0] != nullptr) {
-                inventory -> items[i][0] -> render(position.X-size.X/2+i*offset,position.Y-size.Y/2,scale);
+            if (inventory -> itemSlots[i][0].item != nullptr) {
+                inventory -> itemSlots[i][0].item -> render(position.X-size.X/2+i*offset,position.Y-size.Y/2,scale);
             }
         }
         SDL_Rect rect;
@@ -44,9 +45,14 @@ public:
         SDL_RenderDrawRect(Window::renderer, &rect);
     }
     
+    void setSelection(int x) {
+        selected = x;
+        GuiManager::hotbarSlot = &(inventory -> itemSlots[x][0]);
+    }
+    
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_MOUSEWHEEL) {
-            selected = (selected - event.wheel.y + inventory -> size.X) % (inventory -> size.X);
+            setSelection((selected - sign(event.wheel.y) + inventory -> size.X) % (inventory -> size.X));
         }
         return false;
     }

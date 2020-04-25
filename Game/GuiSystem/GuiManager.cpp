@@ -10,7 +10,8 @@
 #include "../Window.hpp"
 
 v(Gui*) GuiManager::guiStack = v(Gui*)();
-Item* GuiManager::mouseItem = nullptr;
+ItemSlot* GuiManager::mouseSlot = new ItemSlot();
+ItemSlot* GuiManager::hotbarSlot = nullptr;
 
 void GuiManager::Init() {
     LOG("Gui Manager initialized");
@@ -27,8 +28,8 @@ void GuiManager::render() {
     for (auto g : guiStack) {
         g -> render();
     }
-    if (mouseItem != nullptr) {
-        mouseItem -> render(Window::mousePos.X, Window::mousePos.Y, 48);
+    if (mouseSlot -> item != nullptr) {
+        mouseSlot -> item -> render(Window::mousePos.X, Window::mousePos.Y, 48);
     }
 }
 

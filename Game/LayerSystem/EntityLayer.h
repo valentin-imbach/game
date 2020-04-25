@@ -22,17 +22,18 @@ public:
         
         player -> addComponent<PositionComponent>(50,50);
         player -> addComponent<DirectionComponent>();
+        
         player -> addComponent<InventoryComponent>(9,5);
+        player -> getComponent<InventoryComponent>().itemSlots[0][0].item = new ItemStack(0,5);
+        player -> getComponent<InventoryComponent>().itemSlots[8][4].item = new ItemStack(1,2);
+        player -> getComponent<InventoryComponent>().itemSlots[0][4].item = new ItemStack(2,77);
+        player -> getComponent<InventoryComponent>().itemSlots[8][0].item = new ItemStack(3,5);
+        
         player -> addComponent<SpriteComponent>();
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
         player -> addComponent<PlayerGuiComponent>();
-        
-        player -> getComponent<InventoryComponent>().items[0][0] = new ItemStack(0,5);
-        player -> getComponent<InventoryComponent>().items[8][4] = new ItemStack(1,2);
-        player -> getComponent<InventoryComponent>().items[0][4] = new ItemStack(2,77);
-        player -> getComponent<InventoryComponent>().items[8][0] = new ItemStack(3,5);
         
         //wall.addComponent<GridComponent>(3,3);
         //wall.addComponent<SpriteComponent>();

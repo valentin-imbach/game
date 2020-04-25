@@ -31,7 +31,8 @@ public:
     static void render();
     static bool handleEvent(SDL_Event event);
     static void addGui(Gui*);
-    static Item* mouseItem;
+    static ItemSlot* mouseSlot;
+    static ItemSlot* hotbarSlot;
 private:
     static v(Gui*) guiStack;
 };

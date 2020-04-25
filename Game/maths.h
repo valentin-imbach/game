@@ -52,9 +52,15 @@ template<typename T> struct pair {
         return ((X == other.X) ? (Y < other.Y) : (X < other.X));
     }
     
+    pair<int> rounded() {
+        return pair<int>(round(X),round(Y));
+    }
+    
 };
 
 template<typename T> std::ostream& operator<<(std::ostream& stream, const pair<T> p) {
     stream << "(" << p.X << ", " << p.Y << ")";
     return stream;
 }
+
+#define sign(x) (x > 0 ? 1 : -1)

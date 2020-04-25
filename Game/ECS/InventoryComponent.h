@@ -13,10 +13,10 @@
 class InventoryComponent : public Component {
 public:
     pair<int> size;
-    vv(Item*) items;
+    vv(ItemSlot) itemSlots;
     InventoryComponent(int w, int h) {
         size = {w,h};
-        items = vv(Item*)(w,v(Item*)(h,nullptr));
+        itemSlots = vv(ItemSlot)(w,v(ItemSlot)(h));
     }
     Item* addItem(Item* item) {
         if (item == nullptr) {
@@ -24,12 +24,12 @@ public:
         }
         for (int y = 0; y < size.Y; y++) {
             for (int x = 0; x < size.X; x++) {
-                if (items[x][y] == nullptr) {
-                    items[x][y] = item;
+                if (itemSlots[x][y].item == nullptr) {
+                    itemSlots[x][y].item = item;
                     return nullptr;
-                } else if (items[x][y] -> stack && item -> stack) {
-                    if (items[x][y] -> type == item -> type) {
-                        items[x][y] -> count += item -> count;
+                } else if (itemSlots[x][y].item -> stack && item -> stack) {
+                    if (itemSlots[x][y].item -> type == item -> type) {
+                        itemSlots[x][y].item -> count += item -> count;
                         delete item;
                         return nullptr;
                     }
