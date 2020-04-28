@@ -22,7 +22,7 @@ void TextureManager::Init() {
     loadTileset(WATER,"assets/water.png");
     loadTileset(STONE,"assets/stone.png");
     
-    itemSheet = loadTexture("assets/test.png");
+    itemSheet = loadTexture("assets/itemSheet.png");
     inventoryTexture = loadTexture("assets/inventory.png");
     hotbarTexture = loadTexture("assets/hotbar.png");
     LOG("TextureManager initialized");

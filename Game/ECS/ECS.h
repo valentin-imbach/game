@@ -100,20 +100,21 @@ public:
 };
 
 class EntityManager {
-private:
-    vup(Entity) entities;
 public:
+    v(Entity*) entities;
+    vv(Entity*) gridEntities = vv(Entity*)(100,v(Entity*)(100,nullptr));
+
     void update() {
-        for (auto& e : entities) {e -> update(); }
+        for (Entity* e : entities) {e -> update(); }
     }
     void render() {
-        for (auto& e : entities) {e -> render(); }
+        for (Entity* e : entities) {e -> render(); }
     }
     void debugRender() {
-        for (auto& e : entities) {e -> debugRender(); }
+        for (Entity* e : entities) {e -> debugRender(); }
     }
     bool handleEvent(SDL_Event event) {
-        for (auto& e : entities) {
+        for (Entity* e : entities) {
             if (e -> handleEvent(event)) {
                 return true;
             }
@@ -122,12 +123,18 @@ public:
     }
     void refresh() {
         entities.erase(std::remove_if(std::begin(entities), std::end(entities),
-        [](const std::unique_ptr<Entity> &mEntity) { return !mEntity -> active; }), std::end(entities));
+        [](const Entity* e) { return !(e -> active); }), std::end(entities));
     }
     Entity* addEntity() {
         Entity* e = new Entity();
-        std::unique_ptr<Entity> uPtr{e};
-        entities.emplace_back(std::move(uPtr));
+        entities.push_back(e);
+        return e;
+    }
+    
+    Entity* addGridEntity(int x, int y) {
+        Entity* e = new Entity();
+        entities.push_back(e);
+        gridEntities[x][y] = e;
         return e;
     }
 };

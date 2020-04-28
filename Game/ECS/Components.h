@@ -18,4 +18,5 @@
 #include "GridComponent.h"
 #include "InventoryComponent.h"
 #include "PlayerGuiComponent.h"
-
+#include "ResourceComponent.h"
+#include "TableComponent.h"

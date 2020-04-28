@@ -32,6 +32,12 @@ template<typename T> struct pair {
         return {X+other.X,Y+other.Y};
     }
     
+    pair<T> operator+=(const pair<T> other) {
+        X += other.X;
+        Y += other.Y;
+        return {X,Y};
+    }
+    
     pair<T> operator-(const pair<T> other) const {
         return {X-other.X,Y-other.Y};
     }
@@ -44,8 +50,12 @@ template<typename T> struct pair {
         return {X*other,Y*other};
     }
     
-    pair<T> operator/(const int other) const {
+    template <typename TT> pair<T> operator/(const TT other) const {
         return {X/other,Y/other};
+    }
+    
+    operator bool() const {
+        return (X != 0 && Y != 0);
     }
     
     bool operator<(const pair<T> other) const {

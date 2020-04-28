@@ -55,6 +55,9 @@
 		0416889823343ACC0060DBDA /* TextureManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TextureManager.hpp; sourceTree = "<group>"; };
 		0416889A23344F9A0060DBDA /* TextManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextManager.cpp; sourceTree = "<group>"; };
 		0416889B23344F9A0060DBDA /* TextManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TextManager.hpp; sourceTree = "<group>"; };
+		041720D8245838110070F152 /* ResourceComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceComponent.h; sourceTree = "<group>"; };
+		041720D9245875960070F152 /* TableComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableComponent.h; sourceTree = "<group>"; };
+		041720DA245877140070F152 /* TableGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableGui.h; sourceTree = "<group>"; };
 		041E0BA4243B4919007435A3 /* GridComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridComponent.h; sourceTree = "<group>"; };
 		0439263C244492750057C83C /* Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
 		04795BB62334F5F8005C6FDE /* Map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
@@ -116,6 +119,8 @@
 				040CABA7242F964A009A2728 /* CollisionComponent.h */,
 				041E0BA4243B4919007435A3 /* GridComponent.h */,
 				04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */,
+				041720D8245838110070F152 /* ResourceComponent.h */,
+				041720D9245875960070F152 /* TableComponent.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";
@@ -201,6 +206,7 @@
 				04CBB518245238D300A8BC69 /* Guis.h */,
 				04CBB517245235D900A8BC69 /* InventoryGui.h */,
 				04CBB51924544F1800A8BC69 /* HotbarGui.h */,
+				041720DA245877140070F152 /* TableGui.h */,
 			);
 			path = GuiSystem;
 			sourceTree = "<group>";

@@ -18,6 +18,7 @@ private:
     PositionComponent *positionComponent;
     DirectionComponent *directionComponent;
     InventoryComponent *inventoryComponent;
+    pair<float> oldPos;
     
 public:
     
@@ -35,23 +36,22 @@ public:
         bool walk = false;
         int dir = -1;
         
-        float xoff = 0;
-        float yoff = 0;
+        pair<float> offset;
         
         float speed = 0.07;
         
         if (Window::keys[SDL_SCANCODE_W]) {
-            yoff = -speed;
+            offset.Y = -speed;
             dir = NORTH;
             walk = true;
         } else if (Window::keys[SDL_SCANCODE_S]) {
-            yoff = speed;
+            offset.Y = speed;
             dir = SOUTH;
             walk = true;
         }
         
         if (Window::keys[SDL_SCANCODE_A]) {
-            xoff = -speed;
+            offset.X = -speed;
             if (dir == -1) {
                 dir = WEST;
             } else if (dir == NORTH) {
@@ -61,7 +61,7 @@ public:
             }
             walk = true;
         } else if (Window::keys[SDL_SCANCODE_D]) {
-            xoff = speed;
+            offset.X = speed;
             if (dir == -1) {
                 dir = EAST;
             } else if (dir == NORTH) {
@@ -72,13 +72,13 @@ public:
             walk = true;
         }
         
-        if (xoff != 0 && yoff != 0) {
-            xoff /= sqrt(2);
-            yoff /= sqrt(2);
+        if (offset.X != 0 && offset.Y != 0) {
+            offset.X /= sqrt(2);
+            offset.Y /= sqrt(2);
         }
         
-        positionComponent -> pos.X += xoff;
-        positionComponent -> pos.Y += yoff;
+        oldPos = positionComponent -> pos;
+        positionComponent -> pos += offset;
         
         if (dir != -1) {
             directionComponent -> direction = (Direction)dir;
@@ -89,6 +89,10 @@ public:
         } else {
             ticks = 0;
         }
+    }
+    
+    void setBack() {
+        positionComponent -> pos = oldPos;
     }
     
     bool handleEvent(SDL_Event event) override {

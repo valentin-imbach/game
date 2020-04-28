@@ -18,9 +18,14 @@ struct Item {
         //PRINT("Item constructed");
     }
     bool stack = false;
-    int type;
-    int count;
-    virtual void render(int x, int y, int scale) {};
+    int type = 0;
+    int count = 1;
+    void render(int x, int y, int scale) {
+        TextureManager::drawTexture(TextureManager::itemSheet, TILE_SIZE*(type % 3), TILE_SIZE*(type / 3), TILE_SIZE, TILE_SIZE, x, y, scale, scale);
+        if (count != 1) {
+            TextManager::drawText(std::to_string(count), x+3*scale/4, y+scale/2);
+        }
+    }
     ~Item() {
         //PRINT("Item destructed");
     }
@@ -32,11 +37,12 @@ struct ItemStack : public Item {
         count = c;
         stack = true;
     }
-    void render(int x, int y, int scale) override {
-        TextureManager::drawTexture(TextureManager::itemSheet, TILE_SIZE*type, 0, TILE_SIZE, TILE_SIZE, x, y, scale, scale);
-        if (count != 1) {
-            TextManager::drawText(std::to_string(count), x+3*scale/4, y+scale/2);
-        }
+};
+
+struct Tool : public Item {
+    int level = 0;
+    Tool(int t) {
+        type = t;
     }
 };
 

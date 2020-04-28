@@ -27,6 +27,12 @@ public:
         src.x = src.y = 0;
         src.w = src.h = 16;
     }
+    SpriteComponent(const char* path, int x, int y) {
+        texture = TextureManager::loadTexture(path);
+        src.x = x * 16;
+        src.y = y * 16;
+        src.w = src.h = 16;
+    }
     
     void init() override {
         positionComponent = &entity -> addComponent<PositionComponent>();

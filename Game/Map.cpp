@@ -21,7 +21,6 @@ Map::Map(const char* path) {
     file >> size.Y;
     
     tiles = vv(Tile)(size.X,v(Tile)(size.Y));
-    entities = vv(Entity*)(size.X,v(Entity*)(size.Y,nullptr));
     
     for (int y = 0; y < size.Y; y++) {
         std::string s;
@@ -55,7 +54,6 @@ Map::Map(const char* path) {
 Map::Map(int w, int h) {
     size = {w,h};
     tiles = vv(Tile)(w,v(Tile)(h));
-    entities = vv(Entity*)(w,v(Entity*)(h,nullptr));
     generate();
 }
 

@@ -12,3 +12,4 @@
 
 #include "InventoryGui.h"
 #include "HotbarGui.h"
+#include "TableGui.h"

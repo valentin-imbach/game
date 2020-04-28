@@ -23,6 +23,6 @@ public:
     
     void init() override {
         positionComponent = &entity -> addComponent<PositionComponent>(x,y);
-        collisionComponent = &entity -> getComponent<CollisionComponent>();
+        collisionComponent = &entity -> addComponent<CollisionComponent>();
     }
 };
