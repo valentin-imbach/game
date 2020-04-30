@@ -10,12 +10,19 @@
 
 #include "LayerSystem/Layers.h"
 
+enum GameState {
+    RUNNING,
+    PAUSED,
+    LOADING
+};
+
 class Game {
 public:
     Game();
     void render();
     void update();
     void handleEvents();
+    GameState state;
 private:
     TileLayer tileLayer;
     EntityLayer entityLayer;

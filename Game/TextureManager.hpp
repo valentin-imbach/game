@@ -9,7 +9,7 @@
 #pragma once
 #include "tools.h"
 
-#define TILE_SIZE 16
+#define BIT 16
 
 struct Sprite {
     SDL_Texture* texture;
@@ -34,7 +34,7 @@ enum TileID {
 
 struct TextureManager {
     static void Init();
-    static std::vector<SDL_Texture*> tilesets;
+    static v(SDL_Texture*) tilesets;
     static SDL_Texture* itemSheet;
     static SDL_Texture* inventoryTexture;
     static SDL_Texture* hotbarTexture;

@@ -14,4 +14,7 @@ public:
     ItemSlot a;
     ItemSlot b;
     ItemSlot c;
+    bool handleEvent(SDL_Event) override {
+        return false;
+    }
 };

@@ -58,6 +58,7 @@
 		041720D8245838110070F152 /* ResourceComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceComponent.h; sourceTree = "<group>"; };
 		041720D9245875960070F152 /* TableComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableComponent.h; sourceTree = "<group>"; };
 		041720DA245877140070F152 /* TableGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableGui.h; sourceTree = "<group>"; };
+		041720DB245A14F20070F152 /* ItemComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ItemComponent.h; sourceTree = "<group>"; };
 		041E0BA4243B4919007435A3 /* GridComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridComponent.h; sourceTree = "<group>"; };
 		0439263C244492750057C83C /* Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
 		04795BB62334F5F8005C6FDE /* Map.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
@@ -121,6 +122,7 @@
 				04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */,
 				041720D8245838110070F152 /* ResourceComponent.h */,
 				041720D9245875960070F152 /* TableComponent.h */,
+				041720DB245A14F20070F152 /* ItemComponent.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";

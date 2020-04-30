@@ -20,3 +20,4 @@
 #include "PlayerGuiComponent.h"
 #include "ResourceComponent.h"
 #include "TableComponent.h"
+#include "ItemComponent.h"

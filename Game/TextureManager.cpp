@@ -10,7 +10,7 @@
 #include <SDL2_image/SDL_image.h>
 #include "Window.hpp"
 
-auto TextureManager::tilesets = std::vector<SDL_Texture*>(maxTileID,nullptr);
+v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
 SDL_Texture* TextureManager::itemSheet = nullptr;
 SDL_Texture* TextureManager::inventoryTexture = nullptr;
 SDL_Texture* TextureManager::hotbarTexture = nullptr;
@@ -25,6 +25,7 @@ void TextureManager::Init() {
     itemSheet = loadTexture("assets/itemSheet.png");
     inventoryTexture = loadTexture("assets/inventory.png");
     hotbarTexture = loadTexture("assets/hotbar.png");
+    
     LOG("TextureManager initialized");
 }
 

@@ -53,6 +53,18 @@ public:
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_MOUSEWHEEL) {
             setSelection((selected - sign(event.wheel.y) + inventory -> size.X) % (inventory -> size.X));
+            return true;
+        }
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.scancode == SDL_SCANCODE_1) { selected = 0; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_2) { selected = 1; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_3) { selected = 2; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_4) { selected = 3; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_5) { selected = 4; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_6) { selected = 5; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_7) { selected = 6; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_8) { selected = 7; return true; }
+            if (event.key.keysym.scancode == SDL_SCANCODE_9) { selected = 8; return true; }
         }
         return false;
     }

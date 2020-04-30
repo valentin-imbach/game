@@ -15,7 +15,8 @@ private:
     SDL_Texture* texture;
 public:
     TableGui(TableComponent* tableComponent) {
-        position = Window::size/2;
+        position.X = Window::size.X/2;
+        position.Y = 170;
         texture = TextureManager::loadTexture("assets/tableGui.png");
         LOG("Table Gui constructed");
     }
@@ -28,6 +29,6 @@ public:
                 alive = false;
             }
         }
-        return true;
+        return false;
     }
 };

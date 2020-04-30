@@ -17,15 +17,15 @@ int Camera::mode = 0;
 void Camera::placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pair<float> p) {
     int dx = ZOOM*(p.X-pos.X)+Window::size.X/2-ZOOM/2;
     int dy = ZOOM*(p.Y-pos.Y)+Window::size.Y/2-ZOOM/2;
-    TextureManager::drawTexture(tex,TILE_SIZE*x,TILE_SIZE*y,TILE_SIZE*w,TILE_SIZE*h,dx,dy,ZOOM*w,ZOOM*h);
+    TextureManager::drawTexture(tex,BIT*x,BIT*y,BIT*w,BIT*h,dx,dy,ZOOM*w,ZOOM*h);
 }
 
 void Camera::renderTexture(SDL_Texture *tex, SDL_Rect src, float x, float y, float offset) {
     float w = float(src.w);
     float h = float(src.h);
-    float dx = ZOOM*(x-pos.X)+Window::size.X/2-w/2*ZOOM/TILE_SIZE;
-    float dy = ZOOM*(y-pos.Y)+Window::size.Y/2-h/2*ZOOM/TILE_SIZE-ZOOM*offset/2;
-    TextureManager::drawTexture(tex,src.x,src.y,src.w,src.h,dx,dy,ZOOM*src.w/TILE_SIZE,ZOOM*src.h/TILE_SIZE);
+    float dx = ZOOM*(x-pos.X)+Window::size.X/2-w/2*ZOOM/BIT;
+    float dy = ZOOM*(y-pos.Y)+Window::size.Y/2-h/2*ZOOM/BIT-ZOOM*offset/2;
+    TextureManager::drawTexture(tex,src.x,src.y,src.w,src.h,dx,dy,ZOOM*src.w/BIT,ZOOM*src.h/BIT);
 }
 
 void Camera::renderRect(float x, float y, float w, float h) {

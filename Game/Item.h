@@ -21,7 +21,7 @@ struct Item {
     int type = 0;
     int count = 1;
     void render(int x, int y, int scale) {
-        TextureManager::drawTexture(TextureManager::itemSheet, TILE_SIZE*(type % 3), TILE_SIZE*(type / 3), TILE_SIZE, TILE_SIZE, x, y, scale, scale);
+        TextureManager::drawTexture(TextureManager::itemSheet, BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale);
         if (count != 1) {
             TextManager::drawText(std::to_string(count), x+3*scale/4, y+scale/2);
         }

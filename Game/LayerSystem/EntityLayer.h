@@ -47,6 +47,9 @@ public:
         table -> addComponent<SpriteComponent>("assets/table.png");
         table -> addComponent<TableComponent>();
         
+        Entity* item = entityManager.addEntity();
+        item -> addComponent<ItemComponent>(47,47,new ItemStack(8,1));
+        
         
         LOG("Entity Layer constructed");
     }
@@ -69,7 +72,7 @@ public:
             return a -> getComponent<PositionComponent>().pos.Y < b -> getComponent<PositionComponent>().pos.Y;
         });
         entityManager.render();
-        //entityManager.debugRender();
+        entityManager.debugRender();
     }
     
     bool handleEvent(SDL_Event event) override {
@@ -90,6 +93,7 @@ public:
                 }
             }
             if (entity -> hasComponent<TableComponent>()) {
+                GuiManager::addGui(new InventoryGui(&(player -> getComponent<InventoryComponent>()),Window::size.X/2,Window::size.Y/2));
                 GuiManager::addGui(new TableGui(&(entity -> getComponent<TableComponent>())));
             }
             LOG("Entity",pos,"clicked with item type",t);
