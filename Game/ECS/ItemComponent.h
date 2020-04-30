@@ -12,24 +12,23 @@
 
 class ItemComponent : public Component {
 private:
-    float x, y;
     Item* item;
+    pair<float> pos;
     PositionComponent *positionComponent;
     CollisionComponent *collisionComponent;
 public:
     ItemComponent(float x, float y, Item* item) {
-        this -> x = x;
-        this -> y = y;
+        pos = {x,y};
         this -> item = item;
     }
     
     void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>(x,y);
+        positionComponent = &entity -> addComponent<PositionComponent>(pos.X,pos.Y);
         collisionComponent = &entity -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
     }
     
     void render() override {
-        pair<float> pos = Camera::gtos({x,y});
+        pair<float> pos = Camera::gtos(positionComponent -> pos);
         item -> render(pos.X-16,pos.Y-16,32);
     }
     

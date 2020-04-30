@@ -30,7 +30,6 @@ public:
         player -> getComponent<InventoryComponent>().itemSlots[0][4].item = new ItemStack(7,5);
         player -> getComponent<InventoryComponent>().itemSlots[8][0].item = new Tool(1);
         
-        player -> addComponent<SpriteComponent>();
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);

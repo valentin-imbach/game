@@ -15,23 +15,17 @@ class SpriteComponent : public Component {
 public:
     PositionComponent *positionComponent;
     SDL_Texture *texture = nullptr;
-    SDL_Rect src;
+    int sx, sy, sw, sh;
+    pair<float> size;
     float offset = 0;
 
-    SpriteComponent() {
-        src.x = src.y = 0;
-        src.w = src.h = 16;
-    }
-    SpriteComponent(const char* path) {
+    SpriteComponent(const char* path, int x = 0, int y = 0, int w = 1, int h = 1) {
         texture = TextureManager::loadTexture(path);
-        src.x = src.y = 0;
-        src.w = src.h = 16;
-    }
-    SpriteComponent(const char* path, int x, int y) {
-        texture = TextureManager::loadTexture(path);
-        src.x = x * 16;
-        src.y = y * 16;
-        src.w = src.h = 16;
+        size = pair<float>(w,h);
+        sx = x;
+        sy = y;
+        sw = w;
+        sh = h;
     }
     
     void init() override {
@@ -42,7 +36,7 @@ public:
         if (texture == nullptr) {
             texture = TextureManager::loadTexture("assets/default.png");
         }
-        Camera::renderTexture(texture, src, positionComponent -> pos.X, positionComponent -> pos.Y, offset);
+        Camera::drawTexture(texture, sx, sy, sw, sh, positionComponent -> pos, size, offset, true);
     }
     
     ~SpriteComponent() override {

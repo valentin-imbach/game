@@ -31,8 +31,8 @@ public:
 private:
     void keyPressed(SDL_KeyboardEvent& k);
     void mousePressed(SDL_MouseButtonEvent& b);
-    Uint32 lastFrame;
     int limitFrameRate(int fps);
+    Uint32 lastFrame;
     void handleEvents();
     SDL_Event event;
     SDL_Window* win;

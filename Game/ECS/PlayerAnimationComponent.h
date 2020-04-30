@@ -18,20 +18,16 @@ public:
     
     void init() override {
         
-        spriteComponent = &entity -> getComponent<SpriteComponent>();
+        spriteComponent = &entity -> addComponent<SpriteComponent>("assets/character2.png",0,0,1,2);
         directionComponent = &entity -> getComponent<DirectionComponent>();
         playerInputComponent = &entity -> getComponent<PlayerInputComponent>();
-        
-        spriteComponent -> texture = TextureManager::loadTexture("assets/character2.png");
-        spriteComponent -> src.w = 16;
-        spriteComponent -> src.h = 32;
         spriteComponent -> offset = 1;
     }
     
     void update() override {
         int frame = (playerInputComponent -> ticks + 3)/4 ;
-        spriteComponent -> src.x = (directionComponent -> direction) * 16;
-        spriteComponent -> src.y = (frame % 6) * 32;
+        spriteComponent -> sx = directionComponent -> direction;
+        spriteComponent -> sy = (frame % 6) * 2;
     }
     
 };

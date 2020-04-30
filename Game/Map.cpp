@@ -110,15 +110,15 @@ void Map::updateStyle() {
                     neig[i] = tiles[x][y].tileID;
                 }
             }
-            tiles[x][y].textures.clear();
-            tiles[x][y].textures.push_back({tiles[x][y].tileID,{1,1}});
+            tiles[x][y].sprites.clear();
+            tiles[x][y].sprites.push_back(Sprite(tiles[x][y].tileID,{1,1}));
             
             for (int d = 0; d < 8; d += 2) {
                 int l = neig[(d+2) % 8];
                 int r = neig[(d+6) % 8];
                 if (neig[d] < tiles[x][y].tileID && l != neig[d] && r != neig[d]) {
                     pair<int> p = {1-dirs2[d].X,1-dirs2[d].Y};
-                    tiles[x][y].textures.emplace_back(neig[d],p);
+                    tiles[x][y].sprites.push_back(Sprite(neig[d],p));
                 }
             }
             
@@ -127,15 +127,15 @@ void Map::updateStyle() {
                 int r = neig[(d+7) % 8];
                 if (neig[d] < tiles[x][y].tileID && l != neig[d] && r != neig[d]) {
                     pair<int> p = {1-dirs2[d].X,1-dirs2[d].Y};
-                    tiles[x][y].textures.emplace_back(neig[d],p);
+                    tiles[x][y].sprites.push_back(Sprite(neig[d],p));
                 }
                 if (l < tiles[x][y].tileID && l == r) {
                     pair<int> p = {1-dirs2[d].X,4-dirs2[d].Y};
-                    tiles[x][y].textures.emplace_back(l,p);
+                    tiles[x][y].sprites.push_back(Sprite(l,p));
                 }
             }
             
-            std::sort(tiles[x][y].textures.rbegin(), tiles[x][y].textures.rend());
+            std::sort(tiles[x][y].sprites.begin(), tiles[x][y].sprites.end(),[](Sprite& a, Sprite&b){ return a.tileID > b.tileID; });
         }
     }
 }

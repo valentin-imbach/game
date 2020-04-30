@@ -17,9 +17,6 @@ public:
     DebugLayer() {
         LOG("Debug Layer constructed");
     }
-    void update() override {
-        
-    }
     void render() override {
         TextManager::drawText(std::to_string(Window::FPS).c_str(), 20, 10);
         Camera::render();

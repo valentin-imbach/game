@@ -17,32 +17,24 @@ public:
     Collider collider;
     PositionComponent *positionComponent;
     
-    float offsetX;
-    float offsetY;
+    pair<float> offset;
     
-    CollisionComponent() {
-        offsetX = 0.5;
-        offsetY = 0.5;
-    }
-    
-    CollisionComponent(float e, float n, float w, float s) {
-        collider.w = e+w;
-        collider.h = n+s;
-        offsetX = w;
-        offsetY = n;
+    CollisionComponent(float e = 0.5, float n = 0.5, float w = 0.5, float s = 0.5) {
+        collider.size = {e+w,n+s};
+        offset = {w,n};
     }
     
     void init() override {
         positionComponent = &entity -> getComponent<PositionComponent>();
+        update();
     }
     
     void update() override {
-        collider.x = positionComponent -> pos.X - offsetX;
-        collider.y = positionComponent -> pos.Y - offsetY;
+        collider.position = positionComponent -> pos - offset;
     }
     
     void debugRender() override {
-        Camera::renderRect(collider.x,collider.y,collider.w,collider.h);
+        Camera::drawRect(collider.position,collider.size);
     }
     
 };

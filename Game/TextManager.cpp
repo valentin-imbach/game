@@ -21,10 +21,8 @@ void TextManager::drawText(std::string text, int x, int y) {
     if (!font) { ERROR("No font loaded"); return; }
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, textSurface);
-    int text_width = textSurface -> w;
-    int text_height = textSurface -> h;
     SDL_FreeSurface(textSurface);
-    SDL_Rect renderQuad = {x, y, 2*text_width, 2*text_height};
+    SDL_Rect renderQuad = {x, y, 2*(textSurface -> w), 2*(textSurface -> h)};
     SDL_RenderCopy(Window::renderer, texture, NULL, &renderQuad);
     SDL_DestroyTexture(texture);
 }

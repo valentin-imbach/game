@@ -15,14 +15,11 @@
 
 class Camera {
 public:
-    static void placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pair<float> pos);
-    static void renderTexture(SDL_Texture* tex, SDL_Rect src, float x, float y, float offset);
-    static void renderRect(float x, float y, float w, float h);
+    static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset = 0, bool contre = false);
+    static void drawRect(pair<float> pos, pair<float> size);
     static void update(pair<float> p);
     static void render();
-    static pair<float> pos;
-    static int mode;
-    static int speed;
+    static pair<float> position;
     static void handleEvents();
     static pair<float> stog(pair<float> p);
     static pair<float> gtos(pair<float> p);

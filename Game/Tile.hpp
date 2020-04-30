@@ -17,5 +17,5 @@ struct Tile {
     void update();
     TileID tileID;
     pair<int> pos;
-    std::vector<std::pair<int,pair<int>>> textures;
+    v(Sprite) sprites;
 };

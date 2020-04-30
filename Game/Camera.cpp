@@ -10,46 +10,40 @@
 #include "TextureManager.hpp"
 #include "Window.hpp"
 
-pair<float> Camera::pos = {0,0};
-int Camera::speed = 6;
-int Camera::mode = 0;
+pair<float> Camera::position = {0,0};
 
-void Camera::placeTexture(SDL_Texture* tex, int x, int y, int w, int h, pair<float> p) {
-    int dx = ZOOM*(p.X-pos.X)+Window::size.X/2-ZOOM/2;
-    int dy = ZOOM*(p.Y-pos.Y)+Window::size.Y/2-ZOOM/2;
-    TextureManager::drawTexture(tex,BIT*x,BIT*y,BIT*w,BIT*h,dx,dy,ZOOM*w,ZOOM*h);
+void Camera::drawTexture(SDL_Texture *tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset, bool centre) {
+    float dx = ZOOM*(dest.X-position.X)+Window::size.X/2;
+    float dy = ZOOM*(dest.Y-position.Y)+Window::size.Y/2-ZOOM*offset/2;
+    if (centre) {
+        dx -= ZOOM*size.X/2;
+        dy -= ZOOM*size.Y/2;
+    }
+    TextureManager::drawTexture(tex, BIT*sx, BIT*sy, BIT*sw, BIT*sh, dx, dy, ZOOM*size.X, ZOOM*size.Y);
 }
 
-void Camera::renderTexture(SDL_Texture *tex, SDL_Rect src, float x, float y, float offset) {
-    float w = float(src.w);
-    float h = float(src.h);
-    float dx = ZOOM*(x-pos.X)+Window::size.X/2-w/2*ZOOM/BIT;
-    float dy = ZOOM*(y-pos.Y)+Window::size.Y/2-h/2*ZOOM/BIT-ZOOM*offset/2;
-    TextureManager::drawTexture(tex,src.x,src.y,src.w,src.h,dx,dy,ZOOM*src.w/BIT,ZOOM*src.h/BIT);
-}
-
-void Camera::renderRect(float x, float y, float w, float h) {
+void Camera::drawRect(pair<float> pos, pair<float> size) {
     SDL_Rect rect;
-    rect.x = ZOOM*(x-pos.X)+Window::size.X/2;
-    rect.y = ZOOM*(y-pos.Y)+Window::size.Y/2;
-    rect.w = w*ZOOM;
-    rect.h = h*ZOOM;
+    rect.x = ZOOM*(pos.X-position.X)+Window::size.X/2;
+    rect.y = ZOOM*(pos.Y-position.Y)+Window::size.Y/2;
+    rect.w = size.X*ZOOM;
+    rect.h = size.Y*ZOOM;
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 
 pair<float> Camera::gtos(pair<float> p) {
-    return {ZOOM*(p.X-pos.X)+Window::size.X/2,ZOOM*(p.Y-pos.Y)+Window::size.Y/2};
+    return {ZOOM*(p.X-position.X)+Window::size.X/2,ZOOM*(p.Y-position.Y)+Window::size.Y/2};
 }
 
 pair<float> Camera::stog(pair<float> p) {
-    return {(p.X-Window::size.X/2)/ZOOM+pos.X,(p.Y-Window::size.Y/2)/ZOOM+pos.Y};
+    return {(p.X-Window::size.X/2)/ZOOM+position.X,(p.Y-Window::size.Y/2)/ZOOM+position.Y};
 }
 
 void Camera::update(pair<float> p) {
-    pos = p;
+    position = p;
 }
 
 void Camera::render() {
-    pair<float> p = stog(Window::mousePos);
-    renderRect(round(p.X)-0.5, round(p.Y)-0.5, 1, 1);
+    pair<float> pos = stog(Window::mousePos);
+    drawRect(pair<float>(round(pos.X)-0.5,round(pos.Y)-0.5), {1, 1});
 }

@@ -12,11 +12,11 @@
 
 class TextManager {
 public:
-    static void Init();
-    static void drawText(std::string text, int x, int y);
     static TTF_Font* font;
     static SDL_Color color;
+    
+    static void Init();
+    static void drawText(std::string text, int x, int y);
     static void loadFont(const char* path, int size);
-    inline static void setColor(Uint8 r, Uint8 g, Uint8 b) { color = {r,g,b}; }
 };
 
