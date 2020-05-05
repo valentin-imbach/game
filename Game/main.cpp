@@ -9,20 +9,18 @@
 #include "Window.hpp"
 #include "Game.hpp"
 
-#include "GuiSystem/InventoryGui.h"
-
 int main() {
     
     std::srand(1);
     
     Window window("Game",1224,840);
-    Game game;
+    Game::Init();
     
     while (window.isRunning()) {
         window.update();
-        game.handleEvents();
-        game.update();
-        game.render();
+        Game::handleEvents();
+        Game::update();
+        Game::render();
     }
     
     return 0;

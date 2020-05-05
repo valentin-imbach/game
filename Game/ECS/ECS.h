@@ -9,6 +9,7 @@
 #pragma once
 #include "tools.h"
 
+class EntityManager;
 class Entity;
 class Component;
 
@@ -46,11 +47,14 @@ private:
     vup(Component) components;
     ComponentArray componentArray;
     ComponentBitSet componentBitSet;
-    //Map* map;
     
 public:
     bool active = true;
+    EntityManager* manager;
     
+    Entity(EntityManager* m) {
+        manager = m;
+    }
     void update() {
         for (auto& c : components) { c -> update(); }
     }
@@ -126,15 +130,15 @@ public:
         [](const Entity* e) { return !(e -> active); }), std::end(entities));
     }
     Entity* addEntity() {
-        Entity* e = new Entity();
+        Entity* e = new Entity(this);
         entities.push_back(e);
         return e;
     }
     
-    Entity* addGridEntity(int x, int y) {
-        Entity* e = new Entity();
+    Entity* addGridEntity(pair<int> pos) {
+        Entity* e = new Entity(this);
         entities.push_back(e);
-        gridEntities[x][y] = e;
+        gridEntities[pos.X][pos.Y] = e;
         return e;
     }
 };

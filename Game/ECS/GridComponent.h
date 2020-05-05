@@ -12,17 +12,16 @@
 
 class GridComponent : public Component {
 public:
-    int x, y;
+    pair<int> position;
     PositionComponent *positionComponent;
     CollisionComponent *collisionComponent;
     
-    GridComponent(int x, int y) {
-        this -> x = x;
-        this -> y = y;
+    GridComponent(pair<int> pos) {
+        position = pos;
     }
     
     void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>(x,y);
+        positionComponent = &entity -> addComponent<PositionComponent>(position);
         collisionComponent = &entity -> addComponent<CollisionComponent>();
     }
 };

@@ -12,12 +12,14 @@
 #include "PositionComponent.h"
 #include "SpriteComponent.h"
 #include "DirectionComponent.h"
-#include "PlayerInputComponent.h"
-#include "PlayerAnimationComponent.h"
+
 #include "CollisionComponent.h"
 #include "GridComponent.h"
 #include "InventoryComponent.h"
-#include "PlayerGuiComponent.h"
 #include "ResourceComponent.h"
 #include "TableComponent.h"
 #include "ItemComponent.h"
+
+#include "PlayerGuiComponent.h"
+#include "PlayerInputComponent.h"
+#include "PlayerAnimationComponent.h"

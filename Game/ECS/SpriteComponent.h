@@ -29,14 +29,14 @@ public:
     }
     
     void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>();
+        positionComponent = &entity -> getComponent<PositionComponent>();
     }
 
     void render() override {
         if (texture == nullptr) {
             texture = TextureManager::loadTexture("assets/default.png");
         }
-        Camera::drawTexture(texture, sx, sy, sw, sh, positionComponent -> pos, size, offset, true);
+        Camera::drawTexture(texture, sx, sy, sw, sh, positionComponent -> position, size, offset, true);
     }
     
     ~SpriteComponent() override {

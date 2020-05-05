@@ -11,6 +11,7 @@
 #include "Window.hpp"
 
 #include "../GuiSystem/Guis.h"
+#include "Game.hpp"
 
 class PlayerInputComponent : public Component {
     
@@ -18,6 +19,7 @@ private:
     PositionComponent *positionComponent;
     DirectionComponent *directionComponent;
     InventoryComponent *inventoryComponent;
+    PlayerGuiComponent *playerGuiComponent;
     pair<float> oldPos;
     
 public:
@@ -26,9 +28,10 @@ public:
     bool walking = false;
     
     void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>();
-        directionComponent = &entity -> addComponent<DirectionComponent>();
+        positionComponent = &entity -> getComponent<PositionComponent>();
+        directionComponent = &entity -> getComponent<DirectionComponent>();
         inventoryComponent = &entity -> getComponent<InventoryComponent>();
+        playerGuiComponent = &entity -> getComponent<PlayerGuiComponent>();
     }
     
     void update() override {
@@ -77,8 +80,8 @@ public:
             offset.Y /= sqrt(2);
         }
         
-        oldPos = positionComponent -> pos;
-        positionComponent -> pos += offset;
+        oldPos = positionComponent -> position;
+        positionComponent -> position += offset;
         
         if (dir != -1) {
             directionComponent -> direction = (Direction)dir;
@@ -92,7 +95,7 @@ public:
     }
     
     void setBack() {
-        positionComponent -> pos = oldPos;
+        positionComponent -> position = oldPos;
     }
     
     bool handleEvent(SDL_Event event) override {
@@ -101,8 +104,14 @@ public:
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
                 GuiManager::addGui(new InventoryGui(inventoryComponent,Window::size.X/2 ,Window::size.Y/2));
                 return true;
-            } else if (event.key.keysym.scancode == SDL_SCANCODE_F) {
-                
+            } else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
+                int s = entity -> getComponent<PlayerGuiComponent>().hotbarGui -> selected;
+                Item* item = inventoryComponent -> itemSlots[s][0].item;
+                if (item != nullptr) {
+                    Entity* e = entity -> manager -> addEntity();
+                    e -> addComponent<ItemComponent>((positionComponent -> position) + dirs2[directionComponent -> direction],item);
+                    inventoryComponent -> itemSlots[s][0].item = nullptr;
+                }
             }
         }
         

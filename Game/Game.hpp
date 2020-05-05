@@ -7,25 +7,24 @@
 //
 
 #pragma once
-
 #include "LayerSystem/Layers.h"
 
 enum GameState {
     RUNNING,
     PAUSED,
-    LOADING
+    LOADING,
+    MENU
 };
 
 class Game {
 public:
-    Game();
-    void render();
-    void update();
-    void handleEvents();
-    GameState state;
-private:
-    TileLayer tileLayer;
-    EntityLayer entityLayer;
-    DebugLayer debugLayer;
-    GuiLayer guiLayer;
+    static void Init();
+    static void render();
+    static void update();
+    static void handleEvents();
+    static GameState state;
+    static TileLayer* tileLayer;
+    static EntityLayer* entityLayer;
+    static DebugLayer* debugLayer;
+    static GuiLayer* guiLayer;
 };

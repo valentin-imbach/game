@@ -8,18 +8,21 @@
 
 #include "Game.hpp"
 #include "Camera.hpp"
+#include "LayerSystem/Layers.h"
 
-Game::Game() {
-    
-    state = LOADING;
-    
-    LayerManager::addLayer(&tileLayer);
-    LayerManager::addLayer(&entityLayer);
-    LayerManager::addLayer(&debugLayer);
-    LayerManager::addLayer(&guiLayer);
-    
-    LOG("Game initialized");
+GameState Game::state = LOADING;
+TileLayer* Game::tileLayer = nullptr;
+EntityLayer* Game::entityLayer = nullptr;
+DebugLayer* Game::debugLayer = nullptr;
+GuiLayer* Game::guiLayer = nullptr;
+
+void Game::Init() {
+    LayerManager::addLayer(tileLayer = new TileLayer());
+    LayerManager::addLayer(entityLayer = new EntityLayer());
+    LayerManager::addLayer(debugLayer = new DebugLayer());
+    LayerManager::addLayer(guiLayer = new GuiLayer());
     state = RUNNING;
+    LOG("Game initialized");
 }
 
 void Game::handleEvents() {
@@ -45,7 +48,7 @@ void Game::handleEvents() {
 void Game::update() {
     if (state == RUNNING) {
         LayerManager::update();
-        Camera::update(entityLayer.player -> getComponent<PositionComponent>().pos);
+        Camera::update(entityLayer -> player -> getComponent<PositionComponent>().position);
     }
 }
 

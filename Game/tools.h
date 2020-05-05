@@ -35,6 +35,8 @@
 const pair<int> dirs[4] = {{1,0},{0,-1},{-1,0},{0,1}};
 const pair<int> dirs2[8] = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 
+enum Direction {EAST,NEAST,NORTH,NWEST,WEST,SWEST,SOUTH,SEAST};
+
 struct Timer {
     long double t;
     std::string name;
