@@ -17,14 +17,11 @@ private:
     CollisionComponent *collisionComponent;
 public:
     Item* item;
-    ItemComponent(pair<float> pos, Item* item) {
+    ItemComponent(Entity* entity, pair<float> pos, Item* item) {
         position = pos;
         this -> item = item;
-    }
-    
-    void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>(position);
-        collisionComponent = &entity -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+        positionComponent = entity -> addComponent<PositionComponent>(position);
+        collisionComponent = entity -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
     }
     
     void render() override {

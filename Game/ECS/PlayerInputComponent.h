@@ -27,11 +27,11 @@ public:
     int ticks = 0;
     bool walking = false;
     
-    void init() override {
-        positionComponent = &entity -> getComponent<PositionComponent>();
-        directionComponent = &entity -> getComponent<DirectionComponent>();
-        inventoryComponent = &entity -> getComponent<InventoryComponent>();
-        playerGuiComponent = &entity -> getComponent<PlayerGuiComponent>();
+    PlayerInputComponent(Entity* entity) {
+        positionComponent = entity -> getComponent<PositionComponent>();
+        directionComponent = entity -> getComponent<DirectionComponent>();
+        inventoryComponent = entity -> getComponent<InventoryComponent>();
+        playerGuiComponent = entity -> getComponent<PlayerGuiComponent>();
     }
     
     void update() override {
@@ -105,7 +105,7 @@ public:
                 GuiManager::addGui(new InventoryGui(inventoryComponent,Window::size.X/2 ,Window::size.Y/2));
                 return true;
             } else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
-                int s = entity -> getComponent<PlayerGuiComponent>().hotbarGui -> selected;
+                int s = playerGuiComponent -> hotbarGui -> selected;
                 Item* item = inventoryComponent -> itemSlots[s][0].item;
                 if (item != nullptr) {
                     Entity* e = entity -> manager -> addEntity();

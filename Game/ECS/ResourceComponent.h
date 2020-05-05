@@ -12,7 +12,8 @@
 class ResourceComponent : public Component {
 public:
     int type;
-    ResourceComponent(int t) {
+    ResourceComponent(Entity* entity, pair<int> pos, int t) {
+        entity -> addComponent<GridComponent>(pos);
         type = t;
     }
     bool mine(Item* tool) {

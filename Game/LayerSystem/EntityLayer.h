@@ -25,26 +25,23 @@ public:
         player -> addComponent<DirectionComponent>();
         
         player -> addComponent<InventoryComponent>(9,5);
-        player -> getComponent<InventoryComponent>().itemSlots[0][0].item = new Tool(0);
-        player -> getComponent<InventoryComponent>().itemSlots[8][4].item = new ItemStack(6,2);
-        player -> getComponent<InventoryComponent>().itemSlots[0][4].item = new ItemStack(7,5);
-        player -> getComponent<InventoryComponent>().itemSlots[8][0].item = new Tool(1);
+        player -> getComponent<InventoryComponent>() -> itemSlots[0][0].item = new Tool(0);
+        player -> getComponent<InventoryComponent>() -> itemSlots[8][4].item = new ItemStack(6,2);
+        player -> getComponent<InventoryComponent>() -> itemSlots[0][4].item = new ItemStack(7,5);
+        player -> getComponent<InventoryComponent>() -> itemSlots[8][0].item = new Tool(1);
         
+        player -> addComponent<PlayerGuiComponent>();
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
-        player -> addComponent<PlayerGuiComponent>();
         
-        Entity* rock = entityManager.addGridEntity(pair<int>(53,53));
-        Entity* table = entityManager.addGridEntity(pair<int>(53,47));
-        
-        rock -> addComponent<GridComponent>(pair<int>(53,53));
+        Entity* rock = entityManager.addEntity();
+        rock -> addComponent<ResourceComponent>(pair<int>(53,53),1);
         rock -> addComponent<SpriteComponent>("assets/nature.png");
-        rock -> addComponent<ResourceComponent>(1);
-        
-        table -> addComponent<GridComponent>(pair<int>(53,47));
+
+        Entity* table = entityManager.addEntity();
+        table -> addComponent<TableComponent>(pair<int>(53,47));
         table -> addComponent<SpriteComponent>("assets/table.png");
-        table -> addComponent<TableComponent>();
         
         Entity* item = entityManager.addEntity();
         item -> addComponent<ItemComponent>(pair<float>(47,47),new ItemStack(8,1));
@@ -57,14 +54,14 @@ public:
         entityManager.update();
         for (auto& e : entityManager.entities) {
             if (e -> hasComponent<CollisionComponent>() && e != player) {
-                Collider a = player -> getComponent<CollisionComponent>().collider;
-                Collider b = e -> getComponent<CollisionComponent>().collider;
+                Collider a = player -> getComponent<CollisionComponent>() -> collider;
+                Collider b = e -> getComponent<CollisionComponent>() -> collider;
                 if (CollisionManager::AABB(a,b)) {
                     if (e -> hasComponent<ItemComponent>()) {
-                        player -> getComponent<InventoryComponent>().addItem(e -> getComponent<ItemComponent>().item);
+                        player -> getComponent<InventoryComponent>() -> addItem(e -> getComponent<ItemComponent>() -> item);
                         e -> active = false;
                     } else {
-                        player -> getComponent<PlayerInputComponent>().setBack();
+                        player -> getComponent<PlayerInputComponent>() -> setBack();
                     }
                 }
             }
@@ -73,7 +70,7 @@ public:
     void render() override {
         std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
             if (!a -> hasComponent<PositionComponent>() || !b -> hasComponent<PositionComponent>()) { return true; }
-            return a -> getComponent<PositionComponent>().position.Y < b -> getComponent<PositionComponent>().position.Y;
+            return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
         });
         entityManager.render();
         entityManager.debugRender();
@@ -91,14 +88,14 @@ public:
             if (item != nullptr) {
                 t = item -> type;
                 if (entity -> hasComponent<ResourceComponent>()) {
-                    if (entity -> getComponent<ResourceComponent>().mine(item)) {
+                    if (entity -> getComponent<ResourceComponent>() -> mine(item)) {
                         entityManager.gridEntities[pos.X][pos.Y] = nullptr;
                     }
                 }
             }
             if (entity -> hasComponent<TableComponent>()) {
-                GuiManager::addGui(new InventoryGui(&(player -> getComponent<InventoryComponent>()),Window::size.X/2,Window::size.Y/2));
-                GuiManager::addGui(new TableGui(&(entity -> getComponent<TableComponent>())));
+                GuiManager::addGui(new InventoryGui(player -> getComponent<InventoryComponent>(),Window::size.X/2,Window::size.Y/2));
+                GuiManager::addGui(new TableGui(entity -> getComponent<TableComponent>()));
             }
             LOG("Entity",pos,"clicked with item type",t);
             return true;

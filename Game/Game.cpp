@@ -48,7 +48,7 @@ void Game::handleEvents() {
 void Game::update() {
     if (state == RUNNING) {
         LayerManager::update();
-        Camera::update(entityLayer -> player -> getComponent<PositionComponent>().position);
+        Camera::update(entityLayer -> player -> getComponent<PositionComponent>() -> position);
     }
 }
 

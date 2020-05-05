@@ -11,16 +11,14 @@
 
 class PlayerAnimationComponent : public Component {
 public:
-    
     SpriteComponent *spriteComponent;
     DirectionComponent *directionComponent;
     PlayerInputComponent *playerInputComponent;
     
-    void init() override {
-        
-        spriteComponent = &entity -> addComponent<SpriteComponent>("assets/character2.png",0,0,1,2);
-        directionComponent = &entity -> getComponent<DirectionComponent>();
-        playerInputComponent = &entity -> getComponent<PlayerInputComponent>();
+    PlayerAnimationComponent(Entity* entity) {
+        spriteComponent = entity -> addComponent<SpriteComponent>("assets/character2.png",0,0,1,2);
+        directionComponent = entity -> getComponent<DirectionComponent>();
+        playerInputComponent = entity -> getComponent<PlayerInputComponent>();
         spriteComponent -> offset = 1;
     }
     

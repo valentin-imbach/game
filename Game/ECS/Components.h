@@ -9,16 +9,19 @@
 #pragma once
 
 #include "ECS.h"
-#include "PositionComponent.h"
-#include "SpriteComponent.h"
-#include "DirectionComponent.h"
 
+#include "PositionComponent.h"
+#include "DirectionComponent.h"
 #include "CollisionComponent.h"
 #include "GridComponent.h"
-#include "InventoryComponent.h"
 #include "ResourceComponent.h"
-#include "TableComponent.h"
+
+#include "SpriteComponent.h"
+
 #include "ItemComponent.h"
+#include "InventoryComponent.h"
+
+#include "TableComponent.h"
 
 #include "PlayerGuiComponent.h"
 #include "PlayerInputComponent.h"

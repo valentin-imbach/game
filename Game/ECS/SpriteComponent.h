@@ -19,23 +19,18 @@ public:
     pair<float> size;
     float offset = 0;
 
-    SpriteComponent(const char* path, int x = 0, int y = 0, int w = 1, int h = 1) {
+    SpriteComponent(Entity* entity, const char* path, int x = 0, int y = 0, int w = 1, int h = 1) {
+        positionComponent = entity -> getComponent<PositionComponent>();
         texture = TextureManager::loadTexture(path);
+        if (!texture) { texture = TextureManager::loadTexture("assets/default.png"); }
         size = pair<float>(w,h);
         sx = x;
         sy = y;
         sw = w;
         sh = h;
     }
-    
-    void init() override {
-        positionComponent = &entity -> getComponent<PositionComponent>();
-    }
 
     void render() override {
-        if (texture == nullptr) {
-            texture = TextureManager::loadTexture("assets/default.png");
-        }
         Camera::drawTexture(texture, sx, sy, sw, sh, positionComponent -> position, size, offset, true);
     }
     

@@ -14,6 +14,11 @@ public:
     ItemSlot a;
     ItemSlot b;
     ItemSlot c;
+    
+    TableComponent(Entity* entity, pair<int> pos) {
+        entity -> addComponent<GridComponent>(pos);
+    }
+    
     bool handleEvent(SDL_Event) override {
         return false;
     }

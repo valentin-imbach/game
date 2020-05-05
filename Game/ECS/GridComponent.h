@@ -16,12 +16,10 @@ public:
     PositionComponent *positionComponent;
     CollisionComponent *collisionComponent;
     
-    GridComponent(pair<int> pos) {
+    GridComponent(Entity* entity, pair<int> pos) {
+        positionComponent = entity -> addComponent<PositionComponent>(pos);
+        collisionComponent = entity -> addComponent<CollisionComponent>();
         position = pos;
-    }
-    
-    void init() override {
-        positionComponent = &entity -> addComponent<PositionComponent>(position);
-        collisionComponent = &entity -> addComponent<CollisionComponent>();
+        entity -> manager -> gridEntities[pos.X][pos.Y] = entity;
     }
 };

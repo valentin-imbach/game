@@ -17,8 +17,8 @@ public:
     InventoryComponent *inventoryComponent;
     HotbarGui* hotbarGui;
     
-    void init() override {
-        inventoryComponent = &entity -> getComponent<InventoryComponent>();
+    PlayerGuiComponent(Entity* entity) {
+        inventoryComponent = entity -> getComponent<InventoryComponent>();
         hotbarGui = new HotbarGui(inventoryComponent, Window::size.X/2, 50);
         GuiManager::addGui(hotbarGui);
     }

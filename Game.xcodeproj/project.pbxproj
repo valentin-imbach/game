@@ -113,16 +113,16 @@
 				040CABA0242E25F6009A2728 /* Components.h */,
 				040CAB9D242D123D009A2728 /* PositionComponent.h */,
 				040CABA3242E3408009A2728 /* DirectionComponent.h */,
-				040CABA4242E356C009A2728 /* PlayerInputComponent.h */,
 				040CAB9F242E2586009A2728 /* SpriteComponent.h */,
-				040CABA5242E37A2009A2728 /* PlayerAnimationComponent.h */,
 				040CABA6242F95B8009A2728 /* InventoryComponent.h */,
 				040CABA7242F964A009A2728 /* CollisionComponent.h */,
-				041E0BA4243B4919007435A3 /* GridComponent.h */,
-				04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */,
-				041720D8245838110070F152 /* ResourceComponent.h */,
-				041720D9245875960070F152 /* TableComponent.h */,
 				041720DB245A14F20070F152 /* ItemComponent.h */,
+				041E0BA4243B4919007435A3 /* GridComponent.h */,
+				041720D8245838110070F152 /* ResourceComponent.h */,
+				04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */,
+				040CABA4242E356C009A2728 /* PlayerInputComponent.h */,
+				040CABA5242E37A2009A2728 /* PlayerAnimationComponent.h */,
+				041720D9245875960070F152 /* TableComponent.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";

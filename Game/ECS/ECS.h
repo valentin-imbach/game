@@ -84,22 +84,22 @@ public:
         return componentBitSet[getComponentType<T>()];
     }
     
-    template <typename T, typename... TArgs> T& addComponent(TArgs&&... mArgs) {
+    template <typename T, typename... TArgs> T* addComponent(TArgs&&... mArgs) {
         if (hasComponent<T>()) {
             return getComponent<T>();
         }
-        T* component( new T(std::forward<TArgs>(mArgs)...));
+        T* component = new T(this, std::forward<TArgs>(mArgs)...);
         component -> entity = this;
         std::unique_ptr<Component> uPtr{component};
         components.emplace_back(std::move(uPtr));
         componentArray[getComponentType<T>()] = component;
         componentBitSet[getComponentType<T>()] = true;
         component -> init();
-        return *component;
+        return component;
     }
     
-    template <typename T> T& getComponent() const {
-        return *static_cast<T*>(componentArray[getComponentType<T>()]);
+    template <typename T> T* getComponent() const {
+        return static_cast<T*>(componentArray[getComponentType<T>()]);
     }
 };
 
