@@ -34,7 +34,7 @@ public:
         TextureManager::drawTexture(TextureManager::hotbarTexture, 0, 0, 178, 26, position.X, position.Y, 534, 78, true);
         for (int i = 0; i < inventory -> size.X; i++) {
             if (inventory -> itemSlots[i][0].item != nullptr) {
-                inventory -> itemSlots[i][0].item -> render(position.X-size.X/2+i*offset,position.Y-size.Y/2,scale);
+                inventory -> itemSlots[i][0].item -> render(position.X-size.X/2+i*offset+scale/2,position.Y-size.Y/2+scale/2,scale);
             }
         }
         SDL_Rect rect;

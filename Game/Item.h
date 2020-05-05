@@ -8,34 +8,32 @@
 
 #pragma once
 
+#include "tools.h"
 #include "TextureManager.hpp"
 #include "TextManager.hpp"
 
 #define MAX_STACK 5
 
 struct Item {
-    Item() {
-        //PRINT("Item constructed");
-    }
     bool stack = false;
-    int type = 0;
     int count = 1;
-    void render(int x, int y, int scale) {
-        TextureManager::drawTexture(TextureManager::itemSheet, BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale);
-        if (count != 1) {
-            TextManager::drawText(std::to_string(count), x+3*scale/4, y+scale/2);
-        }
-    }
-    ~Item() {
-        //PRINT("Item destructed");
+    int type = 0;
+    virtual void render(int x, int y, int scale, bool inv = true) {
+        TextureManager::drawTexture(TextureManager::itemSheet, BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale,true);
     }
 };
 
 struct ItemStack : public Item {
-    ItemStack(int t, int c) {
+    ItemStack(int t, int c = 1) {
         type = t;
         count = c;
         stack = true;
+    }
+    void render(int x, int y, int scale, bool inv = true) override {
+        TextureManager::drawTexture(TextureManager::itemSheet, BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale,true);
+        if (count != 1 && inv) {
+            TextManager::drawText(std::to_string(count), x+scale/4, y);
+        }
     }
 };
 
@@ -111,5 +109,26 @@ struct ItemSlot {
     bool similar(Item* other) {
         return (item != nullptr && other != nullptr && item -> stack && other -> stack && (item -> type == other -> type));
     }
-    
+};
+
+struct Loot {
+    int min, max;
+    int type;
+    Loot(int t, int a = 1, int b = 1) {
+        min = a;
+        max = b;
+        type = t;
+    }
+    Item* createItem() {
+        return new ItemStack(type, min+(rand() % (max+1-min)));
+    }
+};
+
+struct LootTable {
+    v(Loot) table;
+    LootTable() {}
+    void addLoot(int t, int a = 1, int b = 1) {
+        assert(a <= b);
+        table.emplace_back(t,a,b);
+    }
 };

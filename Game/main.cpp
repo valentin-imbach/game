@@ -11,7 +11,7 @@
 
 int main() {
     
-    std::srand(1);
+    std::srand((int)time(0));
     
     Window window("Game",1224,840);
     Game::Init();

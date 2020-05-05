@@ -73,7 +73,7 @@ public:
             return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
         });
         entityManager.render();
-        entityManager.debugRender();
+        //entityManager.debugRender();
     }
     
     bool handleEvent(SDL_Event event) override {

@@ -32,7 +32,7 @@ public:
         for (int i = 0; i < inventory -> size.X; i++) {
             for (int j = 0; j < inventory -> size.Y; j++) {
                 if (inventory -> itemSlots[i][j].item != nullptr) {
-                    inventory -> itemSlots[i][j].item -> render(position.X-size.X/2+i*offset,position.Y-size.Y/2+j*offset,scale);
+                    inventory -> itemSlots[i][j].item -> render(position.X-size.X/2+i*offset+scale/2,position.Y-size.Y/2+j*offset+scale/2,scale);
                 }
             }
         }

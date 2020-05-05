@@ -73,4 +73,3 @@ template<typename T> std::ostream& operator<<(std::ostream& stream, const pair<T
     return stream;
 }
 
-#define sign(x) (x > 0 ? 1 : -1)

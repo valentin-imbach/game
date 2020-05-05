@@ -19,6 +19,8 @@ public:
     Item* item;
     ItemComponent(Entity* entity, pair<float> pos, Item* item) {
         position = pos;
+        position.X += (RAND - 0.5)/2;
+        position.Y += (RAND - 0.5)/2;
         this -> item = item;
         positionComponent = entity -> addComponent<PositionComponent>(position);
         collisionComponent = entity -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
@@ -26,7 +28,7 @@ public:
     
     void render() override {
         pair<float> position = Camera::gtos(positionComponent -> position);
-        item -> render(position.X-16,position.Y-16,32);
+        item -> render(position.X,position.Y,32,false);
     }
     
 };

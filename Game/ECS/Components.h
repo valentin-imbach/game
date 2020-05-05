@@ -14,7 +14,6 @@
 #include "DirectionComponent.h"
 #include "CollisionComponent.h"
 #include "GridComponent.h"
-#include "ResourceComponent.h"
 
 #include "SpriteComponent.h"
 
@@ -22,6 +21,7 @@
 #include "InventoryComponent.h"
 
 #include "TableComponent.h"
+#include "ResourceComponent.h"
 
 #include "PlayerGuiComponent.h"
 #include "PlayerInputComponent.h"

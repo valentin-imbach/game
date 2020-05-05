@@ -32,6 +32,9 @@
 #define vup(x) std::vector<std::unique_ptr<x>>
 #define vvup(x) std::vector<std::vector<std::unique_ptr<x>>>
 
+#define sign(x) (x > 0 ? 1 : -1)
+#define RAND ((double)std::rand()/RAND_MAX)
+
 const pair<int> dirs[4] = {{1,0},{0,-1},{-1,0},{0,1}};
 const pair<int> dirs2[8] = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 
