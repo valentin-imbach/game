@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "tools.h"
 #include "TextureManager.hpp"
 #include "TextManager.hpp"
 

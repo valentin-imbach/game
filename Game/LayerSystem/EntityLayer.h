@@ -19,7 +19,11 @@ private:
 public:
     Entity* player;
     EntityLayer() {
+        
+        loadMap("map.txt");
+        
         player = entityManager.addEntity();
+        player -> addTag(TAG::PLAYER);
         
         player -> addComponent<PositionComponent>(pair<float>(50,50));
         player -> addComponent<DirectionComponent>();
@@ -48,29 +52,92 @@ public:
         
         LOG("Entity Layer constructed");
     }
+    
+    void loadMap(const char* path) {
+        std::ifstream file;
+        file.open(path);
+        if (!file) {
+            ERROR("Map file not found");
+            file.close();
+            return;
+        }
+        
+        pair<int> size;
+        file >> size.X;
+        file >> size.Y;
+        
+        TileComponent* tileComps[size.X][size.Y];
+        
+        for (int y = 0; y < size.Y; y++) {
+            std::string s;
+            file >> s;
+            for (int x = 0; x < size.X; x++) {
+                TileID id = WATER;
+                switch (s[x]) {
+                    case '0':
+                        id = WATER;
+                        break;
+                    case '1':
+                        id = SAND;
+                        break;
+                    case '2':
+                        id = STONE;
+                        break;
+                    case '3':
+                        id = GRASS;
+                        break;
+                }
+                Entity* e = entityManager.addEntity();
+                tileComps[x][y] = e -> addComponent<TileComponent>(pair<int>(x,y),id);
+            }
+        }
+        
+        for (int y = 1; y < size.Y-1; y++) {
+            for (int x = 1; x < size.X-1; x++) {
+                tileComps[x][y] -> neig[0] = tileComps[x+1][y];
+                tileComps[x][y] -> neig[1] = tileComps[x+1][y-1];
+                tileComps[x][y] -> neig[2] = tileComps[x][y-1];
+                tileComps[x][y] -> neig[3] = tileComps[x-1][y-1];
+                tileComps[x][y] -> neig[4] = tileComps[x-1][y];
+                tileComps[x][y] -> neig[5] = tileComps[x-1][y+1];
+                tileComps[x][y] -> neig[6] = tileComps[x][y+1];
+                tileComps[x][y] -> neig[7] = tileComps[x+1][y+1];
+                tileComps[x][y] -> updateStyle();
+            }
+        }
+        
+        file.close();
+        LOG("Map loaded from",path);
+    }
+    
     void update() override {
         entityManager.refresh();
+        
         entityManager.update();
-        for (auto& e : entityManager.entities) {
-            if (e -> hasComponent<CollisionComponent>() && e != player) {
-                Collider a = player -> getComponent<CollisionComponent>() -> collider;
-                Collider b = e -> getComponent<CollisionComponent>() -> collider;
-                if (CollisionManager::AABB(a,b)) {
-                    if (e -> hasComponent<ItemComponent>()) {
-                        player -> getComponent<InventoryComponent>() -> addItem(e -> getComponent<ItemComponent>() -> item);
-                        e -> active = false;
-                    } else {
-                        player -> getComponent<PlayerInputComponent>() -> setBack();
-                    }
-                }
+        
+        for (auto* e : entityManager.getTagged(TAG::ITEM)) {
+            Collider a = player -> getComponent<CollisionComponent>() -> collider;
+            Collider b = e -> getComponent<CollisionComponent>() -> collider;
+            if (CollisionManager::AABB(a,b)) {
+                player -> getComponent<InventoryComponent>() -> addItem(e -> getComponent<ItemComponent>() -> item);
+                e -> active = false;
+            }
+        }
+        
+        for (auto* e : entityManager.getTagged(TAG::STRUCT)) {
+            Collider a = player -> getComponent<CollisionComponent>() -> collider;
+            Collider b = e -> getComponent<CollisionComponent>() -> collider;
+            if (CollisionManager::AABB(a,b)) {
+                player -> getComponent<PlayerInputComponent>() -> setBack();
             }
         }
     }
+    
     void render() override {
-        std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
+        /*std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
             if (!a -> hasComponent<PositionComponent>() || !b -> hasComponent<PositionComponent>()) { return true; }
             return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
-        });
+        });*/
         entityManager.render();
         //entityManager.debugRender();
     }

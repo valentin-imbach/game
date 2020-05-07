@@ -9,6 +9,8 @@
 #include "TextManager.hpp"
 #include "Window.hpp"
 
+
+
 TTF_Font* TextManager::font = nullptr;
 SDL_Color TextManager::color = {255,255,255};
 

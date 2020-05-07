@@ -7,10 +7,11 @@
 //
 
 #pragma once
-#include "tools.h"
+
 #include "GuiManager.hpp"
 #include "../ECS/InventoryComponent.h"
 #include "../TextureManager.hpp"
+#include "Window.hpp"
 
 class InventoryGui : public Gui {
     

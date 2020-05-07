@@ -6,9 +6,12 @@
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
 
+#include "tools.h"
 #include "TextureManager.hpp"
 #include <SDL2_image/SDL_image.h>
 #include "Window.hpp"
+
+
 
 v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
 SDL_Texture* TextureManager::itemSheet = nullptr;

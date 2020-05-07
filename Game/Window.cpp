@@ -6,9 +6,12 @@
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
 
+#include "tools.h"
 #include "Window.hpp"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
+
+
 
 SDL_Renderer* Window::renderer = nullptr;
 const Uint8* Window::keys = nullptr;

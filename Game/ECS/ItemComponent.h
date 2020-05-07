@@ -24,6 +24,7 @@ public:
         this -> item = item;
         positionComponent = entity -> addComponent<PositionComponent>(position);
         collisionComponent = entity -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+        entity -> addTag(TAG::ITEM);
     }
     
     void render() override {

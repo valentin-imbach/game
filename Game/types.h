@@ -31,11 +31,7 @@ enum class ITEM {
     APPLE
 };
 
-//int resourceType[32][3];
-
 enum class RESOURCE {
     STONE,
     TREE
 };
-
-

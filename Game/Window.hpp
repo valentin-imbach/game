@@ -10,8 +10,6 @@
 
 #define MAX_FPS 60
 
-#include "tools.h"
-
 class Window {
 public:
     

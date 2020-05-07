@@ -9,6 +9,8 @@
 #pragma once
 #include "../ECS/TableComponent.h"
 
+
+
 class TableGui : public Gui {
 private:
     pair<int> position;

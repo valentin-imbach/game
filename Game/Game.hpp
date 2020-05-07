@@ -23,7 +23,6 @@ public:
     static void update();
     static void handleEvents();
     static GameState state;
-    static TileLayer* tileLayer;
     static EntityLayer* entityLayer;
     static DebugLayer* debugLayer;
     static GuiLayer* guiLayer;

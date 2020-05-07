@@ -11,13 +11,12 @@
 #include "LayerSystem/Layers.h"
 
 GameState Game::state = LOADING;
-TileLayer* Game::tileLayer = nullptr;
 EntityLayer* Game::entityLayer = nullptr;
 DebugLayer* Game::debugLayer = nullptr;
 GuiLayer* Game::guiLayer = nullptr;
 
 void Game::Init() {
-    LayerManager::addLayer(tileLayer = new TileLayer());
+    //LayerManager::addLayer(tileLayer = new TileLayer());
     LayerManager::addLayer(entityLayer = new EntityLayer());
     LayerManager::addLayer(debugLayer = new DebugLayer());
     LayerManager::addLayer(guiLayer = new GuiLayer());

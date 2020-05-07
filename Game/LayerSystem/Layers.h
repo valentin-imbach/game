@@ -10,7 +10,6 @@
 
 #include "LayerManager.hpp"
 
-#include "TileLayer.h"
 #include "EntityLayer.h"
 #include "GuiLayer.h"
 #include "DebugLayer.h"

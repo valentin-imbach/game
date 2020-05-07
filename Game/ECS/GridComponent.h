@@ -21,5 +21,6 @@ public:
         collisionComponent = entity -> addComponent<CollisionComponent>();
         position = pos;
         entity -> manager -> gridEntities[pos.X][pos.Y] = entity;
+        entity -> addTag(TAG::STRUCT);
     }
 };

@@ -23,9 +23,9 @@
 
 #include "FastNoise.h"
 
-#include "logger.h"
 #include "maths.h"
 #include "types.h"
+#include "logger.hpp"
 
 #define v(x) std::vector<x>
 #define vv(x) std::vector<std::vector<x>>
