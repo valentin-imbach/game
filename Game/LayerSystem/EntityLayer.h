@@ -36,8 +36,7 @@ public:
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
         
         Entity* rock = entityManager.addEntity();
-        rock -> addComponent<ResourceComponent>(pair<int>(53,53),1);
-        rock -> addComponent<SpriteComponent>("assets/nature.png");
+        rock -> addComponent<ResourceComponent>(pair<int>(53,53),1,"assets/nature.png");
 
         Entity* table = entityManager.addEntity();
         table -> addComponent<TableComponent>(pair<int>(53,47));

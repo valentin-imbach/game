@@ -14,8 +14,9 @@ public:
     int type;
     LootTable loot;
 
-    ResourceComponent(Entity* entity, pair<int> pos, int t) {
+    ResourceComponent(Entity* entity, pair<int> pos, int t, const char* path) {
         entity -> addComponent<GridComponent>(pos);
+        entity -> addComponent<SpriteComponent>(path);
         type = t;
         loot.addLoot(6,2,5);
         loot.addLoot(7,2,5);
