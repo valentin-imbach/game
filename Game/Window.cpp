@@ -11,8 +11,6 @@
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 
-
-
 SDL_Renderer* Window::renderer = nullptr;
 const Uint8* Window::keys = nullptr;
 v(SDL_Event) Window::events = v(SDL_Event)();

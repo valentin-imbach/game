@@ -16,7 +16,6 @@ DebugLayer* Game::debugLayer = nullptr;
 GuiLayer* Game::guiLayer = nullptr;
 
 void Game::Init() {
-    //LayerManager::addLayer(tileLayer = new TileLayer());
     LayerManager::addLayer(entityLayer = new EntityLayer());
     LayerManager::addLayer(debugLayer = new DebugLayer());
     LayerManager::addLayer(guiLayer = new GuiLayer());

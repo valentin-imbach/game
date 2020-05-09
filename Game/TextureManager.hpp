@@ -12,7 +12,6 @@
 #define BIT 16
 
 constexpr std::size_t maxTileID = 10;
-
 enum TileID {
     GRASS,
     STONE,
@@ -21,11 +20,13 @@ enum TileID {
 };
 
 struct TextureManager {
-    static void Init();
+    
     static v(SDL_Texture*) tilesets;
     static SDL_Texture* itemSheet;
     static SDL_Texture* inventoryTexture;
     static SDL_Texture* hotbarTexture;
+    
+    static void Init();
     static SDL_Texture* loadTexture(const char* path);
     static void loadTileset(int a, const char* path);
     static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered = false);
@@ -33,12 +34,12 @@ struct TextureManager {
 };
 
 struct Sprite {
-    TileID tileID;
     SDL_Texture* texture;
-    pair<int> pos;
-    Sprite(int id, pair<int> p = {0,0}) {
-        tileID = TileID(id);
-        texture = TextureManager::tilesets[id];
-        pos = p;
+    pair<int> position;
+    int priority;
+    Sprite(SDL_Texture* tex, pair<int> pos = {0,0}, int p = 0) {
+        texture = tex;
+        position = pos;
+        priority = p;
     }
 };
