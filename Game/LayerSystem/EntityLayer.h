@@ -111,8 +111,8 @@ public:
     }
     
     void update() override {
-        entityManager.refresh();
         
+        entityManager.refresh();
         entityManager.update();
         
         for (auto* e : entityManager.getTagged(TAG::ITEM)) {
@@ -134,8 +134,9 @@ public:
     }
     
     void render() override {
+
         /*std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
-            if (!a -> hasComponent<PositionComponent>() || !b -> hasComponent<PositionComponent>()) { return true; }
+            if (a == nullptr || b == nullptr || !a -> hasComponent<PositionComponent>() || !b -> hasComponent<PositionComponent>()) { return true; }
             return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
         });*/
         entityManager.render();
