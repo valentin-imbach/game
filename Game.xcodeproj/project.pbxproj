@@ -21,6 +21,8 @@
 		04CBB515245232BF00A8BC69 /* GuiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04CBB513245232BF00A8BC69 /* GuiManager.cpp */; };
 		04E4A3492464A2310021359B /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A3482464A2310021359B /* Entity.cpp */; };
 		04E4A34C246703310021359B /* EntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34B246701270021359B /* EntityManager.cpp */; };
+		04E4A35124683FE00021359B /* GuiElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34F24683FE00021359B /* GuiElements.cpp */; };
+		04E4A354246846470021359B /* GuiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A352246846470021359B /* GuiManager.cpp */; };
 		04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +89,10 @@
 		04E4A3482464A2310021359B /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		04E4A34A2464A98E0021359B /* TileComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileComponent.h; sourceTree = "<group>"; };
 		04E4A34B246701270021359B /* EntityManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EntityManager.cpp; sourceTree = "<group>"; };
+		04E4A34F24683FE00021359B /* GuiElements.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiElements.cpp; sourceTree = "<group>"; };
+		04E4A35024683FE00021359B /* GuiElements.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiElements.hpp; sourceTree = "<group>"; };
+		04E4A352246846470021359B /* GuiManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiManager.cpp; sourceTree = "<group>"; };
+		04E4A353246846470021359B /* GuiManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiManager.hpp; sourceTree = "<group>"; };
 		04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		04E8D3BC239D6DF2002D0079 /* FastNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastNoise.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,6 +159,7 @@
 				040CAB9E242E24AB009A2728 /* ECS */,
 				04CBB503244F587100A8BC69 /* LayerSystem */,
 				04CBB5162452330200A8BC69 /* GuiSystem */,
+				04E4A34E24683F880021359B /* Gui */,
 				04E4A34624646DEC0021359B /* logger.hpp */,
 				04E4A34424645A1E0021359B /* types.h */,
 				04CBB50A2450437000A8BC69 /* maths.h */,
@@ -209,6 +216,17 @@
 				041720DA245877140070F152 /* TableGui.h */,
 			);
 			path = GuiSystem;
+			sourceTree = "<group>";
+		};
+		04E4A34E24683F880021359B /* Gui */ = {
+			isa = PBXGroup;
+			children = (
+				04E4A353246846470021359B /* GuiManager.hpp */,
+				04E4A352246846470021359B /* GuiManager.cpp */,
+				04E4A35024683FE00021359B /* GuiElements.hpp */,
+				04E4A34F24683FE00021359B /* GuiElements.cpp */,
+			);
+			path = Gui;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +289,7 @@
 			files = (
 				04CBB51224522D4400A8BC69 /* LayerManager.cpp in Sources */,
 				041688962334336D0060DBDA /* Game.cpp in Sources */,
+				04E4A35124683FE00021359B /* GuiElements.cpp in Sources */,
 				04CBB515245232BF00A8BC69 /* GuiManager.cpp in Sources */,
 				04C7CC882334119F0053C2E7 /* main.cpp in Sources */,
 				04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */,
@@ -279,6 +298,7 @@
 				04168893233425C70060DBDA /* Window.cpp in Sources */,
 				0416889923343ACC0060DBDA /* TextureManager.cpp in Sources */,
 				04CBB505244F595C00A8BC69 /* tools.h in Sources */,
+				04E4A354246846470021359B /* GuiManager.cpp in Sources */,
 				04E4A34C246703310021359B /* EntityManager.cpp in Sources */,
 				04E4A3492464A2310021359B /* Entity.cpp in Sources */,
 			);

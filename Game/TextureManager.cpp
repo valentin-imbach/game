@@ -45,6 +45,24 @@ void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int s
     SDL_RenderCopy(Window::renderer, tex, &src, &dest);
 }
 
+void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered) {
+    int w, h;
+    SDL_QueryTexture(tex, NULL, NULL, &w, &h);
+    SDL_Rect src = {0,0,w,h};
+    SDL_Rect dest = {dx,dy,dw,dh};
+    if (centered) { dest.x -= dw/2; dest.y -= dh/2; }
+    SDL_RenderCopy(Window::renderer, tex, &src, &dest);
+}
+
+void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, bool centered) {
+    int w, h;
+    SDL_QueryTexture(tex, NULL, NULL, &w, &h);
+    SDL_Rect src = {0,0,w,h};
+    SDL_Rect dest = {dx,dy,w,h};
+    if (centered) { dest.x -= w/2; dest.y -= h/2; }
+    SDL_RenderCopy(Window::renderer, tex, &src, &dest);
+}
+
 void TextureManager::drawRect(pair<int> pos, pair<int> size) {
     SDL_Rect rect = {pos.X, pos.Y, size.X, size.Y};
     SDL_RenderDrawRect(Window::renderer, &rect);
