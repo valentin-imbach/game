@@ -43,70 +43,78 @@ struct Tool : public Item {
     }
 };
 
-struct ItemSlot {
+struct ItemContainer {
     
     Item* item = nullptr;
     
-    Item* addFullItem(Item* other) {
-        
-        if (item == nullptr) {
-            item = other;
-            return nullptr;
-        }
-        
-        if (similar(other)) {
-            item -> count += other -> count;
-            delete other;
-            return nullptr;
-        }
-        
-        return other;
+    bool empty() { return item == nullptr; }
+    bool stack() { return item -> stack; }
+    int type() { return item -> type; }
+    int count() { return item -> count; }
+    
+    bool similar(Item* other) {
+        return (item != nullptr && other != nullptr && item -> stack && other -> stack && (item -> type == other -> type));
     }
     
-    Item* addOneItem(Item* other) {
+    bool similar(ItemContainer* other) {
+        return (!empty() && !other -> empty() && stack() && other -> stack() && type() == other -> type());
+    }
+    
+    bool takeHalf(ItemContainer* other) {
+        if (!other -> empty()) { return false; }
+        if (empty() || !stack() || count() == 1) {
+            other -> item = item;
+            item = nullptr;
+            return true;
+        }
+        int c = (count() + 1) / 2;
+        item -> count -= c;
+        other -> item = new ItemStack(item -> type, c);
+        return true;
+    }
+    
+    bool addFull(ItemContainer* other) {
+        if (similar(other)) {
+            item -> count += other -> item -> count;
+            other -> item = nullptr;
+            return true;
+        }
         
-        if (item == nullptr) {
-            if (other == nullptr) {
-                return nullptr;
+        if (empty()) {
+            item = other -> item;
+            other -> item = nullptr;
+            return true;
+        }
+        return false;
+    }
+    
+    bool addOne(ItemContainer* other) {
+        if (empty()) {
+            if (other -> empty()) {
+                return false;
             }
-            if (other -> stack == false) {
-                item = other;
-                return nullptr;
+            if (!other -> stack()) {
+                item = other -> item;
+                other -> item = nullptr;
+                return true;
             }
-            item = new ItemStack(other -> type,1);
-            other -> count -= 1;
-            if (other -> count == 0) {
-                delete other;
-                return nullptr;
+            item = new ItemStack(other -> type(),1);
+            other -> item -> count -= 1;
+            if (other -> item -> count == 0) {
+                other -> item = nullptr;
             }
-            return other;
+            return true;
         }
         
         if (similar(other)) {
             item -> count += 1;
-            other -> count -= 1;
-            if (other -> count == 0) {
-                delete other;
-                return nullptr;
+            other -> item -> count -= 1;
+            if (other -> item -> count == 0) {
+                other -> item = nullptr;
             }
-            return other;
+            return true;
         }
-        return other;
-    }
-    
-    Item* takeHalf() {
-        if (item == nullptr || item -> stack == false || item -> count == 1) {
-            Item* temp = item;
-            item = nullptr;
-            return temp;
-        }
-        int count = (item -> count + 1) / 2;
-        item -> count -= count;
-        return new ItemStack(item -> type, count);
-    }
-    
-    bool similar(Item* other) {
-        return (item != nullptr && other != nullptr && item -> stack && other -> stack && (item -> type == other -> type));
+        return false;
     }
 };
 

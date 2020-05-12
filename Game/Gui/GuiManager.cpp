@@ -7,3 +7,22 @@
 //
 
 #include "GuiManager.hpp"
+
+void GuiManager2::addGuiElement(GuiElement *gui) {
+    guiElements.push_back(gui);
+}
+
+void GuiManager2::update() {
+    for (GuiElement* gui : guiElements) { gui -> update(); }
+}
+
+void GuiManager2::render() {
+    for (GuiElement* gui : guiElements) { gui -> render(); }
+}
+
+bool GuiManager2::handleEvent(SDL_Event event) {
+    for (GuiElement* gui : guiElements) {
+        if (gui -> handleEvent(event)) { return true; }
+    }
+    return false;
+}

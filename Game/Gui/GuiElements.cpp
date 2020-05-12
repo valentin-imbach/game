@@ -9,15 +9,24 @@
 #include "GuiElements.hpp"
 #include "../TextureManager.hpp"
 
-void GuiElement::render() {
-    if (parent == nullptr) {
-        TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y);
-    } else {
-        TextureManager::drawTexture(texture, position.X + parent -> position.X, position.Y + parent -> position.Y, size.X, size.Y);
+GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex) {
+    position = pos;
+    size = s;
+    texture = tex;
+}
+
+void GuiElement::update() {
+    for (GuiElement* child : children) {
+        child -> update();
     }
+}
+
+void GuiElement::render() {
+    if (texture != nullptr) { TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y); }
     for (GuiElement* child : children) {
         child -> render();
     }
+    TextureManager::drawRect(position, size);
 }
 
 bool GuiElement::handleEvent(SDL_Event event) {
@@ -28,3 +37,24 @@ bool GuiElement::handleEvent(SDL_Event event) {
     }
     return false;
 }
+
+void GuiElement::addGuiElement(GuiElement* gui) {
+    children.push_back(gui);
+    gui -> setParent(this);
+}
+
+void GuiElement::setParent(GuiElement *gui) {
+    parent = gui;
+    position += gui -> position;
+}
+
+
+
+
+Button::Button(pair<int> pos, pair<int> s, SDL_Texture* tex) : GuiElement(pos,s,tex) {}
+
+ItemSlot::ItemSlot(pair<int> pos, pair<int> s, ItemContainer* item) : GuiElement(pos,s) {
+    itemContainer = item;
+}
+
+void ItemSlot::render() {}

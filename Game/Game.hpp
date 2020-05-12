@@ -8,6 +8,7 @@
 
 #pragma once
 #include "LayerSystem/Layers.h"
+#include "Gui/GuiManager.hpp"
 
 enum GameState {
     RUNNING,
@@ -26,4 +27,5 @@ public:
     static EntityLayer* entityLayer;
     static DebugLayer* debugLayer;
     static GuiLayer* guiLayer;
+    static GuiManager2 guiManager;
 };

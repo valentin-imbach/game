@@ -10,8 +10,8 @@
 #include "../Window.hpp"
 
 v(Gui*) GuiManager::guiStack = v(Gui*)();
-ItemSlot* GuiManager::mouseSlot = new ItemSlot();
-ItemSlot* GuiManager::hotbarSlot = nullptr;
+ItemContainer* GuiManager::mouseSlot = new ItemContainer();
+ItemContainer* GuiManager::hotbarSlot = nullptr;
 
 void GuiManager::Init() {
     LOG("Gui Manager initialized");

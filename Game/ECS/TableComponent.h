@@ -11,9 +11,9 @@
 
 class TableComponent : public Component {
 public:
-    ItemSlot a;
-    ItemSlot b;
-    ItemSlot c;
+    ItemContainer a;
+    ItemContainer b;
+    ItemContainer c;
     
     TableComponent(Entity* entity, pair<int> pos) {
         entity -> addComponent<GridComponent>(pos);

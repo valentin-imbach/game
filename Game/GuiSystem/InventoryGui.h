@@ -53,24 +53,15 @@ public:
                 
                 pair<int> relPos = Window::mousePos-position+size/2;
                 pair<int> slot = relPos/offset;
-                ItemSlot* itemSlot = &(inventory -> itemSlots[slot.X][slot.Y]);
+                ItemContainer* itemSlot = &(inventory -> itemSlots[slot.X][slot.Y]);
                 
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    
-                    if (inventory -> itemSlots[slot.X][slot.Y].similar(GuiManager::mouseSlot -> item)) {
-                        GuiManager::mouseSlot -> item = inventory -> itemSlots[slot.X][slot.Y].addFullItem(GuiManager::mouseSlot -> item);
-                    } else {
-                        Item* temp = itemSlot -> item;
-                        itemSlot -> item = GuiManager::mouseSlot -> item;
-                        GuiManager::mouseSlot -> item = temp;
+                    if (!itemSlot -> addFull(GuiManager::mouseSlot)) {
+                        std::swap(GuiManager::mouseSlot -> item, itemSlot -> item);
                     }
-                    return true;
-                    
                 } else if (event.button.button == SDL_BUTTON_RIGHT) {
-                    if (GuiManager::mouseSlot -> item == nullptr) {
-                        GuiManager::mouseSlot -> item = itemSlot -> takeHalf();
-                    } else {
-                        GuiManager::mouseSlot -> item = itemSlot -> addOneItem(GuiManager::mouseSlot -> item);
+                    if (!itemSlot -> takeHalf(GuiManager::mouseSlot)) {
+                        itemSlot -> addOne(GuiManager::mouseSlot);
                     }
                 }
                 return true;

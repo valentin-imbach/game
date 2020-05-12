@@ -14,12 +14,19 @@ GameState Game::state = LOADING;
 EntityLayer* Game::entityLayer = nullptr;
 DebugLayer* Game::debugLayer = nullptr;
 GuiLayer* Game::guiLayer = nullptr;
+GuiManager2 Game::guiManager = GuiManager2();
 
 void Game::Init() {
     LayerManager::addLayer(entityLayer = new EntityLayer());
     LayerManager::addLayer(debugLayer = new DebugLayer());
     LayerManager::addLayer(guiLayer = new GuiLayer());
     state = RUNNING;
+    
+    GuiElement* gui = new GuiElement({200,200},{500,300});
+    gui -> addGuiElement(new Button({50,50},{50,50}));
+    guiManager.addGuiElement(gui);
+    
+    
     LOG("Game initialized");
 }
 
@@ -27,6 +34,9 @@ void Game::handleEvents() {
     for (auto e : Window::events) {
         if (e.key.repeat) { continue; }
         if (state == RUNNING) {
+            if (e.type == SDL_KEYDOWN && guiManager.handleEvent(e)) {
+                continue;
+            }
             if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
                 state = PAUSED;
                 return;
@@ -54,5 +64,6 @@ void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 255, 255, 255, 255);
     SDL_RenderClear(Window::renderer);
     LayerManager::render();
+    guiManager.render();
     SDL_RenderPresent(Window::renderer);
 }

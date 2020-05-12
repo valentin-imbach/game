@@ -8,24 +8,27 @@
 
 #pragma once
 #include "tools.h"
+#include "../Item.h"
 
 class GuiElement {
 protected:
     pair<int> position;
     pair<int> size;
     SDL_Texture* texture;
-    
     GuiElement* parent = nullptr;
     v(GuiElement*) children;
     
 public:
+    bool alive = true;
+    GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr);
+    
+    void addGuiElement(GuiElement* gui);
+    void setParent(GuiElement* gui);
+    void destroy() { alive = false; }
+    
     virtual void render();
+    virtual void update();
     virtual bool handleEvent(SDL_Event event);
-};
-
-class Widget : public GuiElement {
-public:
-    Widget(pair<int> pos, pair<int> s, SDL_Texture* tex);
 };
 
 class Button : public GuiElement {
@@ -34,9 +37,9 @@ public:
 };
 
 class ItemSlot : public GuiElement {
+private:
+    ItemContainer* itemContainer;
 public:
-    ItemSlot(pair<int> pos, pair<int> s, SDL_Texture* tex);
+    ItemSlot(pair<int> pos, pair<int> s, ItemContainer* item);
     void render() override;
 };
-
-
