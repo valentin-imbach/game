@@ -13,6 +13,11 @@ class GuiManager2 {
 private:
     v(GuiElement*) guiElements;
 public:
+    static GuiManager2* manager;
+    ItemContainer* mouseContainer = new ItemContainer();
+    ItemSlot* mouseSlot = new ItemSlot({0,0}, mouseContainer);
+    
+    GuiManager2() { manager = this; }
     void addGuiElement(GuiElement* gui);
     void update();
     void render();

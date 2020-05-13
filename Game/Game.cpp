@@ -22,11 +22,6 @@ void Game::Init() {
     LayerManager::addLayer(guiLayer = new GuiLayer());
     state = RUNNING;
     
-    GuiElement* gui = new GuiElement({200,200},{500,300});
-    gui -> addGuiElement(new Button({50,50},{50,50}));
-    guiManager.addGuiElement(gui);
-    
-    
     LOG("Game initialized");
 }
 
@@ -34,7 +29,7 @@ void Game::handleEvents() {
     for (auto e : Window::events) {
         if (e.key.repeat) { continue; }
         if (state == RUNNING) {
-            if (e.type == SDL_KEYDOWN && guiManager.handleEvent(e)) {
+            if ((e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN) && guiManager.handleEvent(e)) {
                 continue;
             }
             if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
@@ -56,6 +51,7 @@ void Game::handleEvents() {
 void Game::update() {
     if (state == RUNNING) {
         LayerManager::update();
+        guiManager.update();
         Camera::update(entityLayer -> player -> getComponent<PositionComponent>() -> position);
     }
 }

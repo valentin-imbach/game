@@ -161,8 +161,8 @@ public:
                 }
             }
             if (entity -> hasComponent<TableComponent>()) {
-                GuiManager::addGui(new InventoryGui(player -> getComponent<InventoryComponent>(),Window::size.X/2,Window::size.Y/2));
-                GuiManager::addGui(new TableGui(entity -> getComponent<TableComponent>()));
+                //GuiManager::addGui(new InventoryGui(player -> getComponent<InventoryComponent>(),Window::size.X/2,Window::size.Y/2));
+                //GuiManager::addGui(new TableGui(entity -> getComponent<TableComponent>()));
             }
             LOG("Entity",pos,"clicked with item type",t);
             return true;

@@ -7,22 +7,29 @@
 //
 
 #include "GuiManager.hpp"
+#include "../Window.hpp"
+
+GuiManager2* GuiManager2::manager = nullptr;
 
 void GuiManager2::addGuiElement(GuiElement *gui) {
     guiElements.push_back(gui);
+    gui -> setManager(this);
 }
 
 void GuiManager2::update() {
+    guiElements.erase(std::remove_if(std::begin(guiElements), std::end(guiElements),[](const GuiElement* gui) { return !(gui -> alive); }), std::end(guiElements));
     for (GuiElement* gui : guiElements) { gui -> update(); }
+    mouseSlot -> position = Window::mousePos - pair<int>(24,24);
 }
 
 void GuiManager2::render() {
     for (GuiElement* gui : guiElements) { gui -> render(); }
+    mouseSlot -> render();
 }
 
 bool GuiManager2::handleEvent(SDL_Event event) {
-    for (GuiElement* gui : guiElements) {
-        if (gui -> handleEvent(event)) { return true; }
+    for (int i = (int)guiElements.size()-1; i >= 0; i--) {
+        if (guiElements[i] -> handleEvent(event)) { return true; }
     }
     return false;
 }
