@@ -26,6 +26,5 @@ public:
     static GameState state;
     static EntityLayer* entityLayer;
     static DebugLayer* debugLayer;
-    static GuiLayer* guiLayer;
-    static GuiManager2 guiManager;
+    static GuiManager guiManager;
 };

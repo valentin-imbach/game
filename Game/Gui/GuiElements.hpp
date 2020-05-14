@@ -10,7 +10,7 @@
 #include "tools.h"
 #include "../Item.h"
 
-class GuiManager2;
+class GuiManager;
 
 class GuiElement {
 protected:
@@ -21,22 +21,25 @@ protected:
     v(GuiElement*) children;
     bool check(pair<int> p);
     
-    friend GuiManager2;
+    friend GuiManager;
 
 public:
     bool alive = true;
-    GuiManager2* manager = nullptr;
+    GuiManager* manager = nullptr;
     
     virtual bool onClick(int b) { return false; }
     virtual bool onKey(int k) { return false; }
+    virtual bool onScroll(int y) { return false; }
     
     GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr);
     
     void addGuiElement(GuiElement* gui);
     void setParent(GuiElement* gui);
-    void setManager(GuiManager2* m);
+    void setManager(GuiManager* m);
     bool handleEvent(SDL_Event event);
+    
     void destroy();
+    virtual void onDestroy() {}
     
     virtual void render();
     virtual void update();
@@ -44,9 +47,12 @@ public:
 };
 
 class Widget : public GuiElement {
+private:
+    GuiElement* link;
 public:
-    Widget(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr);
+    Widget(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr, GuiElement* l = nullptr);
     bool onKey(int key) override;
+    void onDestroy() override;
 };
 
 class Button : public GuiElement {
@@ -61,4 +67,16 @@ public:
     ItemSlot(pair<int> pos, ItemContainer* item);
     void render() override;
     bool onClick(int b) override;
+};
+
+class Hotbar : public GuiElement {
+private:
+    v(ItemContainer*) hotbarContainers;
+    int* selected;
+    
+public:
+    Hotbar(v(ItemContainer*) items, int* sel);
+    void render() override;
+    bool onScroll(int y) override;
+    bool onKey(int k) override;
 };

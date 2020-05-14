@@ -25,6 +25,7 @@ struct TextureManager {
     static SDL_Texture* itemSheet;
     static SDL_Texture* inventoryTexture;
     static SDL_Texture* hotbarTexture;
+    static SDL_Texture* tableTexture;
     
     static void Init();
     static SDL_Texture* loadTexture(const char* path);

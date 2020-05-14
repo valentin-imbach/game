@@ -9,15 +9,15 @@
 #pragma once
 #include "GuiElements.hpp"
 
-class GuiManager2 {
+class GuiManager {
 private:
     v(GuiElement*) guiElements;
 public:
-    static GuiManager2* manager;
+    static GuiManager* manager;
     ItemContainer* mouseContainer = new ItemContainer();
     ItemSlot* mouseSlot = new ItemSlot({0,0}, mouseContainer);
     
-    GuiManager2() { manager = this; }
+    GuiManager() { manager = this; }
     void addGuiElement(GuiElement* gui);
     void update();
     void render();

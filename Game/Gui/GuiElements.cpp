@@ -17,7 +17,7 @@ GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex) {
     texture = tex;
 }
 
-void GuiElement::setManager(GuiManager2* m) {
+void GuiElement::setManager(GuiManager* m) {
     manager = m;
     for (GuiElement* child : children) {
         child -> setManager(m);
@@ -50,9 +50,11 @@ bool GuiElement::handleEvent(SDL_Event event) {
     }
     
     if (event.type == SDL_MOUSEBUTTONDOWN) {
-        if(onClick(event.button.button)) { return true; }
+        if(check(Window::mousePos) && onClick(event.button.button)) { return true; }
     } else if (event.type == SDL_KEYDOWN) {
         if (onKey(event.key.keysym.scancode)) { return true; }
+    } else if (event.type == SDL_MOUSEWHEEL) {
+        if (onScroll(event.wheel.y)) { return true; }
     }
     return false;
 }
@@ -69,13 +71,22 @@ void GuiElement::setParent(GuiElement *gui) {
 }
 
 void GuiElement::destroy() {
+    onDestroy();
     alive = false;
     for (GuiElement* child : children) {
         child -> destroy();
     }
 }
 
-Widget::Widget(pair<int> pos, pair<int> s, SDL_Texture* tex) : GuiElement(pos,s,tex) {}
+Widget::Widget(pair<int> pos, pair<int> s, SDL_Texture* tex, GuiElement* l) : GuiElement(pos,s,tex) {
+    link = l;
+}
+
+void Widget::onDestroy() {
+    if (link != nullptr) {
+        link -> destroy();
+    }
+}
 
 bool Widget::onKey(int key) {
     for (int i = (int)children.size()-1; i >= 0; i--) {
@@ -115,5 +126,51 @@ bool ItemSlot::onClick(int button) {
 
 void ItemSlot::render() {
     itemContainer -> render(position+size/2,size.X);
+}
+
+Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::hotbarTexture) {
+    hotbarContainers = items;
+    selected = sel;
+}
+
+void Hotbar::render() {
+    TextureManager::drawTexture(TextureManager::hotbarTexture, position.X, position.Y, 534, 78);
+    for (int i = 0; i < hotbarContainers.size(); i++) {
+        if (!hotbarContainers[i] -> empty()) {
+            hotbarContainers[i] -> render(position + pair<int>(39+i*57,39),48);
+        }
+    }
+    TextureManager::drawRect(position +  pair<int>(12+(*selected)*57,12), {54,54});
+}
+
+bool Hotbar::onScroll(int y) {
+    if (y < 0) { (*selected) += 1; }
+    if (y > 0) { (*selected) -= 1; }
+    *selected = (*selected + (int)hotbarContainers.size()) % hotbarContainers.size();
+    return true;
+}
+
+bool Hotbar::onKey(int k) {
+    switch(k) {
+        case SDL_SCANCODE_1:
+            *selected = 0; return true;
+        case SDL_SCANCODE_2:
+            *selected = 1; return true;
+        case SDL_SCANCODE_3:
+            *selected = 2; return true;
+        case SDL_SCANCODE_4:
+            *selected = 3; return true;
+        case SDL_SCANCODE_5:
+            *selected = 4; return true;
+        case SDL_SCANCODE_6:
+            *selected = 5; return true;
+        case SDL_SCANCODE_7:
+            *selected = 6; return true;
+        case SDL_SCANCODE_8:
+            *selected = 7; return true;
+        case SDL_SCANCODE_9:
+            *selected = 8; return true;
+    }
+    return false;
 }
 

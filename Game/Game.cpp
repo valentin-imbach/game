@@ -13,13 +13,11 @@
 GameState Game::state = LOADING;
 EntityLayer* Game::entityLayer = nullptr;
 DebugLayer* Game::debugLayer = nullptr;
-GuiLayer* Game::guiLayer = nullptr;
-GuiManager2 Game::guiManager = GuiManager2();
+GuiManager Game::guiManager = GuiManager();
 
 void Game::Init() {
     LayerManager::addLayer(entityLayer = new EntityLayer());
     LayerManager::addLayer(debugLayer = new DebugLayer());
-    LayerManager::addLayer(guiLayer = new GuiLayer());
     state = RUNNING;
     
     LOG("Game initialized");
@@ -29,7 +27,7 @@ void Game::handleEvents() {
     for (auto e : Window::events) {
         if (e.key.repeat) { continue; }
         if (state == RUNNING) {
-            if ((e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN) && guiManager.handleEvent(e)) {
+            if ((e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEWHEEL) && guiManager.handleEvent(e)) {
                 continue;
             }
             if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {

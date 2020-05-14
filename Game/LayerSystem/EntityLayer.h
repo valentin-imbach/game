@@ -10,7 +10,6 @@
 
 #include "../ECS/Components.h"
 #include "../CollisionManager.h"
-#include "../GuiSystem/Guis.h"
 #include "../Window.hpp"
 
 class EntityLayer : public Layer {
@@ -29,10 +28,10 @@ public:
         player -> addComponent<DirectionComponent>();
         
         player -> addComponent<InventoryComponent>(9,5);
-        player -> getComponent<InventoryComponent>() -> itemSlots[0][0].item = new Tool(0);
-        player -> getComponent<InventoryComponent>() -> itemSlots[8][4].item = new ItemStack(6,2);
-        player -> getComponent<InventoryComponent>() -> itemSlots[0][4].item = new ItemStack(7,5);
-        player -> getComponent<InventoryComponent>() -> itemSlots[8][0].item = new Tool(1);
+        player -> getComponent<InventoryComponent>() -> containers[0][0].item = new Tool(0);
+        player -> getComponent<InventoryComponent>() -> containers[8][4].item = new ItemStack(6,2);
+        player -> getComponent<InventoryComponent>() -> containers[0][4].item = new ItemStack(7,5);
+        player -> getComponent<InventoryComponent>() -> containers[8][0].item = new Tool(1);
         
         player -> addComponent<PlayerGuiComponent>();
         player -> addComponent<PlayerInputComponent>();
@@ -151,7 +150,7 @@ public:
                 return false;
             }
             int t = -1;
-            Item* item = GuiManager::hotbarSlot -> item;
+            Item* item = player -> getComponent<InventoryComponent>() -> containers[(player -> getComponent<PlayerGuiComponent>() -> selected)][0].item;
             if (item != nullptr) {
                 t = item -> type;
                 if (entity -> hasComponent<ResourceComponent>()) {
@@ -161,8 +160,8 @@ public:
                 }
             }
             if (entity -> hasComponent<TableComponent>()) {
-                //GuiManager::addGui(new InventoryGui(player -> getComponent<InventoryComponent>(),Window::size.X/2,Window::size.Y/2));
-                //GuiManager::addGui(new TableGui(entity -> getComponent<TableComponent>()));
+                GuiElement* inv = player -> getComponent<PlayerGuiComponent>() -> makeInventoryGui(Window::size/2 + pair<int>(0,100));
+                entity -> getComponent<TableComponent>() -> makeGui(Window::size/2 - pair<int>(0,200), inv);
             }
             LOG("Entity",pos,"clicked with item type",t);
             return true;

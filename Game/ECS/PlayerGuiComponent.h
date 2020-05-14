@@ -9,25 +9,39 @@
 #pragma once
 
 #include "Components.h"
-#include "../GuiSystem/Guis.h"
 #include "Window.hpp"
 #include "../Gui/GuiManager.hpp"
 
 class PlayerGuiComponent : public Component {
 public:
     InventoryComponent *inventoryComponent;
-    HotbarGui* hotbarGui;
+    int selected = 0;
     
     PlayerGuiComponent(Entity* entity) {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
-        hotbarGui = new HotbarGui(inventoryComponent, Window::size.X/2, 50);
-        //GuiManager::addGui(hotbarGui);
-        
-        GuiElement* hotbar = new GuiElement({Window::size.X/2,60},{534, 78},TextureManager::hotbarTexture);
-        for (int i = 0; i < inventoryComponent -> size.X; i++) {
-            hotbar -> addGuiElement(new ItemSlot({39+i*57,39},&(inventoryComponent -> itemSlots[i][0])));
-        }
-        GuiManager2::manager -> addGuiElement(hotbar);
-
+        makeHotbarGui();
     }
+    
+    GuiElement* makeHotbarGui() {
+        v(ItemContainer*) vec;
+        for (int i = 0; i < inventoryComponent -> size.X; i++) {
+            vec.push_back(&(inventoryComponent -> containers[i][0]));
+        }
+        
+        GuiElement* hotbar = new Hotbar(vec, &selected);
+        GuiManager::manager -> addGuiElement(hotbar);
+        return hotbar;
+    }
+    
+    GuiElement* makeInventoryGui(pair<int> pos) {
+        GuiElement* gui = new Widget(pos,{534, 306},TextureManager::inventoryTexture);
+        for (int i = 0; i < inventoryComponent -> size.X; i++) {
+            for (int j = 0; j < inventoryComponent -> size.Y; j++) {
+                gui -> addGuiElement(new ItemSlot({39+i*57,39+j*57},&(inventoryComponent -> containers[i][j])));
+            }
+        }
+        GuiManager::manager -> addGuiElement(gui);
+        return gui;
+    }
+    
 };

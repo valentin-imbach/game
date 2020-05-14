@@ -18,7 +18,6 @@
 		04C7CC952334190E0053C2E7 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C7CC922334190E0053C2E7 /* SDL2.framework */; };
 		04CBB505244F595C00A8BC69 /* tools.h in Sources */ = {isa = PBXBuildFile; fileRef = 04C7CC8E233411F80053C2E7 /* tools.h */; };
 		04CBB51224522D4400A8BC69 /* LayerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04CBB51024522D4400A8BC69 /* LayerManager.cpp */; };
-		04CBB515245232BF00A8BC69 /* GuiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04CBB513245232BF00A8BC69 /* GuiManager.cpp */; };
 		04E4A3492464A2310021359B /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A3482464A2310021359B /* Entity.cpp */; };
 		04E4A34C246703310021359B /* EntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34B246701270021359B /* EntityManager.cpp */; };
 		04E4A35124683FE00021359B /* GuiElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34F24683FE00021359B /* GuiElements.cpp */; };
@@ -59,7 +58,6 @@
 		0416889B23344F9A0060DBDA /* TextManager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TextManager.hpp; sourceTree = "<group>"; };
 		041720D8245838110070F152 /* ResourceComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceComponent.h; sourceTree = "<group>"; };
 		041720D9245875960070F152 /* TableComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableComponent.h; sourceTree = "<group>"; };
-		041720DA245877140070F152 /* TableGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableGui.h; sourceTree = "<group>"; };
 		041720DB245A14F20070F152 /* ItemComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ItemComponent.h; sourceTree = "<group>"; };
 		041E0BA4243B4919007435A3 /* GridComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridComponent.h; sourceTree = "<group>"; };
 		0439263C244492750057C83C /* Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
@@ -72,17 +70,11 @@
 		04C7CC912334190E0053C2E7 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = ../../../../Library/Frameworks/SDL2_ttf.framework; sourceTree = "<group>"; };
 		04C7CC922334190E0053C2E7 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		04CBB500244F500500A8BC69 /* EntityLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EntityLayer.h; sourceTree = "<group>"; };
-		04CBB502244F57E600A8BC69 /* GuiLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuiLayer.h; sourceTree = "<group>"; };
 		04CBB504244F589D00A8BC69 /* Layers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Layers.h; sourceTree = "<group>"; };
 		04CBB50624503B5700A8BC69 /* DebugLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DebugLayer.h; sourceTree = "<group>"; };
 		04CBB50A2450437000A8BC69 /* maths.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = maths.h; sourceTree = "<group>"; };
 		04CBB51024522D4400A8BC69 /* LayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LayerManager.cpp; sourceTree = "<group>"; };
 		04CBB51124522D4400A8BC69 /* LayerManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LayerManager.hpp; sourceTree = "<group>"; };
-		04CBB513245232BF00A8BC69 /* GuiManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiManager.cpp; sourceTree = "<group>"; };
-		04CBB514245232BF00A8BC69 /* GuiManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiManager.hpp; sourceTree = "<group>"; };
-		04CBB517245235D900A8BC69 /* InventoryGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InventoryGui.h; sourceTree = "<group>"; };
-		04CBB518245238D300A8BC69 /* Guis.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Guis.h; sourceTree = "<group>"; };
-		04CBB51924544F1800A8BC69 /* HotbarGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotbarGui.h; sourceTree = "<group>"; };
 		04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerGuiComponent.h; sourceTree = "<group>"; };
 		04E4A34424645A1E0021359B /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		04E4A34624646DEC0021359B /* logger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
@@ -158,7 +150,6 @@
 				04C7CC8E233411F80053C2E7 /* tools.h */,
 				040CAB9E242E24AB009A2728 /* ECS */,
 				04CBB503244F587100A8BC69 /* LayerSystem */,
-				04CBB5162452330200A8BC69 /* GuiSystem */,
 				04E4A34E24683F880021359B /* Gui */,
 				04E4A34624646DEC0021359B /* logger.hpp */,
 				04E4A34424645A1E0021359B /* types.h */,
@@ -199,23 +190,9 @@
 				04CBB51024522D4400A8BC69 /* LayerManager.cpp */,
 				04CBB504244F589D00A8BC69 /* Layers.h */,
 				04CBB500244F500500A8BC69 /* EntityLayer.h */,
-				04CBB502244F57E600A8BC69 /* GuiLayer.h */,
 				04CBB50624503B5700A8BC69 /* DebugLayer.h */,
 			);
 			path = LayerSystem;
-			sourceTree = "<group>";
-		};
-		04CBB5162452330200A8BC69 /* GuiSystem */ = {
-			isa = PBXGroup;
-			children = (
-				04CBB514245232BF00A8BC69 /* GuiManager.hpp */,
-				04CBB513245232BF00A8BC69 /* GuiManager.cpp */,
-				04CBB518245238D300A8BC69 /* Guis.h */,
-				04CBB517245235D900A8BC69 /* InventoryGui.h */,
-				04CBB51924544F1800A8BC69 /* HotbarGui.h */,
-				041720DA245877140070F152 /* TableGui.h */,
-			);
-			path = GuiSystem;
 			sourceTree = "<group>";
 		};
 		04E4A34E24683F880021359B /* Gui */ = {
@@ -290,7 +267,6 @@
 				04CBB51224522D4400A8BC69 /* LayerManager.cpp in Sources */,
 				041688962334336D0060DBDA /* Game.cpp in Sources */,
 				04E4A35124683FE00021359B /* GuiElements.cpp in Sources */,
-				04CBB515245232BF00A8BC69 /* GuiManager.cpp in Sources */,
 				04C7CC882334119F0053C2E7 /* main.cpp in Sources */,
 				04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */,
 				0416889C23344F9A0060DBDA /* TextManager.cpp in Sources */,

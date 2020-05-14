@@ -10,7 +10,6 @@
 #include "Components.h"
 #include "Window.hpp"
 
-#include "../GuiSystem/Guis.h"
 #include "../Gui/GuiManager.hpp"
 #include "Game.hpp"
 
@@ -103,22 +102,15 @@ public:
         
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
-                GuiElement* gui = new Widget(Window::size/2,{534, 306},TextureManager::inventoryTexture);
-                for (int i = 0; i < inventoryComponent -> size.X; i++) {
-                    for (int j = 0; j < inventoryComponent -> size.Y; j++) {
-                        gui -> addGuiElement(new ItemSlot({39+i*57,39+j*57},&(inventoryComponent -> itemSlots[i][j])));
-                    }
-                }
-                GuiManager2::manager -> addGuiElement(gui);
-                //GuiManager::addGui(new InventoryGui(inventoryComponent,Window::size.X/2 ,Window::size.Y/2));
+                playerGuiComponent -> makeInventoryGui(Window::size/2);
                 return true;
             } else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
-                int s = playerGuiComponent -> hotbarGui -> selected;
-                Item* item = inventoryComponent -> itemSlots[s][0].item;
+                int s = playerGuiComponent -> selected;
+                Item* item = inventoryComponent -> containers[s][0].item;
                 if (item != nullptr) {
                     Entity* e = entity -> manager -> addEntity();
                     e -> addComponent<ItemComponent>((positionComponent -> position) + dirs2[directionComponent -> direction],item);
-                    inventoryComponent -> itemSlots[s][0].item = nullptr;
+                    inventoryComponent -> containers[s][0].item = nullptr;
                 }
             }
         }

@@ -11,5 +11,4 @@
 #include "LayerManager.hpp"
 
 #include "EntityLayer.h"
-#include "GuiLayer.h"
 #include "DebugLayer.h"

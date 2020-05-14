@@ -15,6 +15,7 @@ v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
 SDL_Texture* TextureManager::itemSheet = nullptr;
 SDL_Texture* TextureManager::inventoryTexture = nullptr;
 SDL_Texture* TextureManager::hotbarTexture = nullptr;
+SDL_Texture* TextureManager::tableTexture = nullptr;
 
 void TextureManager::Init() {
     
@@ -26,6 +27,7 @@ void TextureManager::Init() {
     itemSheet = loadTexture("assets/itemSheet.png");
     inventoryTexture = loadTexture("assets/inventory.png");
     hotbarTexture = loadTexture("assets/hotbar.png");
+    tableTexture = loadTexture("assets/tableGui.png");
     
     LOG("TextureManager initialized");
 }

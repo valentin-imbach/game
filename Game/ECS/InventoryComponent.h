@@ -13,11 +13,11 @@
 class InventoryComponent : public Component {
 public:
     pair<int> size;
-    vv(ItemContainer) itemSlots;
+    vv(ItemContainer) containers;
     
     InventoryComponent(Entity* entity, int w, int h) {
         size = {w,h};
-        itemSlots = vv(ItemContainer)(w,v(ItemContainer)(h));
+        containers = vv(ItemContainer)(w,v(ItemContainer)(h));
     }
     
     Item* addItem(Item* item) {
@@ -25,7 +25,7 @@ public:
         itemContainer -> item = item;
         for (int y = 0; y < size.Y; y++) {
             for (int x = 0; x < size.X; x++) {
-                itemSlots[x][y].addFull(itemContainer);
+                containers[x][y].addFull(itemContainer);
             }
         }
         return item;
