@@ -109,6 +109,7 @@ public:
     void debugRender();
     
     bool handleEvent(SDL_Event event);
+    Entity* player = nullptr;
 };
 
 

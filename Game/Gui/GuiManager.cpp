@@ -7,7 +7,6 @@
 //
 
 #include "GuiManager.hpp"
-#include "../Window.hpp"
 
 GuiManager* GuiManager::manager = nullptr;
 

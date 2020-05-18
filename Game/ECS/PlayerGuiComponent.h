@@ -44,4 +44,8 @@ public:
         return gui;
     }
     
+    ItemContainer* getSelectedItem() {
+        return &(inventoryComponent -> containers[selected][0]);
+    }
+    
 };

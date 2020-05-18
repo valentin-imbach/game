@@ -22,6 +22,7 @@ public:
         loadMap("map.txt");
         
         player = entityManager.addEntity();
+        entityManager.player = player;
         player -> addTag(TAG::PLAYER);
         
         player -> addComponent<PositionComponent>(pair<float>(50,50));
@@ -146,26 +147,9 @@ public:
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             pair<int> pos = Camera::stog(Window::mousePos).rounded();
             Entity* entity = entityManager.gridEntities[pos.X][pos.Y];
-            if (entity == nullptr) {
-                return false;
-            }
-            int t = -1;
-            Item* item = player -> getComponent<InventoryComponent>() -> containers[(player -> getComponent<PlayerGuiComponent>() -> selected)][0].item;
-            if (item != nullptr) {
-                t = item -> type;
-                if (entity -> hasComponent<ResourceComponent>()) {
-                    if (entity -> getComponent<ResourceComponent>() -> mine(item)) {
-                        entityManager.gridEntities[pos.X][pos.Y] = nullptr;
-                    }
-                }
-            }
-            if (entity -> hasComponent<TableComponent>()) {
-                GuiElement* inv = player -> getComponent<PlayerGuiComponent>() -> makeInventoryGui(Window::size/2 + pair<int>(0,100));
-                entity -> getComponent<TableComponent>() -> makeGui(Window::size/2 - pair<int>(0,200), inv);
-            }
-            LOG("Entity",pos,"clicked with item type",t);
-            return true;
+            if (entity == nullptr) { return false; }
+            return entity -> handleEvent(event);
         }
-        return entityManager.handleEvent(event);
+        return false;
     }
 };

@@ -20,6 +20,17 @@ public:
         entity -> addComponent<GridComponent>(pos);
     }
     
+    bool handleEvent(SDL_Event event) override {
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (event.button.button == SDL_BUTTON_RIGHT) {
+                GuiElement* inv = entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> makeInventoryGui(Window::size/2 + pair<int>(0,100));
+                makeGui(Window::size/2 - pair<int>(0,200), inv);
+                return true;
+            }
+        }
+        return false;
+    }
+    
     GuiElement* makeGui(pair<int> pos, GuiElement* link) {
         GuiElement* gui = new Widget(pos,{270, 96},TextureManager::tableTexture, link);
         gui -> addGuiElement(new ItemSlot({48,48},&a));

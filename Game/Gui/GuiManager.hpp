@@ -8,6 +8,7 @@
 
 #pragma once
 #include "GuiElements.hpp"
+#include "Window.hpp"
 
 class GuiManager {
 private:

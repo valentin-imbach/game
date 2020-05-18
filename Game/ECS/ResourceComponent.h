@@ -21,15 +21,21 @@ public:
         loot.addLoot(6,2,5);
         loot.addLoot(7,2,5);
     }
-    bool mine(Item* tool) {
-        if (tool -> type == type) {
-            entity -> active = false;
-            for (Loot l : loot.table) {
-                Entity* item = entity -> manager -> addEntity();
-                item -> addComponent<ItemComponent>(entity -> getComponent<PositionComponent>() -> position, l.createItem());
+    
+    bool handleEvent(SDL_Event event) override {
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> type() == type) {
+                    entity -> active = false;
+                    for (Loot l : loot.table) {
+                        Entity* item = entity -> manager -> addEntity();
+                        item -> addComponent<ItemComponent>(entity -> getComponent<PositionComponent>() -> position, l.createItem());
+                    }
+                    return true;
+                }
             }
-            return true;
         }
         return false;
     }
+    
 };

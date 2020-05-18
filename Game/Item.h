@@ -48,8 +48,8 @@ struct ItemContainer {
     Item* item = nullptr;
     
     bool empty() { return item == nullptr; }
-    bool stack() { return item -> stack; }
-    int type() { return item -> type; }
+    bool stack() { return item ? item -> stack : false; }
+    int type() { return item ? item -> type : -1; }
     int count() { return item -> count; }
     
     bool similar(Item* other) {
