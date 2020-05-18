@@ -16,7 +16,7 @@ public:
     PlayerInputComponent *playerInputComponent;
     
     PlayerAnimationComponent(Entity* entity) {
-        spriteComponent = entity -> addComponent<SpriteComponent>("assets/character2.png",0,0,1,2);
+        spriteComponent = entity -> addComponent<SpriteComponent>("character2.png",0,0,1,2);
         directionComponent = entity -> getComponent<DirectionComponent>();
         playerInputComponent = entity -> getComponent<PlayerInputComponent>();
         spriteComponent -> offset = 1;

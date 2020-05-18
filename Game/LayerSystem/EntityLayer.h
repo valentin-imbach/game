@@ -28,11 +28,11 @@ public:
         player -> addComponent<PositionComponent>(pair<float>(50,50));
         player -> addComponent<DirectionComponent>();
         
-        player -> addComponent<InventoryComponent>(9,5);
-        player -> getComponent<InventoryComponent>() -> containers[0][0].item = new Tool(0);
-        player -> getComponent<InventoryComponent>() -> containers[8][4].item = new ItemStack(6,2);
-        player -> getComponent<InventoryComponent>() -> containers[0][4].item = new ItemStack(7,5);
-        player -> getComponent<InventoryComponent>() -> containers[8][0].item = new Tool(1);
+        auto inv = player -> addComponent<InventoryComponent>(9,5);
+        inv -> containers[0][0].item = new Tool(0);
+        inv -> containers[8][4].item = new ItemStack(6,2);
+        inv -> containers[0][4].item = new ItemStack(7,5);
+        inv -> containers[8][0].item = new Tool(1);
         
         player -> addComponent<PlayerGuiComponent>();
         player -> addComponent<PlayerInputComponent>();
@@ -40,14 +40,16 @@ public:
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
         
         Entity* rock = entityManager.addEntity();
-        rock -> addComponent<ResourceComponent>(pair<int>(53,53),1,"assets/nature.png");
+        rock -> addComponent<ResourceComponent>(pair<int>(53,53),1,"nature.png");
 
         Entity* table = entityManager.addEntity();
         table -> addComponent<TableComponent>(pair<int>(53,47));
-        table -> addComponent<SpriteComponent>("assets/table.png");
         
         Entity* item = entityManager.addEntity();
-        item -> addComponent<ItemComponent>(pair<float>(47,47),new ItemStack(8,1));
+        item -> addComponent<ItemComponent>(pair<int>(47,47), new ItemStack(8,1));
+        
+        Entity* chest = entityManager.addEntity();
+        chest -> addComponent<ChestComponent>(pair<int>(55,47));
         
         
         LOG("Entity Layer constructed");
@@ -150,6 +152,6 @@ public:
             if (entity == nullptr) { return false; }
             return entity -> handleEvent(event);
         }
-        return false;
+        return player -> handleEvent(event);
     }
 };

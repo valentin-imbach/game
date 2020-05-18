@@ -28,3 +28,4 @@
 
 #include "TableComponent.h"
 #include "ResourceComponent.h"
+#include "ChestComponent.h"

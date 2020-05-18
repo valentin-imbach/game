@@ -34,7 +34,7 @@ public:
     }
     
     GuiElement* makeInventoryGui(pair<int> pos) {
-        GuiElement* gui = new Widget(pos,{534, 306},TextureManager::inventoryTexture);
+        GuiElement* gui = new Widget(pos,{534, 306},TextureManager::loadTexture("inventory.png"));
         for (int i = 0; i < inventoryComponent -> size.X; i++) {
             for (int j = 0; j < inventoryComponent -> size.Y; j++) {
                 gui -> addGuiElement(new ItemSlot({39+i*57,39+j*57},&(inventoryComponent -> containers[i][j])));

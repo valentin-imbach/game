@@ -22,7 +22,7 @@ public:
     SpriteComponent(Entity* entity, const char* path, int x = 0, int y = 0, int w = 1, int h = 1) {
         positionComponent = entity -> getComponent<PositionComponent>();
         texture = TextureManager::loadTexture(path);
-        if (!texture) { texture = TextureManager::loadTexture("assets/default.png"); }
+        if (!texture) { texture = TextureManager::loadTexture("default.png"); }
         size = pair<float>(w,h);
         sx = x;
         sy = y;

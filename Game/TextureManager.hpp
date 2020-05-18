@@ -21,14 +21,11 @@ enum TileID {
 
 struct TextureManager {
     
-    static v(SDL_Texture*) tilesets;
-    static SDL_Texture* itemSheet;
-    static SDL_Texture* inventoryTexture;
-    static SDL_Texture* hotbarTexture;
-    static SDL_Texture* tableTexture;
+    static v(SDL_Texture*) tilesets;    
+    static std::map<std::string, SDL_Texture*> textures;
     
     static void Init();
-    static SDL_Texture* loadTexture(const char* path);
+    static SDL_Texture* loadTexture(std::string path);
     static void loadTileset(int a, const char* path);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered = false);

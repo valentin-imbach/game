@@ -12,31 +12,26 @@
 #include "Window.hpp"
 
 v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
-SDL_Texture* TextureManager::itemSheet = nullptr;
-SDL_Texture* TextureManager::inventoryTexture = nullptr;
-SDL_Texture* TextureManager::hotbarTexture = nullptr;
-SDL_Texture* TextureManager::tableTexture = nullptr;
+auto TextureManager::textures = std::map<std::string, SDL_Texture*>();
 
 void TextureManager::Init() {
     
-    loadTileset(GRASS,"assets/grass.png");
-    loadTileset(SAND,"assets/sand.png");
-    loadTileset(WATER,"assets/water.png");
-    loadTileset(STONE,"assets/stone.png");
-    
-    itemSheet = loadTexture("assets/itemSheet.png");
-    inventoryTexture = loadTexture("assets/inventory.png");
-    hotbarTexture = loadTexture("assets/hotbar.png");
-    tableTexture = loadTexture("assets/tableGui.png");
+    loadTileset(GRASS,"grass.png");
+    loadTileset(SAND,"sand.png");
+    loadTileset(WATER,"water.png");
+    loadTileset(STONE,"stone.png");
     
     LOG("TextureManager initialized");
 }
 
-SDL_Texture* TextureManager::loadTexture(const char* path) {
-    SDL_Surface* tmpSurface = IMG_Load(path);
+SDL_Texture* TextureManager::loadTexture(std::string path) {
+    if (textures.find(path) != textures.end()) { return textures[path]; }
+    std::string folder = "assets";
+    SDL_Surface* tmpSurface = IMG_Load((folder + "/" + path).c_str());
     if (tmpSurface) { LOG("Texture loaded from",path); } else { ERROR("Failed to load SDL_Texture from",path); }
     SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
+    textures[path] = tex;
     return tex;
 };
 

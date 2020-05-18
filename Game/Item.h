@@ -18,7 +18,7 @@ struct Item {
     int count = 1;
     int type = 0;
     virtual void render(int x, int y, int scale, bool inv = true) {
-        TextureManager::drawTexture(TextureManager::itemSheet, BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
+        TextureManager::drawTexture(TextureManager::loadTexture("itemSheet.png"), BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
     }
 };
 
@@ -29,7 +29,7 @@ struct ItemStack : public Item {
         stack = true;
     }
     void render(int x, int y, int scale, bool inv = true) override {
-        TextureManager::drawTexture(TextureManager::itemSheet, BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
+        TextureManager::drawTexture(TextureManager::loadTexture("itemSheet.png"), BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
         if (count != 1 && inv) {
             TextManager::drawText(std::to_string(count), x+scale/4, y);
         }

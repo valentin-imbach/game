@@ -128,13 +128,13 @@ void ItemSlot::render() {
     itemContainer -> render(position+size/2,size.X);
 }
 
-Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::hotbarTexture) {
+Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::loadTexture("hotbar.png")) {
     hotbarContainers = items;
     selected = sel;
 }
 
 void Hotbar::render() {
-    TextureManager::drawTexture(TextureManager::hotbarTexture, position.X, position.Y, 534, 78);
+    TextureManager::drawTexture(TextureManager::loadTexture("hotbar.png"), position.X, position.Y, 534, 78);
     for (int i = 0; i < hotbarContainers.size(); i++) {
         if (!hotbarContainers[i] -> empty()) {
             hotbarContainers[i] -> render(position + pair<int>(39+i*57,39),48);
