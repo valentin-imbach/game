@@ -103,6 +103,7 @@ public:
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
                 playerGuiComponent -> makeInventoryGui(Window::size/2);
+                entity -> getComponent<HealthComponent>() -> health -= 1;
                 return true;
             } else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
                 int s = playerGuiComponent -> selected;

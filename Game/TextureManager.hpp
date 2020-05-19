@@ -36,9 +36,12 @@ struct TextureManager {
 struct Sprite {
     SDL_Texture* texture;
     pair<int> position;
+    pair<int> size;
     int priority;
-    Sprite(SDL_Texture* tex, pair<int> pos = {0,0}, int p = 0) {
+    Sprite() {}
+    Sprite(SDL_Texture* tex, pair<int> pos = {0,0}, pair<int> s = {1,1}, int p = 0) {
         texture = tex;
+        size = s;
         position = pos;
         priority = p;
     }

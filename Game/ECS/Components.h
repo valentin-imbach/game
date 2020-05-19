@@ -12,8 +12,10 @@
 
 #include "PositionComponent.h"
 #include "DirectionComponent.h"
+#include "SizeComponent.h"
 #include "CollisionComponent.h"
 #include "GridComponent.h"
+#include "HealthComponent.h"
 
 #include "SpriteComponent.h"
 

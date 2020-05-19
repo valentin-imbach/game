@@ -24,8 +24,8 @@ public:
     
     void update() override {
         int frame = (playerInputComponent -> ticks + 3)/4 ;
-        spriteComponent -> sx = directionComponent -> direction;
-        spriteComponent -> sy = (frame % 6) * 2;
+        spriteComponent -> sprite.position.X = directionComponent -> direction;
+        spriteComponent -> sprite.position.Y = (frame % 6) * 2;
     }
     
 };

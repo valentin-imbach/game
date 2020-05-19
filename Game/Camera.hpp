@@ -9,6 +9,7 @@
 #pragma once
 
 #include "tools.h"
+#include "TextureManager.hpp"
 
 #define ZOOM 64
 #define RADIUS 0.1f
@@ -17,6 +18,7 @@ class Camera {
 public:
     static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset = 0, bool contre = false);
     static void drawRect(pair<float> pos, pair<float> size);
+    static void drawSprite(Sprite sprite, pair<float> pos);
     static void update(pair<float> p);
     static void render();
     static pair<float> position;

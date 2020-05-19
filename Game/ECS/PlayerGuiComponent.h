@@ -15,11 +15,14 @@
 class PlayerGuiComponent : public Component {
 public:
     InventoryComponent *inventoryComponent;
+    HealthComponent *healthComponent;
     int selected = 0;
     
     PlayerGuiComponent(Entity* entity) {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
+        healthComponent = entity -> getComponent<HealthComponent>();
         makeHotbarGui();
+        makeHealthGui();
     }
     
     GuiElement* makeHotbarGui() {
@@ -31,6 +34,12 @@ public:
         GuiElement* hotbar = new Hotbar(vec, &selected);
         GuiManager::manager -> addGuiElement(hotbar);
         return hotbar;
+    }
+    
+    GuiElement* makeHealthGui() {
+        GuiElement* gui = new HealthBar(&(healthComponent -> health));
+        GuiManager::manager -> addGuiElement(gui);
+        return gui;
     }
     
     GuiElement* makeInventoryGui(pair<int> pos) {

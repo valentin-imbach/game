@@ -174,3 +174,14 @@ bool Hotbar::onKey(int k) {
     return false;
 }
 
+HealthBar::HealthBar(int* h) : GuiElement({Window::size.X-330,50},{0,0}) {
+    health = h;
+    heart = TextureManager::loadTexture("heart.png");
+}
+
+void HealthBar::render() {
+    int offset = 30;
+    for (int i = 0; i < *health; i++) {
+        TextureManager::drawTexture(heart, position.X + i*offset, position.Y, 21, 18);
+    }
+}

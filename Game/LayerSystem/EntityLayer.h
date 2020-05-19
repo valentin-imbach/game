@@ -27,6 +27,7 @@ public:
         
         player -> addComponent<PositionComponent>(pair<float>(50,50));
         player -> addComponent<DirectionComponent>();
+        player -> addComponent<HealthComponent>(10);
         
         auto inv = player -> addComponent<InventoryComponent>(9,5);
         inv -> containers[0][0].item = new Tool(0);

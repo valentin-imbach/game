@@ -88,6 +88,8 @@
 		04E4A353246846470021359B /* GuiManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiManager.hpp; sourceTree = "<group>"; };
 		04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		04E8D3BC239D6DF2002D0079 /* FastNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastNoise.h; sourceTree = "<group>"; };
+		04F789D02473D8C8001A3D5F /* SizeComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizeComponent.h; sourceTree = "<group>"; };
+		04F789D1247473E8001A3D5F /* HealthComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthComponent.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,8 @@
 				04E4A34A2464A98E0021359B /* TileComponent.h */,
 				040CAB9D242D123D009A2728 /* PositionComponent.h */,
 				040CABA3242E3408009A2728 /* DirectionComponent.h */,
+				04F789D02473D8C8001A3D5F /* SizeComponent.h */,
+				04F789D1247473E8001A3D5F /* HealthComponent.h */,
 				040CAB9F242E2586009A2728 /* SpriteComponent.h */,
 				040CABA6242F95B8009A2728 /* InventoryComponent.h */,
 				040CABA7242F964A009A2728 /* CollisionComponent.h */,

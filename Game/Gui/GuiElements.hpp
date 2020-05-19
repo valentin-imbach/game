@@ -80,3 +80,11 @@ public:
     bool onScroll(int y) override;
     bool onKey(int k) override;
 };
+
+class HealthBar : public GuiElement {
+public:
+    int* health;
+    SDL_Texture* heart;
+    HealthBar(int* h);
+    void render() override;
+};
