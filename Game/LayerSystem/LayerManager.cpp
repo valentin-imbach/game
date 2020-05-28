@@ -8,9 +8,7 @@
 
 #include "LayerManager.hpp"
 
-v(Layer*) LayerManager::layerStack = v(Layer*)();
-
-void LayerManager::Init() {
+LayerManager::LayerManager() {
     LOG("Layer Manager initialized");
 }
     

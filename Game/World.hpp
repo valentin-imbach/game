@@ -13,7 +13,7 @@
 #include "Console.hpp"
 
 class World {
-private:
+public:
     LayerManager layerManager;
 public:
     World();
@@ -22,9 +22,6 @@ public:
     bool handleEvent(SDL_Event event);
     
     GuiManager guiManager;
-    
-    EntityLayer* entityLayer;
-    DebugLayer* debugLayer;
-    
-    Console* console;
+    EntityLayer entityLayer;
+    DebugLayer debugLayer;
 };

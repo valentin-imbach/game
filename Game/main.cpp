@@ -16,17 +16,17 @@ int main() {
     std::srand((int)time(0));
     
     Window window("Game",1224,840);
-    Game::Init();
+    Game game;
     
     while (Window::running) {
         window.update();
-        Game::handleEvents();
-        Game::update();
-        Game::render();
+        game.handleEvents();
+        game.update();
+        game.render();
     }
     
     std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
-    Game::entityLayer -> player -> serialize(file);
+    game.world -> entityLayer.player -> serialize(file);
     file.close();
     
     return 0;

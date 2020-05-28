@@ -9,20 +9,14 @@
 #include "Game.hpp"
 #include "Camera.hpp"
 
-StateController Game::controller = StateController();
-EntityLayer* Game::entityLayer = nullptr;
-DebugLayer* Game::debugLayer = nullptr;
-GuiManager Game::guiManager = GuiManager();
-PauseMenu* Game::pauseMenu = nullptr;
-Console* Game::console = nullptr;
-
-void Game::Init() {
-    LayerManager::addLayer(entityLayer = new EntityLayer());
-    LayerManager::addLayer(debugLayer = new DebugLayer());
-    controller.state = RUNNING;
+Game::Game() {
+    
+    world = new World();
     
     pauseMenu = new PauseMenu();
-    console = new Console(entityLayer);
+    console = new Console(&(world -> entityLayer));
+    
+    controller.state = RUNNING;
     
     LOG("Game initialized");
 }
@@ -32,8 +26,7 @@ void Game::handleEvents() {
         if (controller.handleEvent(e)) { continue; }
         if (controller.state == RUNNING) {
             if (console -> handleEvent(e)) { continue; }
-            if (guiManager.handleEvent(e)) { continue; }
-            if (LayerManager::handleEvent(e)) { continue; }
+            if (world -> handleEvent(e)) { continue; }
         } else if (controller.state == PAUSED) {
             if (pauseMenu -> handleEvent(e)) { continue; }
         }
@@ -42,22 +35,23 @@ void Game::handleEvents() {
 
 void Game::update() {
     if (controller.state == RUNNING) {
-        LayerManager::update();
-        guiManager.update();
-        Camera::update(entityLayer -> player -> getComponent<PositionComponent>() -> position);
+        world -> update();
+        Camera::update(world -> entityLayer.player -> getComponent<PositionComponent>() -> position);
     }
 }
 
 void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 255, 255, 255, 255);
     SDL_RenderClear(Window::renderer);
-    LayerManager::render();
-    guiManager.render();
+    
     console -> render();
+    world -> render();
+    
     if (controller.state == RUNNING) {
         //Camera::render();
     } else if (controller.state == PAUSED) {
         pauseMenu -> render();
     }
+    
     SDL_RenderPresent(Window::renderer);
 }

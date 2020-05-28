@@ -18,13 +18,13 @@ struct Layer {
 
 
 class LayerManager {
-public:
-    static void Init();
-    static Layer* addLayer(Layer* l);
-    static void update();
-    static void render();
-    static bool handleEvent(SDL_Event event);
 private:
-    static v(Layer*) layerStack;
+    v(Layer*) layerStack;
+public:
+    LayerManager();
+    Layer* addLayer(Layer* l);
+    void update();
+    void render();
+    bool handleEvent(SDL_Event event);
 };
 

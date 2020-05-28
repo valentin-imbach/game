@@ -12,17 +12,18 @@
 #include "Gui/PauseMenu.hpp"
 #include "Console.hpp"
 #include "StateController.h"
+#include "World.hpp"
 
 class Game {
 public:
-    static void Init();
-    static void render();
-    static void update();
-    static void handleEvents();
-    static StateController controller;
-    static EntityLayer* entityLayer;
-    static DebugLayer* debugLayer;
-    static GuiManager guiManager;
-    static PauseMenu* pauseMenu;
-    static Console* console;
+    Game();
+    void render();
+    void update();
+    void handleEvents();
+    
+    StateController controller;
+
+    World* world;
+    PauseMenu* pauseMenu;
+    Console* console;
 };

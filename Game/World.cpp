@@ -9,12 +9,12 @@
 #include "World.hpp"
 
 World::World() {
-    layerManager.addLayer(entityLayer = new EntityLayer());
-    layerManager.addLayer(debugLayer = new DebugLayer());
-    console = new Console(entityLayer);
+    layerManager.addLayer(&entityLayer);
+    layerManager.addLayer(&debugLayer);
 }
 
 void World::update() {
+    guiManager.update();
     layerManager.update();
 }
 
@@ -23,5 +23,7 @@ void World::render() {
 }
 
 bool World::handleEvent(SDL_Event event) {
-    return layerManager.handleEvent(event);
+    if (guiManager.handleEvent(event)) { return true; }
+    if (layerManager.handleEvent(event)) { return true; }
+    return false;
 }
