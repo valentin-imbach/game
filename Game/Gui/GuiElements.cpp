@@ -8,7 +8,6 @@
 
 #include "GuiElements.hpp"
 #include "../TextureManager.hpp"
-#include "../Window.hpp"
 #include "GuiManager.hpp"
 
 GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex) {
@@ -50,7 +49,7 @@ bool GuiElement::handleEvent(SDL_Event event) {
     }
     
     if (event.type == SDL_MOUSEBUTTONDOWN) {
-        if(check(Window::mousePos) && onClick(event.button.button)) { return true; }
+        if(onClick(event.button.button)) { return true; }
     } else if (event.type == SDL_KEYDOWN) {
         if (onKey(event.key.keysym.scancode)) { return true; }
     } else if (event.type == SDL_MOUSEWHEEL) {
@@ -102,7 +101,22 @@ bool Widget::onKey(int key) {
     return false;
 }
 
-Button::Button(pair<int> pos, pair<int> s, SDL_Texture* tex) : GuiElement(pos,s,tex) {}
+TextElement::TextElement(pair<int> pos, std::string t, bool c) : GuiElement(pos) {
+    text = t;
+    centre = c;
+}
+
+void TextElement::render() {
+    TextManager::drawText(text, position, centre);
+}
+
+DisplayElement::DisplayElement(pair<int> pos, int* v) : GuiElement(pos) {
+    value = v;
+}
+
+void DisplayElement::render() {
+    TextManager::drawText(std::to_string(*value), position, true);
+}
 
 ItemSlot::ItemSlot(pair<int> pos, ItemContainer* item) : GuiElement(pos,{48,48}) {
     itemContainer = item;
@@ -173,6 +187,14 @@ bool Hotbar::onKey(int k) {
     }
     return false;
 }
+
+bool Hotbar::onClick(int b) {
+    Item* item = hotbarContainers[*selected] -> item;
+    if (item != nullptr) {
+        return hotbarContainers[*selected] -> item -> onClick(b);
+    }
+    return false;
+};
 
 HealthBar::HealthBar(int* h) : GuiElement({Window::size.X-330,50},{0,0}) {
     health = h;

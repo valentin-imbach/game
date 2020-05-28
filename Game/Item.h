@@ -10,6 +10,7 @@
 
 #include "TextureManager.hpp"
 #include "TextManager.hpp"
+#include "ECS/ECS.h"
 
 #define MAX_STACK 5
 
@@ -20,6 +21,7 @@ struct Item {
     virtual void render(int x, int y, int scale, bool inv = true) {
         TextureManager::drawTexture(TextureManager::loadTexture("itemSheet.png"), BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
     }
+    virtual bool onClick(int b) { return false; }
 };
 
 struct ItemStack : public Item {
@@ -31,15 +33,8 @@ struct ItemStack : public Item {
     void render(int x, int y, int scale, bool inv = true) override {
         TextureManager::drawTexture(TextureManager::loadTexture("itemSheet.png"), BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
         if (count != 1 && inv) {
-            TextManager::drawText(std::to_string(count), x+scale/4, y);
+            TextManager::drawText(std::to_string(count), {x+scale/4,y});
         }
-    }
-};
-
-struct Tool : public Item {
-    int level = 0;
-    Tool(int t) {
-        type = t;
     }
 };
 
@@ -144,5 +139,25 @@ struct LootTable {
     void addLoot(int t, int a = 1, int b = 1) {
         assert(a <= b);
         table.emplace_back(t,a,b);
+    }
+};
+
+class Tool : public Item {
+public:
+    int level = 0;
+    Tool(int t) {
+        type = t;
+    }
+};
+
+class Consumable : public ItemStack {
+public:
+    Consumable(int t, int c) : ItemStack(t,c) {};
+    bool onClick(int b) override {
+        if (b == SDL_BUTTON_RIGHT) {
+            count -= 1;
+            LOG("Item of type",type,"consumed");
+        }
+        return true;
     }
 };

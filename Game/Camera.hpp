@@ -11,7 +11,6 @@
 #include "tools.h"
 #include "TextureManager.hpp"
 
-#define ZOOM 64
 #define RADIUS 0.1f
 
 class Camera {
@@ -21,6 +20,7 @@ public:
     static void drawSprite(Sprite sprite, pair<float> pos);
     static void update(pair<float> p);
     static void render();
+    static int ZOOM;
     static pair<float> position;
     static void handleEvents();
     static pair<float> stog(pair<float> p);

@@ -8,8 +8,6 @@
 
 #pragma once
 
-#define MAX_FPS 60
-
 class Window {
 public:
     
@@ -18,12 +16,13 @@ public:
     static SDL_Renderer* renderer;
     
     void update();
-    inline bool isRunning() { return running; }
-    
+
+    static bool running;
     static const Uint8* keys;
     static v(SDL_Event) events;
     static pair<int> size;
     static pair<int> mousePos;
+    static int MAX_FPS;
     static int FPS;
     
 private:
@@ -34,7 +33,7 @@ private:
     void handleEvents();
     SDL_Event event;
     SDL_Window* win;
-    bool running;
+
 };
 
 

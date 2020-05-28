@@ -16,12 +16,14 @@ void TextManager::Init() {
     TextManager::loadFont("assets/font.ttf", 16);
 }
 
-void TextManager::drawText(std::string text, int x, int y, SDL_Color color) {
+void TextManager::drawText(std::string text, pair<int> pos, bool centre, SDL_Color color) {
+    if (text.length() == 0) { return; }
     if (!font) { ERROR("No font loaded"); return; }
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, textSurface);
+    if (centre) { pos.X -= textSurface -> w; }
+    SDL_Rect renderQuad = {pos.X, pos.Y, 2*(textSurface -> w), 2*(textSurface -> h)};
     SDL_FreeSurface(textSurface);
-    SDL_Rect renderQuad = {x, y, 2*(textSurface -> w), 2*(textSurface -> h)};
     SDL_RenderCopy(Window::renderer, texture, NULL, &renderQuad);
     SDL_DestroyTexture(texture);
 }

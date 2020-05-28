@@ -24,6 +24,7 @@
 #include "FastNoise.h"
 
 #include "maths.h"
+#include "strings.h"
 #include "types.h"
 #include "logger.hpp"
 

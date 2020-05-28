@@ -8,40 +8,37 @@
 
 #include "Game.hpp"
 #include "Camera.hpp"
-#include "LayerSystem/Layers.h"
 
 GameState Game::state = LOADING;
 EntityLayer* Game::entityLayer = nullptr;
 DebugLayer* Game::debugLayer = nullptr;
 GuiManager Game::guiManager = GuiManager();
+PauseMenu* Game::pauseMenu = nullptr;
+Console* Game::console = nullptr;
 
 void Game::Init() {
     LayerManager::addLayer(entityLayer = new EntityLayer());
     LayerManager::addLayer(debugLayer = new DebugLayer());
     state = RUNNING;
     
+    pauseMenu = new PauseMenu();
+    console = new Console(entityLayer);
+    
     LOG("Game initialized");
 }
 
 void Game::handleEvents() {
     for (auto e : Window::events) {
-        if (e.key.repeat) { continue; }
         if (state == RUNNING) {
-            if ((e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEWHEEL) && guiManager.handleEvent(e)) {
-                continue;
-            }
-            if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-                state = PAUSED;
-                return;
-            }
-            if (LayerManager::handleEvent(e)) {
-                continue;
-            }
+            if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) { state = PAUSED; return; }
+            if (console -> handleEvent(e)) { continue; }
+            if (e.key.repeat) { continue; }
+            if ((e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEWHEEL) && guiManager.handleEvent(e)) { continue; }
+            if (LayerManager::handleEvent(e)) { continue; }
         } else if (state == PAUSED) {
-            if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-                state = RUNNING;
-                return;
-            }
+            if (e.key.repeat) { continue; }
+            if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) { state = RUNNING; return; }
+            if (pauseMenu -> handleEvent(e)) { continue; }
         }
     }
 }
@@ -59,5 +56,11 @@ void Game::render() {
     SDL_RenderClear(Window::renderer);
     LayerManager::render();
     guiManager.render();
+    console -> render();
+    if (state == RUNNING) {
+        //Camera::render();
+    } else if (state == PAUSED) {
+        pauseMenu -> render();
+    }
     SDL_RenderPresent(Window::renderer);
 }

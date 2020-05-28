@@ -29,7 +29,7 @@ public:
     
     void render() override {
         pair<float> position = Camera::gtos(positionComponent -> position);
-        item -> render(position.X,position.Y,32,false);
+        item -> render(position.X,position.Y,Camera::ZOOM/2,false);
     }
     
 };

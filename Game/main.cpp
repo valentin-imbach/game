@@ -18,7 +18,7 @@ int main() {
     Window window("Game",1224,840);
     Game::Init();
     
-    while (window.isRunning()) {
+    while (Window::running) {
         window.update();
         Game::handleEvents();
         Game::update();

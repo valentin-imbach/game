@@ -10,9 +10,6 @@
 #include "Components.h"
 #include "Window.hpp"
 
-#include "../Gui/GuiManager.hpp"
-#include "Game.hpp"
-
 class PlayerInputComponent : public Component {
     
 private:

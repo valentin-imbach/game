@@ -15,8 +15,10 @@ SDL_Renderer* Window::renderer = nullptr;
 const Uint8* Window::keys = nullptr;
 v(SDL_Event) Window::events = v(SDL_Event)();
 int Window::FPS = NULL;
-pair<int> Window::size = {0,0};
-pair<int> Window::mousePos = {0,0};
+int Window::MAX_FPS = 60;
+pair<int> Window::size;
+pair<int> Window::mousePos;
+bool Window::running = true;
 
 Window::Window(const char *title, int width, int height, bool fullscreen) {
     
@@ -77,7 +79,7 @@ int Window::limitFrameRate(int fps) {
         past = delay;
     }
     lastFrame = SDL_GetTicks();
-    return 1000/past;
+    return 1000.0/past;
 };
 
 

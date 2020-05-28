@@ -34,6 +34,7 @@ public:
         inv -> containers[8][4].item = new ItemStack(6,2);
         inv -> containers[0][4].item = new ItemStack(7,5);
         inv -> containers[8][0].item = new Tool(1);
+        inv -> containers[5][3].item = new Consumable(16,5);
         
         player -> addComponent<PlayerGuiComponent>();
         player -> addComponent<PlayerInputComponent>();
@@ -51,6 +52,10 @@ public:
         
         Entity* chest = entityManager.addEntity();
         chest -> addComponent<ChestComponent>(pair<int>(55,47));
+        
+        Entity* shelf = entityManager.addEntity();
+        shelf -> addComponent<GridComponent>(pair<int>(50,45));
+        shelf -> addComponent<SpriteComponent>("bookshelf.png",0,0,1,3);
         
         
         LOG("Entity Layer constructed");
@@ -137,11 +142,13 @@ public:
     }
     
     void render() override {
-
-        /*std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
+        /*
+        std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
             if (a == nullptr || b == nullptr || !a -> hasComponent<PositionComponent>() || !b -> hasComponent<PositionComponent>()) { return true; }
             return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
-        });*/
+            return true;
+        });
+        */
         entityManager.render();
         //entityManager.debugRender();
     }

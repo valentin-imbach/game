@@ -10,6 +10,7 @@
 #include "Window.hpp"
 
 pair<float> Camera::position = {0,0};
+int Camera::ZOOM = 64;
 
 void Camera::drawTexture(SDL_Texture *tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset, bool centre) {
     float dx = ZOOM*(dest.X-position.X)+Window::size.X/2;

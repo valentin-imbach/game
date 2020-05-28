@@ -9,6 +9,8 @@
 #pragma once
 #include "LayerSystem/Layers.h"
 #include "Gui/GuiManager.hpp"
+#include "Gui/PauseMenu.hpp"
+#include "Console.hpp"
 
 enum GameState {
     RUNNING,
@@ -27,4 +29,6 @@ public:
     static EntityLayer* entityLayer;
     static DebugLayer* debugLayer;
     static GuiManager guiManager;
+    static PauseMenu* pauseMenu;
+    static Console* console;
 };

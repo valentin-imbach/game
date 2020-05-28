@@ -13,14 +13,20 @@
 class GridComponent : public Component {
 public:
     pair<int> position;
+    pair<int> size;
     PositionComponent *positionComponent;
     CollisionComponent *collisionComponent;
     
-    GridComponent(Entity* entity, pair<int> pos) {
+    GridComponent(Entity* entity, pair<int> pos, pair<int> s = {1,1}) {
         positionComponent = entity -> addComponent<PositionComponent>(pos);
-        collisionComponent = entity -> addComponent<CollisionComponent>();
+        collisionComponent = entity -> addComponent<CollisionComponent>(s.X-0.5,s.Y-0.5,0.5,0.5);
         position = pos;
-        entity -> manager -> gridEntities[pos.X][pos.Y] = entity;
+        size = s;
+        for (int i = 0; i < s.X; i++) {
+            for (int j = 0; j < s.Y; j++) {
+                entity -> manager -> gridEntities[pos.X+i][pos.Y-j] = entity;
+            }
+        }
         entity -> addTag(TAG::STRUCT);
     }
 };

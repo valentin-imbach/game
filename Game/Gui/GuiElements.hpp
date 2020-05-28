@@ -9,6 +9,7 @@
 #pragma once
 #include "tools.h"
 #include "../Item.h"
+#include "../Window.hpp"
 
 class GuiManager;
 
@@ -31,7 +32,7 @@ public:
     virtual bool onKey(int k) { return false; }
     virtual bool onScroll(int y) { return false; }
     
-    GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr);
+    GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr);
     
     void addGuiElement(GuiElement* gui);
     void setParent(GuiElement* gui);
@@ -46,6 +47,7 @@ public:
     
 };
 
+
 class Widget : public GuiElement {
 private:
     GuiElement* link;
@@ -55,10 +57,44 @@ public:
     void onDestroy() override;
 };
 
-class Button : public GuiElement {
+class TextElement : public GuiElement {
+private:
+    std::string text;
+    bool centre;
 public:
-    Button(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr);
+    TextElement(pair<int> pos, std::string t, bool c = false);
+    void render() override;
 };
+
+class DisplayElement : public GuiElement {
+private:
+    int* value;
+public:
+    DisplayElement(pair<int> pos, int* v);
+    void render() override;
+};
+
+
+template <typename T> class Button : public GuiElement {
+private:
+    T* object;
+    void(T::*function)();
+public:
+    Button(pair<int> pos, pair<int> s, T* obj, void(T::*func)(), SDL_Texture* tex = nullptr) : GuiElement(pos,s,tex) {
+        object = obj;
+        function = func;
+    }
+    bool onClick(int b) override {
+        if (check(Window::mousePos)) {
+            if (b == SDL_BUTTON_LEFT) {
+                (object->*function)();
+            }
+            return true;
+        }
+        return false;
+    }
+};
+
 
 class ItemSlot : public GuiElement {
 private:
@@ -68,6 +104,7 @@ public:
     void render() override;
     bool onClick(int b) override;
 };
+
 
 class Hotbar : public GuiElement {
 private:
@@ -79,7 +116,9 @@ public:
     void render() override;
     bool onScroll(int y) override;
     bool onKey(int k) override;
+    bool onClick(int b) override;
 };
+
 
 class HealthBar : public GuiElement {
 public:
@@ -88,3 +127,4 @@ public:
     HealthBar(int* h);
     void render() override;
 };
+
