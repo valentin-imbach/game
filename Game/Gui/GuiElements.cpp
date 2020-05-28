@@ -118,6 +118,20 @@ void DisplayElement::render() {
     TextManager::drawText(std::to_string(*value), position, true);
 }
 
+Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex) : GuiElement(pos,s,tex) {
+    function = func;
+}
+
+bool Button::onClick(int b) {
+    if (check(Window::mousePos)) {
+        if (b == SDL_BUTTON_LEFT) {
+            (*function)();
+        }
+        return true;
+    }
+    return false;
+}
+
 ItemSlot::ItemSlot(pair<int> pos, ItemContainer* item) : GuiElement(pos,{48,48}) {
     itemContainer = item;
 }

@@ -20,6 +20,7 @@ void World::update() {
 
 void World::render() {
     layerManager.render();
+    guiManager.render();
 }
 
 bool World::handleEvent(SDL_Event event) {

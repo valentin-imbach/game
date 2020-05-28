@@ -13,8 +13,9 @@
 #include "Console.hpp"
 
 class World {
-public:
+private:
     LayerManager layerManager;
+    std::string name;
 public:
     World();
     void update();

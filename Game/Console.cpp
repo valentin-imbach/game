@@ -17,7 +17,7 @@ Console::Console(EntityLayer* entLayer) {
 
 void Console::render() {
     if (!active) { return; }
-    TextureManager::drawTexture(TextureManager::loadTexture("pauseMenu.png"), 20, Window::size.Y-500, 400, 480);
+    TextureManager::drawTexture(TextureManager::loadTexture("grey.png"), 20, Window::size.Y-500, 400, 480);
     for (int i = 0; i < memory; i++) {
         if (i >= history.size()) { break; }
         if (i == memIt) {

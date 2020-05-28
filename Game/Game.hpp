@@ -10,6 +10,7 @@
 #include "LayerSystem/Layers.h"
 #include "Gui/GuiManager.hpp"
 #include "Gui/PauseMenu.hpp"
+#include "Gui/MainMenu.hpp"
 #include "Console.hpp"
 #include "StateController.h"
 #include "World.hpp"
@@ -20,10 +21,12 @@ public:
     void render();
     void update();
     void handleEvents();
+    static void loadWorld();
     
-    StateController controller;
+    static StateController controller;
 
-    World* world;
-    PauseMenu* pauseMenu;
+    static World* world;
+    PauseMenu pauseMenu;
+    MainMenu mainMenu;
     Console* console;
 };

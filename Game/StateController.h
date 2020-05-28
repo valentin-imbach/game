@@ -12,20 +12,24 @@ enum GameState {
     RUNNING,
     PAUSED,
     LOADING,
-    MENU
+    MAIN_MENU,
+    STARTING
 };
 
 struct StateController {
     
-    GameState state = LOADING;
+    GameState state = STARTING;
     
     bool handleEvent(SDL_Event event) {
         if (event.key.repeat) { return false; }
+        
         if (state == RUNNING) {
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-                state = PAUSED; return true;
+                state = PAUSED;
+                return true;
             }
         }
+        
         if (state == PAUSED) {
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
                 state = RUNNING;

@@ -75,24 +75,12 @@ public:
 };
 
 
-template <typename T> class Button : public GuiElement {
+class Button : public GuiElement {
 private:
-    T* object;
-    void(T::*function)();
+    void(*function)();
 public:
-    Button(pair<int> pos, pair<int> s, T* obj, void(T::*func)(), SDL_Texture* tex = nullptr) : GuiElement(pos,s,tex) {
-        object = obj;
-        function = func;
-    }
-    bool onClick(int b) override {
-        if (check(Window::mousePos)) {
-            if (b == SDL_BUTTON_LEFT) {
-                (object->*function)();
-            }
-            return true;
-        }
-        return false;
-    }
+    Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex = nullptr);
+    bool onClick(int b) override;
 };
 
 
