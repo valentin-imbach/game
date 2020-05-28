@@ -15,4 +15,12 @@ public:
     DirectionComponent(Entity* entity, Direction dir = SOUTH) {
         direction = dir;
     }
+    
+    void serialize(std::fstream& stream) override {
+        stream.write((char*)&direction,sizeof(direction));
+    }
+    
+    void deserialize(std::fstream& stream) override {
+        stream.read((char*)&direction,sizeof(direction));
+    }
 };

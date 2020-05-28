@@ -43,3 +43,11 @@ void Entity::addTag(TAG tag) {
     tagBitSet[(int)tag] = true;
     manager -> taggedEntities[(int)tag].push_back(this);
 }
+
+void Entity::serialize(std::fstream &stream) {
+    for (auto& c : components) { c -> serialize(stream); }
+}
+
+void Entity::deserialize(std::fstream &stream) {
+    for (auto& c : components) { c -> deserialize(stream); }
+}

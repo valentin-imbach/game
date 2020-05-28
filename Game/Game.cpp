@@ -9,7 +9,7 @@
 #include "Game.hpp"
 #include "Camera.hpp"
 
-GameState Game::state = LOADING;
+StateController Game::controller = StateController();
 EntityLayer* Game::entityLayer = nullptr;
 DebugLayer* Game::debugLayer = nullptr;
 GuiManager Game::guiManager = GuiManager();
@@ -19,7 +19,7 @@ Console* Game::console = nullptr;
 void Game::Init() {
     LayerManager::addLayer(entityLayer = new EntityLayer());
     LayerManager::addLayer(debugLayer = new DebugLayer());
-    state = RUNNING;
+    controller.state = RUNNING;
     
     pauseMenu = new PauseMenu();
     console = new Console(entityLayer);
@@ -29,22 +29,19 @@ void Game::Init() {
 
 void Game::handleEvents() {
     for (auto e : Window::events) {
-        if (state == RUNNING) {
-            if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) { state = PAUSED; return; }
+        if (controller.handleEvent(e)) { continue; }
+        if (controller.state == RUNNING) {
             if (console -> handleEvent(e)) { continue; }
-            if (e.key.repeat) { continue; }
-            if ((e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_KEYDOWN || e.type == SDL_MOUSEWHEEL) && guiManager.handleEvent(e)) { continue; }
+            if (guiManager.handleEvent(e)) { continue; }
             if (LayerManager::handleEvent(e)) { continue; }
-        } else if (state == PAUSED) {
-            if (e.key.repeat) { continue; }
-            if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_ESCAPE) { state = RUNNING; return; }
+        } else if (controller.state == PAUSED) {
             if (pauseMenu -> handleEvent(e)) { continue; }
         }
     }
 }
 
 void Game::update() {
-    if (state == RUNNING) {
+    if (controller.state == RUNNING) {
         LayerManager::update();
         guiManager.update();
         Camera::update(entityLayer -> player -> getComponent<PositionComponent>() -> position);
@@ -57,9 +54,9 @@ void Game::render() {
     LayerManager::render();
     guiManager.render();
     console -> render();
-    if (state == RUNNING) {
+    if (controller.state == RUNNING) {
         //Camera::render();
-    } else if (state == PAUSED) {
+    } else if (controller.state == PAUSED) {
         pauseMenu -> render();
     }
     SDL_RenderPresent(Window::renderer);

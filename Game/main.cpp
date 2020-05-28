@@ -25,5 +25,9 @@ int main() {
         Game::render();
     }
     
+    std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
+    Game::entityLayer -> player -> serialize(file);
+    file.close();
+    
     return 0;
 }

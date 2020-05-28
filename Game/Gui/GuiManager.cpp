@@ -27,6 +27,8 @@ void GuiManager::render() {
 }
 
 bool GuiManager::handleEvent(SDL_Event event) {
+    if (event.type != SDL_MOUSEBUTTONDOWN && event.type != SDL_KEYDOWN && event.type != SDL_MOUSEWHEEL) { return false; }
+    if (event.key.repeat) { return false; }
     for (int i = (int)guiElements.size()-1; i >= 0; i--) {
         if (guiElements[i] -> handleEvent(event)) { return true; }
     }

@@ -32,4 +32,15 @@ public:
         item -> render(position.X,position.Y,Camera::ZOOM/2,false);
     }
     
+    void serialize(std::fstream& stream) override {
+        //item -> serialize(stream)
+        stream.write((char*)&position,sizeof(position));
+    }
+    
+    void deserialize(std::fstream& stream) override {
+        //item = new Itme();
+        //item -> desirealize(stream);
+        stream.read((char*)&position,sizeof(position));
+    }
+    
 };

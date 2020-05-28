@@ -47,6 +47,8 @@ public:
     virtual void render() {};
     virtual bool handleEvent(SDL_Event event) { return false; }
     virtual void debugRender() {};
+    virtual void serialize(std::fstream& stream) {}
+    virtual void deserialize(std::fstream& stream) {}
     virtual ~Component() {};
 };
 
@@ -72,6 +74,9 @@ public:
     
     bool hasTag(TAG tag);
     void addTag(TAG tag);
+    
+    void serialize(std::fstream& stream);
+    void deserialize(std::fstream& stream);
     
     template <typename T> bool hasComponent() const {
         return componentBitSet[getComponentType<T>()];

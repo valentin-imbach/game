@@ -30,6 +30,7 @@ void Console::render() {
 }
 
 bool Console::handleEvent(SDL_Event event) {
+    if (event.key.repeat) { return false; }
     if (event.type == SDL_KEYDOWN) {
         if (event.key.keysym.scancode == SDL_SCANCODE_TAB) {
             active = !active;
@@ -84,6 +85,16 @@ bool Console::execute(std::string s) {
     }
     if (s == "kill") {
         entityLayer -> player -> getComponent<HealthComponent>() -> health = 0; 
+    }
+    if (s == "save") {
+        std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
+        entityLayer -> player -> serialize(file);
+        file.close();
+    }
+    if (s == "load") {
+        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+        entityLayer -> player -> deserialize(file);
+        file.close();
     }
     return true;
 }

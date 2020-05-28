@@ -36,6 +36,7 @@ void LayerManager::render() {
 }
     
 bool LayerManager::handleEvent(SDL_Event event) {
+    if (event.key.repeat) { return false; }
     for (int i = (int) layerStack.size()-1; i >= 0; i--) {
         if (layerStack[i] -> active) {
             if (layerStack[i] -> handleEvent(event)) {

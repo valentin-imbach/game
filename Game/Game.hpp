@@ -11,13 +11,7 @@
 #include "Gui/GuiManager.hpp"
 #include "Gui/PauseMenu.hpp"
 #include "Console.hpp"
-
-enum GameState {
-    RUNNING,
-    PAUSED,
-    LOADING,
-    MENU
-};
+#include "StateController.h"
 
 class Game {
 public:
@@ -25,7 +19,7 @@ public:
     static void render();
     static void update();
     static void handleEvents();
-    static GameState state;
+    static StateController controller;
     static EntityLayer* entityLayer;
     static DebugLayer* debugLayer;
     static GuiManager guiManager;

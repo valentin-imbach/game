@@ -13,6 +13,7 @@
 		0416889C23344F9A0060DBDA /* TextManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0416889A23344F9A0060DBDA /* TextManager.cpp */; };
 		043CA554247D1DDE008CA805 /* PauseMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA552247D1DDE008CA805 /* PauseMenu.cpp */; };
 		043CA557247D6492008CA805 /* Console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA555247D6492008CA805 /* Console.cpp */; };
+		043CA55B247FF6CF008CA805 /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA559247FF6CF008CA805 /* World.cpp */; };
 		04795BBE2334FAD2005C6FDE /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04795BBC2334FAD2005C6FDE /* Camera.cpp */; };
 		04C7CC882334119F0053C2E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C7CC872334119F0053C2E7 /* main.cpp */; };
 		04C7CC932334190E0053C2E7 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C7CC902334190E0053C2E7 /* SDL2_image.framework */; };
@@ -68,6 +69,9 @@
 		043CA555247D6492008CA805 /* Console.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Console.cpp; sourceTree = "<group>"; };
 		043CA556247D6492008CA805 /* Console.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Console.hpp; sourceTree = "<group>"; };
 		043CA558247E6A57008CA805 /* strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strings.h; sourceTree = "<group>"; };
+		043CA559247FF6CF008CA805 /* World.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = World.cpp; sourceTree = "<group>"; };
+		043CA55A247FF6CF008CA805 /* World.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = World.hpp; sourceTree = "<group>"; };
+		043CA55C247FFCB8008CA805 /* StateController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StateController.h; sourceTree = "<group>"; };
 		044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChestComponent.h; sourceTree = "<group>"; };
 		04795BBC2334FAD2005C6FDE /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		04795BBD2334FAD2005C6FDE /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
@@ -173,6 +177,9 @@
 				043CA555247D6492008CA805 /* Console.cpp */,
 				040CABAB242FD090009A2728 /* CollisionManager.h */,
 				04C7CC872334119F0053C2E7 /* main.cpp */,
+				043CA55A247FF6CF008CA805 /* World.hpp */,
+				043CA559247FF6CF008CA805 /* World.cpp */,
+				043CA55C247FFCB8008CA805 /* StateController.h */,
 				041688952334336D0060DBDA /* Game.hpp */,
 				041688942334336D0060DBDA /* Game.cpp */,
 				04168892233425C70060DBDA /* Window.hpp */,
@@ -284,6 +291,7 @@
 			files = (
 				04CBB51224522D4400A8BC69 /* LayerManager.cpp in Sources */,
 				041688962334336D0060DBDA /* Game.cpp in Sources */,
+				043CA55B247FF6CF008CA805 /* World.cpp in Sources */,
 				04E4A35124683FE00021359B /* GuiElements.cpp in Sources */,
 				04C7CC882334119F0053C2E7 /* main.cpp in Sources */,
 				04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */,

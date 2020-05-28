@@ -15,4 +15,14 @@ public:
     PositionComponent(Entity* entity, pair<float> pos) {
         position = pos;
     }
+    
+    void serialize(std::fstream& stream) override {
+        stream.write((char*)&position,sizeof(position));
+    }
+    
+    void deserialize(std::fstream& stream) override {
+        stream.read((char*)&position,sizeof(position));
+    }
+    
 };
+

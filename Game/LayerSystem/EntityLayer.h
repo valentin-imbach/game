@@ -41,6 +41,10 @@ public:
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
         
+        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+        player -> deserialize(file);
+        file.close();
+        
         Entity* rock = entityManager.addEntity();
         rock -> addComponent<ResourceComponent>(pair<int>(53,53),1,"nature.png");
 
