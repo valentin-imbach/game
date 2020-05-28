@@ -10,21 +10,19 @@
 
 World::World() {
     layerManager.addLayer(&entityLayer);
+    layerManager.addLayer(&guiLayer);
     layerManager.addLayer(&debugLayer);
 }
 
 void World::update() {
-    guiManager.update();
     layerManager.update();
 }
 
 void World::render() {
     layerManager.render();
-    guiManager.render();
 }
 
 bool World::handleEvent(SDL_Event event) {
-    if (guiManager.handleEvent(event)) { return true; }
     if (layerManager.handleEvent(event)) { return true; }
     return false;
 }

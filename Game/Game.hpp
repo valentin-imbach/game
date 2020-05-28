@@ -28,5 +28,5 @@ public:
     static World* world;
     PauseMenu pauseMenu;
     MainMenu mainMenu;
-    Console* console;
+    Console console;
 };

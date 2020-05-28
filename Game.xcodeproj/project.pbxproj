@@ -75,6 +75,7 @@
 		043CA55C247FFCB8008CA805 /* StateController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StateController.h; sourceTree = "<group>"; };
 		043CA55D24804FFE008CA805 /* MainMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MainMenu.cpp; sourceTree = "<group>"; };
 		043CA55E24804FFE008CA805 /* MainMenu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MainMenu.hpp; sourceTree = "<group>"; };
+		043CA56024805A50008CA805 /* GuiLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuiLayer.h; sourceTree = "<group>"; };
 		044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChestComponent.h; sourceTree = "<group>"; };
 		04795BBC2334FAD2005C6FDE /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		04795BBD2334FAD2005C6FDE /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
@@ -217,6 +218,7 @@
 				04CBB504244F589D00A8BC69 /* Layers.h */,
 				04CBB500244F500500A8BC69 /* EntityLayer.h */,
 				04CBB50624503B5700A8BC69 /* DebugLayer.h */,
+				043CA56024805A50008CA805 /* GuiLayer.h */,
 			);
 			path = LayerSystem;
 			sourceTree = "<group>";

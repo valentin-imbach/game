@@ -13,11 +13,7 @@ World* Game::world = nullptr;
 StateController Game::controller = StateController();
 
 Game::Game() {
-    
-    console = new Console(&(world -> entityLayer));
-    
     controller.state = MAIN_MENU;
-    
     LOG("Game initialized");
 }
 
@@ -28,11 +24,11 @@ void Game::loadWorld() {
 
 void Game::handleEvents() {
     for (auto e : Window::events) {
+        if (console.handleEvent(e)) { continue; }
         if (controller.state == MAIN_MENU) {
             if (mainMenu.handleEvent(e)) { continue; }
         } else if (controller.state == RUNNING) {
             if (controller.handleEvent(e)) { continue; }
-            if (console -> handleEvent(e)) { continue; }
             if (world -> handleEvent(e)) { continue; }
         } else if (controller.state == PAUSED) {
             if (controller.handleEvent(e)) { continue; }
@@ -58,13 +54,14 @@ void Game::render() {
     
     if (controller.state == RUNNING || controller.state == PAUSED) {
         world -> render();
-        console -> render();
         //Camera::render();
     }
     
     if (controller.state == PAUSED) {
         pauseMenu.render();
     }
+    
+    console.render();
     
     SDL_RenderPresent(Window::renderer);
 }

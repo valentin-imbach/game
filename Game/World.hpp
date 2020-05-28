@@ -22,7 +22,7 @@ public:
     void render();
     bool handleEvent(SDL_Event event);
     
-    GuiManager guiManager;
+    GuiLayer guiLayer;
     EntityLayer entityLayer;
     DebugLayer debugLayer;
 };

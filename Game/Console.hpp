@@ -23,7 +23,6 @@ private:
     
     bool execute(std::string);
 public:
-    Console(EntityLayer* entLayer);
     void render();
     bool handleEvent(SDL_Event event);
 };

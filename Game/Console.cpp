@@ -10,10 +10,7 @@
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
-
-Console::Console(EntityLayer* entLayer) {
-    entityLayer = entLayer;
-}
+#include "Game.hpp"
 
 void Console::render() {
     if (!active) { return; }
@@ -46,6 +43,9 @@ bool Console::handleEvent(SDL_Event event) {
             if (text.length() > 0) {
                 text = text.substr(0,text.length()-1);
             }
+        }
+        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+            active = false;
         }
         if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
             execute(text);
@@ -83,18 +83,20 @@ bool Console::execute(std::string s) {
     if (s == "quit") {
         Window::running = false;
     }
-    if (s == "kill") {
-        entityLayer -> player -> getComponent<HealthComponent>() -> health = 0; 
-    }
-    if (s == "save") {
-        std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
-        entityLayer -> player -> serialize(file);
-        file.close();
-    }
-    if (s == "load") {
-        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
-        entityLayer -> player -> deserialize(file);
-        file.close();
+    if (Game::world != nullptr) {
+        if (s == "kill") {
+            Game::world -> entityLayer.player -> getComponent<HealthComponent>() -> health = 0;
+        }
+        if (s == "save") {
+            std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
+            Game::world -> entityLayer.player -> serialize(file);
+            file.close();
+        }
+        if (s == "load") {
+            std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+            Game::world -> entityLayer.player -> deserialize(file);
+            file.close();
+        }
     }
     return true;
 }
