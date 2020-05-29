@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "../serializer.h"
 #include "ECS.h"
 
 #include "PositionComponent.h"

@@ -7,6 +7,7 @@
 //
 
 #pragma once
+#include "Components.h"
 
 class HealthComponent : public Component {
 public:
@@ -17,13 +18,5 @@ public:
         health = max;
     }
     
-    void serialize(std::fstream& stream) override {
-        stream.write((char*)&maxHealth,sizeof(maxHealth));
-        stream.write((char*)&health,sizeof(health));
-    }
-    
-    void deserialize(std::fstream& stream) override {
-        stream.read((char*)&maxHealth,sizeof(maxHealth));
-        stream.read((char*)&health,sizeof(health));
-    }
+    SERIALIZE(maxHealth,health);
 };

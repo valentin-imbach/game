@@ -117,7 +117,6 @@ struct ItemContainer {
             item -> render(pos.X, pos.Y, scale);
         }
     }
-    
 };
 
 struct Loot {
