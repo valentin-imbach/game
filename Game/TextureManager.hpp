@@ -31,6 +31,7 @@ struct TextureManager {
     static void drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered = false);
     static void drawRect(pair<int> pos, pair<int> size);
+    static void loadTilesets();
 };
 
 struct Sprite {

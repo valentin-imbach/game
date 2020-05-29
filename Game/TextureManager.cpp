@@ -16,12 +16,16 @@ auto TextureManager::textures = std::map<std::string, SDL_Texture*>();
 
 void TextureManager::Init() {
     
+    loadTilesets();
+    
+    LOG("TextureManager initialized");
+}
+
+void TextureManager::loadTilesets() {
     loadTileset(GRASS,"grass.png");
     loadTileset(SAND,"sand.png");
     loadTileset(WATER,"water.png");
     loadTileset(STONE,"stone.png");
-    
-    LOG("TextureManager initialized");
 }
 
 SDL_Texture* TextureManager::loadTexture(std::string path) {

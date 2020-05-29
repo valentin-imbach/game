@@ -48,8 +48,8 @@ bool Console::handleEvent(SDL_Event event) {
             active = false;
         }
         if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
-            execute(text);
             history.push_back(text);
+            execute(text);
             memIt = -1;
             text.clear();
         }
@@ -82,6 +82,8 @@ bool Console::execute(std::string s) {
     LOG("Executed command",s);
     if (s == "quit") {
         Window::running = false;
+    } else if (s == "clear") {
+        history.clear();
     }
     if (Game::world != nullptr) {
         if (s == "kill") {
