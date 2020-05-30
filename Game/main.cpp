@@ -30,7 +30,7 @@ int main() {
     }
     
     if (game.world != nullptr) {
-        std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
+        file = std::fstream("save.binary", std::ios::out | std::ios::binary);
         game.world -> entityLayer.player -> serialize(file);
         file.close();
     }

@@ -45,9 +45,21 @@ void Entity::addTag(TAG tag) {
 }
 
 void Entity::serialize(std::fstream &stream) {
-    for (auto& c : components) { c -> serialize(stream); }
+    int s = (int)components.size();
+    serialize_(stream, s);
+    for (auto& c : components) {
+        serialize_(stream, c -> componentType);
+        c -> serialize(stream);
+    }
 }
 
 void Entity::deserialize(std::fstream &stream) {
-    for (auto& c : components) { c -> deserialize(stream); }
+    int s;
+    deserialize_(stream, s);
+    for (int i = 0; i < s; i++) {
+        ComponentType type;
+        deserialize_(stream, type);
+        loadComponent(type);
+    }
 }
+

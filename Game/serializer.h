@@ -8,11 +8,14 @@
 
 #pragma once
 
+#include "tools.h"
+
 #define SERIALIZE(...)  void serialize(std::fstream& stream) {serialize_(stream, __VA_ARGS__);}\
                         void deserialize(std::fstream& stream) {deserialize_(stream, __VA_ARGS__);}
 
 template <typename T> inline void serialize_(std::fstream& stream, T& x) {
     stream.write((char*)&x,sizeof(x));
+    LOG(x,sizeof(x));
 }
 
 template <typename T> inline void deserialize_(std::fstream& stream, T& x) {

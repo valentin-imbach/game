@@ -8,17 +8,18 @@
 
 #pragma once
 #include "tools.h"
+#include "../serializer.h"
 
 class EntityManager;
 class Entity;
 class Component;
 
-constexpr std::size_t maxComponents = 32;
+constexpr int maxComponents = 32;
 using ComponentArray = std::array<Component*,maxComponents>;
 using ComponentBitSet = std::bitset<maxComponents>;
-using ComponentType = std::size_t;
+using ComponentType = int;
 
-constexpr std::size_t maxTags = 32;
+constexpr int maxTags = 32;
 using TagBitSet = std::bitset<maxTags>;
 
 enum TAG {
@@ -41,6 +42,7 @@ template <typename T> inline ComponentType getComponentType() noexcept {
 class Component {
 public:
     Entity* entity;
+    ComponentType componentType;
     
     virtual void init() {};
     virtual void update() {};
@@ -82,10 +84,15 @@ public:
         return componentBitSet[getComponentType<T>()];
     }
     
+    void loadComponent(ComponentType type) {
+        LOG("Component with type",type,"loaded");
+    }
+    
     template <typename T, typename... TArgs> T* addComponent(TArgs&&... mArgs) {
         assert(!hasComponent<T>());
         componentBitSet[getComponentType<T>()] = true;
         T* component = new T(this, std::forward<TArgs>(mArgs)...);
+        component -> componentType = getComponentType<T>();
         components.push_back(component);
         componentArray[getComponentType<T>()] = component;
         component -> entity = this;
