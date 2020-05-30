@@ -33,7 +33,7 @@ public:
     }
     
     GuiElement* makeGui(pair<int> pos, GuiElement* link) {
-        GuiElement* gui = new Widget(pos,{270, 96},TextureManager::loadTexture("tableGui.png"), link);
+        GuiElement* gui = new Widget(pos,{270, 96},TextureManager::getTexture("tableGui.png"), link);
         gui -> addGuiElement(new ItemSlot({48,48},&a));
         gui -> addGuiElement(new ItemSlot({48+27*3,48},&b));
         gui -> addGuiElement(new ItemSlot({48+57*3,48},&c));

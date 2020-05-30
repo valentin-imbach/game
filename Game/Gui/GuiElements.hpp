@@ -18,6 +18,7 @@ protected:
     pair<int> position;
     pair<int> size;
     SDL_Texture* texture;
+    SDL_Texture* hoverTexture;
     GuiElement* parent = nullptr;
     v(GuiElement*) children;
     bool check(pair<int> p);
@@ -32,7 +33,7 @@ public:
     virtual bool onKey(int k) { return false; }
     virtual bool onScroll(int y) { return false; }
     
-    GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr);
+    GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr, SDL_Texture* tex2 = nullptr);
     
     void addGuiElement(GuiElement* gui);
     void setParent(GuiElement* gui);
@@ -79,7 +80,7 @@ class Button : public GuiElement {
 private:
     void(*function)();
 public:
-    Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex = nullptr);
+    Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex = nullptr, SDL_Texture* tex2 = nullptr);
     bool onClick(int b) override;
 };
 

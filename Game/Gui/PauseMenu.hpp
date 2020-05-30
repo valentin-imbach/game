@@ -17,6 +17,8 @@ private:
     static void zoomRight();
     static void fpsLeft();
     static void fpsRight();
+    static void musicLeft();
+    static void musicRight();
 public:
     PauseMenu();
     void render();

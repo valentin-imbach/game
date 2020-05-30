@@ -28,16 +28,28 @@ void TextureManager::loadTilesets() {
     loadTileset(STONE,"stone.png");
 }
 
-SDL_Texture* TextureManager::loadTexture(std::string path) {
+SDL_Texture* TextureManager::getTexture(std::string path) {
     if (textures.find(path) != textures.end()) { return textures[path]; }
+    SDL_Texture* tex = loadTexture(path);
+    textures[path] = tex;
+    return tex;
+}
+
+SDL_Texture* TextureManager::loadTexture(std::string path) {
     std::string folder = "assets";
     SDL_Surface* tmpSurface = IMG_Load((folder + "/" + path).c_str());
     if (tmpSurface) { LOG("Texture loaded from",path); } else { ERROR("Failed to load SDL_Texture from",path); }
     SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
-    textures[path] = tex;
     return tex;
 };
+
+void TextureManager::refresh() {
+    loadTilesets();
+    for (auto v : textures) {
+        textures[v.first] = loadTexture(v.first);
+    }
+}
 
 void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered) {
     SDL_Rect src = {sx,sy,sw,sh};

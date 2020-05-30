@@ -18,6 +18,10 @@ int main() {
     Window window("Game",1224,840);
     Game game;
     
+    std::fstream file = std::fstream("config.binary", std::ios::in | std::ios::binary);
+    game.deserialize(file);
+    file.close();
+    
     while (Window::running) {
         window.update();
         game.handleEvents();
@@ -30,6 +34,10 @@ int main() {
         game.world -> entityLayer.player -> serialize(file);
         file.close();
     }
+    
+    file = std::fstream("config.binary", std::ios::out | std::ios::binary);
+    game.serialize(file);
+    file.close();
     
     return 0;
 }

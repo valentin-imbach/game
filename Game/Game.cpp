@@ -8,6 +8,7 @@
 
 #include "Game.hpp"
 #include "Camera.hpp"
+#include "SoundManager.hpp"
 
 World* Game::world = nullptr;
 StateController Game::controller = StateController();
@@ -20,6 +21,7 @@ Game::Game() {
 void Game::loadWorld() {
     world = new World();
     controller.state = RUNNING;
+    SoundManager::play();
 }
 
 void Game::handleEvents() {

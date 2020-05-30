@@ -10,6 +10,7 @@
 #include "Window.hpp"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
+#include "SoundManager.hpp"
 
 SDL_Renderer* Window::renderer = nullptr;
 const Uint8* Window::keys = nullptr;
@@ -45,6 +46,7 @@ Window::Window(const char *title, int width, int height, bool fullscreen) {
     } else { ERROR("Failed to inizialize SDL"); }
     
     TextManager::Init();
+    SoundManager::Init();
     TextureManager::Init();
     
     update();

@@ -10,10 +10,11 @@
 #include "../TextureManager.hpp"
 #include "GuiManager.hpp"
 
-GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex) {
+GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex, SDL_Texture* tex2) {
     position = pos-s/2;
     size = s;
     texture = tex;
+    hoverTexture = tex2;
 }
 
 void GuiElement::setManager(GuiManager* m) {
@@ -30,7 +31,8 @@ void GuiElement::update() {
 }
 
 void GuiElement::render() {
-    if (texture != nullptr) { TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y); }
+    if (hoverTexture != nullptr && check(Window::mousePos)) { TextureManager::drawTexture(hoverTexture, position.X, position.Y, size.X, size.Y); }
+    else if (texture != nullptr) { TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y); }
     for (GuiElement* child : children) {
         child -> render();
     }
@@ -118,7 +120,7 @@ void DisplayElement::render() {
     TextManager::drawText(std::to_string(*value), position, true);
 }
 
-Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex) : GuiElement(pos,s,tex) {
+Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2) : GuiElement(pos,s,tex,tex2) {
     function = func;
 }
 
@@ -156,13 +158,13 @@ void ItemSlot::render() {
     itemContainer -> render(position+size/2,size.X);
 }
 
-Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::loadTexture("hotbar.png")) {
+Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::getTexture("hotbar.png")) {
     hotbarContainers = items;
     selected = sel;
 }
 
 void Hotbar::render() {
-    TextureManager::drawTexture(TextureManager::loadTexture("hotbar.png"), position.X, position.Y, 534, 78);
+    TextureManager::drawTexture(TextureManager::getTexture("hotbar.png"), position.X, position.Y, 534, 78);
     for (int i = 0; i < hotbarContainers.size(); i++) {
         if (!hotbarContainers[i] -> empty()) {
             hotbarContainers[i] -> render(position + pair<int>(39+i*57,39),48);
@@ -212,7 +214,7 @@ bool Hotbar::onClick(int b) {
 
 HealthBar::HealthBar(int* h) : GuiElement({Window::size.X-330,50},{0,0}) {
     health = h;
-    heart = TextureManager::loadTexture("heart.png");
+    heart = TextureManager::getTexture("heart.png");
 }
 
 void HealthBar::render() {

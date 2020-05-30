@@ -25,7 +25,9 @@ struct TextureManager {
     static std::map<std::string, SDL_Texture*> textures;
     
     static void Init();
+    static void refresh();
     static SDL_Texture* loadTexture(std::string path);
+    static SDL_Texture* getTexture(std::string path);
     static void loadTileset(int a, const char* path);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered = false);

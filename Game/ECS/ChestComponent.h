@@ -34,7 +34,7 @@ public:
     }
     
     GuiElement* makeGui(pair<int> pos, GuiElement* link) {
-        GuiElement* gui = new Widget(pos,{306, 192},TextureManager::loadTexture("chestGui.png"), link);
+        GuiElement* gui = new Widget(pos,{306, 192},TextureManager::getTexture("chestGui.png"), link);
         for (int i = 0; i < size.X; i++) {
             for (int j = 0; j < size.Y; j++) {
                 gui -> addGuiElement(new ItemSlot({39+i*57,39+j*57},&(inventoryComponent -> containers[i][j])));

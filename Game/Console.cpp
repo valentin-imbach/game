@@ -14,7 +14,7 @@
 
 void Console::render() {
     if (!active) { return; }
-    TextureManager::drawTexture(TextureManager::loadTexture("grey.png"), 20, Window::size.Y-500, 400, 480);
+    TextureManager::drawTexture(TextureManager::getTexture("grey.png"), 20, Window::size.Y-500, 400, 480);
     for (int i = 0; i < memory; i++) {
         if (i >= history.size()) { break; }
         if (i == memIt) {
@@ -84,6 +84,8 @@ bool Console::execute(std::string s) {
         Window::running = false;
     } else if (s == "clear") {
         history.clear();
+    } else if (s == "refresh") {
+        TextureManager::refresh();
     }
     if (Game::world != nullptr) {
         if (s == "kill") {

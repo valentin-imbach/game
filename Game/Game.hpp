@@ -14,6 +14,8 @@
 #include "Console.hpp"
 #include "StateController.h"
 #include "World.hpp"
+#include "serializer.h"
+#include "SoundManager.hpp"
 
 class Game {
 public:
@@ -29,4 +31,6 @@ public:
     PauseMenu pauseMenu;
     MainMenu mainMenu;
     Console console;
+    
+    SERIALIZE(SoundManager::volume,Camera::ZOOM,Window::MAX_FPS);
 };
