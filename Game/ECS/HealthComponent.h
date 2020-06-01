@@ -13,7 +13,8 @@ class HealthComponent : public Component {
 public:
     int maxHealth;
     int health;
-    HealthComponent(Entity* entity, int max) {
+    HealthComponent() {}
+    HealthComponent(Entity* entity, int max = 20) {
         maxHealth = max;
         health = max;
     }

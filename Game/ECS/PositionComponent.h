@@ -12,7 +12,8 @@
 class PositionComponent : public Component {
 public:
     pair<float> position;
-    PositionComponent(Entity* entity, pair<float> pos) {
+    PositionComponent() {}
+    PositionComponent(Entity* entity, pair<float> pos = {0,0}) {
         position = pos;
     }
     

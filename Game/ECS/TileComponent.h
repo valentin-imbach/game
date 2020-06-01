@@ -9,6 +9,7 @@
 #pragma once
 #include "Camera.hpp"
 #include "../TextureManager.hpp"
+#include "Components.h"
 
 class TileComponent : public Component {
 public:
@@ -17,7 +18,8 @@ public:
     pair<int> position;
     TileID tileID;
 
-    TileComponent(Entity* entity, pair<int> pos, TileID tid) {
+    TileComponent() {}
+    TileComponent(Entity* entity, pair<int> pos = {0,0}, TileID tid = (TileID)0) {
         position = pos;
         tileID = tid;
         entity -> addTag(TAG::TILE);

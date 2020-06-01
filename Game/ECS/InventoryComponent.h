@@ -15,7 +15,8 @@ public:
     pair<int> size;
     vv(ItemContainer) containers;
     
-    InventoryComponent(Entity* entity, int w, int h) {
+    InventoryComponent() {}
+    InventoryComponent(Entity* entity, int w = 1, int h = 1) {
         size = {w,h};
         containers = vv(ItemContainer)(w,v(ItemContainer)(h));
     }

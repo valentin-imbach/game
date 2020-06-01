@@ -17,6 +17,7 @@ public:
     pair<float> offset;
     PositionComponent *positionComponent;
     
+    CollisionComponent() {}
     CollisionComponent(Entity* entity, float e = 0.5, float n = 0.5, float w = 0.5, float s = 0.5) {
         positionComponent = entity -> getComponent<PositionComponent>();
         collider.size = {e+w,n+s};

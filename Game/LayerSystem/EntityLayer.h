@@ -21,10 +21,16 @@ public:
         
         loadMap("map.txt");
         
+        /*
+        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+        player = entityManager.createEntity(file);
+        file.close();
+        */
+        
         player = entityManager.addEntity();
         entityManager.player = player;
         player -> addTag(TAG::PLAYER);
-        
+    
         player -> addComponent<PositionComponent>(pair<float>(50,50));
         player -> addComponent<DirectionComponent>();
         player -> addComponent<HealthComponent>(10);
@@ -40,6 +46,7 @@ public:
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
+        
         
         Entity* rock = entityManager.addEntity();
         rock -> addComponent<ResourceComponent>(pair<int>(53,53),1,"nature.png");

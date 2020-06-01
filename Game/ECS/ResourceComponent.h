@@ -14,7 +14,8 @@ public:
     int type;
     LootTable loot;
 
-    ResourceComponent(Entity* entity, pair<int> pos, int t, const char* path) {
+    ResourceComponent() {}
+    ResourceComponent(Entity* entity, pair<int> pos = {0,0}, int t = 0, const char* path = "") {
         entity -> addComponent<GridComponent>(pos);
         entity -> addComponent<SpriteComponent>(path);
         type = t;

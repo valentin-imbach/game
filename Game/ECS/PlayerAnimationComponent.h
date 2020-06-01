@@ -15,6 +15,7 @@ public:
     DirectionComponent *directionComponent;
     PlayerInputComponent *playerInputComponent;
     
+    PlayerAnimationComponent() {}
     PlayerAnimationComponent(Entity* entity) {
         spriteComponent = entity -> addComponent<SpriteComponent>("character2.png",0,0,1,2);
         directionComponent = entity -> getComponent<DirectionComponent>();

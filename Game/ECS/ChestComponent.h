@@ -16,6 +16,7 @@ public:
     InventoryComponent* inventoryComponent;
     pair<int> size = {5,3};
     
+    ChestComponent() {}
     ChestComponent(Entity* entity, pair<int> pos) {
         inventoryComponent = entity -> addComponent<InventoryComponent>(5,3);
         entity -> addComponent<GridComponent>(pos);

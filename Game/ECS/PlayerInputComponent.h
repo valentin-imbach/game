@@ -24,6 +24,7 @@ public:
     int ticks = 0;
     bool walking = false;
     
+    PlayerInputComponent() {}
     PlayerInputComponent(Entity* entity) {
         positionComponent = entity -> getComponent<PositionComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();

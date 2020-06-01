@@ -17,7 +17,8 @@ public:
     PositionComponent *positionComponent;
     CollisionComponent *collisionComponent;
     
-    GridComponent(Entity* entity, pair<int> pos, pair<int> s = {1,1}) {
+    GridComponent() {}
+    GridComponent(Entity* entity, pair<int> pos = {0,0}, pair<int> s = {1,1}) {
         positionComponent = entity -> addComponent<PositionComponent>(pos);
         collisionComponent = entity -> addComponent<CollisionComponent>(s.X-0.5,s.Y-0.5,0.5,0.5);
         position = pos;

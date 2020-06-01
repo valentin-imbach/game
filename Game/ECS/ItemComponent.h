@@ -17,7 +17,8 @@ private:
     CollisionComponent *collisionComponent;
 public:
     Item* item;
-    ItemComponent(Entity* entity, pair<float> pos, Item* item) {
+    ItemComponent() {}
+    ItemComponent(Entity* entity, pair<float> pos = {0,0}, Item* item = nullptr) {
         position = pos;
         position.X += (RAND - 0.5)/2;
         position.Y += (RAND - 0.5)/2;

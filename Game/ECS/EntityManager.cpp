@@ -18,6 +18,13 @@ Entity* EntityManager::addEntity() {
     return e;
 }
 
+Entity* EntityManager::createEntity(std::fstream& stream) {
+    Entity* e = new Entity(this);
+    entities.push_back(e);
+    e -> deserialize(stream);
+    return e;
+}
+
 void EntityManager::update() {
     for (Entity* e : entities) {e -> update(); }
 }

@@ -12,6 +12,7 @@
 class DirectionComponent : public Component {
 public:
     Direction direction;
+    DirectionComponent() {}
     DirectionComponent(Entity* entity, Direction dir = SOUTH) {
         direction = dir;
     }

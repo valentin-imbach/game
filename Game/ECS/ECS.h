@@ -29,20 +29,11 @@ enum TAG {
     PLAYER
 };
 
-inline ComponentType getNewComponentType() {
-    static ComponentType lastType = 0;
-    return lastType++;
-}
-
-template <typename T> inline ComponentType getComponentType() noexcept {
-    static ComponentType type = getNewComponentType();
-    return type;
-}
-
 class Component {
 public:
     Entity* entity;
     ComponentType componentType;
+    static ComponentArray prototypes;
     
     virtual void init() {};
     virtual void update() {};
@@ -50,9 +41,21 @@ public:
     virtual bool handleEvent(SDL_Event event) { return false; }
     virtual void debugRender() {};
     virtual void serialize(std::fstream& stream) {}
-    virtual void deserialize(std::fstream& stream) {}
+    virtual void deserialize(std::fstream& stream) {LOG("Default Desirialize"); }
     virtual ~Component() {};
 };
+
+template <typename T> inline ComponentType getComponentType() noexcept {
+    static ComponentType type = getNewComponentType(new T());
+    return type;
+}
+
+inline ComponentType getNewComponentType(Component* comp) {
+    static ComponentType lastType = 0;
+    lastType += 1;
+    Component::prototypes[lastType] = comp;
+    return lastType;
+}
 
 class Entity {
 private:
@@ -84,8 +87,16 @@ public:
         return componentBitSet[getComponentType<T>()];
     }
     
-    void loadComponent(ComponentType type) {
-        LOG("Component with type",type,"loaded");
+    template <typename T> T* loadComponent(T* comp, std::fstream& stream) {
+        assert(!hasComponent<T>());
+        componentBitSet[getComponentType<T>()] = true;
+        T* component = new T();
+        component -> deserialize(stream);
+        component -> componentType = getComponentType<T>();
+        components.push_back(component);
+        componentArray[getComponentType<T>()] = component;
+        component -> entity = this;
+        return component;
     }
     
     template <typename T, typename... TArgs> T* addComponent(TArgs&&... mArgs) {
@@ -113,6 +124,8 @@ public:
     vv(Entity*) gridEntities = vv(Entity*)(100,v(Entity*)(100,nullptr));
     
     Entity* addEntity();
+    Entity* createEntity(std::fstream& file);
+    
     std::vector<Entity*>& getTagged(TAG tag);
 
     void refresh();

@@ -18,6 +18,7 @@ public:
     HealthComponent *healthComponent;
     int selected = 0;
     
+    PlayerGuiComponent() {}
     PlayerGuiComponent(Entity* entity) {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         healthComponent = entity -> getComponent<HealthComponent>();

@@ -21,6 +21,7 @@ Game::Game() {
 void Game::loadWorld() {
     world = new World();
     controller.state = RUNNING;
+    SoundManager::setVolume(SoundManager::volume);
     SoundManager::play();
 }
 

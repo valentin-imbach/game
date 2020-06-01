@@ -16,6 +16,7 @@ public:
     ItemContainer b;
     ItemContainer c;
     
+    TableComponent() {}
     TableComponent(Entity* entity, pair<int> pos) {
         entity -> addComponent<GridComponent>(pos);
         entity -> addComponent<SpriteComponent>("table.png");

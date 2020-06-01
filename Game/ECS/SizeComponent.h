@@ -11,6 +11,7 @@
 class SizeComponent : public Component {
 public:
     pair<int> size;
+    SizeComponent() {}
     SizeComponent(Entity* entity, pair<int> s = {1,1}) {
         size = s;
     }
