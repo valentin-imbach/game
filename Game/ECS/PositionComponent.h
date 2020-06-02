@@ -11,12 +11,13 @@
 
 class PositionComponent : public Component {
 public:
+    static ComponentType componentType;
     pair<float> position;
-    PositionComponent() {}
-    PositionComponent(Entity* entity, pair<float> pos = {0,0}) {
+    
+    PositionComponent(pair<float> pos = {0,0}) {
         position = pos;
     }
     
-    SERIALIZE(position);
+    COMPONENT(PositionComponent,position);
 };
 

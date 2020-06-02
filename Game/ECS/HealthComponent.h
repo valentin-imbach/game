@@ -11,13 +11,14 @@
 
 class HealthComponent : public Component {
 public:
+    static ComponentType componentType;
     int maxHealth;
     int health;
-    HealthComponent() {}
-    HealthComponent(Entity* entity, int max = 20) {
+
+    HealthComponent(int max = 20) {
         maxHealth = max;
         health = max;
     }
     
-    SERIALIZE(maxHealth,health);
+    //SERIALIZE(maxHealth,health);
 };

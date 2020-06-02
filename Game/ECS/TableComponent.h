@@ -12,14 +12,18 @@
 
 class TableComponent : public Component {
 public:
+    static ComponentType componentType;
     ItemContainer a;
     ItemContainer b;
     ItemContainer c;
+    pair<int> position;
+
+    TableComponent(pair<int> pos = {0,0}) {
+        position = pos;
+    }
     
-    TableComponent() {}
-    TableComponent(Entity* entity, pair<int> pos) {
-        entity -> addComponent<GridComponent>(pos);
-        entity -> addComponent<SpriteComponent>("table.png");
+    void init() override {
+    
     }
     
     bool handleEvent(SDL_Event event) override {

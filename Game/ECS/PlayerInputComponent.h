@@ -20,12 +20,13 @@ private:
     pair<float> oldPos;
     
 public:
-    
+    static ComponentType componentType;
     int ticks = 0;
     bool walking = false;
     
     PlayerInputComponent() {}
-    PlayerInputComponent(Entity* entity) {
+    
+    void init() override {
         positionComponent = entity -> getComponent<PositionComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();
         inventoryComponent = entity -> getComponent<InventoryComponent>();
@@ -108,13 +109,19 @@ public:
                 Item* item = inventoryComponent -> containers[s][0].item;
                 if (item != nullptr) {
                     Entity* e = entity -> manager -> addEntity();
-                    e -> addComponent<ItemComponent>((positionComponent -> position) + dirs2[directionComponent -> direction],item);
+                    e -> addComponent<PositionComponent>(positionComponent -> position + dirs2[directionComponent -> direction]);
+                    e -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+                    e -> addComponent<ItemComponent>(item);
                     inventoryComponent -> containers[s][0].item = nullptr;
                 }
             }
         }
         
         return false;
+    }
+    
+    Component* create() override {
+        return new PlayerInputComponent();
     }
     
 };

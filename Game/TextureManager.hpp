@@ -40,8 +40,7 @@ struct Sprite {
     SDL_Texture* texture;
     pair<int> position;
     pair<int> size;
-    Sprite() {}
-    Sprite(SDL_Texture* tex, pair<int> pos = {0,0}, pair<int> s = {1,1}) {
+    Sprite(SDL_Texture* tex = nullptr, pair<int> pos = {0,0}, pair<int> s = {1,1}) {
         texture = tex;
         size = s;
         position = pos;

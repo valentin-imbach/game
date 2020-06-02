@@ -14,12 +14,14 @@
 
 class PlayerGuiComponent : public Component {
 public:
+    static ComponentType componentType;
     InventoryComponent *inventoryComponent;
     HealthComponent *healthComponent;
     int selected = 0;
     
     PlayerGuiComponent() {}
-    PlayerGuiComponent(Entity* entity) {
+    
+    void init() override {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         healthComponent = entity -> getComponent<HealthComponent>();
         makeHotbarGui();

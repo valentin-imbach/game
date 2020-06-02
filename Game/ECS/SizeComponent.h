@@ -10,9 +10,10 @@
 
 class SizeComponent : public Component {
 public:
+    static ComponentType componentType;
     pair<int> size;
-    SizeComponent() {}
-    SizeComponent(Entity* entity, pair<int> s = {1,1}) {
+
+    SizeComponent(pair<int> s = {1,1}) {
         size = s;
     }
 };

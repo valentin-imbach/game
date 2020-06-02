@@ -13,15 +13,18 @@
 
 class CollisionComponent : public Component {
 public:
+    static ComponentType componentType;
     Collider collider;
     pair<float> offset;
     PositionComponent *positionComponent;
     
-    CollisionComponent() {}
-    CollisionComponent(Entity* entity, float e = 0.5, float n = 0.5, float w = 0.5, float s = 0.5) {
-        positionComponent = entity -> getComponent<PositionComponent>();
+    CollisionComponent(float e = 0.5, float n = 0.5, float w = 0.5, float s = 0.5) {
         collider.size = {e+w,n+s};
         offset = {w,n};
+    }
+    
+    void init() override {
+        positionComponent = entity -> getComponent<PositionComponent>();
     }
     
     void update() override {

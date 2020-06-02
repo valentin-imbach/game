@@ -17,7 +17,6 @@ class Component;
 constexpr int maxComponents = 32;
 using ComponentArray = std::array<Component*,maxComponents>;
 using ComponentBitSet = std::bitset<maxComponents>;
-using ComponentType = int;
 
 constexpr int maxTags = 32;
 using TagBitSet = std::bitset<maxTags>;
@@ -29,33 +28,44 @@ enum TAG {
     PLAYER
 };
 
+enum class ComponentType : int {
+    POSITION,
+    DIRECTION,
+    SIZE,
+    GRID,
+    HEALTH,
+    TILE,
+    INVENTORY,
+    COLLISION,
+    SPRITE,
+    ITEM,
+    RESOURCE,
+    TABLE,
+    CHEST,
+    PLAYER_GUI,
+    PLAYER_INPUT,
+    PLAYER_ANIMATION
+};
+
 class Component {
 public:
     Entity* entity;
-    ComponentType componentType;
+    ComponentType compType;
     static ComponentArray prototypes;
+    static void setPrototypes();
     
     virtual void init() {};
     virtual void update() {};
     virtual void render() {};
     virtual bool handleEvent(SDL_Event event) { return false; }
     virtual void debugRender() {};
+    
+    virtual Component* create() { return new Component(); LOG("DEFAULT CREATE"); }
     virtual void serialize(std::fstream& stream) {}
-    virtual void deserialize(std::fstream& stream) {LOG("Default Desirialize"); }
+    virtual void deserialize(std::fstream& stream) {}
+    
     virtual ~Component() {};
 };
-
-template <typename T> inline ComponentType getComponentType() noexcept {
-    static ComponentType type = getNewComponentType(new T());
-    return type;
-}
-
-inline ComponentType getNewComponentType(Component* comp) {
-    static ComponentType lastType = 0;
-    lastType += 1;
-    Component::prototypes[lastType] = comp;
-    return lastType;
-}
 
 class Entity {
 private:
@@ -83,36 +93,36 @@ public:
     void serialize(std::fstream& stream);
     void deserialize(std::fstream& stream);
     
-    template <typename T> bool hasComponent() const {
-        return componentBitSet[getComponentType<T>()];
+    Component* addComponent(Component* component, ComponentType type) {
+        assert(!componentBitSet[(int)type]);
+        component -> compType = type;
+        components.push_back(component);
+        componentBitSet[(int)type] = true;
+        componentArray[(int)type] = component;
+        component -> entity = this;
+        component -> init();
+        return component;
     }
     
-    template <typename T> T* loadComponent(T* comp, std::fstream& stream) {
-        assert(!hasComponent<T>());
-        componentBitSet[getComponentType<T>()] = true;
-        T* component = new T();
-        component -> deserialize(stream);
-        component -> componentType = getComponentType<T>();
-        components.push_back(component);
-        componentArray[getComponentType<T>()] = component;
-        component -> entity = this;
-        return component;
+    template <typename T> bool hasComponent() const {
+        return componentBitSet[(int)T::componentType];
     }
     
     template <typename T, typename... TArgs> T* addComponent(TArgs&&... mArgs) {
         assert(!hasComponent<T>());
-        componentBitSet[getComponentType<T>()] = true;
-        T* component = new T(this, std::forward<TArgs>(mArgs)...);
-        component -> componentType = getComponentType<T>();
+        componentBitSet[(int)T::componentType] = true;
+        T* component = new T(std::forward<TArgs>(mArgs)...);
+        component -> compType = T::componentType;
         components.push_back(component);
-        componentArray[getComponentType<T>()] = component;
+        componentArray[(int)T::componentType] = component;
         component -> entity = this;
+        component -> init();
         return component;
     }
     
     template <typename T> T* getComponent() const {
         assert(hasComponent<T>());
-        return static_cast<T*>(componentArray[getComponentType<T>()]);
+        return static_cast<T*>(componentArray[(int)T::componentType]);
     }
 
 };

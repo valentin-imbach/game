@@ -11,13 +11,11 @@
 
 class ResourceComponent : public Component {
 public:
+    static ComponentType componentType;
     int type;
     LootTable loot;
 
-    ResourceComponent() {}
-    ResourceComponent(Entity* entity, pair<int> pos = {0,0}, int t = 0, const char* path = "") {
-        entity -> addComponent<GridComponent>(pos);
-        entity -> addComponent<SpriteComponent>(path);
+    ResourceComponent(int t = 0) {
         type = t;
         loot.addLoot(6,2,5);
         loot.addLoot(7,2,5);
@@ -30,7 +28,9 @@ public:
                     entity -> active = false;
                     for (Loot l : loot.table) {
                         Entity* item = entity -> manager -> addEntity();
-                        item -> addComponent<ItemComponent>(entity -> getComponent<PositionComponent>() -> position, l.createItem());
+                        item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
+                        item -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+                        item -> addComponent<ItemComponent>(l.createItem());
                     }
                     return true;
                 }

@@ -17,6 +17,7 @@
 		043CA55F24804FFE008CA805 /* MainMenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA55D24804FFE008CA805 /* MainMenu.cpp */; };
 		043CA5632481913E008CA805 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043CA5622481913E008CA805 /* SDL2_mixer.framework */; };
 		043CA56624819162008CA805 /* SoundManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA56424819162008CA805 /* SoundManager.cpp */; };
+		043CA56924869AE5008CA805 /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA56724869AE5008CA805 /* Component.cpp */; };
 		04795BBE2334FAD2005C6FDE /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04795BBC2334FAD2005C6FDE /* Camera.cpp */; };
 		04C7CC882334119F0053C2E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C7CC872334119F0053C2E7 /* main.cpp */; };
 		04C7CC932334190E0053C2E7 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C7CC902334190E0053C2E7 /* SDL2_image.framework */; };
@@ -82,6 +83,7 @@
 		043CA5622481913E008CA805 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
 		043CA56424819162008CA805 /* SoundManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SoundManager.cpp; sourceTree = "<group>"; };
 		043CA56524819162008CA805 /* SoundManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SoundManager.hpp; sourceTree = "<group>"; };
+		043CA56724869AE5008CA805 /* Component.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Component.cpp; sourceTree = "<group>"; };
 		044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChestComponent.h; sourceTree = "<group>"; };
 		04795BBC2334FAD2005C6FDE /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		04795BBD2334FAD2005C6FDE /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 			children = (
 				040CAB9C242D084D009A2728 /* ECS.h */,
 				04E4A3482464A2310021359B /* Entity.cpp */,
+				043CA56724869AE5008CA805 /* Component.cpp */,
 				04E4A34B246701270021359B /* EntityManager.cpp */,
 				040CABA0242E25F6009A2728 /* Components.h */,
 				040CAB9D242D123D009A2728 /* PositionComponent.h */,
@@ -316,6 +319,7 @@
 				04C7CC882334119F0053C2E7 /* main.cpp in Sources */,
 				04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */,
 				0416889C23344F9A0060DBDA /* TextManager.cpp in Sources */,
+				043CA56924869AE5008CA805 /* Component.cpp in Sources */,
 				04795BBE2334FAD2005C6FDE /* Camera.cpp in Sources */,
 				04168893233425C70060DBDA /* Window.cpp in Sources */,
 				0416889923343ACC0060DBDA /* TextureManager.cpp in Sources */,

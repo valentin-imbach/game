@@ -13,15 +13,18 @@
 
 class TileComponent : public Component {
 public:
+    static ComponentType componentType;
     v(Sprite) sprites;
     TileComponent* neig[8];
     pair<int> position;
     TileID tileID;
 
-    TileComponent() {}
-    TileComponent(Entity* entity, pair<int> pos = {0,0}, TileID tid = (TileID)0) {
+    TileComponent(pair<int> pos = {0,0}, TileID tid = (TileID)0) {
         position = pos;
         tileID = tid;
+    }
+    
+    void init() override {
         entity -> addTag(TAG::TILE);
     }
     

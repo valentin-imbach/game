@@ -12,13 +12,16 @@
 
 class InventoryComponent : public Component {
 public:
-    pair<int> size;
+    static ComponentType componentType;
+    pair<int> size = {1,1};
     vv(ItemContainer) containers;
     
-    InventoryComponent() {}
-    InventoryComponent(Entity* entity, int w = 1, int h = 1) {
+    InventoryComponent(int w = 1, int h = 1) {
         size = {w,h};
-        containers = vv(ItemContainer)(w,v(ItemContainer)(h));
+    }
+    
+    void init() override {
+        containers = vv(ItemContainer)(size.X,v(ItemContainer)(size.Y));
     }
     
     Item* addItem(Item* item) {
@@ -31,4 +34,11 @@ public:
         }
         return item;
     }
+    
+    SERIALIZE(size);
+    
+    Component* create() override {
+        return new InventoryComponent();
+    }
+    
 };

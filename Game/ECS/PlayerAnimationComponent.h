@@ -11,22 +11,30 @@
 
 class PlayerAnimationComponent : public Component {
 public:
+    static ComponentType componentType;
     SpriteComponent *spriteComponent;
     DirectionComponent *directionComponent;
     PlayerInputComponent *playerInputComponent;
     
     PlayerAnimationComponent() {}
-    PlayerAnimationComponent(Entity* entity) {
-        spriteComponent = entity -> addComponent<SpriteComponent>("character2.png",0,0,1,2);
+    
+    void init() override {
+        spriteComponent = entity -> getComponent<SpriteComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();
         playerInputComponent = entity -> getComponent<PlayerInputComponent>();
+        
         spriteComponent -> offset = 1;
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("character2.png"),{0,0},{1,2});
     }
     
     void update() override {
         int frame = (playerInputComponent -> ticks + 3)/4 ;
         spriteComponent -> sprite.position.X = directionComponent -> direction;
         spriteComponent -> sprite.position.Y = (frame % 6) * 2;
+    }
+    
+    Component* create() override {
+        return new PlayerAnimationComponent();
     }
     
 };

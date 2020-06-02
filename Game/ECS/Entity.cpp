@@ -8,8 +8,6 @@
 
 #include "ECS.h"
 
-ComponentArray Component::prototypes;
-
 Entity::Entity(EntityManager* m) {
     manager = m;
 }
@@ -50,7 +48,7 @@ void Entity::serialize(std::fstream &stream) {
     int s = (int)components.size();
     serialize_(stream, s);
     for (auto& c : components) {
-        serialize_(stream, c -> componentType);
+        serialize_(stream, c -> compType);
         c -> serialize(stream);
     }
 }
@@ -61,8 +59,10 @@ void Entity::deserialize(std::fstream &stream) {
     for (int i = 0; i < s; i++) {
         ComponentType type;
         deserialize_(stream, type);
-        LOG("Desirialized type",type);
-        loadComponent(Component::prototypes[type], stream);
+        LOG("Desirialized type",(int)type);
+        Component* comp = Component::prototypes[(int)type] -> create();
+        comp -> deserialize(stream);
+        addComponent(comp,type);
     }
 }
 

@@ -19,17 +19,17 @@ public:
     Entity* player;
     EntityLayer() {
         
+        Component::setPrototypes();
         loadMap("map.txt");
-        
-        /*
-        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
-        player = entityManager.createEntity(file);
-        file.close();
-        */
-        
+
         player = entityManager.addEntity();
         entityManager.player = player;
         player -> addTag(TAG::PLAYER);
+        
+        /*
+        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+        player -> deserialize(file);
+        file.close();*/
     
         player -> addComponent<PositionComponent>(pair<float>(50,50));
         player -> addComponent<DirectionComponent>();
@@ -42,26 +42,43 @@ public:
         inv -> containers[8][0].item = new Tool(1);
         inv -> containers[5][3].item = new Consumable(16,5);
         
+        player -> addComponent<SpriteComponent>();
         player -> addComponent<PlayerGuiComponent>();
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
         player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
         
-        
         Entity* rock = entityManager.addEntity();
-        rock -> addComponent<ResourceComponent>(pair<int>(53,53),1,"nature.png");
+        rock -> addComponent<PositionComponent>(pair<int>(53,53));
+        rock -> addComponent<SpriteComponent>("nature.png");
+        rock -> addComponent<GridComponent>(pair<int>(1,1));
+        rock -> addComponent<CollisionComponent>();
+        rock -> addComponent<ResourceComponent>(1);
 
         Entity* table = entityManager.addEntity();
-        table -> addComponent<TableComponent>(pair<int>(53,47));
+        table -> addComponent<PositionComponent>(pair<int>(53,47));
+        table -> addComponent<SpriteComponent>("table.png");
+        table -> addComponent<GridComponent>();
+        table -> addComponent<CollisionComponent>();
+        table -> addComponent<TableComponent>();
         
         Entity* item = entityManager.addEntity();
-        item -> addComponent<ItemComponent>(pair<int>(47,47), new ItemStack(8,1));
+        item -> addComponent<PositionComponent>(pair<int>(47,47));
+        item -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+        item -> addComponent<ItemComponent>(new ItemStack(8,1));
         
         Entity* chest = entityManager.addEntity();
-        chest -> addComponent<ChestComponent>(pair<int>(55,47));
+        chest -> addComponent<InventoryComponent>(5,3);
+        chest -> addComponent<PositionComponent>(pair<int>(47,51));
+        chest -> addComponent<SpriteComponent>("chest.png");
+        chest -> addComponent<GridComponent>();
+        chest -> addComponent<CollisionComponent>();
+        chest -> addComponent<ChestComponent>();
         
         Entity* shelf = entityManager.addEntity();
-        shelf -> addComponent<GridComponent>(pair<int>(50,45));
+        shelf -> addComponent<PositionComponent>(pair<int>(50,45));
+        shelf -> addComponent<GridComponent>();
+        shelf -> addComponent<CollisionComponent>();
         shelf -> addComponent<SpriteComponent>("bookshelf.png",0,0,1,3);
         
         

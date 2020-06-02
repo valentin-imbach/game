@@ -13,14 +13,15 @@
 
 class ChestComponent : public Component {
 public:
+    static ComponentType componentType;
     InventoryComponent* inventoryComponent;
     pair<int> size = {5,3};
+    pair<int> position;
     
     ChestComponent() {}
-    ChestComponent(Entity* entity, pair<int> pos) {
-        inventoryComponent = entity -> addComponent<InventoryComponent>(5,3);
-        entity -> addComponent<GridComponent>(pos);
-        entity -> addComponent<SpriteComponent>("chest.png");
+    
+    void init() override {
+        inventoryComponent = entity -> getComponent<InventoryComponent>();
     }
     
     bool handleEvent(SDL_Event event) override {

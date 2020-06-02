@@ -11,11 +11,17 @@
 
 class DirectionComponent : public Component {
 public:
+    static ComponentType componentType;
     Direction direction;
-    DirectionComponent() {}
-    DirectionComponent(Entity* entity, Direction dir = SOUTH) {
+
+    DirectionComponent(Direction dir = SOUTH) {
         direction = dir;
     }
     
     SERIALIZE(direction);
+    
+    Component* create() override {
+        return new DirectionComponent();
+    }
+    
 };
