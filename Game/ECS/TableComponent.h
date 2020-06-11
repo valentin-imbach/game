@@ -17,13 +17,16 @@ public:
     ItemContainer b;
     ItemContainer c;
     pair<int> position;
+    
+    SpriteComponent* spriteComponent;
 
     TableComponent(pair<int> pos = {0,0}) {
         position = pos;
     }
     
     void init() override {
-    
+        spriteComponent = entity -> getComponent<SpriteComponent>();
+        spriteComponent -> sprite.texture = TextureManager::getTexture("table.png");
     }
     
     bool handleEvent(SDL_Event event) override {
@@ -44,6 +47,10 @@ public:
         gui -> addGuiElement(new ItemSlot({48+57*3,48},&c));
         GuiManager::manager -> addGuiElement(gui);
         return gui;
+    }
+    
+    Component* create() override {
+        return new TableComponent();
     }
     
 };

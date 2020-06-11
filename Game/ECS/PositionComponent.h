@@ -18,6 +18,11 @@ public:
         position = pos;
     }
     
-    COMPONENT(PositionComponent,position);
+    SERIALIZE(position);
+    
+    Component* create() override {
+        return new PositionComponent();
+    }
+    
 };
 

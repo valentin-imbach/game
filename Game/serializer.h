@@ -10,12 +10,8 @@
 
 #include "tools.h"
 
-#define SERIALIZE(...)  void serialize(std::fstream& stream) {serialize_(stream, __VA_ARGS__);}\
-                        void deserialize(std::fstream& stream) {deserialize_(stream, __VA_ARGS__);}
-
-#define COMPONENT(X,...)    Component* create() { return new X(); }\
-                            void serialize(std::fstream& stream) {serialize_(stream, __VA_ARGS__);}\
-                            void deserialize(std::fstream& stream) {deserialize_(stream, __VA_ARGS__);}
+#define SERIALIZE(...)  void serialize(std::fstream& stream) override {serialize_(stream, __VA_ARGS__);}\
+                        void deserialize(std::fstream& stream) override {deserialize_(stream, __VA_ARGS__);}
 
 template <typename T> inline T* createDefeult(T* x) {
     return new T();
@@ -40,3 +36,8 @@ template <typename T, typename... Args> inline void deserialize_(std::fstream& s
     deserialize_(stream, x);
     deserialize_(stream, args...);
 }
+
+struct Serializable {
+    virtual void serialize(std::fstream& stream) {};
+    virtual void deserialize(std::fstream& stream) {};
+};

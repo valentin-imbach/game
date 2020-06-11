@@ -110,7 +110,7 @@ public:
                 if (item != nullptr) {
                     Entity* e = entity -> manager -> addEntity();
                     e -> addComponent<PositionComponent>(positionComponent -> position + dirs2[directionComponent -> direction]);
-                    e -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+                    e -> addComponent<CollisionComponent>();
                     e -> addComponent<ItemComponent>(item);
                     inventoryComponent -> containers[s][0].item = nullptr;
                 }

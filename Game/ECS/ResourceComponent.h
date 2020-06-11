@@ -12,6 +12,7 @@
 class ResourceComponent : public Component {
 public:
     static ComponentType componentType;
+    SpriteComponent* spriteComponent;
     int type;
     LootTable loot;
 
@@ -19,6 +20,11 @@ public:
         type = t;
         loot.addLoot(6,2,5);
         loot.addLoot(7,2,5);
+    }
+    
+    void init() override {
+        spriteComponent = entity -> getComponent<SpriteComponent>();
+        spriteComponent -> sprite.texture = TextureManager::getTexture("nature.png");
     }
     
     bool handleEvent(SDL_Event event) override {
@@ -29,7 +35,7 @@ public:
                     for (Loot l : loot.table) {
                         Entity* item = entity -> manager -> addEntity();
                         item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
-                        item -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+                        item -> addComponent<CollisionComponent>();
                         item -> addComponent<ItemComponent>(l.createItem());
                     }
                     return true;
@@ -37,6 +43,10 @@ public:
             }
         }
         return false;
+    }
+    
+    Component* create() override {
+        return new ResourceComponent();
     }
     
 };

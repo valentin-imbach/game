@@ -26,3 +26,11 @@ bool World::handleEvent(SDL_Event event) {
     if (layerManager.handleEvent(event)) { return true; }
     return false;
 }
+
+void World::serialize(std::fstream& stream) {
+    entityLayer.serialize(stream);
+}
+
+void World::deserialize(std::fstream& stream) {
+    entityLayer.deserialize(stream);
+}

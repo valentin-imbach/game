@@ -13,7 +13,7 @@
 class InventoryComponent : public Component {
 public:
     static ComponentType componentType;
-    pair<int> size = {1,1};
+    pair<int> size;
     vv(ItemContainer) containers;
     
     InventoryComponent(int w = 1, int h = 1) {

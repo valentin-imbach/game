@@ -12,7 +12,7 @@
 #include "Gui/PauseMenu.hpp"
 #include "Console.hpp"
 
-class World {
+class World : public Serializable {
 private:
     LayerManager layerManager;
     std::string name;
@@ -21,6 +21,9 @@ public:
     void update();
     void render();
     bool handleEvent(SDL_Event event);
+    
+    void serialize(std::fstream& stream) override;
+    void deserialize(std::fstream& stream) override;
     
     GuiLayer guiLayer;
     EntityLayer entityLayer;

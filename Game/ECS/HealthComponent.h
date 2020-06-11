@@ -20,5 +20,10 @@ public:
         health = max;
     }
     
-    //SERIALIZE(maxHealth,health);
+    SERIALIZE(maxHealth,health);
+    
+    Component* create() override {
+        return new HealthComponent();
+    }
+    
 };

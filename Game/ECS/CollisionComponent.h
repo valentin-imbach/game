@@ -35,4 +35,8 @@ public:
         Camera::drawRect(collider.position,collider.size);
     }
     
+    Component* create() override {
+        return new CollisionComponent();
+    }
+    
 };

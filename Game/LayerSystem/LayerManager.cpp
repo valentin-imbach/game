@@ -45,3 +45,14 @@ bool LayerManager::handleEvent(SDL_Event event) {
     return false;
 }
 
+void LayerManager::serialize(std::fstream& stream) {
+    for (Layer* l: layerStack) {
+        l -> serialize(stream);
+    }
+}
+
+void LayerManager::deserialize(std::fstream& stream) {
+    for (Layer* l: layerStack) {
+        l -> deserialize(stream);
+    }
+}

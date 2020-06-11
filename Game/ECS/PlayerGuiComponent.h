@@ -60,4 +60,8 @@ public:
         return &(inventoryComponent -> containers[selected][0]);
     }
     
+    Component* create() override {
+        return new PlayerGuiComponent();
+    }
+    
 };

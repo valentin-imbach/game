@@ -15,7 +15,7 @@ class SpriteComponent : public Component {
 public:
     static ComponentType componentType;
     PositionComponent* positionComponent;
-    SDL_Texture* texture = nullptr;
+    SDL_Texture* texture;
     int sx, sy, sw, sh;
     pair<float> size;
     float offset = 0;
@@ -28,6 +28,7 @@ public:
         sw = w;
         sh = h;
         sprite = Sprite(TextureManager::getTexture(path),{x,y},{w,h});
+        if (!sprite.texture) { sprite.texture = TextureManager::getTexture("default.png"); }
     }
     
     void init() override {
@@ -35,7 +36,6 @@ public:
     }
 
     void render() override {
-        if (!sprite.texture) { sprite.texture = TextureManager::getTexture("default.png"); }
         Camera::drawSprite(sprite, positionComponent -> position);
     }
     

@@ -18,6 +18,7 @@
 		043CA5632481913E008CA805 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043CA5622481913E008CA805 /* SDL2_mixer.framework */; };
 		043CA56624819162008CA805 /* SoundManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA56424819162008CA805 /* SoundManager.cpp */; };
 		043CA56924869AE5008CA805 /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043CA56724869AE5008CA805 /* Component.cpp */; };
+		044A3A99249264B7004FE4B0 /* EntityFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 044A3A97249264B7004FE4B0 /* EntityFactory.cpp */; };
 		04795BBE2334FAD2005C6FDE /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04795BBC2334FAD2005C6FDE /* Camera.cpp */; };
 		04C7CC882334119F0053C2E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C7CC872334119F0053C2E7 /* main.cpp */; };
 		04C7CC932334190E0053C2E7 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C7CC902334190E0053C2E7 /* SDL2_image.framework */; };
@@ -84,6 +85,8 @@
 		043CA56424819162008CA805 /* SoundManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SoundManager.cpp; sourceTree = "<group>"; };
 		043CA56524819162008CA805 /* SoundManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SoundManager.hpp; sourceTree = "<group>"; };
 		043CA56724869AE5008CA805 /* Component.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Component.cpp; sourceTree = "<group>"; };
+		044A3A97249264B7004FE4B0 /* EntityFactory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EntityFactory.cpp; sourceTree = "<group>"; };
+		044A3A98249264B7004FE4B0 /* EntityFactory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EntityFactory.hpp; sourceTree = "<group>"; };
 		044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChestComponent.h; sourceTree = "<group>"; };
 		04795BBC2334FAD2005C6FDE /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		04795BBD2334FAD2005C6FDE /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
@@ -188,6 +191,8 @@
 				04CBB50A2450437000A8BC69 /* maths.h */,
 				043CA558247E6A57008CA805 /* strings.h */,
 				0439263C244492750057C83C /* Item.h */,
+				044A3A98249264B7004FE4B0 /* EntityFactory.hpp */,
+				044A3A97249264B7004FE4B0 /* EntityFactory.cpp */,
 				043CA556247D6492008CA805 /* Console.hpp */,
 				043CA555247D6492008CA805 /* Console.cpp */,
 				043CA56524819162008CA805 /* SoundManager.hpp */,
@@ -313,6 +318,7 @@
 				04CBB51224522D4400A8BC69 /* LayerManager.cpp in Sources */,
 				043CA56624819162008CA805 /* SoundManager.cpp in Sources */,
 				041688962334336D0060DBDA /* Game.cpp in Sources */,
+				044A3A99249264B7004FE4B0 /* EntityFactory.cpp in Sources */,
 				043CA55B247FF6CF008CA805 /* World.cpp in Sources */,
 				043CA55F24804FFE008CA805 /* MainMenu.cpp in Sources */,
 				04E4A35124683FE00021359B /* GuiElements.cpp in Sources */,

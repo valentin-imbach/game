@@ -15,6 +15,7 @@ class ChestComponent : public Component {
 public:
     static ComponentType componentType;
     InventoryComponent* inventoryComponent;
+    SpriteComponent* spriteComponent;
     pair<int> size = {5,3};
     pair<int> position;
     
@@ -22,6 +23,8 @@ public:
     
     void init() override {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
+        spriteComponent = entity -> getComponent<SpriteComponent>();
+        spriteComponent -> sprite.texture = TextureManager::getTexture("chest.png");
     }
     
     bool handleEvent(SDL_Event event) override {
@@ -44,6 +47,10 @@ public:
         }
         GuiManager::manager -> addGuiElement(gui);
         return gui;
+    }
+    
+    Component* create() override {
+        return new ChestComponent();
     }
     
 };

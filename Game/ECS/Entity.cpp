@@ -45,6 +45,11 @@ void Entity::addTag(TAG tag) {
 }
 
 void Entity::serialize(std::fstream &stream) {
+    
+    //Tags
+    serialize_(stream, tagBitSet);
+    
+    //Components
     int s = (int)components.size();
     serialize_(stream, s);
     for (auto& c : components) {
@@ -54,12 +59,22 @@ void Entity::serialize(std::fstream &stream) {
 }
 
 void Entity::deserialize(std::fstream &stream) {
+    
+    //Tags
+    deserialize_(stream, tagBitSet);
+    for (int i = 0; i < tagBitSet.size(); i++) {
+        if (tagBitSet[i]) {
+            addTag(TAG(i));
+        }
+    }
+    
+    //Components
     int s;
     deserialize_(stream, s);
     for (int i = 0; i < s; i++) {
         ComponentType type;
         deserialize_(stream, type);
-        LOG("Desirialized type",(int)type);
+        //LOG("Desirialized type",(int)type);
         Component* comp = Component::prototypes[(int)type] -> create();
         comp -> deserialize(stream);
         addComponent(comp,type);

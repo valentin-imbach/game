@@ -29,6 +29,7 @@ void TextureManager::loadTilesets() {
 }
 
 SDL_Texture* TextureManager::getTexture(std::string path) {
+    if (path == "") { return nullptr; }
     if (textures.find(path) != textures.end()) { return textures[path]; }
     SDL_Texture* tex = loadTexture(path);
     textures[path] = tex;

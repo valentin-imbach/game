@@ -29,4 +29,9 @@ public:
         }
         entity -> addTag(TAG::STRUCT);
     }
+    
+    Component* create() override {
+        return new GridComponent();
+    }
+    
 };

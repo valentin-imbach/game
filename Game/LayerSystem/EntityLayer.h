@@ -13,64 +13,49 @@
 #include "../Window.hpp"
 
 class EntityLayer : public Layer {
-private:
-    EntityManager entityManager;
 public:
+    EntityManager entityManager;
     Entity* player;
     EntityLayer() {
         
         Component::setPrototypes();
         loadMap("map.txt");
-
-        player = entityManager.addEntity();
-        entityManager.player = player;
-        player -> addTag(TAG::PLAYER);
         
         /*
-        std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
-        player -> deserialize(file);
-        file.close();*/
     
         player -> addComponent<PositionComponent>(pair<float>(50,50));
         player -> addComponent<DirectionComponent>();
         player -> addComponent<HealthComponent>(10);
         
-        auto inv = player -> addComponent<InventoryComponent>(9,5);
-        inv -> containers[0][0].item = new Tool(0);
-        inv -> containers[8][4].item = new ItemStack(6,2);
-        inv -> containers[0][4].item = new ItemStack(7,5);
-        inv -> containers[8][0].item = new Tool(1);
-        inv -> containers[5][3].item = new Consumable(16,5);
-        
         player -> addComponent<SpriteComponent>();
         player -> addComponent<PlayerGuiComponent>();
         player -> addComponent<PlayerInputComponent>();
         player -> addComponent<PlayerAnimationComponent>();
-        player -> addComponent<CollisionComponent>(0.4,0.3,0.4,0.2);
+        player -> addComponent<CollisionComponent>();
         
         Entity* rock = entityManager.addEntity();
         rock -> addComponent<PositionComponent>(pair<int>(53,53));
-        rock -> addComponent<SpriteComponent>("nature.png");
+        rock -> addComponent<SpriteComponent>();
         rock -> addComponent<GridComponent>(pair<int>(1,1));
         rock -> addComponent<CollisionComponent>();
         rock -> addComponent<ResourceComponent>(1);
 
         Entity* table = entityManager.addEntity();
         table -> addComponent<PositionComponent>(pair<int>(53,47));
-        table -> addComponent<SpriteComponent>("table.png");
+        table -> addComponent<SpriteComponent>();
         table -> addComponent<GridComponent>();
         table -> addComponent<CollisionComponent>();
         table -> addComponent<TableComponent>();
         
         Entity* item = entityManager.addEntity();
         item -> addComponent<PositionComponent>(pair<int>(47,47));
-        item -> addComponent<CollisionComponent>(0.25,0.25,0.25,0.25);
+        item -> addComponent<CollisionComponent>();
         item -> addComponent<ItemComponent>(new ItemStack(8,1));
         
         Entity* chest = entityManager.addEntity();
         chest -> addComponent<InventoryComponent>(5,3);
         chest -> addComponent<PositionComponent>(pair<int>(47,51));
-        chest -> addComponent<SpriteComponent>("chest.png");
+        chest -> addComponent<SpriteComponent>();
         chest -> addComponent<GridComponent>();
         chest -> addComponent<CollisionComponent>();
         chest -> addComponent<ChestComponent>();
@@ -81,8 +66,26 @@ public:
         shelf -> addComponent<CollisionComponent>();
         shelf -> addComponent<SpriteComponent>("bookshelf.png",0,0,1,3);
         
+         */
         
         LOG("Entity Layer constructed");
+    }
+    
+    void serialize(std::fstream& stream) override {
+        entityManager.serialize(stream);
+    }
+    
+    void deserialize(std::fstream& stream) override {
+        entityManager.deserialize(stream);
+        
+        player = entityManager.player;
+        
+        auto inv = player -> getComponent<InventoryComponent>();
+        inv -> containers[0][0].item = new Tool(0);
+        inv -> containers[8][4].item = new ItemStack(6,2);
+        inv -> containers[0][4].item = new ItemStack(7,5);
+        inv -> containers[8][0].item = new Tool(1);
+        inv -> containers[5][3].item = new Consumable(16,5);
     }
     
     void loadMap(const char* path) {

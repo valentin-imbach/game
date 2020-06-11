@@ -91,15 +91,13 @@ bool Console::execute(std::string s) {
         if (s == "kill") {
             Game::world -> entityLayer.player -> getComponent<HealthComponent>() -> health = 0;
         }
-        if (s == "save") {
-            std::fstream file = std::fstream("save.binary", std::ios::out | std::ios::binary);
-            Game::world -> entityLayer.player -> serialize(file);
-            file.close();
-        }
-        if (s == "load") {
-            std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
-            Game::world -> entityLayer.player -> deserialize(file);
-            file.close();
+        if (s == "rock") {
+            Entity* rock = Game::world -> entityLayer.entityManager.addEntity();
+            rock -> addComponent<PositionComponent>(pair<int>(53,53));
+            rock -> addComponent<SpriteComponent>();
+            rock -> addComponent<GridComponent>(pair<int>(1,1));
+            rock -> addComponent<CollisionComponent>();
+            rock -> addComponent<ResourceComponent>(1);
         }
     }
     return true;

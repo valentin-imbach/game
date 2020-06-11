@@ -17,7 +17,7 @@
 #include "serializer.h"
 #include "SoundManager.hpp"
 
-class Game {
+class Game : public Serializable {
 public:
     Game();
     void render();

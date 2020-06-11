@@ -47,7 +47,7 @@ enum class ComponentType : int {
     PLAYER_ANIMATION
 };
 
-class Component {
+class Component : public Serializable {
 public:
     Entity* entity;
     ComponentType compType;
@@ -61,13 +61,11 @@ public:
     virtual void debugRender() {};
     
     virtual Component* create() { return new Component(); LOG("DEFAULT CREATE"); }
-    virtual void serialize(std::fstream& stream) {}
-    virtual void deserialize(std::fstream& stream) {}
     
     virtual ~Component() {};
 };
 
-class Entity {
+class Entity : public Serializable {
 private:
     v(Component*) components;
     ComponentArray componentArray;
@@ -90,8 +88,8 @@ public:
     bool hasTag(TAG tag);
     void addTag(TAG tag);
     
-    void serialize(std::fstream& stream);
-    void deserialize(std::fstream& stream);
+    void serialize(std::fstream& stream) override;
+    void deserialize(std::fstream& stream) override;
     
     Component* addComponent(Component* component, ComponentType type) {
         assert(!componentBitSet[(int)type]);
@@ -127,7 +125,7 @@ public:
 
 };
 
-class EntityManager {
+class EntityManager : public Serializable {
 public:
     v(Entity*) entities;
     std::array<std::vector<Entity*>, maxTags> taggedEntities;
@@ -142,6 +140,9 @@ public:
     void update();
     void render();
     void debugRender();
+    
+    void serialize(std::fstream& stream) override;
+    void deserialize(std::fstream& stream) override;
     
     bool handleEvent(SDL_Event event);
     Entity* player = nullptr;

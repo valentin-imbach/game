@@ -54,3 +54,30 @@ bool EntityManager::handleEvent(SDL_Event event) {
     }
     return false;
 }
+
+void EntityManager::serialize(std::fstream &stream) {
+    int count = 0;
+    for (Entity* e : entities) {
+        if (!e -> hasTag(TAG::TILE)) {
+            count += 1;
+        }
+    }
+    serialize_(stream, count);
+    for (Entity* e : entities) {
+        if (!e -> hasTag(TAG::TILE)) {
+            e -> serialize(stream);
+        }
+    }
+}
+
+void EntityManager::deserialize(std::fstream &stream) {
+    int count;
+    deserialize_(stream, count);
+    for (int i = 0; i < count; i++) {
+        Entity* e = addEntity();
+        e -> deserialize(stream);
+        if (e -> hasTag(TAG::PLAYER)) {
+            player = e;
+        }
+    }
+}

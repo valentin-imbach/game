@@ -26,6 +26,8 @@ void Component::setPrototypes() {
     prototypes[(int)ComponentType::PLAYER_GUI] = new PlayerGuiComponent();
     prototypes[(int)ComponentType::PLAYER_INPUT] = new PlayerInputComponent();
     prototypes[(int)ComponentType::PLAYER_ANIMATION] = new PlayerAnimationComponent();
+    prototypes[(int)ComponentType::CHEST] = new ChestComponent();
+    prototypes[(int)ComponentType::TABLE] = new TableComponent();
 }
 
 

@@ -8,8 +8,9 @@
 
 #pragma once
 #include "tools.h"
+#include "../serializer.h"
 
-struct Layer {
+struct Layer : public Serializable {
     bool active = true;
     virtual void update() {};
     virtual void render() {};
@@ -17,7 +18,7 @@ struct Layer {
 };
 
 
-class LayerManager {
+class LayerManager : public Serializable {
 private:
     v(Layer*) layerStack;
 public:
@@ -26,5 +27,8 @@ public:
     void update();
     void render();
     bool handleEvent(SDL_Event event);
+    
+    void serialize(std::fstream& stream) override;
+    void deserialize(std::fstream& stream) override;
 };
 

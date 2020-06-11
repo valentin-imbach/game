@@ -19,7 +19,13 @@ Game::Game() {
 }
 
 void Game::loadWorld() {
+    
     world = new World();
+    
+    std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+    world -> deserialize(file);
+    file.close();
+    
     controller.state = RUNNING;
     SoundManager::setVolume(SoundManager::volume);
     SoundManager::play();

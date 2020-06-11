@@ -22,15 +22,25 @@ public:
         this -> item = item;
     }
     
-    void init() {
+    void init() override {
         positionComponent = entity -> getComponent<PositionComponent>();
         collisionComponent = entity -> getComponent<CollisionComponent>();
+        collisionComponent -> collider.size = {0.5,0.5};
+        collisionComponent -> offset = {0.25,0.25};
         entity -> addTag(TAG::ITEM);
     }
     
     void render() override {
         pair<float> position = Camera::gtos(positionComponent -> position);
-        item -> render(position.X,position.Y,Camera::ZOOM/2,false);
+        if (item == nullptr) {
+            TextureManager::drawTexture(TextureManager::getTexture("cross.png"), position.X, position.Y, Camera::ZOOM/2, Camera::ZOOM/2,true);
+        } else {
+            item -> render(position.X,position.Y,Camera::ZOOM/2,false);
+        }
+    }
+    
+    Component* create() override {
+        return new ItemComponent();
     }
     
 };
