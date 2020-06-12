@@ -7,3 +7,8 @@
 //
 
 #include "EntityFactory.hpp"
+
+void EntityFactory::createEntity(EntityManager* manager, EntityType type, pair<int> pos) {
+    //Entity* e = manager -> addEntity();
+    
+}

@@ -8,7 +8,8 @@
 
 #include "World.hpp"
 
-World::World() {
+World::World(std::string n) {
+    name = n;
     layerManager.addLayer(&entityLayer);
     layerManager.addLayer(&guiLayer);
     layerManager.addLayer(&debugLayer);

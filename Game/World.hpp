@@ -15,15 +15,16 @@
 class World : public Serializable {
 private:
     LayerManager layerManager;
-    std::string name;
 public:
-    World();
+    World(std::string n);
     void update();
     void render();
     bool handleEvent(SDL_Event event);
     
     void serialize(std::fstream& stream) override;
     void deserialize(std::fstream& stream) override;
+    
+    std::string name;
     
     GuiLayer guiLayer;
     EntityLayer entityLayer;

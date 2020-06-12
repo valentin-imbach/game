@@ -11,7 +11,7 @@
 
 MainMenu::MainMenu() {
     gui = new Widget(Window::size/2, {600,400}, TextureManager::getTexture("grey.png"));
-    gui -> addGuiElement(new Button({300,200},{200,50},&Game::loadWorld,TextureManager::getTexture("grey.png")));
+    gui -> addGuiElement(new Button({300,200},{200,50},&Game::createWorld,TextureManager::getTexture("grey.png")));
 }
 
 bool MainMenu::handleEvent(SDL_Event event) {

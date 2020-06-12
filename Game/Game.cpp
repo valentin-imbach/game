@@ -18,11 +18,41 @@ Game::Game() {
     LOG("Game initialized");
 }
 
-void Game::loadWorld() {
+void Game::createWorld() {
     
-    world = new World();
+    world = new World("World");
     
-    std::fstream file = std::fstream("save.binary", std::ios::in | std::ios::binary);
+    Entity* player = world -> entityLayer.entityManager.addEntity();
+    
+    world -> entityLayer.player = player;
+    world -> entityLayer.entityManager.player = player;
+    
+    player -> addTag(TAG::PLAYER);
+    
+    player -> addComponent<PositionComponent>(pair<float>(50,50));
+    player -> addComponent<DirectionComponent>();
+    player -> addComponent<HealthComponent>(10);
+    
+    InventoryComponent* inv = player -> addComponent<InventoryComponent>(9,5);
+    inv -> addItem(new ItemStack(8,5));
+    
+    player -> addComponent<SpriteComponent>();
+    player -> addComponent<PlayerGuiComponent>();
+    player -> addComponent<PlayerInputComponent>();
+    player -> addComponent<PlayerAnimationComponent>();
+    player -> addComponent<CollisionComponent>();
+    
+    controller.state = RUNNING;
+    SoundManager::setVolume(SoundManager::volume);
+    SoundManager::play();
+    
+}
+
+void Game::loadWorld(std::string name) {
+    
+    world = new World(name);
+    
+    std::fstream file = std::fstream("saves/"+name, std::ios::in | std::ios::binary);
     world -> deserialize(file);
     file.close();
     

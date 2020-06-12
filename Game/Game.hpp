@@ -23,7 +23,8 @@ public:
     void render();
     void update();
     void handleEvents();
-    static void loadWorld();
+    static void loadWorld(std::string name);
+    static void createWorld();
     
     static StateController controller;
 
@@ -31,6 +32,8 @@ public:
     PauseMenu pauseMenu;
     MainMenu mainMenu;
     Console console;
+    
+    v(std::string) worlds;
     
     SERIALIZE(SoundManager::volume,Camera::ZOOM,Window::MAX_FPS);
 };

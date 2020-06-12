@@ -7,13 +7,14 @@
 //
 
 #pragma once
+#include "ECS/ECS.h"
 
-enum class TEMPLATE {
+enum class EntityType {
     TREE,
     ROCK
 };
 
 class EntityFactory {
 public:
-    static void createEntity();
+    static void createEntity(EntityManager* manager, EntityType type, pair<int> pos);
 };
