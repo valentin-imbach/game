@@ -24,6 +24,8 @@ public:
         positionComponent = entity -> getComponent<PositionComponent>();
         for (int i = 0; i < size.X; i++) {
             for (int j = 0; j < size.Y; j++) {
+                Entity* old = entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j];
+                if (old != nullptr) { old -> active = false; }
                 entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j] = entity;
             }
         }

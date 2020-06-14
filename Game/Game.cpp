@@ -34,7 +34,7 @@ void Game::createWorld() {
     player -> addComponent<HealthComponent>(10);
     
     InventoryComponent* inv = player -> addComponent<InventoryComponent>(9,5);
-    inv -> addItem(new ItemStack(8,5));
+    inv -> addItem(new ItemStack(1,1));
     
     player -> addComponent<SpriteComponent>();
     player -> addComponent<PlayerGuiComponent>();
@@ -84,7 +84,7 @@ void Game::update() {
 }
 
 void Game::render() {
-    SDL_SetRenderDrawColor(Window::renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(Window::renderer, 100, 100, 100, 255);
     SDL_RenderClear(Window::renderer);
     
     if (controller.state == MAIN_MENU) {

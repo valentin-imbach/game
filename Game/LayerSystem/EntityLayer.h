@@ -23,42 +23,16 @@ public:
         
         /*
     
-        player -> addComponent<PositionComponent>(pair<float>(50,50));
-        player -> addComponent<DirectionComponent>();
-        player -> addComponent<HealthComponent>(10);
-        
-        player -> addComponent<SpriteComponent>();
-        player -> addComponent<PlayerGuiComponent>();
-        player -> addComponent<PlayerInputComponent>();
-        player -> addComponent<PlayerAnimationComponent>();
-        player -> addComponent<CollisionComponent>();
-        
-        Entity* rock = entityManager.addEntity();
-        rock -> addComponent<PositionComponent>(pair<int>(53,53));
-        rock -> addComponent<SpriteComponent>();
-        rock -> addComponent<GridComponent>(pair<int>(1,1));
-        rock -> addComponent<CollisionComponent>();
-        rock -> addComponent<ResourceComponent>(1);
 
-        Entity* table = entityManager.addEntity();
-        table -> addComponent<PositionComponent>(pair<int>(53,47));
-        table -> addComponent<SpriteComponent>();
-        table -> addComponent<GridComponent>();
-        table -> addComponent<CollisionComponent>();
-        table -> addComponent<TableComponent>();
+
+        
         
         Entity* item = entityManager.addEntity();
         item -> addComponent<PositionComponent>(pair<int>(47,47));
         item -> addComponent<CollisionComponent>();
         item -> addComponent<ItemComponent>(new ItemStack(8,1));
         
-        Entity* chest = entityManager.addEntity();
-        chest -> addComponent<InventoryComponent>(5,3);
-        chest -> addComponent<PositionComponent>(pair<int>(47,51));
-        chest -> addComponent<SpriteComponent>();
-        chest -> addComponent<GridComponent>();
-        chest -> addComponent<CollisionComponent>();
-        chest -> addComponent<ChestComponent>();
+        
         
         Entity* shelf = entityManager.addEntity();
         shelf -> addComponent<PositionComponent>(pair<int>(50,45));

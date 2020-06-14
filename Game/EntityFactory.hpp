@@ -7,11 +7,13 @@
 //
 
 #pragma once
-#include "ECS/ECS.h"
+#include "ECS/Components.h"
 
 enum class EntityType {
-    TREE,
-    ROCK
+    ROCK,
+    TABLE,
+    CHEST,
+    TREE
 };
 
 class EntityFactory {

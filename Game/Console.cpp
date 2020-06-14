@@ -12,6 +12,8 @@
 #include "Window.hpp"
 #include "Game.hpp"
 
+#include "EntityFactory.hpp"
+
 void Console::render() {
     if (!active) { return; }
     TextureManager::drawTexture(TextureManager::getTexture("grey.png"), 20, Window::size.Y-500, 400, 480);
@@ -79,6 +81,8 @@ bool is_number(const std::string &s) {
 
 
 bool Console::execute(std::string s) {
+    EntityManager* manager = &(Game::world -> entityLayer.entityManager);
+    Entity* player = Game::world -> entityLayer.player;
     LOG("Executed command",s);
     if (s == "quit") {
         Window::running = false;
@@ -89,15 +93,16 @@ bool Console::execute(std::string s) {
     }
     if (Game::world != nullptr) {
         if (s == "kill") {
-            Game::world -> entityLayer.player -> getComponent<HealthComponent>() -> health = 0;
+            player -> getComponent<HealthComponent>() -> health = 0;
         }
         if (s == "rock") {
-            Entity* rock = Game::world -> entityLayer.entityManager.addEntity();
-            rock -> addComponent<PositionComponent>(pair<int>(53,53));
-            rock -> addComponent<SpriteComponent>();
-            rock -> addComponent<GridComponent>(pair<int>(1,1));
-            rock -> addComponent<CollisionComponent>();
-            rock -> addComponent<ResourceComponent>(1);
+            EntityFactory::createEntity(manager, EntityType::ROCK, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
+        }
+        if (s == "chest") {
+            EntityFactory::createEntity(manager, EntityType::CHEST, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
+        }
+        if (s == "table") {
+            EntityFactory::createEntity(manager, EntityType::TABLE, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
         }
     }
     return true;

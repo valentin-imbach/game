@@ -54,6 +54,8 @@ void Entity::serialize(std::fstream &stream) {
     serialize_(stream, s);
     for (auto& c : components) {
         serialize_(stream, c -> compType);
+        int s = c -> get_size();
+        serialize_(stream, s);
         c -> serialize(stream);
     }
 }
@@ -69,11 +71,13 @@ void Entity::deserialize(std::fstream &stream) {
     }
     
     //Components
-    int s;
-    deserialize_(stream, s);
-    for (int i = 0; i < s; i++) {
+    int num;
+    deserialize_(stream, num);
+    for (int i = 0; i < num; i++) {
         ComponentType type;
         deserialize_(stream, type);
+        int s;
+        deserialize_(stream, s);
         //LOG("Desirialized type",(int)type);
         Component* comp = Component::prototypes[(int)type] -> create();
         comp -> deserialize(stream);
