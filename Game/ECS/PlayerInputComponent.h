@@ -21,6 +21,7 @@ private:
     
 public:
     static ComponentType componentType;
+    bool god = false;
     int ticks = 0;
     bool walking = false;
     

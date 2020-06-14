@@ -22,24 +22,16 @@ public:
         loadMap("map.txt");
         
         /*
-    
-
-
-        
-        
         Entity* item = entityManager.addEntity();
         item -> addComponent<PositionComponent>(pair<int>(47,47));
         item -> addComponent<CollisionComponent>();
         item -> addComponent<ItemComponent>(new ItemStack(8,1));
-        
-        
         
         Entity* shelf = entityManager.addEntity();
         shelf -> addComponent<PositionComponent>(pair<int>(50,45));
         shelf -> addComponent<GridComponent>();
         shelf -> addComponent<CollisionComponent>();
         shelf -> addComponent<SpriteComponent>("bookshelf.png",0,0,1,3);
-        
          */
         
         LOG("Entity Layer constructed");
@@ -136,7 +128,7 @@ public:
         for (auto* e : entityManager.getTagged(TAG::STRUCT)) {
             Collider a = player -> getComponent<CollisionComponent>() -> collider;
             Collider b = e -> getComponent<CollisionComponent>() -> collider;
-            if (CollisionManager::AABB(a,b)) {
+            if (CollisionManager::AABB(a,b) && !player -> getComponent<PlayerInputComponent>() -> god) {
                 player -> getComponent<PlayerInputComponent>() -> setBack();
             }
         }

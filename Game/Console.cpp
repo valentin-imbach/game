@@ -95,6 +95,10 @@ bool Console::execute(std::string s) {
         if (s == "kill") {
             player -> getComponent<HealthComponent>() -> health = 0;
         }
+        if (s == "god") {
+            player -> getComponent<PlayerInputComponent>() -> god = !(player -> getComponent<PlayerInputComponent>() -> god);
+        }
+        
         if (s == "rock") {
             EntityFactory::createEntity(manager, EntityType::ROCK, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
         }
