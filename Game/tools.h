@@ -25,7 +25,7 @@
 
 #include "maths.h"
 #include "strings.h"
-#include "types.h"
+#include "types.hpp"
 #include "logger.hpp"
 
 #define v(x) std::vector<x>

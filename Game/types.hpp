@@ -1,8 +1,8 @@
 //
-//  types.h
+//  types.hpp
 //  Game
 //
-//  Created by Valentin Imbach on 07.05.20.
+//  Created by Valentin Imbach on 16.06.20.
 //  Copyright © 2020 Valentin Imbach. All rights reserved.
 //
 
@@ -29,9 +29,4 @@ enum class ITEM {
     MEAT,
     POTION,
     APPLE
-};
-
-enum class RESOURCE {
-    STONE,
-    TREE
 };

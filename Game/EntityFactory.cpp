@@ -8,28 +8,25 @@
 
 #include "EntityFactory.hpp"
 
-void EntityFactory::createEntity(EntityManager* manager, EntityType type, pair<int> pos) {
-    if (type == EntityType::ROCK) {
-        Entity* rock = manager -> addEntity();
-        rock -> addComponent<PositionComponent>(pos);
-        rock -> addComponent<SpriteComponent>();
-        rock -> addComponent<GridComponent>(pair<int>(1,1));
-        rock -> addComponent<CollisionComponent>();
-        rock -> addComponent<ResourceComponent>(1);
-    } else if (type == EntityType::TABLE) {
+void EntityFactory::createEntity(EntityManager* manager, int type, pair<int> pos) {
+    if (type < 100) {
+        Entity* res = manager -> addEntity();
+        res -> addComponent<PositionComponent>(pos);
+        res -> addComponent<SpriteComponent>();
+        res -> addComponent<GridComponent>();
+        res -> addComponent<ResourceComponent>(type);
+    } else if (type == (int)EntityType::TABLE) {
         Entity* table = manager -> addEntity();
         table -> addComponent<PositionComponent>(pos);
         table -> addComponent<SpriteComponent>();
         table -> addComponent<GridComponent>();
-        table -> addComponent<CollisionComponent>();
         table -> addComponent<TableComponent>();
-    } else if (type == EntityType::CHEST) {
+    } else if (type == (int)EntityType::CHEST) {
         Entity* chest = manager -> addEntity();
         chest -> addComponent<InventoryComponent>(5,3);
         chest -> addComponent<PositionComponent>(pos);
         chest -> addComponent<SpriteComponent>();
         chest -> addComponent<GridComponent>();
-        chest -> addComponent<CollisionComponent>();
         chest -> addComponent<ChestComponent>();
     }
 }

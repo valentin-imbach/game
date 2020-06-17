@@ -17,6 +17,7 @@ private:
     DirectionComponent *directionComponent;
     InventoryComponent *inventoryComponent;
     PlayerGuiComponent *playerGuiComponent;
+    CollisionComponent *collisionComponent;
     pair<float> oldPos;
     
 public:
@@ -28,6 +29,7 @@ public:
     PlayerInputComponent() {}
     
     void init() override {
+        collisionComponent = entity -> getComponent<CollisionComponent>();
         positionComponent = entity -> getComponent<PositionComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();
         inventoryComponent = entity -> getComponent<InventoryComponent>();
@@ -80,8 +82,9 @@ public:
             offset.Y /= sqrt(2);
         }
         
-        oldPos = positionComponent -> position;
-        positionComponent -> position += offset;
+        if (checkCollision(positionComponent -> position) || !checkCollision(positionComponent -> position + offset) || god) {
+            positionComponent -> position += offset;
+        }
         
         if (dir != -1) {
             directionComponent -> direction = (Direction)dir;
@@ -94,8 +97,11 @@ public:
         }
     }
     
-    void setBack() {
-        positionComponent -> position = oldPos;
+    bool checkCollision(pair<float> pos) {
+        pair<int> p1 = (pos - collisionComponent -> offset).rounded();
+        pair<int> p2 = (pos + collisionComponent -> collider.size - collisionComponent -> offset).rounded();
+        
+        return !(entity -> manager -> isFree(p1.X,p1.Y,p2.X-p1.X+1,p2.Y-p1.Y+1));
     }
     
     bool handleEvent(SDL_Event event) override {

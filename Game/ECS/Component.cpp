@@ -14,7 +14,6 @@ ComponentArray Component::prototypes;
 void Component::setPrototypes() {
     prototypes[(int)ComponentType::POSITION] = new PositionComponent();
     prototypes[(int)ComponentType::DIRECTION] = new DirectionComponent();
-    prototypes[(int)ComponentType::SIZE] = new SizeComponent();
     prototypes[(int)ComponentType::HEALTH] = new HealthComponent();
     prototypes[(int)ComponentType::GRID] = new GridComponent();
     prototypes[(int)ComponentType::TILE] = new TileComponent();
@@ -33,7 +32,6 @@ void Component::setPrototypes() {
 
 ComponentType PositionComponent::componentType = ComponentType::POSITION;
 ComponentType DirectionComponent::componentType = ComponentType::DIRECTION;
-ComponentType SizeComponent::componentType = ComponentType::SIZE;
 ComponentType GridComponent::componentType = ComponentType::GRID;
 ComponentType HealthComponent::componentType = ComponentType::HEALTH;
 ComponentType TileComponent::componentType = ComponentType::TILE;

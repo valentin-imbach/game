@@ -13,9 +13,9 @@
 class GridComponent : public Component {
 public:
     static ComponentType componentType;
-    pair<int> size;
     PositionComponent *positionComponent;
-
+    
+    pair<int> size;
     GridComponent(pair<int> s = {1,1}) {
         size = s;
     }
@@ -25,11 +25,19 @@ public:
         for (int i = 0; i < size.X; i++) {
             for (int j = 0; j < size.Y; j++) {
                 Entity* old = entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j];
-                if (old != nullptr) { old -> active = false; }
+                if (old != nullptr) { old -> destroy(); }
                 entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j] = entity;
             }
         }
         entity -> addTag(TAG::STRUCT);
+    }
+    
+    void clear() {
+        for (int i = 0; i < size.X; i++) {
+            for (int j = 0; j < size.Y; j++) {
+                entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j] = nullptr;
+            }
+        }
     }
     
     Component* create() override {

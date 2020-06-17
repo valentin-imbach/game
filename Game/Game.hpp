@@ -23,7 +23,7 @@ public:
     void render();
     void update();
     void handleEvents();
-    static void loadWorld(std::string name);
+    static void loadWorld();
     static void createWorld();
     
     static StateController controller;
@@ -35,5 +35,7 @@ public:
     
     v(std::string) worlds;
     
-    SERIALIZE(SoundManager::volume,Camera::ZOOM,Window::MAX_FPS);
+    void serialize(std::fstream& stream) override;
+    void deserialize(std::fstream& stream) override;
+    
 };

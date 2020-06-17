@@ -11,12 +11,13 @@
 
 enum class EntityType {
     ROCK,
-    TABLE,
+    BUSH,
+    TABLE = 100,
     CHEST,
     TREE
 };
 
 class EntityFactory {
 public:
-    static void createEntity(EntityManager* manager, EntityType type, pair<int> pos);
+    static void createEntity(EntityManager* manager, int type, pair<int> pos);
 };

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Valentin Imbach. All rights reserved.
 //
 
-#include "ECS.h"
+#include "Components.h"
 
 Entity::Entity(EntityManager* m) {
     manager = m;
@@ -32,6 +32,9 @@ bool Entity::handleEvent(SDL_Event event) {
 }
 
 void Entity::destroy() {
+    if (hasComponent<GridComponent>()) {
+        getComponent<GridComponent>() -> clear();
+    }
     active = false;
 }
 

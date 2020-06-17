@@ -35,6 +35,8 @@ public:
         Camera::drawRect(collider.position,collider.size);
     }
     
+    SERIALIZE(collider,offset);
+    
     Component* create() override {
         return new CollisionComponent();
     }

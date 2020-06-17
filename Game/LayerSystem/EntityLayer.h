@@ -11,6 +11,7 @@
 #include "../ECS/Components.h"
 #include "../CollisionManager.h"
 #include "../Window.hpp"
+#include "../ResoureTypes.hpp"
 
 class EntityLayer : public Layer {
 public:
@@ -18,6 +19,7 @@ public:
     Entity* player;
     EntityLayer() {
         
+        ResourceType::setTypes();
         Component::setPrototypes();
         loadMap("map.txt");
         
@@ -46,12 +48,14 @@ public:
         
         player = entityManager.player;
         
+        /*
         auto inv = player -> getComponent<InventoryComponent>();
         inv -> containers[0][0].item = new Tool(0);
         inv -> containers[8][4].item = new ItemStack(6,2);
         inv -> containers[0][4].item = new ItemStack(7,5);
         inv -> containers[8][0].item = new Tool(1);
         inv -> containers[5][3].item = new Consumable(16,5);
+         */
     }
     
     void loadMap(const char* path) {
@@ -125,6 +129,7 @@ public:
             }
         }
         
+        /*
         for (auto* e : entityManager.getTagged(TAG::STRUCT)) {
             Collider a = player -> getComponent<CollisionComponent>() -> collider;
             Collider b = e -> getComponent<CollisionComponent>() -> collider;
@@ -132,6 +137,7 @@ public:
                 player -> getComponent<PlayerInputComponent>() -> setBack();
             }
         }
+        */
     }
     
     void render() override {
@@ -143,7 +149,7 @@ public:
         });
         */
         entityManager.render();
-        //entityManager.debugRender();
+        entityManager.debugRender();
     }
     
     bool handleEvent(SDL_Event event) override {

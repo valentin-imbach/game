@@ -81,3 +81,14 @@ void EntityManager::deserialize(std::fstream &stream) {
         }
     }
 }
+
+bool EntityManager::isFree(int x, int y, int w, int h) {
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            if (gridEntities[x+i][y+j] != nullptr) {
+                return false;
+            }
+        }
+    }
+    return true;
+}

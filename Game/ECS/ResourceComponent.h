@@ -8,30 +8,39 @@
 
 #pragma once
 #include "../Item.h"
+#include "../ResoureTypes.hpp"
 
 class ResourceComponent : public Component {
 public:
     static ComponentType componentType;
     SpriteComponent* spriteComponent;
+    GridComponent* gridComponent;
+    
     int type;
+    
+    int tool;
     LootTable loot;
 
     ResourceComponent(int t = 0) {
         type = t;
-        loot.addLoot(6,2,5);
-        loot.addLoot(7,2,5);
     }
     
     void init() override {
+        loot = ResourceType::types[type] -> loot;
+        tool = ResourceType::types[type] -> tool;
+        
         spriteComponent = entity -> getComponent<SpriteComponent>();
-        spriteComponent -> sprite.texture = TextureManager::getTexture("nature.png");
+        spriteComponent -> sprite = ResourceType::types[type] -> sprite;
+        
+        gridComponent = entity -> getComponent<GridComponent>();
+        gridComponent -> size = ResourceType::types[type] -> size;
     }
     
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_LEFT) {
-                if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> type() == type) {
-                    entity -> active = false;
+                if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> type() == tool) {
+                    entity -> destroy();
                     for (Loot l : loot.table) {
                         Entity* item = entity -> manager -> addEntity();
                         item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
@@ -48,5 +57,7 @@ public:
     Component* create() override {
         return new ResourceComponent();
     }
+    
+    SERIALIZE(type);
     
 };

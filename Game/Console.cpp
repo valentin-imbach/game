@@ -99,14 +99,11 @@ bool Console::execute(std::string s) {
             player -> getComponent<PlayerInputComponent>() -> god = !(player -> getComponent<PlayerInputComponent>() -> god);
         }
         
-        if (s == "rock") {
-            EntityFactory::createEntity(manager, EntityType::ROCK, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
-        }
-        if (s == "chest") {
-            EntityFactory::createEntity(manager, EntityType::CHEST, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
-        }
-        if (s == "table") {
-            EntityFactory::createEntity(manager, EntityType::TABLE, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
+        if (s.substr(0,5) == "place") {
+            int n = std::stoi(s.substr(6));
+            if (0 <= n) {
+                EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
+            }
         }
     }
     return true;

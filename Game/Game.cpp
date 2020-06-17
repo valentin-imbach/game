@@ -34,13 +34,14 @@ void Game::createWorld() {
     player -> addComponent<HealthComponent>(10);
     
     InventoryComponent* inv = player -> addComponent<InventoryComponent>(9,5);
-    inv -> addItem(new ItemStack(1,1));
+    inv -> addItem(new Tool(0));
+    inv -> addItem(new Tool(1));
     
+    player -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);
     player -> addComponent<SpriteComponent>();
     player -> addComponent<PlayerGuiComponent>();
     player -> addComponent<PlayerInputComponent>();
     player -> addComponent<PlayerAnimationComponent>();
-    player -> addComponent<CollisionComponent>();
     
     controller.state = RUNNING;
     SoundManager::setVolume(SoundManager::volume);
@@ -48,8 +49,9 @@ void Game::createWorld() {
     
 }
 
-void Game::loadWorld(std::string name) {
+void Game::loadWorld() {
     
+    std::string name = "World";
     world = new World(name);
     
     std::fstream file = std::fstream("saves/"+name, std::ios::in | std::ios::binary);
@@ -84,7 +86,7 @@ void Game::update() {
 }
 
 void Game::render() {
-    SDL_SetRenderDrawColor(Window::renderer, 100, 100, 100, 255);
+    SDL_SetRenderDrawColor(Window::renderer, 200, 200, 200, 255);
     SDL_RenderClear(Window::renderer);
     
     if (controller.state == MAIN_MENU) {
@@ -93,7 +95,7 @@ void Game::render() {
     
     if (controller.state == RUNNING || controller.state == PAUSED) {
         world -> render();
-        //Camera::render();
+        Camera::render();
     }
     
     if (controller.state == PAUSED) {
@@ -103,4 +105,12 @@ void Game::render() {
     console.render();
     
     SDL_RenderPresent(Window::renderer);
+}
+
+void Game::serialize(std::fstream& stream) {
+    serialize_(stream, SoundManager::volume, Camera::ZOOM, Window::MAX_FPS);
+}
+
+void Game::deserialize(std::fstream& stream) {
+    deserialize_(stream, SoundManager::volume, Camera::ZOOM, Window::MAX_FPS);
 }

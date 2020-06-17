@@ -24,7 +24,7 @@ public:
         playerInputComponent = entity -> getComponent<PlayerInputComponent>();
         
         spriteComponent -> offset = 1;
-        spriteComponent -> sprite = Sprite(TextureManager::getTexture("character2.png"),{0,0},{1,2});
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("character.png"),{0,0},{1,2});
     }
     
     void update() override {

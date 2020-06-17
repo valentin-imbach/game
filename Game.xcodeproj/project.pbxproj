@@ -30,6 +30,8 @@
 		04E4A34C246703310021359B /* EntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34B246701270021359B /* EntityManager.cpp */; };
 		04E4A35124683FE00021359B /* GuiElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34F24683FE00021359B /* GuiElements.cpp */; };
 		04E4A354246846470021359B /* GuiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A352246846470021359B /* GuiManager.cpp */; };
+		04E7081E2498E9E10038870C /* types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E7081C2498E9E10038870C /* types.cpp */; };
+		04E708212498EBB40038870C /* ResoureTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E7081F2498EBB40038870C /* ResoureTypes.cpp */; };
 		04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */; };
 /* End PBXBuildFile section */
 
@@ -103,7 +105,6 @@
 		04CBB51024522D4400A8BC69 /* LayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LayerManager.cpp; sourceTree = "<group>"; };
 		04CBB51124522D4400A8BC69 /* LayerManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LayerManager.hpp; sourceTree = "<group>"; };
 		04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerGuiComponent.h; sourceTree = "<group>"; };
-		04E4A34424645A1E0021359B /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		04E4A34624646DEC0021359B /* logger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
 		04E4A3482464A2310021359B /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		04E4A34A2464A98E0021359B /* TileComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileComponent.h; sourceTree = "<group>"; };
@@ -112,9 +113,12 @@
 		04E4A35024683FE00021359B /* GuiElements.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiElements.hpp; sourceTree = "<group>"; };
 		04E4A352246846470021359B /* GuiManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiManager.cpp; sourceTree = "<group>"; };
 		04E4A353246846470021359B /* GuiManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiManager.hpp; sourceTree = "<group>"; };
+		04E7081C2498E9E10038870C /* types.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = types.cpp; sourceTree = "<group>"; };
+		04E7081D2498E9E10038870C /* types.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = types.hpp; sourceTree = "<group>"; };
+		04E7081F2498EBB40038870C /* ResoureTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ResoureTypes.cpp; sourceTree = "<group>"; };
+		04E708202498EBB40038870C /* ResoureTypes.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ResoureTypes.hpp; sourceTree = "<group>"; };
 		04E8D3BB239D6DF1002D0079 /* FastNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastNoise.cpp; sourceTree = "<group>"; };
 		04E8D3BC239D6DF2002D0079 /* FastNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastNoise.h; sourceTree = "<group>"; };
-		04F789D02473D8C8001A3D5F /* SizeComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizeComponent.h; sourceTree = "<group>"; };
 		04F789D1247473E8001A3D5F /* HealthComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthComponent.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,7 +148,6 @@
 				040CAB9D242D123D009A2728 /* PositionComponent.h */,
 				040CABA3242E3408009A2728 /* DirectionComponent.h */,
 				04E4A34A2464A98E0021359B /* TileComponent.h */,
-				04F789D02473D8C8001A3D5F /* SizeComponent.h */,
 				04F789D1247473E8001A3D5F /* HealthComponent.h */,
 				040CAB9F242E2586009A2728 /* SpriteComponent.h */,
 				040CABA6242F95B8009A2728 /* InventoryComponent.h */,
@@ -187,7 +190,10 @@
 				04CBB503244F587100A8BC69 /* LayerSystem */,
 				04E4A34E24683F880021359B /* Gui */,
 				04E4A34624646DEC0021359B /* logger.hpp */,
-				04E4A34424645A1E0021359B /* types.h */,
+				04E7081D2498E9E10038870C /* types.hpp */,
+				04E7081C2498E9E10038870C /* types.cpp */,
+				04E708202498EBB40038870C /* ResoureTypes.hpp */,
+				04E7081F2498EBB40038870C /* ResoureTypes.cpp */,
 				04CBB50A2450437000A8BC69 /* maths.h */,
 				043CA558247E6A57008CA805 /* strings.h */,
 				0439263C244492750057C83C /* Item.h */,
@@ -323,6 +329,7 @@
 				043CA55F24804FFE008CA805 /* MainMenu.cpp in Sources */,
 				04E4A35124683FE00021359B /* GuiElements.cpp in Sources */,
 				04C7CC882334119F0053C2E7 /* main.cpp in Sources */,
+				04E7081E2498E9E10038870C /* types.cpp in Sources */,
 				04E8D3BD239D6DF2002D0079 /* FastNoise.cpp in Sources */,
 				0416889C23344F9A0060DBDA /* TextManager.cpp in Sources */,
 				043CA56924869AE5008CA805 /* Component.cpp in Sources */,
@@ -331,6 +338,7 @@
 				0416889923343ACC0060DBDA /* TextureManager.cpp in Sources */,
 				04CBB505244F595C00A8BC69 /* tools.h in Sources */,
 				04E4A354246846470021359B /* GuiManager.cpp in Sources */,
+				04E708212498EBB40038870C /* ResoureTypes.cpp in Sources */,
 				043CA554247D1DDE008CA805 /* PauseMenu.cpp in Sources */,
 				043CA557247D6492008CA805 /* Console.cpp in Sources */,
 				04E4A34C246703310021359B /* EntityManager.cpp in Sources */,

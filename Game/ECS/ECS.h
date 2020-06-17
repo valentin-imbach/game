@@ -119,6 +119,7 @@ public:
     }
     
     template <typename T> T* getComponent() const {
+
         assert(hasComponent<T>());
         return static_cast<T*>(componentArray[(int)T::componentType]);
     }
@@ -136,6 +137,8 @@ public:
     
     std::vector<Entity*>& getTagged(TAG tag);
 
+    bool isFree(int x, int y, int w = 1, int h = 1);
+    
     void refresh();
     void update();
     void render();
