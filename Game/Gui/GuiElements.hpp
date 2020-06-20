@@ -84,6 +84,15 @@ public:
     bool onClick(int b) override;
 };
 
+class TextField : public GuiElement {
+public:
+    std::string s;
+    bool active = false;
+    
+    TextField(pair<int> pos, pair<int> s);
+    bool onClick(int b) override;
+    bool onKey(int k) override;
+};
 
 class ItemSlot : public GuiElement {
 private:

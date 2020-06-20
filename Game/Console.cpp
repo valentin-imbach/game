@@ -102,7 +102,7 @@ bool Console::execute(std::string s) {
         if (s.substr(0,5) == "place") {
             int n = std::stoi(s.substr(6));
             if (0 <= n) {
-                EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position - pair<float>(0,1.5)).rounded());
+                EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position).rounded());
             }
         }
     }
