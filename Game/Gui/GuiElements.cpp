@@ -50,13 +50,18 @@ bool GuiElement::handleEvent(SDL_Event event) {
         }
     }
     
-    if (event.type == SDL_MOUSEBUTTONDOWN) {
-        if(onClick(event.button.button)) { return true; }
-    } else if (event.type == SDL_KEYDOWN) {
-        if (onKey(event.key.keysym.scancode)) { return true; }
-    } else if (event.type == SDL_MOUSEWHEEL) {
-        if (onScroll(event.wheel.y)) { return true; }
+    if (event.type == SDL_TEXTINPUT) {
+        return onText(event.text.text);
     }
+    
+    if (event.type == SDL_MOUSEBUTTONDOWN) {
+        return onClick(event.button.button);
+    } else if (event.type == SDL_KEYDOWN) {
+        return onKey(event.key.keysym.scancode);
+    } else if (event.type == SDL_MOUSEWHEEL) {
+        return onScroll(event.wheel.y);
+    }
+    
     return false;
 }
 
@@ -120,7 +125,7 @@ void DisplayElement::render() {
     TextManager::drawText(std::to_string(*value), position, true);
 }
 
-Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2) : GuiElement(pos,s,tex,tex2) {
+Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2) : GuiElement(pos, s, tex, tex2) {
     function = func;
 }
 
@@ -132,6 +137,41 @@ bool Button::onClick(int b) {
         return true;
     }
     return false;
+}
+
+TextField::TextField(pair<int> pos, pair<int> s, SDL_Texture* tex) : GuiElement(pos, s, tex) {}
+
+void TextField::render() {
+    TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y);
+    TextManager::drawText(text, position + size/2, true);
+}
+
+bool TextField::onClick(int b) {
+    if (check(Window::mousePos)) {
+        if (b == SDL_BUTTON_LEFT) {
+            active = true;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool TextField::onKey(int k) {
+    if (!active) { return false; }
+    if (k == SDL_SCANCODE_ESCAPE || k == SDL_SCANCODE_RETURN) {
+        active = false;
+    } else if (k == SDL_SCANCODE_BACKSPACE) {
+        if (text.length() > 0) {
+            text = text.substr(0,text.length()-1);
+        }
+    }
+    return true;
+}
+
+bool TextField::onText(std::string t) {
+    if (!active) { return false; }
+    text += t;
+    return true;
 }
 
 ItemSlot::ItemSlot(pair<int> pos, ItemContainer* item) : GuiElement(pos,{48,48}) {

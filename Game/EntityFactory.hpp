@@ -10,11 +10,9 @@
 #include "ECS/Components.h"
 
 enum class EntityType {
-    ROCK,
-    BUSH,
     TABLE = 100,
     CHEST,
-    TREE
+    FURNACE
 };
 
 class EntityFactory {

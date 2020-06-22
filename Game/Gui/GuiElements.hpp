@@ -32,6 +32,7 @@ public:
     virtual bool onClick(int b) { return false; }
     virtual bool onKey(int k) { return false; }
     virtual bool onScroll(int y) { return false; }
+    virtual bool onText(std::string s) { return false; }
     
     GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr, SDL_Texture* tex2 = nullptr);
     
@@ -86,12 +87,15 @@ public:
 
 class TextField : public GuiElement {
 public:
-    std::string s;
+    std::string text;
     bool active = false;
     
-    TextField(pair<int> pos, pair<int> s);
+    TextField(pair<int> pos, pair<int> s, SDL_Texture* tex);
     bool onClick(int b) override;
     bool onKey(int k) override;
+    bool onText(std::string t) override;
+    
+    void render() override;
 };
 
 class ItemSlot : public GuiElement {

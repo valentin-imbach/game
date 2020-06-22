@@ -30,7 +30,10 @@ public:
         tool = ResourceType::types[type] -> tool;
         
         spriteComponent = entity -> getComponent<SpriteComponent>();
-        spriteComponent -> sprite = ResourceType::types[type] -> sprite;
+        pair<int> pos = ResourceType::types[type] -> position;
+        pos.X += randRange(0, ResourceType::types[type] -> variations);
+        pos.Y -= ResourceType::types[type] -> size.Y - 1;
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"), pos, ResourceType::types[type] -> size);
         
         gridComponent = entity -> getComponent<GridComponent>();
         gridComponent -> size = ResourceType::types[type] -> size;

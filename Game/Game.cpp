@@ -36,6 +36,7 @@ void Game::createWorld() {
     InventoryComponent* inv = player -> addComponent<InventoryComponent>(9,5);
     inv -> addItem(new Tool(0));
     inv -> addItem(new Tool(1));
+    inv -> addItem(new Tool(2));
     
     player -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);
     player -> addComponent<SpriteComponent>();

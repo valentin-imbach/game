@@ -13,20 +13,15 @@
 class TableComponent : public Component {
 public:
     static ComponentType componentType;
+    SpriteComponent* spriteComponent;
+    
     ItemContainer a;
     ItemContainer b;
     ItemContainer c;
-    pair<int> position;
-    
-    SpriteComponent* spriteComponent;
-
-    TableComponent(pair<int> pos = {0,0}) {
-        position = pos;
-    }
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
-        spriteComponent -> sprite.texture = TextureManager::getTexture("table.png");
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{5,9},{1,2});
     }
     
     bool handleEvent(SDL_Event event) override {

@@ -105,6 +105,7 @@
 		04CBB51024522D4400A8BC69 /* LayerManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LayerManager.cpp; sourceTree = "<group>"; };
 		04CBB51124522D4400A8BC69 /* LayerManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LayerManager.hpp; sourceTree = "<group>"; };
 		04CBB51A245451F200A8BC69 /* PlayerGuiComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerGuiComponent.h; sourceTree = "<group>"; };
+		04CC9E5124A0A359004539D1 /* FurnaceComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FurnaceComponent.h; sourceTree = "<group>"; };
 		04E4A34624646DEC0021359B /* logger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = logger.hpp; sourceTree = "<group>"; };
 		04E4A3482464A2310021359B /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		04E4A34A2464A98E0021359B /* TileComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TileComponent.h; sourceTree = "<group>"; };
@@ -160,6 +161,7 @@
 				040CABA5242E37A2009A2728 /* PlayerAnimationComponent.h */,
 				041720D9245875960070F152 /* TableComponent.h */,
 				044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */,
+				04CC9E5124A0A359004539D1 /* FurnaceComponent.h */,
 			);
 			path = ECS;
 			sourceTree = "<group>";

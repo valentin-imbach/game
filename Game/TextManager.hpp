@@ -17,6 +17,7 @@ public:
     
     static void Init();
     static void drawText(std::string text, pair<int> pos, bool centre = false, SDL_Color color = {255,255,255});
+    static void drawText(int a, pair<int> pos, bool centre = false, SDL_Color color = {255,255,255});
     static void loadFont(const char* path, int size);
 };
 

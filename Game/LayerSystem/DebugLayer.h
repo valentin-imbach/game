@@ -18,7 +18,7 @@ public:
         LOG("Debug Layer constructed");
     }
     void render() override {
-        TextManager::drawText(std::to_string(Window::FPS).c_str(), {20,10});
+        TextManager::drawText(Window::FPS, {20,20});
     }
 private:
     

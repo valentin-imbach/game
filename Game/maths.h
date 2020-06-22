@@ -73,3 +73,7 @@ template<typename T> std::ostream& operator<<(std::ostream& stream, const pair<T
     return stream;
 }
 
+inline int randRange(int a, int b) {
+    assert(a < b);
+    return a + rand() % (b-a);
+}

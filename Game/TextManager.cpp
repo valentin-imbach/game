@@ -22,10 +22,14 @@ void TextManager::drawText(std::string text, pair<int> pos, bool centre, SDL_Col
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::renderer, textSurface);
     if (centre) { pos.X -= textSurface -> w; }
-    SDL_Rect renderQuad = {pos.X, pos.Y, 2*(textSurface -> w), 2*(textSurface -> h)};
+    SDL_Rect renderQuad = {pos.X, pos.Y - textSurface -> h, 2*(textSurface -> w), 2*(textSurface -> h)};
     SDL_FreeSurface(textSurface);
     SDL_RenderCopy(Window::renderer, texture, NULL, &renderQuad);
     SDL_DestroyTexture(texture);
+}
+
+void TextManager::drawText(int a, pair<int> pos, bool centre, SDL_Color color) {
+    drawText(std::to_string(a), pos, centre, color);
 }
 
 void TextManager::loadFont(const char* path, int size) {

@@ -13,7 +13,8 @@
 
 enum class RESOURCE {
     STONE,
-    BUSH
+    BUSH,
+    TREE
 };
 
 struct ResourceType {
@@ -21,15 +22,16 @@ struct ResourceType {
     static void setTypes();
     
     LootTable loot;
-    Sprite sprite;
-    int tool;
+    int variations;
+    pair<int> position;
     pair<int> size;
+    int tool;
     
-    ResourceType(LootTable l, Sprite s, int t, pair<int> si = {1,1}) {
-        loot = l;
-        sprite = s;
+    ResourceType(pair<int> pos, pair<int> s, int t, int v = 1) {
         tool = t;
-        size = si;
+        size = s;
+        position = pos;
+        variations = v;
     }
 };
 

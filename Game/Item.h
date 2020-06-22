@@ -33,7 +33,7 @@ struct ItemStack : public Item {
     void render(int x, int y, int scale, bool inv = true) override {
         TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), BIT*(type % 3), BIT*(type / 3), BIT, BIT, x, y, scale, scale, true);
         if (count != 1 && inv) {
-            TextManager::drawText(std::to_string(count), {x+scale/4,y});
+            TextManager::drawText(std::to_string(count), {x+scale/4,y+15});
         }
     }
 };

@@ -42,6 +42,7 @@ enum class ComponentType : int {
     RESOURCE,
     TABLE,
     CHEST,
+    FURNACE,
     PLAYER_GUI,
     PLAYER_INPUT,
     PLAYER_ANIMATION

@@ -27,6 +27,7 @@ void Component::setPrototypes() {
     prototypes[(int)ComponentType::PLAYER_ANIMATION] = new PlayerAnimationComponent();
     prototypes[(int)ComponentType::CHEST] = new ChestComponent();
     prototypes[(int)ComponentType::TABLE] = new TableComponent();
+    prototypes[(int)ComponentType::FURNACE] = new FurnaceComponent();
 }
 
 
@@ -45,3 +46,4 @@ ComponentType ChestComponent::componentType = ComponentType::CHEST;
 ComponentType PlayerGuiComponent::componentType = ComponentType::PLAYER_GUI;
 ComponentType PlayerInputComponent::componentType = ComponentType::PLAYER_INPUT;
 ComponentType PlayerAnimationComponent::componentType = ComponentType::PLAYER_ANIMATION;
+ComponentType FurnaceComponent::componentType = ComponentType::FURNACE;
