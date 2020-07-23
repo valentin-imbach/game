@@ -34,9 +34,9 @@ void Game::createWorld() {
     player -> addComponent<HealthComponent>(10);
     
     InventoryComponent* inv = player -> addComponent<InventoryComponent>(9,5);
-    inv -> addItem(new Tool(0));
-    inv -> addItem(new Tool(1));
-    inv -> addItem(new Tool(2));
+    inv -> addItem(new ItemStack(ItemID::PICK,1));
+    inv -> addItem(new ItemStack(ItemID::HAMMER,1));
+    inv -> addItem(new ItemStack(ItemID::SHOVEL,1));
     
     player -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);
     player -> addComponent<SpriteComponent>();
@@ -96,7 +96,6 @@ void Game::render() {
     
     if (controller.state == RUNNING || controller.state == PAUSED) {
         world -> render();
-        Camera::render();
     }
     
     if (controller.state == PAUSED) {

@@ -181,11 +181,11 @@ ItemSlot::ItemSlot(pair<int> pos, ItemContainer* item) : GuiElement(pos,{48,48})
 bool ItemSlot::onClick(int button) {
     if (check(Window::mousePos)) {
         if (button == SDL_BUTTON_LEFT) {
-            if (!itemContainer -> addFull(manager -> mouseContainer)) {
+            if (!itemContainer -> takeFull(manager -> mouseContainer)) {
                 std::swap(manager -> mouseContainer -> item, itemContainer -> item);
             }
         } else if (button == SDL_BUTTON_RIGHT) {
-            if (!itemContainer -> takeHalf(manager -> mouseContainer)) {
+            if (!itemContainer -> giveHalf(manager -> mouseContainer)) {
                 itemContainer -> addOne(manager -> mouseContainer);
             }
         }
@@ -206,7 +206,7 @@ Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2
 void Hotbar::render() {
     TextureManager::drawTexture(TextureManager::getTexture("hotbar.png"), position.X, position.Y, 534, 78);
     for (int i = 0; i < hotbarContainers.size(); i++) {
-        if (!hotbarContainers[i] -> empty()) {
+        if (hotbarContainers[i] -> item != nullptr) {
             hotbarContainers[i] -> render(position + pair<int>(39+i*57,39),48);
         }
     }

@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "../Item.h"
+#include "../Item.hpp"
 #include "../Gui/GuiManager.hpp"
 
 class TableComponent : public Component {

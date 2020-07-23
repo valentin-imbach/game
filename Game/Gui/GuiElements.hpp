@@ -8,7 +8,7 @@
 
 #pragma once
 #include "tools.h"
-#include "../Item.h"
+#include "../Item.hpp"
 #include "../Window.hpp"
 
 class GuiManager;

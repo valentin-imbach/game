@@ -9,7 +9,7 @@
 #pragma once
 #define MAX_RESOURCE_TYPES 30
 
-#include "Item.h"
+#include "Item.hpp"
 
 enum class RESOURCE {
     STONE,
@@ -25,10 +25,10 @@ struct ResourceType {
     int variations;
     pair<int> position;
     pair<int> size;
-    int tool;
+    ItemID tool;
     
-    ResourceType(pair<int> pos, pair<int> s, int t, int v = 1) {
-        tool = t;
+    ResourceType(pair<int> pos, pair<int> s, ItemID i, int v = 1) {
+        tool = i;
         size = s;
         position = pos;
         variations = v;

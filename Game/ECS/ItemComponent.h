@@ -8,7 +8,7 @@
 
 #pragma once
 #include "Components.h"
-#include "../Item.h"
+#include "../Item.hpp"
 
 class ItemComponent : public Component {
 private:

@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "../Item.h"
+#include "../Item.hpp"
 #include "../ResoureTypes.hpp"
 
 class ResourceComponent : public Component {
@@ -18,7 +18,7 @@ public:
     
     int type;
     
-    int tool;
+    ItemID tool;
     LootTable loot;
 
     ResourceComponent(int t = 0) {
@@ -42,7 +42,7 @@ public:
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_LEFT) {
-                if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> type() == tool) {
+                if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item -> itemID == tool) {
                     entity -> destroy();
                     for (Loot l : loot.table) {
                         Entity* item = entity -> manager -> addEntity();

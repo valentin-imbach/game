@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "../Item.h"
+#include "../Item.hpp"
 #include "Components.h"
 
 class InventoryComponent : public Component {
@@ -29,7 +29,7 @@ public:
         itemContainer -> item = item;
         for (int y = 0; y < size.Y; y++) {
             for (int x = 0; x < size.X; x++) {
-                containers[x][y].addFull(itemContainer);
+                containers[x][y].takeFull(itemContainer);
             }
         }
         return item;

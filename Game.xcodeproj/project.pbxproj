@@ -70,7 +70,7 @@
 		041720D9245875960070F152 /* TableComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableComponent.h; sourceTree = "<group>"; };
 		041720DB245A14F20070F152 /* ItemComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ItemComponent.h; sourceTree = "<group>"; };
 		041E0BA4243B4919007435A3 /* GridComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridComponent.h; sourceTree = "<group>"; };
-		0439263C244492750057C83C /* Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		0439263C244492750057C83C /* Item.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Item.hpp; sourceTree = "<group>"; };
 		043CA552247D1DDE008CA805 /* PauseMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PauseMenu.cpp; sourceTree = "<group>"; };
 		043CA553247D1DDE008CA805 /* PauseMenu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PauseMenu.hpp; sourceTree = "<group>"; };
 		043CA555247D6492008CA805 /* Console.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Console.cpp; sourceTree = "<group>"; };
@@ -89,6 +89,7 @@
 		043CA56724869AE5008CA805 /* Component.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Component.cpp; sourceTree = "<group>"; };
 		044A3A97249264B7004FE4B0 /* EntityFactory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EntityFactory.cpp; sourceTree = "<group>"; };
 		044A3A98249264B7004FE4B0 /* EntityFactory.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EntityFactory.hpp; sourceTree = "<group>"; };
+		044C12B324A504C80081B014 /* item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = item.h; sourceTree = "<group>"; };
 		044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChestComponent.h; sourceTree = "<group>"; };
 		04795BBC2334FAD2005C6FDE /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		04795BBD2334FAD2005C6FDE /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
@@ -198,7 +199,8 @@
 				04E7081F2498EBB40038870C /* ResoureTypes.cpp */,
 				04CBB50A2450437000A8BC69 /* maths.h */,
 				043CA558247E6A57008CA805 /* strings.h */,
-				0439263C244492750057C83C /* Item.h */,
+				0439263C244492750057C83C /* Item.hpp */,
+				044C12B324A504C80081B014 /* item.h */,
 				044A3A98249264B7004FE4B0 /* EntityFactory.hpp */,
 				044A3A97249264B7004FE4B0 /* EntityFactory.cpp */,
 				043CA556247D6492008CA805 /* Console.hpp */,
