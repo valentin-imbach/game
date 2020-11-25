@@ -26,8 +26,6 @@ public:
     int ticks = 0;
     bool walking = false;
     
-    PlayerInputComponent() {}
-    
     void init() override {
         collisionComponent = entity -> getComponent<CollisionComponent>();
         positionComponent = entity -> getComponent<PositionComponent>();

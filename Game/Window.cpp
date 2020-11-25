@@ -22,8 +22,6 @@ pair<int> Window::mousePos;
 bool Window::running = true;
 
 Window::Window(const char *title, int width, int height, bool fullscreen) {
-    
-    running = false;
     lastFrame = SDL_GetTicks();
     size = {width,height};
     

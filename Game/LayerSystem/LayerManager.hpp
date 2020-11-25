@@ -17,7 +17,6 @@ struct Layer : public Serializable {
     virtual bool handleEvent(SDL_Event event) { return false; };
 };
 
-
 class LayerManager : public Serializable {
 private:
     v(Layer*) layerStack;

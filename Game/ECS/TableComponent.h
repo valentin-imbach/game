@@ -15,9 +15,7 @@ public:
     static ComponentType componentType;
     SpriteComponent* spriteComponent;
     
-    ItemContainer a;
-    ItemContainer b;
-    ItemContainer c;
+    ItemContainer a, b, c;
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();

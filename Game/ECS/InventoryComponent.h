@@ -16,11 +16,7 @@ public:
     pair<int> size;
     vv(ItemContainer) containers;
     
-    InventoryComponent(int w = 1, int h = 1) {
-        size = {w,h};
-    }
-    
-    void init() override {
+    InventoryComponent(int w = 1, int h = 1) : size(w,h) {
         containers = vv(ItemContainer)(size.X,v(ItemContainer)(size.Y));
     }
     

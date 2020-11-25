@@ -18,9 +18,7 @@ public:
     static ComponentType componentType;
     Item* item;
 
-    ItemComponent(Item* item = nullptr) {
-        this -> item = item;
-    }
+    ItemComponent(Item* i = nullptr) : item(i) {}
     
     void init() override {
         positionComponent = entity -> getComponent<PositionComponent>();

@@ -15,9 +15,7 @@ public:
     static ComponentType componentType;
     SpriteComponent* spriteComponent;
     
-    ItemContainer a;
-    ItemContainer b;
-    ItemContainer c;
+    ItemContainer a, b, c;
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
@@ -28,7 +26,7 @@ public:
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_RIGHT) {
                 GuiElement* inv = entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> makeInventoryGui(Window::size/2 + pair<int>(0,100));
-                makeGui(Window::size/2 - pair<int>(0,200), inv);
+                GuiManager::manager -> addGuiElement(makeGui(Window::size/2 - pair<int>(0,200), inv));
                 return true;
             }
         }
@@ -40,7 +38,6 @@ public:
         gui -> addGuiElement(new ItemSlot({48,48},&a));
         gui -> addGuiElement(new ItemSlot({48+27*3,48},&b));
         gui -> addGuiElement(new ItemSlot({48+57*3,48},&c));
-        GuiManager::manager -> addGuiElement(gui);
         return gui;
     }
     

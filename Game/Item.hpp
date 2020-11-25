@@ -20,9 +20,9 @@ struct Item {
     ItemID itemID;
     int count = 1;
     bool stack = false;
-    Item(ItemID i) {
-        itemID = i;
-    }
+    
+    Item(ItemID i) : itemID(i) {}
+    
     virtual void render(int x, int y, int scale, bool inv = true) {}
     virtual bool onClick(int b) { return false; }
 };
@@ -32,6 +32,7 @@ struct ItemStack : public Item {
         count = c;
         stack = true;
     }
+    
     void render(int x, int y, int scale, bool inv = true) override {
         TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), BIT*((int)itemID % 3), BIT*((int)itemID / 3), BIT, BIT, x, y, scale, scale, true);
         if (count != 1 && inv) {
@@ -41,7 +42,6 @@ struct ItemStack : public Item {
 };
 
 struct ItemContainer {
-    
     Item* item = nullptr;
     
     bool similar(ItemContainer* other) {
@@ -113,11 +113,8 @@ struct ItemContainer {
 struct Loot {
     int min, max;
     ItemID itemID;
-    Loot(ItemID i, int a = 1, int b = 1) {
-        min = a;
-        max = b;
-        itemID = i;
-    }
+    Loot(ItemID i, int a = 1, int b = 1) : min(a), max(b), itemID(i) {}
+    
     Item* createItem() {
         return new ItemStack(itemID, min+(rand() % (max+1-min)));
     }
@@ -132,8 +129,7 @@ struct LootTable {
     }
 };
 
-class Consumable : public ItemStack {
-public:
+struct Consumable : public ItemStack {
     Consumable(ItemID itemID, int c) : ItemStack(itemID, c) {};
     bool onClick(int b) override {
         if (b == SDL_BUTTON_RIGHT) {

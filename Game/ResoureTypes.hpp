@@ -21,17 +21,12 @@ struct ResourceType {
     static ResourceType* types[MAX_RESOURCE_TYPES];
     static void setTypes();
     
+    int vars;
     LootTable loot;
-    int variations;
     pair<int> position;
     pair<int> size;
     ItemID tool;
     
-    ResourceType(pair<int> pos, pair<int> s, ItemID i, int v = 1) {
-        tool = i;
-        size = s;
-        position = pos;
-        variations = v;
-    }
+    ResourceType(pair<int> pos, pair<int> s, ItemID t, int v = 1) : tool(t), size(s), position(pos), vars(v) {}
 };
 

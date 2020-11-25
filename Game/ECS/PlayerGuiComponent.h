@@ -19,29 +19,23 @@ public:
     HealthComponent *healthComponent;
     int selected = 0;
     
-    PlayerGuiComponent() {}
-    
     void init() override {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         healthComponent = entity -> getComponent<HealthComponent>();
-        makeHotbarGui();
-        makeHealthGui();
+        GuiManager::manager -> addGuiElement(makeHotbarGui());
+        GuiManager::manager -> addGuiElement(makeHealthGui());
     }
     
     GuiElement* makeHotbarGui() {
         v(ItemContainer*) vec;
-        for (int i = 0; i < inventoryComponent -> size.X; i++) {
+        for (int i = 0; i < inventoryComponent -> size.X; i++)
             vec.push_back(&(inventoryComponent -> containers[i][0]));
-        }
-        
         GuiElement* hotbar = new Hotbar(vec, &selected);
-        GuiManager::manager -> addGuiElement(hotbar);
         return hotbar;
     }
     
     GuiElement* makeHealthGui() {
         GuiElement* gui = new HealthBar(&(healthComponent -> health));
-        GuiManager::manager -> addGuiElement(gui);
         return gui;
     }
     

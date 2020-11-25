@@ -11,9 +11,7 @@
 
 class Window {
 public:
-    
     Window(const char *title, int width, int height, bool fullscreen = false);
-    
     static SDL_Renderer* renderer;
     
     void update();

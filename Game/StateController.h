@@ -8,7 +8,7 @@
 
 #pragma once
 
-enum GameState {
+enum class GameState {
     RUNNING,
     PAUSED,
     LOADING,
@@ -18,21 +18,21 @@ enum GameState {
 
 struct StateController {
     
-    GameState state = STARTING;
+    GameState state = GameState::STARTING;
     
     bool handleEvent(SDL_Event event) {
         if (event.key.repeat) { return false; }
         
-        if (state == RUNNING) {
+        if (state == GameState::RUNNING) {
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-                state = PAUSED;
+                state = GameState::PAUSED;
                 return true;
             }
         }
         
-        if (state == PAUSED) {
+        if (state == GameState::PAUSED) {
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-                state = RUNNING;
+                state = GameState::RUNNING;
                 return true;
             }
         }

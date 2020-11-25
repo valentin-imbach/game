@@ -9,9 +9,7 @@
 #pragma once
 #include "iostream"
 
-inline void PRINT() {
-    std::cout << "\n";
-}
+inline void PRINT() { std::cout << "\n"; }
 
 template <typename T, typename... argT> inline void PRINT(T x, argT... args) {
     std::cout << x << " ";
@@ -24,11 +22,11 @@ template <typename... Args> inline void LOG(Args... args) {
 }
 
 template <typename... Args> inline void ERROR(Args... args) {
-    std::cout << "    ERROR: ";
+    std::cout << "  ERROR: ";
     PRINT(args...);
 }
 
 template <typename... Args> inline void WARNING(Args... args) {
-    std::cout << "    WARNING: ";
+    std::cout << "  WARNING: ";
     PRINT(args...);
 }

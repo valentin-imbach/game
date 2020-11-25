@@ -18,9 +18,8 @@ public:
     pair<float> offset;
     PositionComponent *positionComponent;
     
-    CollisionComponent(float e = 0.5, float n = 0.5, float w = 0.5, float s = 0.5) {
+    CollisionComponent(float e = 0.5, float n = 0.5, float w = 0.5, float s = 0.5) : offset(w,n) {
         collider.size = {e+w,n+s};
-        offset = {w,n};
     }
     
     void init() override {

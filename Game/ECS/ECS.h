@@ -75,7 +75,7 @@ private:
     TagBitSet tagBitSet;
     
 public:
-    bool active = true;
+    bool alive = true;
     EntityManager* manager;
     
     Entity(EntityManager* m);

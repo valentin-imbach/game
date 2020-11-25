@@ -9,11 +9,9 @@
 #pragma once
 
 struct Collider {
-    
     pair<float> position;
     pair<float> size = {1,1};
     bool active = true;
-
 };
 
 struct CollisionManager {

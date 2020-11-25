@@ -12,10 +12,10 @@
 pair<float> Camera::position = {0,0};
 int Camera::ZOOM = 64;
 
-void Camera::drawTexture(SDL_Texture *tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset, bool centre) {
+void Camera::drawTexture(SDL_Texture *tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset, bool centred) {
     float dx = ZOOM*(dest.X-position.X)+Window::size.X/2;
     float dy = ZOOM*(dest.Y-position.Y)+Window::size.Y/2-ZOOM*offset/2;
-    if (centre) {
+    if (centred) {
         dx -= ZOOM*size.X/2;
         dy -= ZOOM*size.Y/2;
     }
@@ -35,11 +35,11 @@ void Camera::drawRect(pair<float> pos, pair<float> size) {
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 
-pair<float> Camera::gtos(pair<float> p) {
-    return {ZOOM*(p.X-position.X)+Window::size.X/2,ZOOM*(p.Y-position.Y)+Window::size.Y/2};
+pair<int> Camera::gtos(pair<float> p) {
+    return {(int)(ZOOM*(p.X-position.X)+Window::size.X/2),(int)(ZOOM*(p.Y-position.Y)+Window::size.Y/2)};
 }
 
-pair<float> Camera::stog(pair<float> p) {
+pair<float> Camera::stog(pair<int> p) {
     return {(p.X-Window::size.X/2)/ZOOM+position.X,(p.Y-Window::size.Y/2)/ZOOM+position.Y};
 }
 

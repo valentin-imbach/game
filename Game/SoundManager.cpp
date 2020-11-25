@@ -6,8 +6,8 @@
 //  Copyright © 2020 Valentin Imbach. All rights reserved.
 //
 
-#include "SoundManager.hpp"
 #include "tools.h"
+#include "SoundManager.hpp"
 
 Mix_Music* SoundManager::music = NULL;
 int SoundManager::volume = 0;

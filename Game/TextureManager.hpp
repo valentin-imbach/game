@@ -20,7 +20,6 @@ enum TileID {
 };
 
 struct TextureManager {
-    
     static v(SDL_Texture*) tilesets;    
     static std::map<std::string, SDL_Texture*> textures;
     
@@ -40,11 +39,7 @@ struct Sprite {
     SDL_Texture* texture;
     pair<int> position;
     pair<int> size;
-    Sprite(SDL_Texture* tex = nullptr, pair<int> pos = {0,0}, pair<int> s = {1,1}) {
-        texture = tex;
-        size = s;
-        position = pos;
-    }
+    Sprite(SDL_Texture* tex = nullptr, pair<int> pos = {0,0}, pair<int> s = {1,1}) : texture(tex), size(s), position(pos) {}
 };
 
 struct AnimatedSprite : public Sprite {

@@ -8,7 +8,6 @@
 
 #pragma once
 
-
 inline std::vector<std::string> splitString(const std::string& s) {
     std::vector<std::string> res = std::vector<std::string>();
     int last = -1;

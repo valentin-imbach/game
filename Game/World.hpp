@@ -9,12 +9,8 @@
 #pragma once
 #include "tools.h"
 #include "LayerSystem/Layers.h"
-#include "Gui/PauseMenu.hpp"
-#include "Console.hpp"
 
 class World : public Serializable {
-private:
-    LayerManager layerManager;
 public:
     World(std::string n);
     void update();
@@ -29,4 +25,6 @@ public:
     GuiLayer guiLayer;
     EntityLayer entityLayer;
     DebugLayer debugLayer;
+private:
+    LayerManager layerManager;
 };

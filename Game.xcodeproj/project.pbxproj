@@ -30,7 +30,6 @@
 		04E4A34C246703310021359B /* EntityManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34B246701270021359B /* EntityManager.cpp */; };
 		04E4A35124683FE00021359B /* GuiElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A34F24683FE00021359B /* GuiElements.cpp */; };
 		04E4A354246846470021359B /* GuiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E4A352246846470021359B /* GuiManager.cpp */; };
-		04E7081E2498E9E10038870C /* types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E7081C2498E9E10038870C /* types.cpp */; };
 		04E708212498EBB40038870C /* ResoureTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04E7081F2498EBB40038870C /* ResoureTypes.cpp */; };
 /* End PBXBuildFile section */
 
@@ -114,8 +113,6 @@
 		04E4A35024683FE00021359B /* GuiElements.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiElements.hpp; sourceTree = "<group>"; };
 		04E4A352246846470021359B /* GuiManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GuiManager.cpp; sourceTree = "<group>"; };
 		04E4A353246846470021359B /* GuiManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GuiManager.hpp; sourceTree = "<group>"; };
-		04E7081C2498E9E10038870C /* types.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = types.cpp; sourceTree = "<group>"; };
-		04E7081D2498E9E10038870C /* types.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = types.hpp; sourceTree = "<group>"; };
 		04E7081F2498EBB40038870C /* ResoureTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ResoureTypes.cpp; sourceTree = "<group>"; };
 		04E708202498EBB40038870C /* ResoureTypes.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ResoureTypes.hpp; sourceTree = "<group>"; };
 		04F789D1247473E8001A3D5F /* HealthComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthComponent.h; sourceTree = "<group>"; };
@@ -175,8 +172,6 @@
 				04CBB503244F587100A8BC69 /* LayerSystem */,
 				04E4A34E24683F880021359B /* Gui */,
 				04E4A34624646DEC0021359B /* logger.hpp */,
-				04E7081D2498E9E10038870C /* types.hpp */,
-				04E7081C2498E9E10038870C /* types.cpp */,
 				04E708202498EBB40038870C /* ResoureTypes.hpp */,
 				04E7081F2498EBB40038870C /* ResoureTypes.cpp */,
 				04CBB50A2450437000A8BC69 /* maths.h */,
@@ -337,7 +332,6 @@
 				043CA55F24804FFE008CA805 /* MainMenu.cpp in Sources */,
 				04E4A35124683FE00021359B /* GuiElements.cpp in Sources */,
 				04C7CC882334119F0053C2E7 /* main.cpp in Sources */,
-				04E7081E2498E9E10038870C /* types.cpp in Sources */,
 				0416889C23344F9A0060DBDA /* TextManager.cpp in Sources */,
 				043CA56924869AE5008CA805 /* Component.cpp in Sources */,
 				04795BBE2334FAD2005C6FDE /* Camera.cpp in Sources */,

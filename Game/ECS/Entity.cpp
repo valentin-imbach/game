@@ -32,7 +32,7 @@ bool Entity::handleEvent(SDL_Event event) {
 }
 
 void Entity::destroy() {
-    active = false;
+    alive = false;
 }
 
 bool Entity::hasTag(EntityTag tag) {

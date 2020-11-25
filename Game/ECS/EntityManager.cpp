@@ -38,7 +38,7 @@ void EntityManager::debugRender() const {
 
 void EntityManager::refresh() {
     for (int i = (int)entities.size()-1; i >= 0; i--) {
-        if (!entities[i] -> active) {
+        if (!entities[i] -> alive) {
             delete entities[i];
             entities.erase(entities.begin() + i);
         }

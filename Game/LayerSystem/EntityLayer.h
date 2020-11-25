@@ -10,7 +10,6 @@
 
 #include "../ECS/Components.h"
 #include "../CollisionManager.h"
-#include "../Window.hpp"
 #include "../ResoureTypes.hpp"
 
 class EntityLayer : public Layer {
@@ -18,7 +17,6 @@ public:
     EntityManager entityManager;
     Entity* player;
     EntityLayer() {
-        
         ResourceType::setTypes();
         Component::setPrototypes();
         loadMap("map.txt");
@@ -105,7 +103,7 @@ public:
             Collider b = e -> getComponent<CollisionComponent>() -> collider;
             if (CollisionManager::AABB(a,b)) {
                 player -> getComponent<InventoryComponent>() -> addItem(e -> getComponent<ItemComponent>() -> item);
-                e -> active = false;
+                e -> alive = false;
             }
         }
     }

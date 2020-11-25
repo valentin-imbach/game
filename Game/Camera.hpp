@@ -23,6 +23,6 @@ public:
     static int ZOOM;
     static pair<float> position;
     static void handleEvents();
-    static pair<float> stog(pair<float> p);
-    static pair<float> gtos(pair<float> p);
+    static pair<float> stog(pair<int> p);
+    static pair<int> gtos(pair<float> p);
 };

@@ -16,8 +16,6 @@ public:
     DirectionComponent *directionComponent;
     PlayerInputComponent *playerInputComponent;
     
-    PlayerAnimationComponent() {}
-    
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();

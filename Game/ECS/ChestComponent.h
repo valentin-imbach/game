@@ -27,7 +27,7 @@ public:
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_RIGHT) {
                 GuiElement* inv = entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> makeInventoryGui(Window::size/2 + pair<int>(0,100));
-                makeGui(Window::size/2 - pair<int>(0,180), inv);
+                GuiManager::manager -> addGuiElement(makeGui(Window::size/2 - pair<int>(0,180), inv));
                 return true;
             }
         }
@@ -41,7 +41,6 @@ public:
                 gui -> addGuiElement(new ItemSlot({39+i*57,39+j*57},&(inventoryComponent -> containers[i][j])));
             }
         }
-        GuiManager::manager -> addGuiElement(gui);
         return gui;
     }
     

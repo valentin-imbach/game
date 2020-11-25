@@ -14,7 +14,7 @@ World* Game::world = nullptr;
 StateController Game::controller = StateController();
 
 Game::Game() {
-    controller.state = MAIN_MENU;
+    controller.state = GameState::MAIN_MENU;
     LOG("Game initialized");
 }
 
@@ -44,7 +44,7 @@ void Game::createWorld() {
     player -> addComponent<PlayerInputComponent>();
     player -> addComponent<PlayerAnimationComponent>();
     
-    controller.state = RUNNING;
+    controller.state = GameState::RUNNING;
     SoundManager::setVolume(SoundManager::volume);
     SoundManager::play();
     
@@ -59,7 +59,7 @@ void Game::loadWorld() {
     world -> deserialize(file);
     file.close();
     
-    controller.state = RUNNING;
+    controller.state = GameState::RUNNING;
     SoundManager::setVolume(SoundManager::volume);
     SoundManager::play();
 }
@@ -67,12 +67,12 @@ void Game::loadWorld() {
 void Game::handleEvents() {
     for (auto e : Window::events) {
         if (console.handleEvent(e)) { continue; }
-        if (controller.state == MAIN_MENU) {
+        if (controller.state == GameState::MAIN_MENU) {
             if (mainMenu.handleEvent(e)) { continue; }
-        } else if (controller.state == RUNNING) {
+        } else if (controller.state == GameState::RUNNING) {
             if (controller.handleEvent(e)) { continue; }
             if (world -> handleEvent(e)) { continue; }
-        } else if (controller.state == PAUSED) {
+        } else if (controller.state == GameState::PAUSED) {
             if (controller.handleEvent(e)) { continue; }
             if (pauseMenu.handleEvent(e)) { continue; }
         }
@@ -80,7 +80,7 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    if (controller.state == RUNNING) {
+    if (controller.state == GameState::RUNNING) {
         world -> update();
         Camera::update(world -> entityLayer.player -> getComponent<PositionComponent>() -> position);
     }
@@ -90,18 +90,9 @@ void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 200, 200, 200, 255);
     SDL_RenderClear(Window::renderer);
     
-    if (controller.state == MAIN_MENU) {
-        mainMenu.render();
-    }
-    
-    if (controller.state == RUNNING || controller.state == PAUSED) {
-        world -> render();
-    }
-    
-    if (controller.state == PAUSED) {
-        pauseMenu.render();
-    }
-    
+    if (controller.state == GameState::MAIN_MENU) { mainMenu.render(); }
+    if (controller.state == GameState::RUNNING || controller.state == GameState::PAUSED) { world -> render(); }
+    if (controller.state == GameState::PAUSED) { pauseMenu.render(); }
     console.render();
     
     SDL_RenderPresent(Window::renderer);
