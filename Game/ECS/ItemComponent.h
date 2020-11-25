@@ -27,7 +27,7 @@ public:
         collisionComponent = entity -> getComponent<CollisionComponent>();
         collisionComponent -> collider.size = {0.5,0.5};
         collisionComponent -> offset = {0.25,0.25};
-        entity -> addTag(TAG::ITEM);
+        entity -> addTag(EntityTag::ITEM);
     }
     
     void render() override {

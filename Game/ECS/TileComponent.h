@@ -19,13 +19,10 @@ public:
     pair<int> position;
     TileID tileID;
 
-    TileComponent(pair<int> pos = {0,0}, TileID tid = (TileID)0) {
-        position = pos;
-        tileID = tid;
-    }
+    TileComponent(pair<int> pos = {0,0}, TileID tid = (TileID)0) : position(pos), tileID(tid) {}
     
     void init() override {
-        entity -> addTag(TAG::TILE);
+        entity -> addTag(EntityTag::TILE);
     }
     
     void render() override {

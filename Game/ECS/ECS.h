@@ -21,14 +21,14 @@ using ComponentBitSet = std::bitset<maxComponents>;
 constexpr int maxTags = 32;
 using TagBitSet = std::bitset<maxTags>;
 
-enum TAG {
+enum class EntityTag {
     TILE,
     STRUCT,
     ITEM,
     PLAYER
 };
 
-enum class ComponentType : int {
+enum class ComponentType {
     POSITION,
     DIRECTION,
     SIZE,
@@ -52,6 +52,7 @@ class Component : public Serializable {
 public:
     Entity* entity;
     ComponentType compType;
+    
     static ComponentArray prototypes;
     static void setPrototypes();
     
@@ -78,6 +79,7 @@ public:
     EntityManager* manager;
     
     Entity(EntityManager* m);
+    ~Entity();
     
     void update();
     void render();
@@ -86,8 +88,8 @@ public:
     bool handleEvent(SDL_Event event);
     void destroy();
     
-    bool hasTag(TAG tag);
-    void addTag(TAG tag);
+    bool hasTag(EntityTag tag);
+    void addTag(EntityTag tag);
     
     void serialize(std::fstream& stream) override;
     void deserialize(std::fstream& stream) override;
@@ -120,7 +122,6 @@ public:
     }
     
     template <typename T> T* getComponent() const {
-
         assert(hasComponent<T>());
         return static_cast<T*>(componentArray[(int)T::componentType]);
     }
@@ -130,20 +131,17 @@ public:
 class EntityManager : public Serializable {
 public:
     v(Entity*) entities;
-    std::array<std::vector<Entity*>, maxTags> taggedEntities;
     vv(Entity*) gridEntities = vv(Entity*)(100,v(Entity*)(100,nullptr));
     
     Entity* addEntity();
     Entity* createEntity(std::fstream& file);
     
-    std::vector<Entity*>& getTagged(TAG tag);
-
-    bool isFree(int x, int y, int w = 1, int h = 1);
+    bool isFree(const int x, const int y, const int w = 1, const int h = 1) const;
     
     void refresh();
-    void update();
-    void render();
-    void debugRender();
+    void update() const;
+    void render() const;
+    void debugRender() const;
     
     void serialize(std::fstream& stream) override;
     void deserialize(std::fstream& stream) override;

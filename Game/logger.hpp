@@ -9,11 +9,11 @@
 #pragma once
 #include "iostream"
 
-template <typename T> inline void PRINT(T x) {
-    std::cout << x << std::endl;
+inline void PRINT() {
+    std::cout << "\n";
 }
 
-template <typename T, typename... Args> inline void PRINT(T x, Args... args) {
+template <typename T, typename... argT> inline void PRINT(T x, argT... args) {
     std::cout << x << " ";
     PRINT(args...);
 }

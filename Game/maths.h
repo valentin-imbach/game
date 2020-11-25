@@ -10,14 +10,13 @@
 
 template<typename T> struct pair {
     
-    T X = NULL;
-    T Y = NULL;
+    T X, Y;
     
-    pair() {}
-    pair(T x, T y) {
+    pair(T x = NULL, T y = NULL) {
         X = x;
         Y = y;
     }
+    
     template <typename TT> pair(pair<TT> p) {
         X = p.X;
         Y = p.Y;

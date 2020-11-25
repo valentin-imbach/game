@@ -43,13 +43,13 @@ public:
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_LEFT) {
                 if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item -> itemID == tool) {
-                    entity -> destroy();
                     for (Loot l : loot.table) {
                         Entity* item = entity -> manager -> addEntity();
                         item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
                         item -> addComponent<CollisionComponent>();
                         item -> addComponent<ItemComponent>(l.createItem());
                     }
+                    entity -> destroy();
                     return true;
                 }
             }

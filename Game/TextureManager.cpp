@@ -15,9 +15,7 @@ v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
 auto TextureManager::textures = std::map<std::string, SDL_Texture*>();
 
 void TextureManager::Init() {
-    
     loadTilesets();
-    
     LOG("TextureManager initialized");
 }
 

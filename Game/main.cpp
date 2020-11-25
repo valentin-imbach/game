@@ -6,10 +6,8 @@
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
 
-#include "tools.h"
 #include "Window.hpp"
 #include "Game.hpp"
-
 
 int main() {
     

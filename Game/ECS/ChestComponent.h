@@ -20,7 +20,7 @@ public:
     void init() override {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         spriteComponent = entity -> getComponent<SpriteComponent>();
-        spriteComponent -> sprite  = Sprite(TextureManager::getTexture("sprites.png"),{6,2},{1,2});
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{6,2},{1,2});
     }
     
     bool handleEvent(SDL_Event event) override {

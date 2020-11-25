@@ -8,8 +8,6 @@
 
 #pragma once
 
-enum Direction {EAST,NEAST,NORTH,NWEST,WEST,SWEST,SOUTH,SEAST};
-
 enum class ITEM {
     SHOVEL,
     PICK,

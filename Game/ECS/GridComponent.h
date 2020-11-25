@@ -29,7 +29,7 @@ public:
                 entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j] = entity;
             }
         }
-        entity -> addTag(TAG::STRUCT);
+        entity -> addTag(EntityTag::STRUCT);
     }
     
     void clear() {
@@ -38,6 +38,10 @@ public:
                 entity -> manager -> gridEntities[positionComponent -> position.X+i][positionComponent -> position.Y-j] = nullptr;
             }
         }
+    }
+    
+    ~GridComponent() {
+        clear();
     }
     
     Component* create() override {

@@ -14,9 +14,7 @@ public:
     static ComponentType componentType;
     Direction direction;
 
-    DirectionComponent(Direction dir = SOUTH) {
-        direction = dir;
-    }
+    DirectionComponent(Direction dir = SOUTH) : direction(dir) {}
     
     SERIALIZE(direction);
     

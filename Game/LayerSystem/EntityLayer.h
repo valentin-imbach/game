@@ -97,7 +97,10 @@ public:
         entityManager.refresh();
         entityManager.update();
         
-        for (auto* e : entityManager.getTagged(TAG::ITEM)) {
+        for (auto* e : entityManager.entities) {
+            if (!e -> hasTag(EntityTag::ITEM)) {
+                continue;
+            }
             Collider a = player -> getComponent<CollisionComponent>() -> collider;
             Collider b = e -> getComponent<CollisionComponent>() -> collider;
             if (CollisionManager::AABB(a,b)) {

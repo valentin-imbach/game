@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "item.h"
+#include "Item.h"
 
 #include "TextureManager.hpp"
 #include "TextManager.hpp"

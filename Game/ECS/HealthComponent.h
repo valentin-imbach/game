@@ -15,10 +15,7 @@ public:
     int maxHealth;
     int health;
 
-    HealthComponent(int max = 20) {
-        maxHealth = max;
-        health = max;
-    }
+    HealthComponent(int max = 20) : maxHealth(max), health(max) {}
     
     SERIALIZE(maxHealth,health);
     

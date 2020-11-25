@@ -32,19 +32,20 @@ bool Entity::handleEvent(SDL_Event event) {
 }
 
 void Entity::destroy() {
-    if (hasComponent<GridComponent>()) {
-        getComponent<GridComponent>() -> clear();
-    }
     active = false;
 }
 
-bool Entity::hasTag(TAG tag) {
-    return tagBitSet[tag];
+bool Entity::hasTag(EntityTag tag) {
+    return tagBitSet[(int)tag];
 }
 
-void Entity::addTag(TAG tag) {
+void Entity::addTag(EntityTag tag) {
     tagBitSet[(int)tag] = true;
-    manager -> taggedEntities[(int)tag].push_back(this);
+}
+
+Entity::~Entity() {
+    LOG("Entity destroyed");
+    for (auto& c : components) { delete c; }
 }
 
 void Entity::serialize(std::fstream &stream) {
@@ -69,7 +70,7 @@ void Entity::deserialize(std::fstream &stream) {
     deserialize_(stream, tagBitSet);
     for (int i = 0; i < tagBitSet.size(); i++) {
         if (tagBitSet[i]) {
-            addTag(TAG(i));
+            addTag(EntityTag(i));
         }
     }
     

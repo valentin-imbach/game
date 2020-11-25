@@ -14,9 +14,7 @@ public:
     static ComponentType componentType;
     pair<float> position;
     
-    PositionComponent(pair<float> pos = {0,0}) {
-        position = pos;
-    }
+    PositionComponent(pair<float> pos = {0,0}) : position(pos) {}
     
     SERIALIZE(position);
     

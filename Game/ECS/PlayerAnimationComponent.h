@@ -23,7 +23,6 @@ public:
         directionComponent = entity -> getComponent<DirectionComponent>();
         playerInputComponent = entity -> getComponent<PlayerInputComponent>();
         
-        spriteComponent -> offset = 1;
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("character.png"),{0,0},{1,2});
     }
     

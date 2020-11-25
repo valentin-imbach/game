@@ -27,7 +27,7 @@ void Game::createWorld() {
     world -> entityLayer.player = player;
     world -> entityLayer.entityManager.player = player;
     
-    player -> addTag(TAG::PLAYER);
+    player -> addTag(EntityTag::PLAYER);
     
     player -> addComponent<PositionComponent>(pair<float>(50,50));
     player -> addComponent<DirectionComponent>();
