@@ -27,17 +27,21 @@ public:
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"), pos, ResourceType::types[type] -> size);
     }
     
+    void onBreak() {
+        for (Loot l : ResourceType::types[type] -> loot.table) {
+            Entity* item = entity -> manager -> addEntity();
+            item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
+            item -> addComponent<CollisionComponent>();
+            item -> addComponent<ItemComponent>(l.createItem());
+        }
+        entity -> destroy();
+    }
+    
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (event.button.button == SDL_BUTTON_LEFT) {
                 if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item -> itemID == ResourceType::types[type] -> tool) {
-                    for (Loot l : ResourceType::types[type] -> loot.table) {
-                        Entity* item = entity -> manager -> addEntity();
-                        item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
-                        item -> addComponent<CollisionComponent>();
-                        item -> addComponent<ItemComponent>(l.createItem());
-                    }
-                    entity -> destroy();
+                    onBreak();
                     return true;
                 }
             }
