@@ -11,6 +11,8 @@
 #include "../Gui/GuiManager.hpp"
 #include "Components.h"
 
+#include "../MessagingSystem.hpp"
+
 class ChestComponent : public Component {
 public:
     static ComponentType componentType;

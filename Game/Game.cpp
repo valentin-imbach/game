@@ -46,7 +46,7 @@ void Game::createWorld() {
     
     controller.state = GameState::RUNNING;
     SoundManager::setVolume(SoundManager::volume);
-    SoundManager::play();
+    //SoundManager::play();
     
 }
 
@@ -61,7 +61,7 @@ void Game::loadWorld() {
     
     controller.state = GameState::RUNNING;
     SoundManager::setVolume(SoundManager::volume);
-    SoundManager::play();
+    //SoundManager::play();
 }
 
 void Game::handleEvents() {

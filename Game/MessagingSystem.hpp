@@ -31,16 +31,18 @@ struct Message {
 };
 
 struct Observer {
-    void onMessage(Message event);
+    v(MessageType) subscriptions;
+    virtual bool onMessage(Message event) = 0;
     void subscribe(MessageType type);
+    void unsubscribe(MessageType type);
+    ~Observer();
 };
 
 class MessageManager {
 public:
-    static MessageManager* Instance;
-    MessageManager();
-    v(Observer*) subscribers[MaxMessageTypes];
-    void distribute(Message message);
+    static vv(Observer*) subscribers;
+    static void notify(Message message);
+    static void distribute(Message message);
 };
 
 struct InteractionMessage : Message {

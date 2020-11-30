@@ -10,6 +10,8 @@
 #include "Components.h"
 #include "../Item.hpp"
 
+#include "../MessagingSystem.hpp"
+
 class ItemComponent : public Component {
 private:
     PositionComponent *positionComponent;

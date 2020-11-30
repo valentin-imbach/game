@@ -12,6 +12,8 @@
 #include "Window.hpp"
 #include "../Gui/GuiManager.hpp"
 
+#include "../MessagingSystem.hpp"
+
 class PlayerGuiComponent : public Component {
 public:
     static ComponentType componentType;
@@ -47,6 +49,7 @@ public:
             }
         }
         GuiManager::manager -> addGuiElement(gui);
+        MessageManager::notify(Message(MessageType::INVENTORY));
         return gui;
     }
     
