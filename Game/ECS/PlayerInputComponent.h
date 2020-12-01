@@ -16,7 +16,6 @@ private:
     PositionComponent *positionComponent;
     DirectionComponent *directionComponent;
     InventoryComponent *inventoryComponent;
-    PlayerGuiComponent *playerGuiComponent;
     CollisionComponent *collisionComponent;
     pair<float> oldPos;
     
@@ -31,7 +30,6 @@ public:
         positionComponent = entity -> getComponent<PositionComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();
         inventoryComponent = entity -> getComponent<InventoryComponent>();
-        playerGuiComponent = entity -> getComponent<PlayerGuiComponent>();
     }
     
     void update() override {
@@ -106,18 +104,10 @@ public:
         
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
-                playerGuiComponent -> makeInventoryGui(Window::size/2);
+                MessageManager::notify(InventoryMessage());
                 return true;
             } else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
-                int s = playerGuiComponent -> selected;
-                Item* item = inventoryComponent -> containers[s][0].item;
-                if (item != nullptr) {
-                    Entity* e = entity -> manager -> addEntity();
-                    e -> addComponent<PositionComponent>(positionComponent -> position + dirs2[directionComponent -> direction]);
-                    e -> addComponent<CollisionComponent>();
-                    e -> addComponent<ItemComponent>(item);
-                    inventoryComponent -> containers[s][0].item = nullptr;
-                }
+                MessageManager::notify(ItemThrowMessage());
             }
         }
         

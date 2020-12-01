@@ -9,6 +9,7 @@
 #pragma once
 
 #include "../serializer.h"
+#include "../MessagingSystem.hpp"
 #include "ECS.h"
 
 #include "PositionComponent.h"

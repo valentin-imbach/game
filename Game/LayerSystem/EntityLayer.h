@@ -12,7 +12,7 @@
 #include "../CollisionManager.h"
 #include "../ResoureTypes.hpp"
 
-class EntityLayer : public Layer {
+class EntityLayer : public Layer, public Observer {
 public:
     EntityManager entityManager;
     Entity* player;
@@ -22,6 +22,7 @@ public:
         loadMap("map.txt");
         
         LOG("Entity Layer constructed");
+        subscribe(MessageType::SPAWN_ITEM);
     }
     
     void serialize(std::fstream& stream) override {
@@ -119,6 +120,17 @@ public:
         entityManager.render();
         entityManager.debugRender();
         Camera::render();
+    }
+    
+    bool onMessage(const Message &message) override {
+        if (message.type == MessageType::SPAWN_ITEM) {
+            const SpawnItemMessage &msg = static_cast<const SpawnItemMessage&>(message);
+            Entity* e = entityManager.addEntity();
+            e -> addComponent<PositionComponent>(msg.position);
+            e -> addComponent<CollisionComponent>();
+            e -> addComponent<ItemComponent>(msg.item);
+        }
+        return false;
     }
     
     bool handleEvent(SDL_Event event) override {

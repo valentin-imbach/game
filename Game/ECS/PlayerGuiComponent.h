@@ -12,20 +12,24 @@
 #include "Window.hpp"
 #include "../Gui/GuiManager.hpp"
 
-#include "../MessagingSystem.hpp"
-
-class PlayerGuiComponent : public Component {
+class PlayerGuiComponent : public Component, public Observer {
 public:
     static ComponentType componentType;
     InventoryComponent *inventoryComponent;
     HealthComponent *healthComponent;
+    PositionComponent *positionComponent;
+    DirectionComponent *directionComponent;
     int selected = 0;
     
     void init() override {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         healthComponent = entity -> getComponent<HealthComponent>();
+        directionComponent = entity -> getComponent<DirectionComponent>();
+        positionComponent = entity -> getComponent<PositionComponent>();
         GuiManager::manager -> addGuiElement(makeHotbarGui());
         GuiManager::manager -> addGuiElement(makeHealthGui());
+        subscribe(MessageType::INVENTORY);
+        subscribe(MessageType::ITEM_THROW);
     }
     
     GuiElement* makeHotbarGui() {
@@ -49,8 +53,21 @@ public:
             }
         }
         GuiManager::manager -> addGuiElement(gui);
-        MessageManager::notify(Message(MessageType::INVENTORY));
         return gui;
+    }
+    
+    bool onMessage(const Message &message) override {
+        if (message.type == MessageType::INVENTORY) {
+            makeInventoryGui(Window::size/2);
+            return true;
+        } else if (message.type == MessageType::ITEM_THROW) {
+            Item* item = inventoryComponent -> containers[selected][0].item;
+            if (item != nullptr) {
+                MessageManager::notify(SpawnItemMessage(item,positionComponent -> position + dirs2[directionComponent -> direction]));
+                inventoryComponent -> containers[selected][0].item = nullptr;
+            }
+        }
+        return false;
     }
     
     ItemContainer* getSelectedItem() {

@@ -17,10 +17,11 @@ enum class MessageType {
     INTERACTION,
     ATTACK,
     BREAK,
-    USE_ITEM,
-    PICKUP_ITEM,
+    ITEM_USE,
+    ITEM_PICKUP,
     KILL,
-    THROW_ITEM,
+    ITEM_THROW,
+    SPAWN_ITEM,
     INVENTORY,
     DAMAGE
 };
@@ -32,7 +33,7 @@ struct Message {
 
 struct Observer {
     v(MessageType) subscriptions;
-    virtual bool onMessage(Message event) = 0;
+    virtual bool onMessage(const Message &message) = 0;
     void subscribe(MessageType type);
     void unsubscribe(MessageType type);
     ~Observer();
@@ -41,13 +42,27 @@ struct Observer {
 class MessageManager {
 public:
     static vv(Observer*) subscribers;
-    static void notify(Message message);
-    static void distribute(Message message);
+    static void notify(const Message &message);
+    static void distribute(const Message &message);
 };
 
-struct InteractionMessage : Message {
+struct InventoryMessage : public Message {
+    InventoryMessage() : Message(MessageType::INVENTORY) {}
+};
+
+struct ItemThrowMessage : public Message {
+    ItemThrowMessage() : Message(MessageType::ITEM_THROW) {}
+};
+
+struct InteractionMessage : public Message {
     InteractionMessage(Entity* a, Entity* t, Item* i = nullptr) : Message(MessageType::INTERACTION), actor(a), target(t), item(i) {}
     Entity* actor;
     Entity* target;
     Item* item;
+};
+
+struct SpawnItemMessage : public Message {
+    SpawnItemMessage(Item* item, pair<float> pos) : Message(MessageType::SPAWN_ITEM), item(item), position(pos) {}
+    Item* item;
+    pair<float> position;
 };
