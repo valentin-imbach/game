@@ -20,12 +20,15 @@ void Console::render() {
     for (int i = 0; i < memory; i++) {
         if (i >= history.size()) { break; }
         if (i == memIt) {
-            TextManager::drawText("- "+history[history.size()-1-i], {30,Window::size.Y-60-30*(i+1)}, false, {220,220,220});
+            std::string s = "- "+history[history.size()-1-i];
+            TextManager::drawText(s, {30,Window::size.Y-60-30*(i+1)}, false, {220,220,220});
         } else {
-            TextManager::drawText("$ "+history[history.size()-1-i], {30,Window::size.Y-60-30*(i+1)}, false, {160,160,160});
+            std::string s = "$ "+history[history.size()-1-i];
+            TextManager::drawText(s, {30,Window::size.Y-60-30*(i+1)}, false, {160,160,160});
         }
     }
-    TextManager::drawText("$ "+text, {30,Window::size.Y-60});
+    std::string s = "$ "+text;
+    TextManager::drawText(s, {30,Window::size.Y-60});
 }
 
 bool Console::handleEvent(SDL_Event event) {

@@ -40,7 +40,7 @@ pair<int> Camera::gtos(pair<float> p) {
 }
 
 pair<float> Camera::stog(pair<int> p) {
-    return {(p.X-Window::size.X/2)/ZOOM+position.X,(p.Y-Window::size.Y/2)/ZOOM+position.Y};
+    return {(float)(p.X-Window::size.X/2)/ZOOM+position.X,(float)(p.Y-Window::size.Y/2)/ZOOM+position.Y};
 }
 
 void Camera::update(pair<float> p) {

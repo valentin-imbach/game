@@ -19,6 +19,7 @@ enum class ItemType {
     FOOD,
 
     TOOL,
+    SWORD,
     POTION,
     CLOTHING,
     ACCESSORY,
@@ -35,6 +36,11 @@ enum class ItemType {
     PLATE,
     ROD,
     GEAR,
+    
+    FUEL,
+    
+    MAX
+    
 };
 
 enum class ItemProperty {
@@ -42,13 +48,12 @@ enum class ItemProperty {
     //Main Properties
     WEIGHT,
     STENGTH,
-    DURABILITY,
     HARDNESS,
     FLEXIBILITY,
     LUMINOCITY,
-    NUTRITION,
     
-    MAX,
+    //Organic
+    NUTRITION,
     
     //Mechanical
     ELASTICITY,
@@ -61,6 +66,21 @@ enum class ItemProperty {
     //Optical
     REFLECTIVITY,
     OPACITY,
+    
+    //Fuel
+    BURN_TIME,
+    HEAT,
+    
+    //Tools
+    EFFICIENCY,
+    DURABILITY,
+    PRECISION,
+    
+    //Weapons
+    ATTACK,
+    PARRY,
+    
+    MAX,
 };
 
 enum class ItemID {
@@ -74,7 +94,7 @@ enum class ItemID {
     STONE,
     WOOD,
     BRANCH,
-    RINF,
+    RING,
     BOOK,
     SHIELD,
     SHOES,
@@ -82,5 +102,8 @@ enum class ItemID {
     HELMET,
     MEAT,
     POTION,
-    APPLE
+    APPLE,
+    
+    MAX
 };
+

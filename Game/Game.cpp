@@ -37,6 +37,7 @@ void Game::createWorld() {
     inv -> addItem(new ItemStack(ItemID::PICK,1));
     inv -> addItem(new ItemStack(ItemID::HAMMER,1));
     inv -> addItem(new ItemStack(ItemID::SHOVEL,1));
+    inv -> addItem(new ItemStack(ItemID::BRANCH,15));
     
     player -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);
     player -> addComponent<SpriteComponent>();

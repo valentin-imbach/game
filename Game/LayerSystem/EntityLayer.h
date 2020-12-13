@@ -19,6 +19,8 @@ public:
     EntityLayer() {
         ResourceType::setTypes();
         Component::setPrototypes();
+        Item::setTemplates();
+        
         loadMap("map.txt");
         
         LOG("Entity Layer constructed");

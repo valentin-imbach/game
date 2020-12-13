@@ -29,6 +29,8 @@ public:
     bool alive = true;
     GuiManager* manager = nullptr;
     
+    bool hover = false;
+    
     virtual bool onClick(int b) { return false; }
     virtual bool onKey(int k) { return false; }
     virtual bool onScroll(int y) { return false; }
@@ -45,10 +47,10 @@ public:
     virtual void onDestroy() {}
     
     virtual void render();
+    virtual void hoverRender() {}
     virtual void update();
     
 };
-
 
 class Widget : public GuiElement {
 private:
@@ -75,7 +77,6 @@ public:
     DisplayElement(pair<int> pos, int* v);
     void render() override;
 };
-
 
 class Button : public GuiElement {
 private:
@@ -104,6 +105,7 @@ private:
 public:
     ItemSlot(pair<int> pos, ItemContainer* item);
     void render() override;
+    void hoverRender() override;
     bool onClick(int b) override;
 };
 

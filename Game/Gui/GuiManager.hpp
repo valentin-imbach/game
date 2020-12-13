@@ -20,6 +20,7 @@ public:
     
     GuiManager() { manager = this; }
     void addGuiElement(GuiElement* gui);
+    
     void update();
     void render();
     bool handleEvent(SDL_Event event);

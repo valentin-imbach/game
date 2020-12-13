@@ -33,9 +33,8 @@ void GuiElement::update() {
 void GuiElement::render() {
     if (hoverTexture != nullptr && check(Window::mousePos)) { TextureManager::drawTexture(hoverTexture, position.X, position.Y, size.X, size.Y); }
     else if (texture != nullptr) { TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y); }
-    for (GuiElement* child : children) {
-        child -> render();
-    }
+    for (GuiElement* child : children) { child -> render(); }
+    for (GuiElement* child : children) { child -> hoverRender(); }
 }
 
 bool GuiElement::check(pair<int> p) {
@@ -50,6 +49,8 @@ bool GuiElement::handleEvent(SDL_Event event) {
         }
     }
     
+    hover = false;
+    
     if (event.type == SDL_TEXTINPUT) {
         return onText(event.text.text);
     }
@@ -60,6 +61,11 @@ bool GuiElement::handleEvent(SDL_Event event) {
         return onKey(event.key.keysym.scancode);
     } else if (event.type == SDL_MOUSEWHEEL) {
         return onScroll(event.wheel.y);
+    } else if (event.type == SDL_USEREVENT) {
+        if (check(Window::mousePos)) {
+            hover = true;
+            return true;
+        }
     }
     
     return false;
@@ -122,7 +128,8 @@ DisplayElement::DisplayElement(pair<int> pos, int* v) : GuiElement(pos) {
 }
 
 void DisplayElement::render() {
-    TextManager::drawText(std::to_string(*value), position, true);
+    std::string s = std::to_string(*value);
+    TextManager::drawText(s, position, true);
 }
 
 Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2) : GuiElement(pos, s, tex, tex2) {
@@ -196,6 +203,12 @@ bool ItemSlot::onClick(int button) {
 
 void ItemSlot::render() {
     itemContainer -> render(position+size/2,size.X);
+}
+
+void ItemSlot::hoverRender() {
+    if (hover && GuiManager::manager -> mouseContainer -> item == nullptr) {
+        itemContainer -> renderToolTip({position.X+size.X,position.Y});
+    }
 }
 
 Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::getTexture("hotbar.png")) {

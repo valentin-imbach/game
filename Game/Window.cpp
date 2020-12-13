@@ -67,6 +67,9 @@ void Window::handleEvents() {
             running = false;
             break;
         }
+        SDL_Event e = SDL_Event();
+        e.type = SDL_USEREVENT;
+        events.push_back(e);
     }
 }
 

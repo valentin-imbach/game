@@ -13,30 +13,54 @@
 #include "TextureManager.hpp"
 #include "TextManager.hpp"
 #include "ECS/ECS.h"
+#include "Window.hpp"
 
 #define MAX_STACK 5
+
+struct ItemPropertyTemplate {
+    std::string name;
+    ItemPropertyTemplate(std::string n) : name(n) {}
+};
+
+struct ItemTypeTemplate {
+    std::string name;
+    v(ItemProperty) properties;
+    ItemTypeTemplate(std::string n, v(ItemProperty) p = {}) : name(n), properties(p) {}
+};
+
+struct ItemTemplate {
+    std::string name;
+    v(ItemType) types;
+    std::array<int,(int)ItemProperty::MAX> properties = {};
+    ItemTemplate(std::string n, v(ItemType) t = {}) : name(n), types(t) {}
+};
 
 struct Item {
     ItemID itemID;
     int count = 1;
     bool stack = false;
     
-    Item(ItemID i) : itemID(i) {}
+    Item(ItemID i, int c = 1, bool s = false) : itemID(i), count(c), stack(s) {}
     
     virtual void render(int x, int y, int scale, bool inv = true) {}
     virtual bool onClick(int b) { return false; }
+    
+    static std::array<ItemTemplate*,(int)ItemID::MAX> itemTemplates;
+    static std::array<ItemTypeTemplate*,(int)ItemType::MAX> itemTypeTemplates;
+    static std::array<ItemPropertyTemplate*,(int)ItemProperty::MAX> itemPropertyTemplates;
+    static void setTemplates();
 };
 
 struct ItemStack : public Item {
-    ItemStack(ItemID i, int c = 1) : Item(i) {
-        count = c;
-        stack = true;
-    }
+    ItemStack(ItemID i, int c = 1) : Item(i,c,true) {}
     
     void render(int x, int y, int scale, bool inv = true) override {
-        TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), BIT*((int)itemID % 3), BIT*((int)itemID / 3), BIT, BIT, x, y, scale, scale, true);
+        int a = BIT*((int)itemID % 3);
+        int b = BIT*((int)itemID / 3);
+        TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), a, b, BIT, BIT, x, y, scale, scale, true);
         if (count != 1 && inv) {
-            TextManager::drawText(std::to_string(count), {x+scale/4,y+15});
+            std::string s = std::to_string(count);
+            TextManager::drawText(s, {x+scale/4,y});
         }
     }
 };
@@ -108,6 +132,36 @@ struct ItemContainer {
             item -> render(pos.X, pos.Y, scale);
         }
     }
+    
+    void renderToolTip(pair<int> pos) {
+        if (item != nullptr && item -> itemID != ItemID::NONE) {
+            ItemTemplate* it = Item::itemTemplates[(int)(item -> itemID)];
+            if (it != nullptr) {
+                v(std::string) s;
+                if (Window::keys[SDL_SCANCODE_LSHIFT]) {
+                    s.push_back("Name: " + it -> name);
+                    for (ItemType t : it -> types) {
+                        ItemTypeTemplate* itt = Item::itemTypeTemplates[(int)t];
+                        if (itt != nullptr) {
+                            s.push_back("Type: " + itt -> name);
+                            for (ItemProperty p : itt -> properties) {
+                                ItemPropertyTemplate* ipt = Item::itemPropertyTemplates[(int)p];
+                                if (ipt != nullptr) {
+                                    s.push_back(ipt -> name + ": " + std::to_string(it -> properties[(int)p]));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    s.push_back(it -> name);
+                }
+                pair<int> box = TextManager::textSize(s, 25);
+                TextureManager::drawTexture(TextureManager::getTexture("grey.png"), pos.X, pos.Y, box.X+20, box.Y+5);
+                TextManager::drawText(s, {pos.X+10, pos.Y}, 25);
+            }
+        }
+    }
+    
 };
 
 struct Loot {
