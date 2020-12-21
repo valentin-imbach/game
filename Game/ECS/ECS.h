@@ -9,6 +9,7 @@
 #pragma once
 #include "tools.h"
 #include "../serializer.h"
+#include "../MessagingSystem.hpp"
 
 class EntityManager;
 class Entity;
@@ -56,18 +57,19 @@ public:
     static ComponentArray prototypes;
     static void setPrototypes();
     
-    virtual void init() {};
-    virtual void update() {};
-    virtual void render() {};
+    virtual void init() {}
+    virtual void update() {}
+    virtual void render() {}
     virtual bool handleEvent(SDL_Event event) { return false; }
-    virtual void debugRender() {};
+    virtual bool onMessage(const Message &message) { return false; }
+    virtual void debugRender() {}
     
     virtual Component* create() { return new Component(); LOG("DEFAULT CREATE"); }
     
-    virtual ~Component() {};
+    virtual ~Component() {}
 };
 
-class Entity : public Serializable {
+class Entity : public Serializable, public Observer {
 private:
     v(Component*) components;
     ComponentArray componentArray;
@@ -86,6 +88,8 @@ public:
     void debugRender();
     
     bool handleEvent(SDL_Event event);
+    bool onMessage(const Message& message) override;
+    
     void destroy();
     
     bool hasTag(EntityTag tag);
@@ -93,6 +97,15 @@ public:
     
     void serialize(std::fstream& stream) override;
     void deserialize(std::fstream& stream) override;
+    
+    template <typename T> bool hasComponent() const {
+        return componentBitSet[(int)T::componentType];
+    }
+    
+    template <typename T> T* getComponent() const {
+        assert(hasComponent<T>());
+        return static_cast<T*>(componentArray[(int)T::componentType]);
+    }
     
     Component* addComponent(Component* component, ComponentType type) {
         assert(!componentBitSet[(int)type]);
@@ -103,10 +116,6 @@ public:
         component -> entity = this;
         component -> init();
         return component;
-    }
-    
-    template <typename T> bool hasComponent() const {
-        return componentBitSet[(int)T::componentType];
     }
     
     template <typename T, typename... TArgs> T* addComponent(TArgs&&... mArgs) {
@@ -120,12 +129,6 @@ public:
         component -> init();
         return component;
     }
-    
-    template <typename T> T* getComponent() const {
-        assert(hasComponent<T>());
-        return static_cast<T*>(componentArray[(int)T::componentType]);
-    }
-
 };
 
 class EntityManager : public Serializable {

@@ -17,16 +17,18 @@ std::array<ItemPropertyTemplate*,(int)ItemProperty::MAX> Item::itemPropertyTempl
 void Item::setTemplates() {
     
     //ITEMS
-    itemTemplates[(int)ItemID::SHOVEL] = new ItemTemplate("Shovel",{ItemType::TOOL});
+    itemTemplates[(int)ItemID::SHOVEL] = new ItemTemplate("Iron Shovel",{ItemType::SHOVEL});
     itemTemplates[(int)ItemID::SHOVEL] -> properties[(int)ItemProperty::EFFICIENCY] = 7;
     
-    itemTemplates[(int)ItemID::PICK] = new ItemTemplate("Pick Axe",{ItemType::TOOL});
-    itemTemplates[(int)ItemID::HAMMER] = new ItemTemplate("Hammer",{ItemType::TOOL});
+    itemTemplates[(int)ItemID::PICK] = new ItemTemplate("Iron Pick Axe",{ItemType::PICK_AXE});
+    itemTemplates[(int)ItemID::HAMMER] = new ItemTemplate("Iron Hammer",{ItemType::HAMMER});
     
     itemTemplates[(int)ItemID::BRANCH] = new ItemTemplate("Branch",{ItemType::ROD, ItemType::SWORD, ItemType::FUEL});
     
     //TYPES
-    itemTypeTemplates[(int)ItemType::TOOL] = new ItemTypeTemplate("Tool", {ItemProperty::EFFICIENCY});
+    itemTypeTemplates[(int)ItemType::SHOVEL] = new ItemTypeTemplate("Shovel", {ItemProperty::EFFICIENCY});
+    itemTypeTemplates[(int)ItemType::HAMMER] = new ItemTypeTemplate("Hammer", {ItemProperty::EFFICIENCY});
+    itemTypeTemplates[(int)ItemType::PICK_AXE] = new ItemTypeTemplate("Pick Axe", {ItemProperty::EFFICIENCY});
     itemTypeTemplates[(int)ItemType::SWORD] = new ItemTypeTemplate("Sword", {ItemProperty::ATTACK, ItemProperty::PARRY});
     itemTypeTemplates[(int)ItemType::ROD] = new ItemTypeTemplate("Rod", {ItemProperty::FLEXIBILITY, ItemProperty::STENGTH});
     itemTypeTemplates[(int)ItemType::FUEL] = new ItemTypeTemplate("Fuel", {ItemProperty::BURN_TIME, ItemProperty::HEAT});

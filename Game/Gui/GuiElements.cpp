@@ -30,11 +30,16 @@ void GuiElement::update() {
     }
 }
 
-void GuiElement::render() {
+void GuiElement::recursiveRender() {
     if (hoverTexture != nullptr && check(Window::mousePos)) { TextureManager::drawTexture(hoverTexture, position.X, position.Y, size.X, size.Y); }
     else if (texture != nullptr) { TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y); }
-    for (GuiElement* child : children) { child -> render(); }
-    for (GuiElement* child : children) { child -> hoverRender(); }
+    render();
+    for (GuiElement* child : children) { child -> recursiveRender(); }
+}
+
+void GuiElement::recursiveHoverRender() {
+    hoverRender();
+    for (GuiElement* child : children) { child -> recursiveHoverRender(); }
 }
 
 bool GuiElement::check(pair<int> p) {
@@ -49,23 +54,24 @@ bool GuiElement::handleEvent(SDL_Event event) {
         }
     }
     
-    hover = false;
-    
     if (event.type == SDL_TEXTINPUT) {
         return onText(event.text.text);
-    }
-    
-    if (event.type == SDL_MOUSEBUTTONDOWN) {
+    } else if (event.type == SDL_MOUSEBUTTONDOWN) {
         return onClick(event.button.button);
     } else if (event.type == SDL_KEYDOWN) {
         return onKey(event.key.keysym.scancode);
     } else if (event.type == SDL_MOUSEWHEEL) {
         return onScroll(event.wheel.y);
-    } else if (event.type == SDL_USEREVENT) {
+    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::HOVER) {
         if (check(Window::mousePos)) {
             hover = true;
-            return true;
+            return absorbHover;
         }
+    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::KEYSTATE) {
+        return absorbKeystate;
+    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::RESET) {
+        hover = false;
+        return false;
     }
     
     return false;
@@ -90,26 +96,10 @@ void GuiElement::destroy() {
     }
 }
 
-Widget::Widget(pair<int> pos, pair<int> s, SDL_Texture* tex, GuiElement* l) : GuiElement(pos,s,tex) {
-    link = l;
-}
-
-void Widget::onDestroy() {
-    if (link != nullptr) {
-        link -> destroy();
-    }
-}
-
-bool Widget::onKey(int key) {
-    for (int i = (int)children.size()-1; i >= 0; i--) {
-        if (children[i] -> onKey(key)) {
-            return true;
-        }
-    }
-    
+bool Widget::onKey(int key) {    
     if (key == SDL_SCANCODE_E) {
         destroy();
-        return true;
+        return !weak;
     }
     return false;
 }
@@ -211,19 +201,18 @@ void ItemSlot::hoverRender() {
     }
 }
 
-Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{534, 78},TextureManager::getTexture("hotbar.png")) {
+Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{546, 78},TextureManager::getTexture("hotbar.png")) {
     hotbarContainers = items;
     selected = sel;
 }
 
 void Hotbar::render() {
-    TextureManager::drawTexture(TextureManager::getTexture("hotbar.png"), position.X, position.Y, 534, 78);
     for (int i = 0; i < hotbarContainers.size(); i++) {
         if (hotbarContainers[i] -> item != nullptr) {
-            hotbarContainers[i] -> render(position + pair<int>(39+i*57,39),48);
+            hotbarContainers[i] -> render(position + pair<int>(39+i*78,39),48);
         }
     }
-    TextureManager::drawRect(position +  pair<int>(12+(*selected)*57,12), {54,54});
+    TextureManager::drawRect(position +  pair<int>((*selected)*78,0), {78,78}, 0, 0, 255);
 }
 
 bool Hotbar::onScroll(int y) {

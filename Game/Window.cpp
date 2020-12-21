@@ -60,6 +60,12 @@ void Window::update() {
 
 void Window::handleEvents() {
     events.clear();
+    
+    SDL_Event resetEvent = SDL_Event();
+    resetEvent.type = SDL_USEREVENT;
+    resetEvent.user.code = (int)EventCode::RESET;
+    events.push_back(resetEvent);
+    
     while (SDL_PollEvent(&event)) {
         events.push_back(event);
         if (event.type == SDL_QUIT) {
@@ -67,10 +73,17 @@ void Window::handleEvents() {
             running = false;
             break;
         }
-        SDL_Event e = SDL_Event();
-        e.type = SDL_USEREVENT;
-        events.push_back(e);
     }
+    
+    SDL_Event keyEvent = SDL_Event();
+    keyEvent.type = SDL_USEREVENT;
+    keyEvent.user.code = (int)EventCode::KEYSTATE;
+    events.push_back(keyEvent);
+    
+    SDL_Event hoverEvent = SDL_Event();
+    hoverEvent.type = SDL_USEREVENT;
+    hoverEvent.user.code = (int)EventCode::HOVER;
+    events.push_back(hoverEvent);
 }
 
 int Window::limitFrameRate(int fps) {

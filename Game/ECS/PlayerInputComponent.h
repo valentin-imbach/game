@@ -24,6 +24,7 @@ public:
     bool god = false;
     int ticks = 0;
     bool walking = false;
+    bool keystate = false;
     
     void init() override {
         collisionComponent = entity -> getComponent<CollisionComponent>();
@@ -33,6 +34,8 @@ public:
     }
     
     void update() override {
+        
+        if (!keystate) { return; }
         
         bool walk = false;
         int dir = -1;
@@ -101,7 +104,6 @@ public:
     }
     
     bool handleEvent(SDL_Event event) override {
-        
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.scancode == SDL_SCANCODE_E) {
                 MessageManager::notify(InventoryMessage());
@@ -109,6 +111,12 @@ public:
             } else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
                 MessageManager::notify(ItemThrowMessage());
             }
+        } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::KEYSTATE) {
+            keystate = true;
+            return true;
+        } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::RESET) {
+            keystate = false;
+            return false;
         }
         
         return false;

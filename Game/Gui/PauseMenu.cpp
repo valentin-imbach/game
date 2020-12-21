@@ -40,7 +40,7 @@ bool PauseMenu::handleEvent(SDL_Event event) {
 }
 
 void PauseMenu::render() {
-    gui -> render();
+    gui -> recursiveRender();
 }
 
 void PauseMenu::zoomLeft() { Camera::ZOOM -= 8; }

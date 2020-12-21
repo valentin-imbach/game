@@ -12,7 +12,7 @@
 #include "Window.hpp"
 #include "../Gui/GuiManager.hpp"
 
-class PlayerGuiComponent : public Component, public Observer {
+class PlayerGuiComponent : public Component {
 public:
     static ComponentType componentType;
     InventoryComponent *inventoryComponent;
@@ -28,8 +28,8 @@ public:
         positionComponent = entity -> getComponent<PositionComponent>();
         GuiManager::manager -> addGuiElement(makeHotbarGui());
         GuiManager::manager -> addGuiElement(makeHealthGui());
-        subscribe(MessageType::INVENTORY);
-        subscribe(MessageType::ITEM_THROW);
+        entity -> subscribe(MessageType::INVENTORY);
+        entity -> subscribe(MessageType::ITEM_THROW);
     }
     
     GuiElement* makeHotbarGui() {
@@ -46,10 +46,11 @@ public:
     }
     
     GuiElement* makeInventoryGui(pair<int> pos) {
-        GuiElement* gui = new Widget(pos,{534, 306},TextureManager::getTexture("inventory.png"));
+        GuiElement* gui = new Widget(pos,{624, 429},TextureManager::getTexture("inventory.png"));
         for (int i = 0; i < inventoryComponent -> size.X; i++) {
-            for (int j = 0; j < inventoryComponent -> size.Y; j++) {
-                gui -> addGuiElement(new ItemSlot({39+i*57,39+j*57},&(inventoryComponent -> containers[i][j])));
+            gui -> addGuiElement(new ItemSlot({78+i*78,78},&(inventoryComponent -> containers[i][0])));
+            for (int j = 1; j < inventoryComponent -> size.Y; j++) {
+                gui -> addGuiElement(new ItemSlot({78+i*78,117+j*78},&(inventoryComponent -> containers[i][j])));
             }
         }
         GuiManager::manager -> addGuiElement(gui);
@@ -58,12 +59,13 @@ public:
     
     bool onMessage(const Message &message) override {
         if (message.type == MessageType::INVENTORY) {
-            makeInventoryGui(Window::size/2);
+            const InventoryMessage &msg = static_cast<const InventoryMessage&>(message);
+            makeInventoryGui(msg.position);
             return true;
         } else if (message.type == MessageType::ITEM_THROW) {
             Item* item = inventoryComponent -> containers[selected][0].item;
             if (item != nullptr) {
-                MessageManager::notify(SpawnItemMessage(item,positionComponent -> position + dirs2[directionComponent -> direction]));
+                MessageManager::notify(SpawnItemMessage(item, positionComponent -> position + dirs2[directionComponent -> direction]));
                 inventoryComponent -> containers[selected][0].item = nullptr;
             }
         }

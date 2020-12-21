@@ -14,6 +14,7 @@ class ResourceComponent : public Component {
 public:
     static ComponentType componentType;
     SpriteComponent* spriteComponent;
+    PositionComponent* positionCompenent;
     
     int type;
 
@@ -21,32 +22,28 @@ public:
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
+        positionCompenent = entity -> getComponent<PositionComponent>();
         pair<int> pos = ResourceType::types[type] -> position;
         pos.X += randRange(0, ResourceType::types[type] -> vars);
         pos.Y -= ResourceType::types[type] -> size.Y - 1;
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"), pos, ResourceType::types[type] -> size);
+        entity -> subscribe(MessageType::ATTACK);
+    }
+    
+    bool onMessage(const Message& message) override {
+        if (message.type == MessageType::ATTACK) {
+            const AttackMessage &msg = static_cast<const AttackMessage&>(message);
+            if (msg.item -> itemID == ResourceType::types[type] -> tool) { onBreak(); }
+            return true;
+        }
+        return false;
     }
     
     void onBreak() {
         for (Loot l : ResourceType::types[type] -> loot.table) {
-            Entity* item = entity -> manager -> addEntity();
-            item -> addComponent<PositionComponent>(entity -> getComponent<PositionComponent>() -> position);
-            item -> addComponent<CollisionComponent>();
-            item -> addComponent<ItemComponent>(l.createItem());
+            MessageManager::notify(SpawnItemMessage(l.createItem(),positionCompenent -> position));
         }
         entity -> destroy();
-    }
-    
-    bool handleEvent(SDL_Event event) override {
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                if (entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item -> itemID == ResourceType::types[type] -> tool) {
-                    onBreak();
-                    return true;
-                }
-            }
-        }
-        return false;
     }
     
     Component* create() override {

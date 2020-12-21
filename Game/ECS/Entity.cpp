@@ -31,6 +31,13 @@ bool Entity::handleEvent(SDL_Event event) {
     return false;
 }
 
+bool Entity::onMessage(const Message& message) {
+    for (auto& c : components) {
+        if (c -> onMessage(message)) { return true; }
+    }
+    return false;
+}
+
 void Entity::destroy() {
     alive = false;
 }

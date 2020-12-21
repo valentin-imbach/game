@@ -8,14 +8,14 @@
 
 #pragma once
 #include "tools.h"
-#include "ECS.h"
 #include "Item.hpp"
 
-constexpr int MaxMessageTypes = 10;
+class Entity;
 
 enum class MessageType {
     INTERACTION,
     ATTACK,
+    PLACE,
     BREAK,
     ITEM_USE,
     ITEM_PICKUP,
@@ -23,17 +23,24 @@ enum class MessageType {
     ITEM_THROW,
     SPAWN_ITEM,
     INVENTORY,
-    DAMAGE
+    DAMAGE,
+    PRINT,
+    
+    MAX
 };
+
+struct Observer;
 
 struct Message {
     MessageType type;
-    Message(MessageType type);
+    Observer* target;
+    Message(MessageType type, Observer* target = nullptr) : type(type), target(target) {}
 };
 
 struct Observer {
     v(MessageType) subscriptions;
     virtual bool onMessage(const Message &message) = 0;
+    bool isSubscribed(MessageType type);
     void subscribe(MessageType type);
     void unsubscribe(MessageType type);
     ~Observer();
@@ -47,7 +54,8 @@ public:
 };
 
 struct InventoryMessage : public Message {
-    InventoryMessage() : Message(MessageType::INVENTORY) {}
+    pair<int> position;
+    InventoryMessage(pair<int> pos = Window::size/2) : Message(MessageType::INVENTORY), position(pos) {}
 };
 
 struct ItemThrowMessage : public Message {
@@ -55,14 +63,32 @@ struct ItemThrowMessage : public Message {
 };
 
 struct InteractionMessage : public Message {
-    InteractionMessage(Entity* a, Entity* t, Item* i = nullptr) : Message(MessageType::INTERACTION), actor(a), target(t), item(i) {}
-    Entity* actor;
-    Entity* target;
     Item* item;
+    InteractionMessage(Observer* t, Item* i = nullptr) : Message(MessageType::INTERACTION, t), item(i) {}
+};
+
+struct AttackMessage : public Message {
+    Item* item;
+    AttackMessage(Observer* t, Item* i) : Message(MessageType::ATTACK, t), item(i) {}
 };
 
 struct SpawnItemMessage : public Message {
-    SpawnItemMessage(Item* item, pair<float> pos) : Message(MessageType::SPAWN_ITEM), item(item), position(pos) {}
     Item* item;
     pair<float> position;
+    SpawnItemMessage(Item* item, pair<float> pos) : Message(MessageType::SPAWN_ITEM), item(item), position(pos) {}
+};
+
+struct PlaceMessage : public Message {
+    Entity* entity;
+    PlaceMessage(Entity* e) : Message(MessageType::PLACE), entity(e) {}
+};
+
+struct BreakMessage : public Message {
+    Entity* entity;
+    BreakMessage(Entity* e) : Message(MessageType::BREAK), entity(e) {}
+};
+
+struct PrintMessage : public Message {
+    std::string text;
+    PrintMessage(std::string t) : Message(MessageType::PRINT), text(t) {}
 };

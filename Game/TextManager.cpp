@@ -22,9 +22,13 @@ pair<int> TextManager::textSize(std::string &text) {
     return {w,h};
 }
 
-pair<int> TextManager::textSize(v(std::string) &text, int dy) {
+pair<int> TextManager::textSize(v(Text) &text, int dy) {
     int w = 0;
-    for (std::string s : text) { w = std::max(w,textSize(s).X); }
+    for (Text t : text) {
+        TTF_SetFontStyle(font, t.style);
+        w = std::max(w,textSize(t.string).X);
+    }
+    TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
     int h = ((int)text.size()-1)*dy + TTF_FontHeight(font);
     return {w,h};
 }
@@ -41,10 +45,12 @@ void TextManager::drawText(std::string &text, pair<int> pos, bool centre, SDL_Co
     SDL_DestroyTexture(texture);
 }
 
-void TextManager::drawText(v(std::string) &text, pair<int> pos, int dy, bool centre, SDL_Color color) {
+void TextManager::drawText(v(Text) &text, pair<int> pos, int dy, bool centre, SDL_Color color) {
     for (int i = 0; i < text.size(); i++) {
-        drawText(text[i], {pos.X, pos.Y + i*dy}, centre, color);
+        TTF_SetFontStyle(font, text[i].style);
+        drawText(text[i].string, {pos.X, pos.Y + i*dy}, centre, color);
     }
+    TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 }
 
 void TextManager::loadFont(const char* path, int size) {

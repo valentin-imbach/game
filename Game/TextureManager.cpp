@@ -75,8 +75,9 @@ void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, bool centered
     SDL_RenderCopy(Window::renderer, tex, &src, &dest);
 }
 
-void TextureManager::drawRect(pair<int> pos, pair<int> size) {
+void TextureManager::drawRect(pair<int> pos, pair<int> size, int r, int g, int b) {
     SDL_Rect rect = {pos.X, pos.Y, size.X, size.Y};
+    SDL_SetRenderDrawColor(Window::renderer, r,g,b, 255);
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 

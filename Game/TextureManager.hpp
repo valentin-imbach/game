@@ -19,20 +19,22 @@ enum TileID {
     SAND
 };
 
-struct TextureManager {
+class TextureManager {
+public:
     static v(SDL_Texture*) tilesets;    
     static std::map<std::string, SDL_Texture*> textures;
     
     static void Init();
     static void refresh();
-    static SDL_Texture* loadTexture(std::string path);
+    static void loadTilesets();
     static SDL_Texture* getTexture(std::string path);
-    static void loadTileset(int a, const char* path);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered = false);
-    static void drawRect(pair<int> pos, pair<int> size);
-    static void loadTilesets();
+    static void drawRect(pair<int> pos, pair<int> size, int r = 0, int g = 0, int b = 0);
+private:
+    static SDL_Texture* loadTexture(std::string path);
+    static void loadTileset(int a, const char* path);
 };
 
 struct Sprite {

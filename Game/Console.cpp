@@ -31,6 +31,10 @@ void Console::render() {
     TextManager::drawText(s, {30,Window::size.Y-60});
 }
 
+void Console::write(std::string text) {
+    history.push_back(text);
+}
+
 bool Console::handleEvent(SDL_Event event) {
     if (event.key.repeat) { return false; }
     if (event.type == SDL_KEYDOWN) {
@@ -43,28 +47,23 @@ bool Console::handleEvent(SDL_Event event) {
         if (event.type == SDL_TEXTINPUT) {
             text += event.text.text;
             memIt = -1;
-        }
-        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
+        } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
             if (text.length() > 0) {
                 text = text.substr(0,text.length()-1);
             }
-        }
-        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+        } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
             active = false;
-        }
-        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+        } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
             history.push_back(text);
             execute(text);
             memIt = -1;
             text.clear();
-        }
-        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_UP) {
+        } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_UP) {
             if (history.size() > memIt+1) {
                 memIt += 1;
                 text = history[history.size()-memIt-1];
             }
-        }
-        if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+        } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) {
             if (memIt > 0) {
                 memIt -= 1;
                 text = history[history.size()-memIt-1];
@@ -82,6 +81,15 @@ bool is_number(const std::string &s) {
     return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
 }
 
+bool Console::onMessage(const Message& message) {
+    if (message.type == MessageType::PRINT) {
+        const PrintMessage &msg = static_cast<const PrintMessage&>(message);
+        write(msg.text);
+        return true;
+    }
+    
+    return false;
+}
 
 bool Console::execute(std::string s) {
     EntityManager* manager = &(Game::world -> entityLayer.entityManager);

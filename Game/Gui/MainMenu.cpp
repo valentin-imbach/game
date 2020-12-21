@@ -24,5 +24,5 @@ bool MainMenu::handleEvent(SDL_Event event) {
 }
 
 void MainMenu::render() {
-    gui -> render();
+    gui -> recursiveRender();
 }

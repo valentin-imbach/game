@@ -12,7 +12,6 @@
 
 #include "TextureManager.hpp"
 #include "TextManager.hpp"
-#include "ECS/ECS.h"
 #include "Window.hpp"
 
 #define MAX_STACK 5
@@ -137,27 +136,27 @@ struct ItemContainer {
         if (item != nullptr && item -> itemID != ItemID::NONE) {
             ItemTemplate* it = Item::itemTemplates[(int)(item -> itemID)];
             if (it != nullptr) {
-                v(std::string) s;
+                v(Text) text;
                 if (Window::keys[SDL_SCANCODE_LSHIFT]) {
-                    s.push_back("Name: " + it -> name);
+                    text.emplace_back(it -> name, TTF_STYLE_UNDERLINE);
                     for (ItemType t : it -> types) {
                         ItemTypeTemplate* itt = Item::itemTypeTemplates[(int)t];
                         if (itt != nullptr) {
-                            s.push_back("Type: " + itt -> name);
+                            text.emplace_back(itt -> name, TTF_STYLE_BOLD);
                             for (ItemProperty p : itt -> properties) {
                                 ItemPropertyTemplate* ipt = Item::itemPropertyTemplates[(int)p];
                                 if (ipt != nullptr) {
-                                    s.push_back(ipt -> name + ": " + std::to_string(it -> properties[(int)p]));
+                                    text.emplace_back(ipt -> name + ": " + std::to_string(it -> properties[(int)p]));
                                 }
                             }
                         }
                     }
                 } else {
-                    s.push_back(it -> name);
+                    text.emplace_back(it -> name);
                 }
-                pair<int> box = TextManager::textSize(s, 25);
+                pair<int> box = TextManager::textSize(text, 25);
                 TextureManager::drawTexture(TextureManager::getTexture("grey.png"), pos.X, pos.Y, box.X+20, box.Y+5);
-                TextManager::drawText(s, {pos.X+10, pos.Y}, 25);
+                TextManager::drawText(text, {pos.X+10, pos.Y}, 25);
             }
         }
     }

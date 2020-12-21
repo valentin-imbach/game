@@ -23,8 +23,11 @@ public:
         
         loadMap("map.txt");
         
-        LOG("Entity Layer constructed");
         subscribe(MessageType::SPAWN_ITEM);
+        subscribe(MessageType::PLACE);
+        subscribe(MessageType::BREAK);
+        
+        LOG("Entity Layer constructed");
     }
     
     void serialize(std::fstream& stream) override {
@@ -131,6 +134,30 @@ public:
             e -> addComponent<PositionComponent>(msg.position);
             e -> addComponent<CollisionComponent>();
             e -> addComponent<ItemComponent>(msg.item);
+        } else if (message.type == MessageType::PLACE) {
+            const PlaceMessage &msg = static_cast<const PlaceMessage&>(message);
+            GridComponent* grid = msg.entity -> getComponent<GridComponent>();
+            PositionComponent* pos = msg.entity -> getComponent<PositionComponent>();
+            if (!grid || !pos) { return false; }
+            for (int i = 0; i < grid -> size.X; i++) {
+                for (int j = 0; j < grid -> size.Y; j++) {
+                    Entity* old = entityManager.gridEntities[pos -> position.X + i][pos -> position.Y + j];
+                    if (old != nullptr) { MessageManager::notify(BreakMessage(old)); }
+                    entityManager.gridEntities[pos -> position.X + i][pos -> position.Y + j] = msg.entity;
+                }
+            }
+            return true;
+        } else if (message.type == MessageType::BREAK) {
+            const BreakMessage &msg = static_cast<const BreakMessage&>(message);
+            GridComponent* grid = msg.entity -> getComponent<GridComponent>();
+            PositionComponent* pos = msg.entity -> getComponent<PositionComponent>();
+            if (!grid || !pos) { return false; }
+            for (int i = 0; i < grid -> size.X; i++) {
+                for (int j = 0; j < grid -> size.Y; j++) {
+                    entityManager.gridEntities[pos -> position.X + i][pos -> position.Y + j] = nullptr;
+                }
+            }
+            return true;
         }
         return false;
     }
@@ -140,7 +167,12 @@ public:
             pair<int> pos = Camera::stog(Window::mousePos).rounded();
             Entity* entity = entityManager.gridEntities[pos.X][pos.Y];
             if (entity == nullptr) { return false; }
-            return entity -> handleEvent(event);
+            Item* item = player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item;
+            if (event.button.button == SDL_BUTTON_RIGHT) {
+                MessageManager::notify(InteractionMessage(entity, item));
+            } else if (event.button.button == SDL_BUTTON_LEFT) {
+                MessageManager::notify(AttackMessage(entity, item));
+            }
         }
         return player -> handleEvent(event);
     }

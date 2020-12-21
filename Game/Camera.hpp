@@ -11,8 +11,6 @@
 #include "tools.h"
 #include "TextureManager.hpp"
 
-#define RADIUS 0.1f
-
 class Camera {
 public:
     static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset = 0, bool contre = false);

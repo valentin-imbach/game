@@ -22,22 +22,21 @@ public:
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{7,9},{1,2});
     }
     
-    bool handleEvent(SDL_Event event) override {
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            if (event.button.button == SDL_BUTTON_RIGHT) {
-                GuiElement* inv = entity -> manager -> player -> getComponent<PlayerGuiComponent>() -> makeInventoryGui(Window::size/2 + pair<int>(0,100));
-                GuiManager::manager -> addGuiElement(makeGui(Window::size/2 - pair<int>(0,200), inv));
-                return true;
-            }
+    bool onMessage(const Message& message) override {
+        if (message.type == MessageType::INTERACTION) {
+            MessageManager::notify(InventoryMessage(Window::size/2 + pair<int>(0,100)));
+            makeGui(Window::size/2 - pair<int>(0,200));
+            return true;
         }
         return false;
     }
     
-    GuiElement* makeGui(pair<int> pos, GuiElement* link) {
-        GuiElement* gui = new Widget(pos,{270, 96},TextureManager::getTexture("tableGui.png"), link);
-        gui -> addGuiElement(new ItemSlot({48,48},&a));
-        gui -> addGuiElement(new ItemSlot({48+27*3,48},&b));
-        gui -> addGuiElement(new ItemSlot({48+57*3,48},&c));
+    GuiElement* makeGui(pair<int> pos) {
+        GuiElement* gui = new Widget(pos, {270, 96}, TextureManager::getTexture("tableGui.png"), true);
+        gui -> addGuiElement(new ItemSlot({48,48}, &a));
+        gui -> addGuiElement(new ItemSlot({48+27*3,48}, &b));
+        gui -> addGuiElement(new ItemSlot({48+57*3,48}, &c));
+        GuiManager::manager -> addGuiElement(gui);
         return gui;
     }
     

@@ -9,8 +9,9 @@
 #pragma once
 #include "tools.h"
 #include "LayerSystem/Layers.h"
+#include "MessagingSystem.hpp"
 
-class Console {
+class Console : public Observer {
 private:
     EntityLayer* entityLayer;
     
@@ -22,7 +23,15 @@ private:
     std::string text;
     
     bool execute(std::string);
+    
 public:
+    
+    Console() {
+        subscribe(MessageType::PRINT);
+    }
+    
     void render();
+    void write(std::string text);
     bool handleEvent(SDL_Event event);
+    bool onMessage(const Message& message) override;
 };

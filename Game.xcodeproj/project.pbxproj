@@ -171,16 +171,18 @@
 		04C7CC862334119F0053C2E7 /* Game */ = {
 			isa = PBXGroup;
 			children = (
-				04C7CC8E233411F80053C2E7 /* tools.h */,
-				043CA56124812A82008CA805 /* serializer.h */,
 				040CAB9E242E24AB009A2728 /* ECS */,
 				04CBB503244F587100A8BC69 /* LayerSystem */,
 				04E4A34E24683F880021359B /* Gui */,
-				04E4A34624646DEC0021359B /* logger.hpp */,
-				04E708202498EBB40038870C /* ResoureTypes.hpp */,
-				04E7081F2498EBB40038870C /* ResoureTypes.cpp */,
-				04CBB50A2450437000A8BC69 /* maths.h */,
-				043CA558247E6A57008CA805 /* strings.h */,
+				A7EB3788258AB7200007B6F1 /* Framework */,
+				A7EB3789258AB74B0007B6F1 /* Tools */,
+				04C7CC872334119F0053C2E7 /* main.cpp */,
+				041688952334336D0060DBDA /* Game.hpp */,
+				041688942334336D0060DBDA /* Game.cpp */,
+				043CA55A247FF6CF008CA805 /* World.hpp */,
+				043CA559247FF6CF008CA805 /* World.cpp */,
+				04795BBD2334FAD2005C6FDE /* Camera.hpp */,
+				04795BBC2334FAD2005C6FDE /* Camera.cpp */,
 				0439263C244492750057C83C /* Item.hpp */,
 				A76C91ED25829C59007CDE93 /* Item.cpp */,
 				044C12B324A504C80081B014 /* Item.h */,
@@ -190,23 +192,10 @@
 				044A3A97249264B7004FE4B0 /* EntityFactory.cpp */,
 				043CA556247D6492008CA805 /* Console.hpp */,
 				043CA555247D6492008CA805 /* Console.cpp */,
-				043CA56524819162008CA805 /* SoundManager.hpp */,
-				043CA56424819162008CA805 /* SoundManager.cpp */,
-				040CABAB242FD090009A2728 /* CollisionManager.h */,
-				04C7CC872334119F0053C2E7 /* main.cpp */,
-				043CA55A247FF6CF008CA805 /* World.hpp */,
-				043CA559247FF6CF008CA805 /* World.cpp */,
+				04E708202498EBB40038870C /* ResoureTypes.hpp */,
+				04E7081F2498EBB40038870C /* ResoureTypes.cpp */,
 				043CA55C247FFCB8008CA805 /* StateController.h */,
-				041688952334336D0060DBDA /* Game.hpp */,
-				041688942334336D0060DBDA /* Game.cpp */,
-				04168892233425C70060DBDA /* Window.hpp */,
-				04168891233425C70060DBDA /* Window.cpp */,
-				0416889823343ACC0060DBDA /* TextureManager.hpp */,
-				0416889723343ACC0060DBDA /* TextureManager.cpp */,
-				04795BBD2334FAD2005C6FDE /* Camera.hpp */,
-				04795BBC2334FAD2005C6FDE /* Camera.cpp */,
-				0416889B23344F9A0060DBDA /* TextManager.hpp */,
-				0416889A23344F9A0060DBDA /* TextManager.cpp */,
+				040CABAB242FD090009A2728 /* CollisionManager.h */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -271,6 +260,33 @@
 				04CC9E5124A0A359004539D1 /* FurnaceComponent.h */,
 			);
 			name = Components;
+			sourceTree = "<group>";
+		};
+		A7EB3788258AB7200007B6F1 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				04168892233425C70060DBDA /* Window.hpp */,
+				04168891233425C70060DBDA /* Window.cpp */,
+				043CA56524819162008CA805 /* SoundManager.hpp */,
+				043CA56424819162008CA805 /* SoundManager.cpp */,
+				0416889823343ACC0060DBDA /* TextureManager.hpp */,
+				0416889723343ACC0060DBDA /* TextureManager.cpp */,
+				0416889B23344F9A0060DBDA /* TextManager.hpp */,
+				0416889A23344F9A0060DBDA /* TextManager.cpp */,
+			);
+			name = Framework;
+			sourceTree = "<group>";
+		};
+		A7EB3789258AB74B0007B6F1 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				04C7CC8E233411F80053C2E7 /* tools.h */,
+				04E4A34624646DEC0021359B /* logger.hpp */,
+				043CA56124812A82008CA805 /* serializer.h */,
+				043CA558247E6A57008CA805 /* strings.h */,
+				04CBB50A2450437000A8BC69 /* maths.h */,
+			);
+			name = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -31,6 +31,9 @@ public:
     
     bool hover = false;
     
+    bool absorbHover = false;
+    bool absorbKeystate = false;
+    
     virtual bool onClick(int b) { return false; }
     virtual bool onKey(int k) { return false; }
     virtual bool onScroll(int y) { return false; }
@@ -46,19 +49,23 @@ public:
     void destroy();
     virtual void onDestroy() {}
     
-    virtual void render();
+    void recursiveRender();
+    void recursiveHoverRender();
+    virtual void render() {}
     virtual void hoverRender() {}
+    
     virtual void update();
     
 };
 
 class Widget : public GuiElement {
 private:
-    GuiElement* link;
+    bool weak;
 public:
-    Widget(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr, GuiElement* l = nullptr);
+    Widget(pair<int> pos, pair<int> s, SDL_Texture* tex = nullptr, bool w = false) : GuiElement(pos, s, tex), weak(w) {
+        absorbKeystate = true;
+    }
     bool onKey(int key) override;
-    void onDestroy() override;
 };
 
 class TextElement : public GuiElement {

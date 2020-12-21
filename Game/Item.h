@@ -9,62 +9,73 @@
 #pragma once
 
 enum class ItemType {
+    
+    //Material
     STONE,
     CLAY,
     WOOD,
     DUST,
-    
     LEATHER,
     ORGANIC,
     FOOD,
-
-    TOOL,
-    SWORD,
-    POTION,
-    CLOTHING,
-    ACCESSORY,
-
     ORE,
     METAL,
     GEM,
     GLASS,
     PAPER,
-
+    FUEL,
+    SLIME,
+    
+    //Crafting
     FABRIC,
     ROPE,
     CHAIN,
     PLATE,
     ROD,
     GEAR,
+
+    //Tools
+    SHOVEL,
+    AXE,
+    PICK_AXE,
+    HAMMER,
+    KNIFE,
     
-    FUEL,
+    //Weapons
+    SWORD,
+    BOW,
+    ARROW,
     
+    //Misc
+    POTION,
+    ARMOUR,
+    CLOTHING,
+    ACCESSORY,
+
     MAX
     
 };
 
 enum class ItemProperty {
     
-    //Main Properties
+    //Mechanical
     WEIGHT,
     STENGTH,
     HARDNESS,
     FLEXIBILITY,
-    LUMINOCITY,
+    ELASTICITY,
+    STIFFNESS,
+    TOUGHNESS,
+    
+    //Liquids
+    VISCOSITY,
     
     //Organic
     NUTRITION,
     
-    //Mechanical
-    ELASTICITY,
-    STIFFNESS,
-    TOUGHNESS,
-    PLASTICITY,
-    DENSITY,
-    VISCOSITY,
-    
     //Optical
     REFLECTIVITY,
+    LUMINOCITY,
     OPACITY,
     
     //Fuel
@@ -79,6 +90,10 @@ enum class ItemProperty {
     //Weapons
     ATTACK,
     PARRY,
+    
+    //Clothing
+    VANITY,
+    COMFORT,
     
     MAX,
 };

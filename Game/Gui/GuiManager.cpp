@@ -22,7 +22,8 @@ void GuiManager::update() {
 }
 
 void GuiManager::render() {
-    for (GuiElement* gui : guiElements) { gui -> render(); }
+    for (GuiElement* gui : guiElements) { gui -> recursiveRender(); }
+    for (GuiElement* gui : guiElements) { gui -> recursiveHoverRender(); }
     mouseSlot -> render();
 }
 

@@ -33,7 +33,7 @@ void Game::createWorld() {
     player -> addComponent<DirectionComponent>();
     player -> addComponent<HealthComponent>(10);
     
-    InventoryComponent* inv = player -> addComponent<InventoryComponent>(9,5);
+    InventoryComponent* inv = player -> addComponent<InventoryComponent>(7,4);
     inv -> addItem(new ItemStack(ItemID::PICK,1));
     inv -> addItem(new ItemStack(ItemID::HAMMER,1));
     inv -> addItem(new ItemStack(ItemID::SHOVEL,1));
