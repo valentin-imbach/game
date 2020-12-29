@@ -28,6 +28,7 @@ void Component::setPrototypes() {
     prototypes[(int)ComponentType::CHEST] = new ChestComponent();
     prototypes[(int)ComponentType::TABLE] = new TableComponent();
     prototypes[(int)ComponentType::FURNACE] = new FurnaceComponent();
+    prototypes[(int)ComponentType::PICKUP] = new PickupComponent();
 }
 
 
@@ -47,3 +48,4 @@ ComponentType PlayerGuiComponent::componentType = ComponentType::PLAYER_GUI;
 ComponentType PlayerInputComponent::componentType = ComponentType::PLAYER_INPUT;
 ComponentType PlayerAnimationComponent::componentType = ComponentType::PLAYER_ANIMATION;
 ComponentType FurnaceComponent::componentType = ComponentType::FURNACE;
+ComponentType PickupComponent::componentType = ComponentType::PICKUP;

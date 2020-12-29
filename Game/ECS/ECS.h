@@ -46,7 +46,8 @@ enum class ComponentType {
     FURNACE,
     PLAYER_GUI,
     PLAYER_INPUT,
-    PLAYER_ANIMATION
+    PLAYER_ANIMATION,
+    PICKUP
 };
 
 class Component : public Serializable {

@@ -120,6 +120,7 @@
 		04F789D1247473E8001A3D5F /* HealthComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthComponent.h; sourceTree = "<group>"; };
 		A720E5AF257010DC00F66A7C /* MessagingSystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MessagingSystem.cpp; sourceTree = "<group>"; };
 		A720E5B0257010DC00F66A7C /* MessagingSystem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MessagingSystem.hpp; sourceTree = "<group>"; };
+		A76A55B3259B7841003AF778 /* PickupComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PickupComponent.h; sourceTree = "<group>"; };
 		A76C91ED25829C59007CDE93 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Item.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -258,6 +259,7 @@
 				041720D9245875960070F152 /* TableComponent.h */,
 				044CEA7C2472AB0F002EA0C2 /* ChestComponent.h */,
 				04CC9E5124A0A359004539D1 /* FurnaceComponent.h */,
+				A76A55B3259B7841003AF778 /* PickupComponent.h */,
 			);
 			name = Components;
 			sourceTree = "<group>";

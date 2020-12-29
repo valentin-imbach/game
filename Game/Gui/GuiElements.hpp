@@ -109,8 +109,9 @@ public:
 class ItemSlot : public GuiElement {
 private:
     ItemContainer* itemContainer;
+    ItemType type;
 public:
-    ItemSlot(pair<int> pos, ItemContainer* item);
+    ItemSlot(pair<int> pos, ItemContainer* c, ItemType t = ItemType::NONE);
     void render() override;
     void hoverRender() override;
     bool onClick(int b) override;

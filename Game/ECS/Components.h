@@ -33,3 +33,5 @@
 #include "ResourceComponent.h"
 #include "ChestComponent.h"
 #include "FurnaceComponent.h"
+
+#include "PickupComponent.h"

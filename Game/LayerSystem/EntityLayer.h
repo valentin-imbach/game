@@ -26,6 +26,7 @@ public:
         subscribe(MessageType::SPAWN_ITEM);
         subscribe(MessageType::PLACE);
         subscribe(MessageType::BREAK);
+        subscribe(MessageType::GIVE);
         
         LOG("Entity Layer constructed");
     }
@@ -158,6 +159,9 @@ public:
                 }
             }
             return true;
+        } else if (message.type == MessageType::GIVE) {
+            const GiveMessage &msg = static_cast<const GiveMessage&>(message);
+            player -> getComponent<InventoryComponent>() -> addItem(msg.item);
         }
         return false;
     }

@@ -116,6 +116,14 @@ bool Console::execute(std::string s) {
                 EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position).rounded());
             }
         }
+        
+        if (s.substr(0,4) == "give") {
+            int n = std::stoi(s.substr(5));
+            if (0 <= n) {
+                MessageManager::notify(GiveMessage(new ItemStack(ItemID::APPLE, n)));
+            }
+        }
+        
     }
     return true;
 }

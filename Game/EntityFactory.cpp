@@ -23,7 +23,7 @@ void EntityFactory::createEntity(EntityManager* manager, int type, pair<int> pos
         table -> addComponent<TableComponent>();
     } else if (type == (int)EntityType::CHEST) {
         Entity* chest = manager -> addEntity();
-        chest -> addComponent<InventoryComponent>(5,3);
+        chest -> addComponent<InventoryComponent>(5,2);
         chest -> addComponent<PositionComponent>(pos);
         chest -> addComponent<SpriteComponent>();
         chest -> addComponent<GridComponent>();

@@ -25,6 +25,7 @@ enum class MessageType {
     INVENTORY,
     DAMAGE,
     PRINT,
+    GIVE,
     
     MAX
 };
@@ -91,4 +92,9 @@ struct BreakMessage : public Message {
 struct PrintMessage : public Message {
     std::string text;
     PrintMessage(std::string t) : Message(MessageType::PRINT), text(t) {}
+};
+
+struct GiveMessage : public Message {
+    Item* item;
+    GiveMessage(Item* i) : Message(MessageType::GIVE), item(i) {}
 };

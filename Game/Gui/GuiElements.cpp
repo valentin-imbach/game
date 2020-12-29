@@ -171,8 +171,9 @@ bool TextField::onText(std::string t) {
     return true;
 }
 
-ItemSlot::ItemSlot(pair<int> pos, ItemContainer* item) : GuiElement(pos,{48,48}) {
-    itemContainer = item;
+ItemSlot::ItemSlot(pair<int> pos, ItemContainer* c, ItemType t) : GuiElement(pos,{48,48}) {
+    itemContainer = c;
+    type = t;
 }
 
 bool ItemSlot::onClick(int button) {
@@ -193,6 +194,13 @@ bool ItemSlot::onClick(int button) {
 
 void ItemSlot::render() {
     itemContainer -> render(position+size/2,size.X);
+    if (itemContainer -> item == nullptr) {
+        if (type != ItemType::NONE) {
+            int x = (int)type % 8;
+            int y = (int)type/8;
+            TextureManager::drawTexture(TextureManager::icons, 16*x, 16*y, 16, 16, position.X, position.Y, 48, 48);
+        }
+    }
 }
 
 void ItemSlot::hoverRender() {

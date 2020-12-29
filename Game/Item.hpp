@@ -137,12 +137,15 @@ struct ItemContainer {
             ItemTemplate* it = Item::itemTemplates[(int)(item -> itemID)];
             if (it != nullptr) {
                 v(Text) text;
+                v(int) h;
                 if (Window::keys[SDL_SCANCODE_LSHIFT]) {
                     text.emplace_back(it -> name, TTF_STYLE_UNDERLINE);
                     for (ItemType t : it -> types) {
                         ItemTypeTemplate* itt = Item::itemTypeTemplates[(int)t];
                         if (itt != nullptr) {
-                            text.emplace_back(itt -> name, TTF_STYLE_BOLD);
+                            text.emplace_back("  " + itt -> name, TTF_STYLE_BOLD);
+                            int s = (int)text.size();
+                            h.push_back(s);
                             for (ItemProperty p : itt -> properties) {
                                 ItemPropertyTemplate* ipt = Item::itemPropertyTemplates[(int)p];
                                 if (ipt != nullptr) {
@@ -156,6 +159,11 @@ struct ItemContainer {
                 }
                 pair<int> box = TextManager::textSize(text, 25);
                 TextureManager::drawTexture(TextureManager::getTexture("grey.png"), pos.X, pos.Y, box.X+20, box.Y+5);
+                for (int i = 0; i < h.size(); i++) {
+                    int x = (int)(it -> types[i]) % 8;
+                    int y = (int)(it -> types[i]) / 8;
+                    TextureManager::drawTexture(TextureManager::icons2, 16*x, 16*y, 16, 16, pos.X+5, pos.Y + (h[i]-1)*25, 32, 32);
+                }
                 TextManager::drawText(text, {pos.X+10, pos.Y}, 25);
             }
         }

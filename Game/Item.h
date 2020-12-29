@@ -10,46 +10,54 @@
 
 enum class ItemType {
     
+    NONE = -1,
+    
     //Material
     STONE,
     CLAY,
     WOOD,
-    DUST,
+    ORE,
+    GEM,
     LEATHER,
     ORGANIC,
-    FOOD,
-    ORE,
-    METAL,
-    GEM,
-    GLASS,
-    PAPER,
-    FUEL,
-    SLIME,
+    DUST,
     
     //Crafting
+    METAL,
+    GLASS,
+    PAPER,
     FABRIC,
-    ROPE,
-    CHAIN,
     PLATE,
     ROD,
     GEAR,
+    ROPE,
 
     //Tools
-    SHOVEL,
-    AXE,
     PICK_AXE,
+    AXE,
+    SHOVEL,
     HAMMER,
+    SCYTHE,
+    HOE,
     KNIFE,
+    TOOL,
     
     //Weapons
     SWORD,
     BOW,
     ARROW,
+    SHIELD,
+    
+    //CLOTHING
+    HEAD_CLOTHING,
+    BODY_CLOTHING,
+    LEG_CLOTHING,
+    FOOT_CLOTHING,
     
     //Misc
+    FOOD,
+    FUEL,
     POTION,
-    ARMOUR,
-    CLOTHING,
     ACCESSORY,
 
     MAX

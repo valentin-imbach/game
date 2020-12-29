@@ -12,18 +12,13 @@
 #include "Window.hpp"
 
 v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
+SDL_Texture* TextureManager::icons = nullptr;
+SDL_Texture* TextureManager::icons2 = nullptr;
 auto TextureManager::textures = std::map<std::string, SDL_Texture*>();
 
 void TextureManager::Init() {
-    loadTilesets();
+    refresh();
     LOG("TextureManager initialized");
-}
-
-void TextureManager::loadTilesets() {
-    loadTileset(GRASS,"grass.png");
-    loadTileset(SAND,"sand.png");
-    loadTileset(WATER,"water.png");
-    loadTileset(STONE,"stone.png");
 }
 
 SDL_Texture* TextureManager::getTexture(std::string path) {
@@ -45,6 +40,7 @@ SDL_Texture* TextureManager::loadTexture(std::string path) {
 
 void TextureManager::refresh() {
     loadTilesets();
+    loadIcons();
     for (auto v : textures) {
         textures[v.first] = loadTexture(v.first);
     }
@@ -81,6 +77,14 @@ void TextureManager::drawRect(pair<int> pos, pair<int> size, int r, int g, int b
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 
-void TextureManager::loadTileset(int a, const char* path) {
-    tilesets[a] = loadTexture(path);
+void TextureManager::loadTilesets() {
+    tilesets[GRASS] = loadTexture("grass.png");
+    tilesets[SAND] = loadTexture("sand.png");
+    tilesets[WATER] = loadTexture("water.png");
+    tilesets[STONE] = loadTexture("stone.png");
+}
+
+void TextureManager::loadIcons() {
+    icons = loadTexture("icons.png");
+    icons2 = loadTexture("icons2.png");
 }

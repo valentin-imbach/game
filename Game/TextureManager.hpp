@@ -21,12 +21,13 @@ enum TileID {
 
 class TextureManager {
 public:
-    static v(SDL_Texture*) tilesets;    
+    static v(SDL_Texture*) tilesets;
+    static SDL_Texture* icons;
+    static SDL_Texture* icons2;
     static std::map<std::string, SDL_Texture*> textures;
     
     static void Init();
     static void refresh();
-    static void loadTilesets();
     static SDL_Texture* getTexture(std::string path);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered = false);
@@ -34,7 +35,8 @@ public:
     static void drawRect(pair<int> pos, pair<int> size, int r = 0, int g = 0, int b = 0);
 private:
     static SDL_Texture* loadTexture(std::string path);
-    static void loadTileset(int a, const char* path);
+    static void loadTilesets();
+    static void loadIcons();
 };
 
 struct Sprite {
