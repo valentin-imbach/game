@@ -9,12 +9,19 @@
 #include "EntityFactory.hpp"
 
 void EntityFactory::createEntity(EntityManager* manager, int type, pair<int> pos) {
-    if (type < 100) {
+    if (!manager -> isFree(pos.X, pos.Y)) { return; }
+    if (type < (int)RESOURCE::MAX) {
         Entity* res = manager -> addEntity();
         res -> addComponent<PositionComponent>(pos);
         res -> addComponent<SpriteComponent>();
         res -> addComponent<GridComponent>();
         res -> addComponent<ResourceComponent>(type);
+    } else if (type >= 10 && type - 10 < (int)PICKUP::MAX) {
+        Entity* branch = manager -> addEntity();
+        branch -> addComponent<PositionComponent>(pos);
+        branch -> addComponent<SpriteComponent>();
+        branch -> addComponent<GridComponent>() -> solid = false;
+        branch -> addComponent<PickupComponent>(type-10);
     } else if (type == (int)EntityType::TABLE) {
         Entity* table = manager -> addEntity();
         table -> addComponent<PositionComponent>(pos);

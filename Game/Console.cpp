@@ -123,7 +123,6 @@ bool Console::execute(std::string s) {
                 MessageManager::notify(GiveMessage(new ItemStack(ItemID::APPLE, n)));
             }
         }
-        
     }
     return true;
 }

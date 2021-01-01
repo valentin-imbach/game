@@ -14,7 +14,16 @@
 enum class RESOURCE {
     STONE,
     BUSH,
-    TREE
+    TREE,
+    
+    MAX
+};
+
+enum class PICKUP {
+    BRANCH,
+    PEBBLE,
+    
+    MAX
 };
 
 struct ResourceType {

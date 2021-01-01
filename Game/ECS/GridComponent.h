@@ -16,6 +16,7 @@ public:
     PositionComponent *positionComponent;
     
     pair<int> size;
+    bool solid = true;
     
     GridComponent(pair<int> s = {1,1}) : size(s) {}
     

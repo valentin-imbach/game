@@ -215,12 +215,12 @@ Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2
 }
 
 void Hotbar::render() {
+    TextureManager::drawTexture(TextureManager::getTexture("HotbarHighlight.png"), position.X+(*selected)*78, position.Y, 78, 78);
     for (int i = 0; i < hotbarContainers.size(); i++) {
         if (hotbarContainers[i] -> item != nullptr) {
             hotbarContainers[i] -> render(position + pair<int>(39+i*78,39),48);
         }
     }
-    TextureManager::drawRect(position +  pair<int>((*selected)*78,0), {78,78}, 0, 0, 255);
 }
 
 bool Hotbar::onScroll(int y) {

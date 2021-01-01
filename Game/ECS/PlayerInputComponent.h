@@ -100,7 +100,16 @@ public:
         pair<int> p1 = (pos - collisionComponent -> offset).rounded();
         pair<int> p2 = (pos + collisionComponent -> collider.size - collisionComponent -> offset).rounded();
         
-        return !(entity -> manager -> isFree(p1.X,p1.Y,p2.X-p1.X+1,p2.Y-p1.Y+1));
+        for (int i = 0; i < p2.X-p1.X+1; i++) {
+            for (int j = 0; j < p2.Y-p1.Y+1; j++) {
+                Entity* str = entity -> manager -> gridEntities[p1.X+i][p1.Y+j];
+                if (str != nullptr && str -> getComponent<GridComponent>() -> solid) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
     
     bool handleEvent(SDL_Event event) override {

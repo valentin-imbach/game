@@ -20,11 +20,17 @@ public:
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
-        spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{5,9},{1,2}); //TODO
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("pickups.png"),{randRange(0, 3),type});
     }
     
     bool onMessage(const Message& message) override {
         if (message.type == MessageType::INTERACTION) {
+            if (type == 0) {
+                MessageManager::notify(GiveMessage(new ItemStack(ItemID::BRANCH)));
+            } else if (type == 1) {
+                MessageManager::notify(GiveMessage(new ItemStack(ItemID::STONE)));
+            }
+            entity -> destroy();
             return true;
         }
         return false;
