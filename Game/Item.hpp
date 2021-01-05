@@ -72,7 +72,7 @@ struct ItemContainer {
     }
     
     bool giveHalf(ItemContainer* other) {
-        if (other -> item != nullptr) { return false; }
+        if (other -> item != nullptr) return false;
         if (item == nullptr || !item -> stack || item -> count == 1) {
             other -> item = item;
             item = nullptr;
@@ -99,9 +99,7 @@ struct ItemContainer {
     
     bool addOne(ItemContainer* other) {
         if (item == nullptr) {
-            if (other -> item == nullptr) {
-                return false;
-            }
+            if (other -> item == nullptr) return false;
             if (!other -> item -> stack) {
                 item = other -> item;
                 other -> item = nullptr;
@@ -109,27 +107,21 @@ struct ItemContainer {
             }
             item = new ItemStack(other -> item -> itemID, 1);
             other -> item -> count -= 1;
-            if (other -> item -> count == 0) {
-                other -> item = nullptr;
-            }
+            if (other -> item -> count == 0) other -> item = nullptr;
             return true;
         }
         
         if (similar(other)) {
             item -> count += 1;
             other -> item -> count -= 1;
-            if (other -> item -> count == 0) {
-                other -> item = nullptr;
-            }
+            if (other -> item -> count == 0) other -> item = nullptr;
             return true;
         }
         return false;
     }
     
     void render(pair<int> pos, int scale) {
-        if (item != nullptr) {
-            item -> render(pos.X, pos.Y, scale);
-        }
+        if (item != nullptr) item -> render(pos.X, pos.Y, scale);
     }
     
     void renderToolTip(pair<int> pos) {
@@ -148,15 +140,11 @@ struct ItemContainer {
                             h.push_back(s);
                             for (ItemProperty p : itt -> properties) {
                                 ItemPropertyTemplate* ipt = Item::itemPropertyTemplates[(int)p];
-                                if (ipt != nullptr) {
-                                    text.emplace_back(ipt -> name + ": " + std::to_string(it -> properties[(int)p]));
-                                }
+                                if (ipt != nullptr) text.emplace_back(ipt -> name + ": " + std::to_string(it -> properties[(int)p]));
                             }
                         }
                     }
-                } else {
-                    text.emplace_back(it -> name);
-                }
+                } else text.emplace_back(it -> name);
                 pair<int> box = TextManager::textSize(text, 25);
                 TextureManager::drawTexture(TextureManager::getTexture("grey.png"), pos.X, pos.Y, box.X+20, box.Y+5);
                 for (int i = 0; i < h.size(); i++) {

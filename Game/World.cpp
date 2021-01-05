@@ -23,8 +23,7 @@ void World::render() {
 }
 
 bool World::handleEvent(SDL_Event event) {
-    if (layerManager.handleEvent(event)) { return true; }
-    return false;
+    return layerManager.handleEvent(event);
 }
 
 void World::serialize(std::fstream& stream) {

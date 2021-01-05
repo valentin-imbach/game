@@ -25,11 +25,8 @@ public:
     
     bool onMessage(const Message& message) override {
         if (message.type == MessageType::INTERACTION) {
-            if (type == 0) {
-                MessageManager::notify(GiveMessage(new ItemStack(ItemID::BRANCH)));
-            } else if (type == 1) {
-                MessageManager::notify(GiveMessage(new ItemStack(ItemID::STONE)));
-            }
+            if (type == 0) MessageManager::notify(GiveMessage(new ItemStack(ItemID::BRANCH)));
+            else if (type == 1) MessageManager::notify(GiveMessage(new ItemStack(ItemID::STONE)));
             entity -> destroy();
             return true;
         }

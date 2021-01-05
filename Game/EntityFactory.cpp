@@ -9,7 +9,7 @@
 #include "EntityFactory.hpp"
 
 void EntityFactory::createEntity(EntityManager* manager, int type, pair<int> pos) {
-    if (!manager -> isFree(pos.X, pos.Y)) { return; }
+    if (!manager -> isFree(pos.X, pos.Y)) return;
     if (type < (int)RESOURCE::MAX) {
         Entity* res = manager -> addEntity();
         res -> addComponent<PositionComponent>(pos);

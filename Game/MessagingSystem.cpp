@@ -11,12 +11,8 @@
 vv(Observer*) MessageManager::subscribers = vv(Observer*)((int)MessageType::MAX,v(Observer*)());
 
 void MessageManager::distribute(const Message &message) {
-    if (message.target != nullptr) {
-        message.target -> onMessage(message);
-    }
-    for (Observer* observer : subscribers[(int)message.type]) {
-        if (observer -> onMessage(message)) { return; }
-    }
+    if (message.target != nullptr) message.target -> onMessage(message);
+    for (Observer* observer : subscribers[(int)message.type]) if (observer -> onMessage(message)) return;
 }
 
 void MessageManager::notify(const Message &message) {
@@ -28,7 +24,7 @@ bool Observer::isSubscribed(MessageType type) {
 }
 
 void Observer::subscribe(MessageType type) {
-    if (isSubscribed(type)) { return; }
+    if (isSubscribed(type)) return;
     MessageManager::subscribers[(int)type].push_back(this);
     subscriptions.push_back(type);
 }
@@ -40,5 +36,5 @@ void Observer::unsubscribe(MessageType type) {
 }
 
 Observer::~Observer() {
-    for (MessageType type : subscriptions) { unsubscribe(type); }
+    for (MessageType type : subscriptions) unsubscribe(type);
 }

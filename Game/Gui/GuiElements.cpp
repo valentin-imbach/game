@@ -19,27 +19,23 @@ GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex, SDL_Texture
 
 void GuiElement::setManager(GuiManager* m) {
     manager = m;
-    for (GuiElement* child : children) {
-        child -> setManager(m);
-    }
+    for (GuiElement* child : children) child -> setManager(m);
 }
 
 void GuiElement::update() {
-    for (GuiElement* child : children) {
-        child -> update();
-    }
+    for (GuiElement* child : children) child -> update();
 }
 
 void GuiElement::recursiveRender() {
-    if (hoverTexture != nullptr && check(Window::mousePos)) { TextureManager::drawTexture(hoverTexture, position.X, position.Y, size.X, size.Y); }
-    else if (texture != nullptr) { TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y); }
+    if (hoverTexture != nullptr && check(Window::mousePos)) TextureManager::drawTexture(hoverTexture, position.X, position.Y, size.X, size.Y);
+    else if (texture != nullptr) TextureManager::drawTexture(texture, position.X, position.Y, size.X, size.Y);
     render();
-    for (GuiElement* child : children) { child -> recursiveRender(); }
+    for (GuiElement* child : children) child -> recursiveRender();
 }
 
 void GuiElement::recursiveHoverRender() {
     hoverRender();
-    for (GuiElement* child : children) { child -> recursiveHoverRender(); }
+    for (GuiElement* child : children) child -> recursiveHoverRender();
 }
 
 bool GuiElement::check(pair<int> p) {
@@ -48,32 +44,22 @@ bool GuiElement::check(pair<int> p) {
 
 bool GuiElement::handleEvent(SDL_Event event) {
     
-    for (int i = (int)children.size()-1; i >= 0; i--) {
-        if (children[i] -> handleEvent(event)) {
-            return true;
-        }
-    }
+    for (int i = (int)children.size()-1; i >= 0; i--) if (children[i] -> handleEvent(event)) return true;
     
-    if (event.type == SDL_TEXTINPUT) {
-        return onText(event.text.text);
-    } else if (event.type == SDL_MOUSEBUTTONDOWN) {
-        return onClick(event.button.button);
-    } else if (event.type == SDL_KEYDOWN) {
-        return onKey(event.key.keysym.scancode);
-    } else if (event.type == SDL_MOUSEWHEEL) {
-        return onScroll(event.wheel.y);
-    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::HOVER) {
+    if (event.type == SDL_TEXTINPUT) return onText(event.text.text);
+    else if (event.type == SDL_MOUSEBUTTONDOWN) return onClick(event.button.button);
+    else if (event.type == SDL_KEYDOWN) return onKey(event.key.keysym.scancode);
+    else if (event.type == SDL_MOUSEWHEEL) return onScroll(event.wheel.y);
+    else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::HOVER) {
         if (check(Window::mousePos)) {
             hover = true;
             return absorbHover;
         }
-    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::KEYSTATE) {
-        return absorbKeystate;
-    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::RESET) {
+    } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::KEYSTATE) return absorbKeystate;
+    else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::RESET) {
         hover = false;
         return false;
     }
-    
     return false;
 }
 
@@ -91,9 +77,7 @@ void GuiElement::setParent(GuiElement *gui) {
 void GuiElement::destroy() {
     onDestroy();
     alive = false;
-    for (GuiElement* child : children) {
-        child -> destroy();
-    }
+    for (GuiElement* child : children) child -> destroy();
 }
 
 bool Widget::onKey(int key) {    
@@ -128,9 +112,7 @@ Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_
 
 bool Button::onClick(int b) {
     if (check(Window::mousePos)) {
-        if (b == SDL_BUTTON_LEFT) {
-            (*function)();
-        }
+        if (b == SDL_BUTTON_LEFT) (*function)();
         return true;
     }
     return false;
@@ -145,9 +127,7 @@ void TextField::render() {
 
 bool TextField::onClick(int b) {
     if (check(Window::mousePos)) {
-        if (b == SDL_BUTTON_LEFT) {
-            active = true;
-        }
+        if (b == SDL_BUTTON_LEFT) active = true;
         return true;
     }
     return false;
@@ -155,18 +135,15 @@ bool TextField::onClick(int b) {
 
 bool TextField::onKey(int k) {
     if (!active) { return false; }
-    if (k == SDL_SCANCODE_ESCAPE || k == SDL_SCANCODE_RETURN) {
-        active = false;
-    } else if (k == SDL_SCANCODE_BACKSPACE) {
-        if (text.length() > 0) {
-            text = text.substr(0,text.length()-1);
-        }
+    if (k == SDL_SCANCODE_ESCAPE || k == SDL_SCANCODE_RETURN) active = false;
+    else if (k == SDL_SCANCODE_BACKSPACE) {
+        if (text.length() > 0) text = text.substr(0,text.length()-1);
     }
     return true;
 }
 
 bool TextField::onText(std::string t) {
-    if (!active) { return false; }
+    if (!active) return false;
     text += t;
     return true;
 }
@@ -179,13 +156,9 @@ ItemSlot::ItemSlot(pair<int> pos, ItemContainer* c, ItemType t) : GuiElement(pos
 bool ItemSlot::onClick(int button) {
     if (check(Window::mousePos)) {
         if (button == SDL_BUTTON_LEFT) {
-            if (!itemContainer -> takeFull(manager -> mouseContainer)) {
-                std::swap(manager -> mouseContainer -> item, itemContainer -> item);
-            }
+            if (!itemContainer -> takeFull(manager -> mouseContainer)) std::swap(manager -> mouseContainer -> item, itemContainer -> item);
         } else if (button == SDL_BUTTON_RIGHT) {
-            if (!itemContainer -> giveHalf(manager -> mouseContainer)) {
-                itemContainer -> addOne(manager -> mouseContainer);
-            }
+            if (!itemContainer -> giveHalf(manager -> mouseContainer)) itemContainer -> addOne(manager -> mouseContainer);
         }
         return true;
     }
@@ -204,9 +177,7 @@ void ItemSlot::render() {
 }
 
 void ItemSlot::hoverRender() {
-    if (hover && GuiManager::manager -> mouseContainer -> item == nullptr) {
-        itemContainer -> renderToolTip({position.X+size.X,position.Y});
-    }
+    if (hover && GuiManager::manager -> mouseContainer -> item == nullptr) itemContainer -> renderToolTip({position.X+size.X,position.Y});
 }
 
 Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2,60},{546, 78},TextureManager::getTexture("hotbar.png")) {
@@ -216,11 +187,8 @@ Hotbar::Hotbar(v(ItemContainer*) items, int* sel) : GuiElement({Window::size.X/2
 
 void Hotbar::render() {
     TextureManager::drawTexture(TextureManager::getTexture("HotbarHighlight.png"), position.X+(*selected)*78, position.Y, 78, 78);
-    for (int i = 0; i < hotbarContainers.size(); i++) {
-        if (hotbarContainers[i] -> item != nullptr) {
-            hotbarContainers[i] -> render(position + pair<int>(39+i*78,39),48);
-        }
-    }
+    for (int i = 0; i < hotbarContainers.size(); i++)
+        if (hotbarContainers[i] -> item != nullptr) hotbarContainers[i] -> render(position + pair<int>(39+i*78,39),48);
 }
 
 bool Hotbar::onScroll(int y) {
@@ -256,9 +224,7 @@ bool Hotbar::onKey(int k) {
 
 bool Hotbar::onClick(int b) {
     Item* item = hotbarContainers[*selected] -> item;
-    if (item != nullptr) {
-        return hotbarContainers[*selected] -> item -> onClick(b);
-    }
+    if (item != nullptr) return hotbarContainers[*selected] -> item -> onClick(b);
     return false;
 };
 
@@ -269,7 +235,5 @@ HealthBar::HealthBar(int* h) : GuiElement({Window::size.X-330,50},{0,0}) {
 
 void HealthBar::render() {
     int offset = 30;
-    for (int i = 0; i < *health; i++) {
-        TextureManager::drawTexture(heart, position.X + i*offset, position.Y, 21, 18);
-    }
+    for (int i = 0; i < *health; i++) TextureManager::drawTexture(heart, position.X + i*offset, position.Y, 21, 18);
 }

@@ -16,7 +16,7 @@ struct Collider {
 
 struct CollisionManager {
     static bool AABB(Collider A, Collider B) {
-        if (!A.active || !B.active) { return false; }
+        if (!A.active || !B.active) return false;
         return (A.position.X < B.position.X + B.size.X && B.position.X < A.position.X + A.size.X && A.position.Y < B.position.Y + B.size.Y && B.position.Y < A.position.Y + A.size.Y);
     }
 };

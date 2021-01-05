@@ -21,7 +21,7 @@ struct StateController {
     GameState state = GameState::STARTING;
     
     bool handleEvent(SDL_Event event) {
-        if (event.key.repeat) { return false; }
+        if (event.key.repeat) return false;
         
         if (state == GameState::RUNNING) {
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {

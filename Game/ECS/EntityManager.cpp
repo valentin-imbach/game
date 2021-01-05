@@ -22,18 +22,18 @@ Entity* EntityManager::createEntity(std::fstream& stream) {
 }
 
 void EntityManager::update() const {
-    for (Entity* e : entities) {e -> update(); }
+    for (Entity* e : entities) e -> update();
 }
 
 void EntityManager::render() const {
-    for (Entity* e : entities) { if (e -> hasTag(EntityTag::TILE)) { e -> render(); } }
-    for (Entity* e : entities) { if (e -> hasTag(EntityTag::STRUCT)) { e -> render(); } }
-    for (Entity* e : entities) { if (e -> hasTag(EntityTag::ITEM)) { e -> render(); } }
-    for (Entity* e : entities) { if (e -> hasTag(EntityTag::PLAYER)) { e -> render(); } }
+    for (Entity* e : entities) if (e -> hasTag(EntityTag::TILE)) e -> render();
+    for (Entity* e : entities) if (e -> hasTag(EntityTag::STRUCT)) e -> render();
+    for (Entity* e : entities) if (e -> hasTag(EntityTag::ITEM)) e -> render();
+    for (Entity* e : entities) if (e -> hasTag(EntityTag::PLAYER)) e -> render();
 }
 
 void EntityManager::debugRender() const {
-    for (Entity* e : entities) {e -> debugRender(); }
+    for (Entity* e : entities) e -> debugRender();
 }
 
 void EntityManager::refresh() {
@@ -46,25 +46,18 @@ void EntityManager::refresh() {
 }
 
 bool EntityManager::handleEvent(SDL_Event event) {
-    for (Entity* e : entities) {
-        if (e -> handleEvent(event)) { return true; }
-    }
+    for (Entity* e : entities)
+        if (e -> handleEvent(event)) return true;
     return false;
 }
 
 void EntityManager::serialize(std::fstream &stream) {
     int count = 0;
-    for (Entity* e : entities) {
-        if (!e -> hasTag(EntityTag::TILE)) {
-            count += 1;
-        }
-    }
+    for (Entity* e : entities)
+        if (!e -> hasTag(EntityTag::TILE)) count += 1;
     serialize_(stream, count);
-    for (Entity* e : entities) {
-        if (!e -> hasTag(EntityTag::TILE)) {
-            e -> serialize(stream);
-        }
-    }
+    for (Entity* e : entities)
+        if (!e -> hasTag(EntityTag::TILE)) e -> serialize(stream);
 }
 
 void EntityManager::deserialize(std::fstream &stream) {
@@ -73,19 +66,14 @@ void EntityManager::deserialize(std::fstream &stream) {
     for (int i = 0; i < count; i++) {
         Entity* e = addEntity();
         e -> deserialize(stream);
-        if (e -> hasTag(EntityTag::PLAYER)) {
-            player = e;
-        }
+        if (e -> hasTag(EntityTag::PLAYER)) player = e;
     }
 }
 
 bool EntityManager::isFree(int x, int y, int w, int h) const {
     for (int i = 0; i < w; i++) {
-        for (int j = 0; j < h; j++) {
-            if (gridEntities[x+i][y+j] != nullptr) {
-                return false;
-            }
-        }
+        for (int j = 0; j < h; j++)
+            if (gridEntities[x+i][y+j] != nullptr) return false;
     }
     return true;
 }

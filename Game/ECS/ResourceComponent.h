@@ -33,16 +33,15 @@ public:
     bool onMessage(const Message& message) override {
         if (message.type == MessageType::ATTACK) {
             const AttackMessage &msg = static_cast<const AttackMessage&>(message);
-            if (msg.item -> itemID == ResourceType::types[type] -> tool) { onBreak(); }
+            if (msg.item -> itemID == ResourceType::types[type] -> tool) onBreak();
             return true;
         }
         return false;
     }
     
     void onBreak() {
-        for (Loot l : ResourceType::types[type] -> loot.table) {
+        for (Loot l : ResourceType::types[type] -> loot.table)
             MessageManager::notify(SpawnItemMessage(l.createItem(),positionCompenent -> position));
-        }
         entity -> destroy();
     }
     

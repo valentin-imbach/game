@@ -95,33 +95,20 @@ bool Console::execute(std::string s) {
     EntityManager* manager = &(Game::world -> entityLayer.entityManager);
     Entity* player = Game::world -> entityLayer.player;
     LOG("Executed command",s);
-    if (s == "quit") {
-        Window::running = false;
-    } else if (s == "clear") {
-        history.clear();
-    } else if (s == "refresh") {
-        TextureManager::refresh();
-    }
+    if (s == "quit") Window::running = false;
+    else if (s == "clear") history.clear();
+    else if (s == "refresh") TextureManager::refresh();
     if (Game::world != nullptr) {
-        if (s == "kill") {
-            player -> getComponent<HealthComponent>() -> health = 0;
-        }
-        if (s == "god") {
-            player -> getComponent<PlayerInputComponent>() -> god = !(player -> getComponent<PlayerInputComponent>() -> god);
-        }
-        
+        if (s == "kill") player -> getComponent<HealthComponent>() -> health = 0;
+        if (s == "god") player -> getComponent<PlayerInputComponent>() -> god = !(player -> getComponent<PlayerInputComponent>() -> god);
         if (s.substr(0,5) == "place") {
             int n = std::stoi(s.substr(6));
-            if (0 <= n) {
-                EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position).rounded());
-            }
+            if (0 <= n) EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position).rounded());
         }
         
         if (s.substr(0,4) == "give") {
             int n = std::stoi(s.substr(5));
-            if (0 <= n) {
-                MessageManager::notify(GiveMessage(new ItemStack(ItemID::APPLE, n)));
-            }
+            if (0 <= n) MessageManager::notify(GiveMessage(new ItemStack(ItemID::APPLE, n)));
         }
     }
     return true;

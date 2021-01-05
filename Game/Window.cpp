@@ -39,9 +39,9 @@ Window::Window(const char *title, int width, int height, bool fullscreen) {
                 LOG("Renderer created");
                 running = true;
                 
-            } else { ERROR("Failed to create Renderer"); }
-        } else { ERROR("Failed to create Window"); }
-    } else { ERROR("Failed to inizialize SDL"); }
+            } else ERROR("Failed to create Renderer");
+        } else ERROR("Failed to create Window");
+    } else ERROR("Failed to inizialize SDL");
     
     TextManager::Init();
     SoundManager::Init();

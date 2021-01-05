@@ -22,8 +22,8 @@ void TextureManager::Init() {
 }
 
 SDL_Texture* TextureManager::getTexture(std::string path) {
-    if (path == "") { return nullptr; }
-    if (textures.find(path) != textures.end()) { return textures[path]; }
+    if (path == "") return nullptr;
+    if (textures.find(path) != textures.end()) return textures[path];
     SDL_Texture* tex = loadTexture(path);
     textures[path] = tex;
     return tex;
@@ -32,7 +32,8 @@ SDL_Texture* TextureManager::getTexture(std::string path) {
 SDL_Texture* TextureManager::loadTexture(std::string path) {
     std::string folder = "assets";
     SDL_Surface* tmpSurface = IMG_Load((folder + "/" + path).c_str());
-    if (tmpSurface) { LOG("Texture loaded from",path); } else { ERROR("Failed to load SDL_Texture from",path); }
+    if (tmpSurface) LOG("Texture loaded from",path);
+    else ERROR("Failed to load SDL_Texture from",path);
     SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::renderer, tmpSurface);
     SDL_FreeSurface(tmpSurface);
     return tex;

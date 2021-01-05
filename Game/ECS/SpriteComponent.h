@@ -19,7 +19,7 @@ public:
 
     SpriteComponent(const char* path = "", pair<int> pos = {0,0}, pair<int> size = {1,1}) {
         sprite = Sprite(TextureManager::getTexture(path),pos,size);
-        if (!sprite.texture) { sprite.texture = TextureManager::getTexture("default.png"); }
+        if (!sprite.texture) sprite.texture = TextureManager::getTexture("default.png");
     }
     
     void init() override {

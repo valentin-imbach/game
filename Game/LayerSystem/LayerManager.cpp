@@ -18,31 +18,27 @@ Layer* LayerManager::addLayer(Layer* l) {
 }
     
 void LayerManager::update() {
-    for (Layer* l: layerStack) {
-        if (l -> active) { l -> update(); }
-    }
+    for (Layer* l: layerStack) if (l -> active) l -> update();
 }
     
 void LayerManager::render() {
-    for (Layer* l: layerStack) {
-        if (l -> active) { l -> render(); }
-    }
+    for (Layer* l: layerStack) if (l -> active) l -> render();
 }
     
 bool LayerManager::handleEvent(SDL_Event event) {
     if (event.key.repeat) { return false; }
     for (int i = (int) layerStack.size()-1; i >= 0; i--) {
         if (layerStack[i] -> active) {
-            if (layerStack[i] -> handleEvent(event)) { return true; }
+            if (layerStack[i] -> handleEvent(event)) return true;
         }
     }
     return false;
 }
 
 void LayerManager::serialize(std::fstream& stream) {
-    for (Layer* l: layerStack) { l -> serialize(stream); }
+    for (Layer* l: layerStack) l -> serialize(stream);
 }
 
 void LayerManager::deserialize(std::fstream& stream) {
-    for (Layer* l: layerStack) { l -> deserialize(stream); }
+    for (Layer* l: layerStack) l -> deserialize(stream);
 }

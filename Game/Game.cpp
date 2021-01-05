@@ -67,15 +67,15 @@ void Game::loadWorld() {
 
 void Game::handleEvents() {
     for (auto e : Window::events) {
-        if (console.handleEvent(e)) { continue; }
+        if (console.handleEvent(e)) continue;
         if (controller.state == GameState::MAIN_MENU) {
-            if (mainMenu.handleEvent(e)) { continue; }
+            if (mainMenu.handleEvent(e)) continue;
         } else if (controller.state == GameState::RUNNING) {
-            if (controller.handleEvent(e)) { continue; }
-            if (world -> handleEvent(e)) { continue; }
+            if (controller.handleEvent(e)) continue;
+            if (world -> handleEvent(e)) continue;
         } else if (controller.state == GameState::PAUSED) {
-            if (controller.handleEvent(e)) { continue; }
-            if (pauseMenu.handleEvent(e)) { continue; }
+            if (controller.handleEvent(e)) continue;
+            if (pauseMenu.handleEvent(e)) continue;
         }
     }
 }
@@ -91,9 +91,9 @@ void Game::render() {
     SDL_SetRenderDrawColor(Window::renderer, 200, 200, 200, 255);
     SDL_RenderClear(Window::renderer);
     
-    if (controller.state == GameState::MAIN_MENU) { mainMenu.render(); }
-    if (controller.state == GameState::RUNNING || controller.state == GameState::PAUSED) { world -> render(); }
-    if (controller.state == GameState::PAUSED) { pauseMenu.render(); }
+    if (controller.state == GameState::MAIN_MENU) mainMenu.render();
+    if (controller.state == GameState::RUNNING || controller.state == GameState::PAUSED) world -> render();
+    if (controller.state == GameState::PAUSED) pauseMenu.render();
     console.render();
     
     SDL_RenderPresent(Window::renderer);

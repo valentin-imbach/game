@@ -56,23 +56,15 @@ public:
         
         if (Window::keys[SDL_SCANCODE_A]) {
             offset.X = -speed;
-            if (dir == -1) {
-                dir = WEST;
-            } else if (dir == NORTH) {
-                dir = NWEST;
-            } else {
-                dir = SWEST;
-            }
+            if (dir == -1) dir = WEST;
+            else if (dir == NORTH) dir = NWEST;
+            else dir = SWEST;
             walk = true;
         } else if (Window::keys[SDL_SCANCODE_D]) {
             offset.X = speed;
-            if (dir == -1) {
-                dir = EAST;
-            } else if (dir == NORTH) {
-                dir = NEAST;
-            } else {
-                dir = SEAST;
-            }
+            if (dir == -1) dir = EAST;
+            else if (dir == NORTH) dir = NEAST;
+            else dir = SEAST;
             walk = true;
         }
         
@@ -81,19 +73,13 @@ public:
             offset.Y /= sqrt(2);
         }
         
-        if (checkCollision(positionComponent -> position) || !checkCollision(positionComponent -> position + offset) || god) {
+        if (checkCollision(positionComponent -> position) || !checkCollision(positionComponent -> position + offset) || god)
             positionComponent -> position += offset;
-        }
+
+        if (dir != -1) directionComponent -> direction = (Direction)dir;
         
-        if (dir != -1) {
-            directionComponent -> direction = (Direction)dir;
-        }
-        
-        if (walk) {
-            ticks += 1;
-        } else {
-            ticks = 0;
-        }
+        if (walk) ticks += 1;
+        else ticks = 0;
     }
     
     bool checkCollision(pair<float> pos) {
@@ -103,12 +89,9 @@ public:
         for (int i = 0; i < p2.X-p1.X+1; i++) {
             for (int j = 0; j < p2.Y-p1.Y+1; j++) {
                 Entity* str = entity -> manager -> gridEntities[p1.X+i][p1.Y+j];
-                if (str != nullptr && str -> getComponent<GridComponent>() -> solid) {
-                    return true;
-                }
+                if (str != nullptr && str -> getComponent<GridComponent>() -> solid) return true;
             }
         }
-        
         return false;
     }
     
@@ -127,7 +110,6 @@ public:
             keystate = false;
             return false;
         }
-        
         return false;
     }
     

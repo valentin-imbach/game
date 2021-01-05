@@ -49,9 +49,8 @@ public:
         GuiElement* gui = new Widget(pos,{624, 429},TextureManager::getTexture("inventory.png"));
         for (int i = 0; i < inventoryComponent -> size.X; i++) {
             gui -> addGuiElement(new ItemSlot({78+i*78,78},&(inventoryComponent -> containers[i][0])));
-            for (int j = 1; j < inventoryComponent -> size.Y; j++) {
+            for (int j = 1; j < inventoryComponent -> size.Y; j++)
                 gui -> addGuiElement(new ItemSlot({78+i*78,117+j*78},&(inventoryComponent -> containers[i][j])));
-            }
         }
         GuiManager::manager -> addGuiElement(gui);
         return gui;
