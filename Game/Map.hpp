@@ -11,10 +11,9 @@
 #include "Tile.hpp"
 
 class Map {
-private:
+public:
     pair<int> size;
     vv(Tile*) tiles;
-public:
     Map(pair<int> size);
     static Map* load(const char* path);
     

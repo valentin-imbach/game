@@ -17,6 +17,8 @@ public:
     void render();
     bool handleEvent(SDL_Event event);
     
+    void populate();
+    
     void serialize(std::fstream& stream) override;
     void deserialize(std::fstream& stream) override;
     

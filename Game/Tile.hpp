@@ -22,8 +22,10 @@ enum TileID {
 };
 
 class Tile {
-public:
+private:
     v(Sprite) sprites;
+    void addSprite(TileID tileID, pair<int> pos);
+public:
     Tile* neig[8];
     pair<int> position;
     TileID tileID;

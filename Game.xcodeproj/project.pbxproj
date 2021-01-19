@@ -186,19 +186,10 @@
 				04C7CC872334119F0053C2E7 /* main.cpp */,
 				041688952334336D0060DBDA /* Game.hpp */,
 				041688942334336D0060DBDA /* Game.cpp */,
-				043CA55A247FF6CF008CA805 /* World.hpp */,
-				043CA559247FF6CF008CA805 /* World.cpp */,
-				A7F11F6025B7405700CD0CC5 /* Map.hpp */,
-				A7F11F5F25B7405700CD0CC5 /* Map.cpp */,
-				A7F11F6425B7405F00CD0CC5 /* Tile.hpp */,
-				A7F11F6325B7405F00CD0CC5 /* Tile.cpp */,
-				04795BBD2334FAD2005C6FDE /* Camera.hpp */,
-				04795BBC2334FAD2005C6FDE /* Camera.cpp */,
+				A7F11F6F25B7534200CD0CC5 /* World */,
 				0439263C244492750057C83C /* Item.hpp */,
 				A76C91ED25829C59007CDE93 /* Item.cpp */,
 				044C12B324A504C80081B014 /* Item.h */,
-				A720E5B0257010DC00F66A7C /* MessagingSystem.hpp */,
-				A720E5AF257010DC00F66A7C /* MessagingSystem.cpp */,
 				044A3A98249264B7004FE4B0 /* EntityFactory.hpp */,
 				044A3A97249264B7004FE4B0 /* EntityFactory.cpp */,
 				043CA556247D6492008CA805 /* Console.hpp */,
@@ -206,7 +197,6 @@
 				04E708202498EBB40038870C /* ResoureTypes.hpp */,
 				04E7081F2498EBB40038870C /* ResoureTypes.cpp */,
 				043CA55C247FFCB8008CA805 /* StateController.h */,
-				040CABAB242FD090009A2728 /* CollisionManager.h */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -285,6 +275,10 @@
 				0416889723343ACC0060DBDA /* TextureManager.cpp */,
 				0416889B23344F9A0060DBDA /* TextManager.hpp */,
 				0416889A23344F9A0060DBDA /* TextManager.cpp */,
+				04795BBD2334FAD2005C6FDE /* Camera.hpp */,
+				04795BBC2334FAD2005C6FDE /* Camera.cpp */,
+				A720E5B0257010DC00F66A7C /* MessagingSystem.hpp */,
+				A720E5AF257010DC00F66A7C /* MessagingSystem.cpp */,
 			);
 			name = Framework;
 			sourceTree = "<group>";
@@ -293,12 +287,26 @@
 			isa = PBXGroup;
 			children = (
 				04C7CC8E233411F80053C2E7 /* tools.h */,
+				040CABAB242FD090009A2728 /* CollisionManager.h */,
 				04E4A34624646DEC0021359B /* logger.hpp */,
 				043CA56124812A82008CA805 /* serializer.h */,
 				043CA558247E6A57008CA805 /* strings.h */,
 				04CBB50A2450437000A8BC69 /* maths.h */,
 			);
 			name = Tools;
+			sourceTree = "<group>";
+		};
+		A7F11F6F25B7534200CD0CC5 /* World */ = {
+			isa = PBXGroup;
+			children = (
+				043CA55A247FF6CF008CA805 /* World.hpp */,
+				043CA559247FF6CF008CA805 /* World.cpp */,
+				A7F11F6025B7405700CD0CC5 /* Map.hpp */,
+				A7F11F5F25B7405700CD0CC5 /* Map.cpp */,
+				A7F11F6425B7405F00CD0CC5 /* Tile.hpp */,
+				A7F11F6325B7405F00CD0CC5 /* Tile.cpp */,
+			);
+			name = World;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

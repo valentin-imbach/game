@@ -15,16 +15,16 @@ StateController Game::controller = StateController();
 
 Game::Game() {
     controller.state = GameState::MAIN_MENU;
-    LOG("Game initialized");
     TextManager::Init();
     SoundManager::Init();
     TextureManager::Init();
+    LOG("Game initialized");
 }
 
 void Game::createWorld() {
-    
     world = new World("World");
     
+    world -> populate();
     Entity* player = world -> entityLayer.entityManager.addEntity();
     
     world -> entityLayer.player = player;

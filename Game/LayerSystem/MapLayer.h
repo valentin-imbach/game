@@ -11,9 +11,8 @@
 #include "Map.hpp"
 
 class MapLayer : public Layer {
-private:
-    Map* map;
 public:
+    Map* map;
     MapLayer(const char* path) {
         map = Map::load(path);
     }
