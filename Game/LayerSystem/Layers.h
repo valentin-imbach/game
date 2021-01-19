@@ -13,3 +13,4 @@
 #include "EntityLayer.h"
 #include "DebugLayer.h"
 #include "GuiLayer.h"
+#include "MapLayer.h"

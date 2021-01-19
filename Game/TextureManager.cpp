@@ -6,12 +6,13 @@
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
 
-#include "tools.h"
 #include "TextureManager.hpp"
 #include <SDL2_image/SDL_image.h>
 #include "Window.hpp"
 
-v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(maxTileID,nullptr);
+#include "Tile.hpp"
+
+v(SDL_Texture*) TextureManager::tilesets = v(SDL_Texture*)(TileID::MAX, nullptr);
 SDL_Texture* TextureManager::icons = nullptr;
 SDL_Texture* TextureManager::icons2 = nullptr;
 auto TextureManager::textures = std::map<std::string, SDL_Texture*>();

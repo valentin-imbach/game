@@ -20,8 +20,6 @@
 
 #include "SpriteComponent.h"
 
-#include "TileComponent.h"
-
 #include "ItemComponent.h"
 #include "InventoryComponent.h"
 

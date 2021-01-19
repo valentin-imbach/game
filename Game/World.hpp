@@ -22,6 +22,7 @@ public:
     
     std::string name;
     
+    MapLayer mapLayer;
     GuiLayer guiLayer;
     EntityLayer entityLayer;
     DebugLayer debugLayer;

@@ -8,7 +8,8 @@
 
 #include "World.hpp"
 
-World::World(std::string n) : name(n) {
+World::World(std::string n) : name(n), mapLayer("map.txt") {
+    layerManager.addLayer(&mapLayer);
     layerManager.addLayer(&entityLayer);
     layerManager.addLayer(&guiLayer);
     layerManager.addLayer(&debugLayer);

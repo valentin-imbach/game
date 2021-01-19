@@ -16,6 +16,9 @@ StateController Game::controller = StateController();
 Game::Game() {
     controller.state = GameState::MAIN_MENU;
     LOG("Game initialized");
+    TextManager::Init();
+    SoundManager::Init();
+    TextureManager::Init();
 }
 
 void Game::createWorld() {

@@ -16,7 +16,6 @@ void Component::setPrototypes() {
     prototypes[(int)ComponentType::DIRECTION] = new DirectionComponent();
     prototypes[(int)ComponentType::HEALTH] = new HealthComponent();
     prototypes[(int)ComponentType::GRID] = new GridComponent();
-    prototypes[(int)ComponentType::TILE] = new TileComponent();
     prototypes[(int)ComponentType::SPRITE] = new SpriteComponent();
     prototypes[(int)ComponentType::INVENTORY] = new InventoryComponent();
     prototypes[(int)ComponentType::COLLISION] = new CollisionComponent();
@@ -36,7 +35,6 @@ ComponentType PositionComponent::componentType = ComponentType::POSITION;
 ComponentType DirectionComponent::componentType = ComponentType::DIRECTION;
 ComponentType GridComponent::componentType = ComponentType::GRID;
 ComponentType HealthComponent::componentType = ComponentType::HEALTH;
-ComponentType TileComponent::componentType = ComponentType::TILE;
 ComponentType InventoryComponent::componentType = ComponentType::INVENTORY;
 ComponentType CollisionComponent::componentType = ComponentType::COLLISION;
 ComponentType SpriteComponent::componentType = ComponentType::SPRITE;

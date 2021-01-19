@@ -21,8 +21,6 @@ public:
         Component::setPrototypes();
         Item::setTemplates();
         
-        loadMap("map.txt");
-        
         subscribe(MessageType::SPAWN_ITEM);
         subscribe(MessageType::PLACE);
         subscribe(MessageType::BREAK);
@@ -38,63 +36,6 @@ public:
     void deserialize(std::fstream& stream) override {
         entityManager.deserialize(stream);
         player = entityManager.player;
-    }
-    
-    void loadMap(const char* path) {
-        std::ifstream file;
-        file.open(path);
-        if (!file) {
-            ERROR("Map file not found");
-            file.close();
-            return;
-        }
-        
-        pair<int> size;
-        file >> size.X;
-        file >> size.Y;
-        
-        TileComponent* tileComps[size.X][size.Y];
-        
-        for (int y = 0; y < size.Y; y++) {
-            std::string s;
-            file >> s;
-            for (int x = 0; x < size.X; x++) {
-                TileID id = WATER;
-                switch (s[x]) {
-                    case '0':
-                        id = WATER;
-                        break;
-                    case '1':
-                        id = SAND;
-                        break;
-                    case '2':
-                        id = STONE;
-                        break;
-                    case '3':
-                        id = GRASS;
-                        break;
-                }
-                Entity* e = entityManager.addEntity();
-                tileComps[x][y] = e -> addComponent<TileComponent>(pair<int>(x,y),id);
-            }
-        }
-        
-        for (int y = 1; y < size.Y-1; y++) {
-            for (int x = 1; x < size.X-1; x++) {
-                tileComps[x][y] -> neig[0] = tileComps[x+1][y];
-                tileComps[x][y] -> neig[1] = tileComps[x+1][y-1];
-                tileComps[x][y] -> neig[2] = tileComps[x][y-1];
-                tileComps[x][y] -> neig[3] = tileComps[x-1][y-1];
-                tileComps[x][y] -> neig[4] = tileComps[x-1][y];
-                tileComps[x][y] -> neig[5] = tileComps[x-1][y+1];
-                tileComps[x][y] -> neig[6] = tileComps[x][y+1];
-                tileComps[x][y] -> neig[7] = tileComps[x+1][y+1];
-                tileComps[x][y] -> updateStyle();
-            }
-        }
-        
-        file.close();
-        LOG("Map loaded from",path);
     }
     
     void update() override {

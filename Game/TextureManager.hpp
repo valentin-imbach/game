@@ -11,14 +11,6 @@
 
 #define BIT 16
 
-constexpr std::size_t maxTileID = 10;
-enum TileID {
-    GRASS,
-    STONE,
-    WATER,
-    SAND
-};
-
 class TextureManager {
 public:
     static v(SDL_Texture*) tilesets;
