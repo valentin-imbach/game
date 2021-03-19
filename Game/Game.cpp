@@ -24,7 +24,15 @@ Game::Game() {
 void Game::createWorld() {
     world = new World("World");
     
+    Entity* house = world -> entityLayer.entityManager.addEntity();
+    
+    house -> addComponent<PositionComponent>(pair<float>(63,41));
+    house -> addComponent<SizeComponent>(pair<float>(7,3));
+    house -> addComponent<SpriteComponent>(Sprite(TextureManager::getTexture("house.png"),{0,0},{7,7}), 4);
+    house -> addComponent<GridComponent>(pair<float>(60,40),pair<int>(7,3));
+    
     world -> populate();
+    
     Entity* player = world -> entityLayer.entityManager.addEntity();
     
     world -> entityLayer.player = player;
@@ -33,6 +41,7 @@ void Game::createWorld() {
     player -> addTag(EntityTag::PLAYER);
     
     player -> addComponent<PositionComponent>(pair<float>(50,50));
+    player -> addComponent<SizeComponent>();
     player -> addComponent<DirectionComponent>();
     player -> addComponent<HealthComponent>(10);
     

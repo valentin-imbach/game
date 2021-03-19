@@ -20,7 +20,7 @@ void Camera::drawTexture(SDL_Texture *tex, int sx, int sy, int sw, int sh, pair<
 }
 
 void Camera::drawSprite(Sprite sprite, pair<float> pos) {
-    drawTexture(sprite.texture, sprite.position.X, sprite.position.Y, sprite.size.X, sprite.size.Y, {pos.X - 0.5f, pos.Y + 0.5f - sprite.size.Y}, sprite.size);
+    drawTexture(sprite.texture, sprite.position.X, sprite.position.Y, sprite.size.X, sprite.size.Y, pos, sprite.size);
 }
 
 void Camera::drawRect(pair<float> pos, pair<float> size) {

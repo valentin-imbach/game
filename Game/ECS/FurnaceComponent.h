@@ -19,6 +19,7 @@ public:
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
+        spriteComponent -> height = 1;
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{7,9},{1,2});
     }
     

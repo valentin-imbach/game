@@ -57,13 +57,12 @@ public:
     }
     
     void render() override {
-        /*
         std::sort(entityManager.entities.begin(), entityManager.entities.end() , [](const Entity* a, const Entity* b) {
             if (a == nullptr || b == nullptr || !a -> hasComponent<PositionComponent>() || !b -> hasComponent<PositionComponent>()) { return true; }
             return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
             return true;
         });
-        */
+        
         entityManager.render();
         entityManager.debugRender();
         Camera::render();
@@ -79,13 +78,12 @@ public:
         } else if (message.type == MessageType::PLACE) {
             const PlaceMessage &msg = static_cast<const PlaceMessage&>(message);
             GridComponent* grid = msg.entity -> getComponent<GridComponent>();
-            PositionComponent* pos = msg.entity -> getComponent<PositionComponent>();
-            if (!grid || !pos) { return false; }
+            if (!grid) return false;
             for (int i = 0; i < grid -> size.X; i++) {
                 for (int j = 0; j < grid -> size.Y; j++) {
-                    Entity* old = entityManager.gridEntities[pos -> position.X + i][pos -> position.Y + j];
-                    if (old != nullptr) { MessageManager::notify(BreakMessage(old)); }
-                    entityManager.gridEntities[pos -> position.X + i][pos -> position.Y + j] = msg.entity;
+                    Entity* old = entityManager.gridEntities[grid -> anchor.X + i][grid -> anchor.Y + j];
+                    if (old != nullptr) MessageManager::notify(BreakMessage(old));
+                    entityManager.gridEntities[grid -> anchor.X + i][grid -> anchor.Y + j] = msg.entity;
                 }
             }
             return true;
@@ -93,7 +91,7 @@ public:
             const BreakMessage &msg = static_cast<const BreakMessage&>(message);
             GridComponent* grid = msg.entity -> getComponent<GridComponent>();
             PositionComponent* pos = msg.entity -> getComponent<PositionComponent>();
-            if (!grid || !pos) { return false; }
+            if (!grid || !pos) return false;
             for (int i = 0; i < grid -> size.X; i++) {
                 for (int j = 0; j < grid -> size.Y; j++) {
                     entityManager.gridEntities[pos -> position.X + i][pos -> position.Y + j] = nullptr;
@@ -111,7 +109,7 @@ public:
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             pair<int> pos = Camera::stog(Window::mousePos).rounded();
             Entity* entity = entityManager.gridEntities[pos.X][pos.Y];
-            if (entity == nullptr) { return false; }
+            if (entity == nullptr) return false;
             Item* item = player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item;
             if (event.button.button == SDL_BUTTON_RIGHT) {
                 MessageManager::notify(InteractionMessage(entity, item));

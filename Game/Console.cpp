@@ -15,10 +15,10 @@
 #include "EntityFactory.hpp"
 
 void Console::render() {
-    if (!active) { return; }
+    if (!active) return;
     TextureManager::drawTexture(TextureManager::getTexture("grey.png"), 20, Window::size.Y-500, 400, 480);
     for (int i = 0; i < memory; i++) {
-        if (i >= history.size()) { break; }
+        if (i >= history.size()) break;
         if (i == memIt) {
             std::string s = "- "+history[history.size()-1-i];
             TextManager::drawText(s, {30,Window::size.Y-60-30*(i+1)}, false, {220,220,220});
@@ -48,9 +48,7 @@ bool Console::handleEvent(SDL_Event event) {
             text += event.text.text;
             memIt = -1;
         } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
-            if (text.length() > 0) {
-                text = text.substr(0,text.length()-1);
-            }
+            if (text.length() > 0) text = text.substr(0,text.length()-1);
         } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
             active = false;
         } else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_RETURN) {

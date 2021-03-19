@@ -22,6 +22,7 @@ public:
     void init() override {
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         spriteComponent = entity -> getComponent<SpriteComponent>();
+        spriteComponent -> height = 1;
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{6,2},{1,2});
     }
     

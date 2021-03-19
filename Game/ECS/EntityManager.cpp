@@ -6,7 +6,7 @@
 //  Copyright © 2020 Valentin Imbach. All rights reserved.
 //
 
-#include "ECS.h"
+#include "Components.h"
 
 Entity* EntityManager::addEntity() {
     Entity* e = new Entity(this);
@@ -25,11 +25,8 @@ void EntityManager::update() const {
     for (Entity* e : entities) e -> update();
 }
 
-void EntityManager::render() const {
-    for (Entity* e : entities) if (e -> hasTag(EntityTag::TILE)) e -> render();
-    for (Entity* e : entities) if (e -> hasTag(EntityTag::STRUCT)) e -> render();
-    for (Entity* e : entities) if (e -> hasTag(EntityTag::ITEM)) e -> render();
-    for (Entity* e : entities) if (e -> hasTag(EntityTag::PLAYER)) e -> render();
+void EntityManager::render() {
+    for (Entity* e : entities) e -> render();
 }
 
 void EntityManager::debugRender() const {

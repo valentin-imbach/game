@@ -123,6 +123,7 @@
 		A720E5B0257010DC00F66A7C /* MessagingSystem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MessagingSystem.hpp; sourceTree = "<group>"; };
 		A76A55B3259B7841003AF778 /* PickupComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PickupComponent.h; sourceTree = "<group>"; };
 		A76C91ED25829C59007CDE93 /* Item.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Item.cpp; sourceTree = "<group>"; };
+		A7CDC4D625C05A4E00D43039 /* SizeComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizeComponent.h; sourceTree = "<group>"; };
 		A7F11F5F25B7405700CD0CC5 /* Map.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
 		A7F11F6025B7405700CD0CC5 /* Map.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Map.hpp; sourceTree = "<group>"; };
 		A7F11F6325B7405F00CD0CC5 /* Tile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Tile.cpp; sourceTree = "<group>"; };
@@ -183,10 +184,10 @@
 				04E4A34E24683F880021359B /* Gui */,
 				A7EB3788258AB7200007B6F1 /* Framework */,
 				A7EB3789258AB74B0007B6F1 /* Tools */,
+				A7F11F6F25B7534200CD0CC5 /* World */,
 				04C7CC872334119F0053C2E7 /* main.cpp */,
 				041688952334336D0060DBDA /* Game.hpp */,
 				041688942334336D0060DBDA /* Game.cpp */,
-				A7F11F6F25B7534200CD0CC5 /* World */,
 				0439263C244492750057C83C /* Item.hpp */,
 				A76C91ED25829C59007CDE93 /* Item.cpp */,
 				044C12B324A504C80081B014 /* Item.h */,
@@ -245,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				040CAB9D242D123D009A2728 /* PositionComponent.h */,
+				A7CDC4D625C05A4E00D43039 /* SizeComponent.h */,
 				040CABA3242E3408009A2728 /* DirectionComponent.h */,
 				04F789D1247473E8001A3D5F /* HealthComponent.h */,
 				040CAB9F242E2586009A2728 /* SpriteComponent.h */,

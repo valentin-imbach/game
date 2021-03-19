@@ -27,13 +27,14 @@ public:
         pos.X += randRange(0, ResourceType::types[type] -> vars);
         pos.Y -= ResourceType::types[type] -> size.Y - 1;
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"), pos, ResourceType::types[type] -> size);
+        spriteComponent -> height = ResourceType::types[type] -> height;
         entity -> subscribe(MessageType::ATTACK);
     }
     
     bool onMessage(const Message& message) override {
         if (message.type == MessageType::ATTACK) {
             const AttackMessage &msg = static_cast<const AttackMessage&>(message);
-            if (msg.item -> itemID == ResourceType::types[type] -> tool) onBreak();
+            if (msg.item && msg.item -> itemID == ResourceType::types[type] -> tool) onBreak();
             return true;
         }
         return false;

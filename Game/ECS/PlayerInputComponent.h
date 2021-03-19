@@ -73,8 +73,17 @@ public:
             offset.Y /= sqrt(2);
         }
         
-        if (checkCollision(positionComponent -> position) || !checkCollision(positionComponent -> position + offset) || god)
+        pair<float> pos = positionComponent -> position;
+        
+        if (checkCollision(pos) || god) {
             positionComponent -> position += offset;
+        } else if (!checkCollision(pos + offset)) {
+            positionComponent -> position += offset;
+        } else if (!checkCollision({pos.X + offset.X, pos.Y})) {
+            positionComponent -> position.X += offset.X;
+        } else if (!checkCollision({pos.X, pos.Y + offset.Y})) {
+            positionComponent -> position.Y += offset.Y;
+        }
 
         if (dir != -1) directionComponent -> direction = (Direction)dir;
         

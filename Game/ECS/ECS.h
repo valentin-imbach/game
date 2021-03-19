@@ -31,8 +31,8 @@ enum class EntityTag {
 
 enum class ComponentType {
     POSITION,
-    DIRECTION,
     SIZE,
+    DIRECTION,
     GRID,
     HEALTH,
     TILE,
@@ -144,7 +144,7 @@ public:
     
     void refresh();
     void update() const;
-    void render() const;
+    void render();
     void debugRender() const;
     
     void serialize(std::fstream& stream) override;

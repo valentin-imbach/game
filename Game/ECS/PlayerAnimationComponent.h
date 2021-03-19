@@ -18,6 +18,7 @@ public:
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
+        spriteComponent -> height = 1;
         directionComponent = entity -> getComponent<DirectionComponent>();
         playerInputComponent = entity -> getComponent<PlayerInputComponent>();
         

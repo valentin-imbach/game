@@ -15,23 +15,27 @@ class SpriteComponent : public Component {
 public:
     static ComponentType componentType;
     PositionComponent* positionComponent;
+    SizeComponent* sizeComponent;
     Sprite sprite;
+    
+    int height;
 
-    SpriteComponent(const char* path = "", pair<int> pos = {0,0}, pair<int> size = {1,1}) {
-        sprite = Sprite(TextureManager::getTexture(path),pos,size);
+    SpriteComponent(Sprite s = Sprite(), int h = 0) : sprite(s), height(h) {
         if (!sprite.texture) sprite.texture = TextureManager::getTexture("default.png");
     }
     
     void init() override {
         positionComponent = entity -> getComponent<PositionComponent>();
+        sizeComponent = entity -> getComponent<SizeComponent>();
     }
 
     void render() override {
-        Camera::drawSprite(sprite, positionComponent -> position);
+        float x = (positionComponent -> position).X - (sizeComponent -> size).X/2;
+        float y = (positionComponent -> position).Y - (sizeComponent -> size).Y/2 - height;
+        Camera::drawSprite(sprite, {x,y});
     }
     
     Component* create() override {
         return new SpriteComponent();
     }
-    
 };

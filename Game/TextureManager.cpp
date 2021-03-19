@@ -51,26 +51,24 @@ void TextureManager::refresh() {
 void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered) {
     SDL_Rect src = {sx,sy,sw,sh};
     SDL_Rect dest = {dx,dy,dw,dh};
-    if (centered) { dest.x -= dw/2; dest.y -= dh/2; }
+    if (centered) {
+        dest.x -= dw/2;
+        dest.y -= dh/2;
+    }
+    if (dest.x > Window::size.X+10 || dest.y > Window::size.Y+10 || dest.x+dest.w < -10 || dest.y+dest.h < -10) return;
     SDL_RenderCopy(Window::renderer, tex, &src, &dest);
 }
 
 void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered) {
     int w, h;
     SDL_QueryTexture(tex, NULL, NULL, &w, &h);
-    SDL_Rect src = {0,0,w,h};
-    SDL_Rect dest = {dx,dy,dw,dh};
-    if (centered) { dest.x -= dw/2; dest.y -= dh/2; }
-    SDL_RenderCopy(Window::renderer, tex, &src, &dest);
+    drawTexture(tex, 0, 0, w, h, dx, dy, dw, dh);
 }
 
 void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, bool centered) {
     int w, h;
     SDL_QueryTexture(tex, NULL, NULL, &w, &h);
-    SDL_Rect src = {0,0,w,h};
-    SDL_Rect dest = {dx,dy,w,h};
-    if (centered) { dest.x -= w/2; dest.y -= h/2; }
-    SDL_RenderCopy(Window::renderer, tex, &src, &dest);
+    drawTexture(tex, 0, 0, w, h, dx, dy, w, h);
 }
 
 void TextureManager::drawRect(pair<int> pos, pair<int> size, int r, int g, int b) {

@@ -34,8 +34,9 @@ struct ResourceType {
     LootTable loot;
     pair<int> position;
     pair<int> size;
+    int height;
     ItemID tool;
     
-    ResourceType(pair<int> pos, pair<int> s, ItemID t, int v = 1) : tool(t), size(s), position(pos), vars(v) {}
+    ResourceType(pair<int> pos, pair<int> s, int h, ItemID t, int v = 1) : tool(t), size(s), height(h), position(pos), vars(v) {}
 };
 

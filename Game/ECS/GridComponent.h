@@ -16,9 +16,11 @@ public:
     PositionComponent *positionComponent;
     
     pair<int> size;
+    pair<int> anchor;
+    
     bool solid = true;
     
-    GridComponent(pair<int> s = {1,1}) : size(s) {}
+    GridComponent(pair<int> a = {0,0}, pair<int> s = {1,1}) : anchor(a), size(s) {}
     
     void init() override {
         positionComponent = entity -> getComponent<PositionComponent>();

@@ -13,6 +13,7 @@
 #include "ECS.h"
 
 #include "PositionComponent.h"
+#include "SizeComponent.h"
 #include "DirectionComponent.h"
 #include "CollisionComponent.h"
 #include "GridComponent.h"

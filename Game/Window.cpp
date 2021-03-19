@@ -88,7 +88,7 @@ int Window::limitFrameRate(int fps) {
         past = delay;
     }
     lastFrame = SDL_GetTicks();
-    return 1000.0/past;
+    return ceil(1000.0/past);
 };
 
 

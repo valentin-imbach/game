@@ -14,13 +14,27 @@
 
 class DebugLayer : public Layer {
 public:
-    DebugLayer() {
+    EntityLayer* entityLayer;
+    DebugLayer(EntityLayer* el) {
+        entityLayer = el;
         LOG("Debug Layer constructed");
     }
     void render() override {
-        std::string s = std::to_string(Window::FPS);
-        TextManager::drawText(s, {20,10});
+        if (!active) return;
+        TextureManager::drawTexture(TextureManager::getTexture("grey.png"), 20, 20, 300, 200);
+        std::string fps = "FPS: " + std::to_string(Window::FPS);
+        std::string ents = "Entities: " + std::to_string(entityLayer -> entityManager.entities.size());
+        TextManager::drawText(fps, {30,25});
+        TextManager::drawText(ents, {30,50});
+    }
+    
+    bool handleEvent(SDL_Event e) override {
+        if (e.type == SDL_KEYDOWN && e.key.keysym.scancode == SDL_SCANCODE_P) {
+            active = !active;
+            return true;
+        }
+        return false;
     }
 private:
-    
+    bool active = false;
 };

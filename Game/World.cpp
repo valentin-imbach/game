@@ -9,7 +9,7 @@
 #include "World.hpp"
 #include "EntityFactory.hpp"
 
-World::World(std::string n) : name(n), mapLayer("map.txt") {
+World::World(std::string n) : name(n), mapLayer("map.txt"), debugLayer(&entityLayer) {
     layerManager.addLayer(&mapLayer);
     layerManager.addLayer(&entityLayer);
     layerManager.addLayer(&guiLayer);
@@ -32,6 +32,7 @@ void World::populate() {
     for (int x = 0; x < mapLayer.map -> size.X; x++) {
         for (int y = 0; y < mapLayer.map -> size.Y; y++) {
             if (mapLayer.map -> tiles[x][y] -> tileID == TileID::WATER) continue;
+            if (!entityLayer.entityManager.isFree(x, y)) continue;
             int n = randRange(0, 30);
             if (n < 3) {
                 EntityFactory::createEntity(&entityLayer.entityManager, n, {x,y});
