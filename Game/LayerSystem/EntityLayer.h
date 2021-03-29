@@ -25,6 +25,7 @@ public:
         subscribe(MessageType::PLACE);
         subscribe(MessageType::BREAK);
         subscribe(MessageType::GIVE);
+        subscribe(MessageType::INTERACTION_ITEM);
         
         LOG("Entity Layer constructed");
     }
@@ -75,6 +76,7 @@ public:
             e -> addComponent<PositionComponent>(msg.position);
             e -> addComponent<CollisionComponent>();
             e -> addComponent<ItemComponent>(msg.item);
+            
         } else if (message.type == MessageType::PLACE) {
             const PlaceMessage &msg = static_cast<const PlaceMessage&>(message);
             GridComponent* grid = msg.entity -> getComponent<GridComponent>();
@@ -87,6 +89,7 @@ public:
                 }
             }
             return true;
+            
         } else if (message.type == MessageType::BREAK) {
             const BreakMessage &msg = static_cast<const BreakMessage&>(message);
             GridComponent* grid = msg.entity -> getComponent<GridComponent>();
@@ -98,23 +101,35 @@ public:
                 }
             }
             return true;
+            
         } else if (message.type == MessageType::GIVE) {
             const GiveMessage &msg = static_cast<const GiveMessage&>(message);
             player -> getComponent<InventoryComponent>() -> addItem(msg.item);
+            
+        } else if (message.type == MessageType::INTERACTION_ITEM) {
+            const InteractionItemMessage &msg = static_cast<const InteractionItemMessage&>(message);
+            pair<int> pos = (msg.position).rounded();
+            Entity* entity = entityManager.gridEntities[pos.X][pos.Y];
+            if (entity == nullptr) return false;
+            entity -> onMessage(message);
         }
         return false;
     }
     
     bool handleEvent(SDL_Event event) override {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
+            /*
             pair<int> pos = Camera::stog(Window::mousePos).rounded();
             Entity* entity = entityManager.gridEntities[pos.X][pos.Y];
             if (entity == nullptr) return false;
             Item* item = player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item;
+             */
             if (event.button.button == SDL_BUTTON_RIGHT) {
-                MessageManager::notify(InteractionMessage(entity, item));
+                MessageManager::notify(InteractionMessage(Camera::stog(Window::mousePos)));
+                return true;
             } else if (event.button.button == SDL_BUTTON_LEFT) {
-                MessageManager::notify(AttackMessage(entity, item));
+                MessageManager::notify(InteractionMessage(Camera::stog(Window::mousePos), true));
+                return true;
             }
         }
         return player -> handleEvent(event);

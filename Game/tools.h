@@ -6,7 +6,8 @@
 //  Copyright © 2019 Valentin Imbach. All rights reserved.
 //
 
-#pragma once
+#ifndef TOOLS
+#define TOOLS
 
 #include <ctime>
 #include <stdio.h>
@@ -50,3 +51,4 @@ struct Timer {
     }
 };
 
+#endif

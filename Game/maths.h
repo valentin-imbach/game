@@ -61,7 +61,7 @@ template<typename T> struct pair {
         return ((X == other.X) ? (Y < other.Y) : (X < other.X));
     }
     
-    pair<int> rounded() {
+    pair<int> rounded() const {
         return pair<int>(round(X),round(Y));
     }
     

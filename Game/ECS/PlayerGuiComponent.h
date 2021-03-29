@@ -30,6 +30,7 @@ public:
         GuiManager::manager -> addGuiElement(makeHealthGui());
         entity -> subscribe(MessageType::INVENTORY);
         entity -> subscribe(MessageType::ITEM_THROW);
+        entity -> subscribe(MessageType::INTERACTION);
     }
     
     GuiElement* makeHotbarGui() {
@@ -67,6 +68,10 @@ public:
                 MessageManager::notify(SpawnItemMessage(item, positionComponent -> position + dirs2[directionComponent -> direction]));
                 inventoryComponent -> containers[selected][0].item = nullptr;
             }
+        } else if (message.type == MessageType::INTERACTION) {
+            const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
+            Item* item = inventoryComponent -> containers[selected][0].item;
+            MessageManager::notify(InteractionItemMessage(msg.position, msg.attack, item));
         }
         return false;
     }

@@ -14,7 +14,7 @@ class Entity;
 
 enum class MessageType {
     INTERACTION,
-    ATTACK,
+    INTERACTION_ITEM,
     PLACE,
     BREAK,
     ITEM_USE,
@@ -34,8 +34,7 @@ struct Observer;
 
 struct Message {
     MessageType type;
-    Observer* target;
-    Message(MessageType type, Observer* target = nullptr) : type(type), target(target) {}
+    Message(MessageType type) : type(type) {}
 };
 
 struct Observer {
@@ -64,13 +63,16 @@ struct ItemThrowMessage : public Message {
 };
 
 struct InteractionMessage : public Message {
-    Item* item;
-    InteractionMessage(Observer* t, Item* i = nullptr) : Message(MessageType::INTERACTION, t), item(i) {}
+    bool attack;
+    pair<float> position;
+    InteractionMessage(pair<float> pos, bool a = false) : Message(MessageType::INTERACTION), attack(a), position(pos) {}
 };
 
-struct AttackMessage : public Message {
+struct InteractionItemMessage : public Message {
     Item* item;
-    AttackMessage(Observer* t, Item* i) : Message(MessageType::ATTACK, t), item(i) {}
+    bool attack;
+    pair<float> position;
+    InteractionItemMessage(pair<float> pos, bool a, Item* i) : Message(MessageType::INTERACTION_ITEM), item(i), attack(a), position(pos) {}
 };
 
 struct SpawnItemMessage : public Message {
