@@ -24,12 +24,12 @@ public:
         subscribe(MessageType::SPAWN_ITEM);
         subscribe(MessageType::PLACE);
         subscribe(MessageType::BREAK);
-        subscribe(MessageType::GIVE);
         subscribe(MessageType::INTERACTION_ITEM);
         
         LOG("Entity Layer constructed");
     }
     
+    /*
     void serialize(std::fstream& stream) override {
         entityManager.serialize(stream);
     }
@@ -38,11 +38,13 @@ public:
         entityManager.deserialize(stream);
         player = entityManager.player;
     }
+     */
     
     void update() override {
         
         entityManager.refresh();
         entityManager.update();
+        entityCount = (int)entityManager.entities.size();
         
         for (auto* e : entityManager.entities) {
             if (!e -> hasTag(EntityTag::ITEM)) {
@@ -101,10 +103,6 @@ public:
                 }
             }
             return true;
-            
-        } else if (message.type == MessageType::GIVE) {
-            const GiveMessage &msg = static_cast<const GiveMessage&>(message);
-            player -> getComponent<InventoryComponent>() -> addItem(msg.item);
             
         } else if (message.type == MessageType::INTERACTION_ITEM) {
             const InteractionItemMessage &msg = static_cast<const InteractionItemMessage&>(message);

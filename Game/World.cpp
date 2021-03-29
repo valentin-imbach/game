@@ -9,7 +9,7 @@
 #include "World.hpp"
 #include "EntityFactory.hpp"
 
-World::World(std::string n) : name(n), mapLayer("map.txt"), debugLayer(&entityLayer) {
+World::World(std::string n) : name(n), mapLayer("map.txt") {
     layerManager.addLayer(&mapLayer);
     layerManager.addLayer(&entityLayer);
     layerManager.addLayer(&guiLayer);

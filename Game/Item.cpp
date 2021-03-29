@@ -24,6 +24,10 @@ void Item::setTemplates() {
     itemTemplates[(int)ItemID::HAMMER] = new ItemTemplate("Iron Hammer",{ItemType::HAMMER});
     
     itemTemplates[(int)ItemID::BRANCH] = new ItemTemplate("Branch",{ItemType::ROD, ItemType::SWORD, ItemType::FUEL});
+    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::BURN_TIME] = 2;
+    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::HEAT] = 3;
+    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::ATTACK] = 4;
+    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::PARRY] = 2;
     
     //TYPES
     itemTypeTemplates[(int)ItemType::SHOVEL] = new ItemTypeTemplate("Shovel", {ItemProperty::EFFICIENCY});

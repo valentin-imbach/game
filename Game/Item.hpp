@@ -42,7 +42,7 @@ struct Item {
     Item(ItemID i, int c = 1, bool s = false) : itemID(i), count(c), stack(s) {}
     
     virtual void render(int x, int y, int scale, bool inv = true) {}
-    virtual bool onClick(int b) { return false; }
+    virtual bool onClick(bool attack) { return false; }
     
     static std::array<ItemTemplate*,(int)ItemID::MAX> itemTemplates;
     static std::array<ItemTypeTemplate*,(int)ItemType::MAX> itemTypeTemplates;
@@ -180,8 +180,8 @@ struct LootTable {
 
 struct Consumable : public ItemStack {
     Consumable(ItemID itemID, int c) : ItemStack(itemID, c) {};
-    bool onClick(int b) override {
-        if (b == SDL_BUTTON_RIGHT) {
+    bool onClick(bool attack) override {
+        if (attack == false) {
             count -= 1;
             LOG("Item of type",(int)itemID,"consumed");
         }

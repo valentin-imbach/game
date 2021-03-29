@@ -11,6 +11,7 @@
 #include "../serializer.h"
 
 struct Layer : public Serializable {
+    static int entityCount;
     bool active = true;
     virtual void update() {};
     virtual void render() {};

@@ -24,9 +24,14 @@ public:
     }
     
     bool onMessage(const Message& message) override {
-        if (message.type == MessageType::INTERACTION) {
-            if (type == 0) MessageManager::notify(GiveMessage(new ItemStack(ItemID::BRANCH)));
-            else if (type == 1) MessageManager::notify(GiveMessage(new ItemStack(ItemID::STONE)));
+        if (message.type == MessageType::INTERACTION_ITEM) {
+            const InteractionItemMessage &msg = static_cast<const InteractionItemMessage&>(message);
+            if (msg.attack) return false;
+            ItemStack* stack;
+            if (type == 0) stack = new ItemStack(ItemID::BRANCH);
+            else if (type == 1) stack = new ItemStack(ItemID::STONE);
+            else return false;
+            MessageManager::notify(GiveMessage(stack));
             entity -> destroy();
             return true;
         }

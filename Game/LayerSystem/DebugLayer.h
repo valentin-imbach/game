@@ -14,16 +14,14 @@
 
 class DebugLayer : public Layer {
 public:
-    EntityLayer* entityLayer;
-    DebugLayer(EntityLayer* el) {
-        entityLayer = el;
+    DebugLayer() {
         LOG("Debug Layer constructed");
     }
     void render() override {
         if (!active) return;
         TextureManager::drawTexture(TextureManager::getTexture("grey.png"), 20, 20, 300, 200);
         std::string fps = "FPS: " + std::to_string(Window::FPS);
-        std::string ents = "Entities: " + std::to_string(entityLayer -> entityManager.entities.size());
+        std::string ents = "Entities: " + std::to_string(entityCount);
         TextManager::drawText(fps, {30,25});
         TextManager::drawText(ents, {30,50});
     }

@@ -31,6 +31,7 @@ public:
         entity -> subscribe(MessageType::INVENTORY);
         entity -> subscribe(MessageType::ITEM_THROW);
         entity -> subscribe(MessageType::INTERACTION);
+        entity -> subscribe(MessageType::GIVE);
     }
     
     GuiElement* makeHotbarGui() {
@@ -62,16 +63,26 @@ public:
             const InventoryMessage &msg = static_cast<const InventoryMessage&>(message);
             makeInventoryGui(msg.position);
             return true;
+            
         } else if (message.type == MessageType::ITEM_THROW) {
             Item* item = inventoryComponent -> containers[selected][0].item;
             if (item != nullptr) {
                 MessageManager::notify(SpawnItemMessage(item, positionComponent -> position + dirs2[directionComponent -> direction]));
                 inventoryComponent -> containers[selected][0].item = nullptr;
             }
+            return true;
+            
         } else if (message.type == MessageType::INTERACTION) {
             const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
             Item* item = inventoryComponent -> containers[selected][0].item;
+            if (item && item -> onClick(msg.attack)) return true;
             MessageManager::notify(InteractionItemMessage(msg.position, msg.attack, item));
+            return true;
+            
+        } else if (message.type == MessageType::GIVE) {
+            const GiveMessage &msg = static_cast<const GiveMessage&>(message);
+            inventoryComponent -> addItem(msg.item);
+            return true;
         }
         return false;
     }

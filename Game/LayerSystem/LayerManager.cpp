@@ -8,6 +8,8 @@
 
 #include "LayerManager.hpp"
 
+int Layer::entityCount = 0;
+
 LayerManager::LayerManager() {
     LOG("Layer Manager initialized");
 }

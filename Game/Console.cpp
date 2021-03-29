@@ -105,8 +105,11 @@ bool Console::execute(std::string s) {
         }
         
         if (s.substr(0,4) == "give") {
-            int n = std::stoi(s.substr(5));
-            if (0 <= n) MessageManager::notify(GiveMessage(new ItemStack(ItemID::APPLE, n)));
+            v(std::string) split = splitString(s);
+            int n = std::stoi(split[1]);
+            int t = 0;
+            if (split.size() > 2) t = std::stoi(split[2]);
+            if (0 <= n) MessageManager::notify(GiveMessage(new ItemStack((ItemID)t, n)));
         }
     }
     return true;
