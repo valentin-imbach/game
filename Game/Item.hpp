@@ -9,9 +9,6 @@
 #pragma once
 
 #include "Item.h"
-
-#include "TextureManager.hpp"
-#include "TextManager.hpp"
 #include "Window.hpp"
 
 #define MAX_STACK 5
@@ -52,16 +49,7 @@ struct Item {
 
 struct ItemStack : public Item {
     ItemStack(ItemID i, int c = 1) : Item(i,c,true) {}
-    
-    void render(int x, int y, int scale, bool inv = true) override {
-        int a = BIT*((int)itemID % 3);
-        int b = BIT*((int)itemID / 3);
-        TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), a, b, BIT, BIT, x, y, scale, scale, true);
-        if (count != 1 && inv) {
-            std::string s = std::to_string(count);
-            TextManager::drawText(s, {x+scale/4,y});
-        }
-    }
+    void render(int x, int y, int scale, bool inv = true) override;
 };
 
 struct ItemContainer {
@@ -124,38 +112,7 @@ struct ItemContainer {
         if (item != nullptr) item -> render(pos.X, pos.Y, scale);
     }
     
-    void renderToolTip(pair<int> pos) {
-        if (item != nullptr && item -> itemID != ItemID::NONE) {
-            ItemTemplate* it = Item::itemTemplates[(int)(item -> itemID)];
-            if (it != nullptr) {
-                v(Text) text;
-                v(int) h;
-                if (Window::keys[SDL_SCANCODE_LSHIFT]) {
-                    text.emplace_back(it -> name, TTF_STYLE_UNDERLINE);
-                    for (ItemType t : it -> types) {
-                        ItemTypeTemplate* itt = Item::itemTypeTemplates[(int)t];
-                        if (itt != nullptr) {
-                            text.emplace_back("  " + itt -> name, TTF_STYLE_BOLD);
-                            int s = (int)text.size();
-                            h.push_back(s);
-                            for (ItemProperty p : itt -> properties) {
-                                ItemPropertyTemplate* ipt = Item::itemPropertyTemplates[(int)p];
-                                if (ipt != nullptr) text.emplace_back(ipt -> name + ": " + std::to_string(it -> properties[(int)p]));
-                            }
-                        }
-                    }
-                } else text.emplace_back(it -> name);
-                pair<int> box = TextManager::textSize(text, 25);
-                TextureManager::drawTexture(TextureManager::getTexture("grey.png"), pos.X, pos.Y, box.X+20, box.Y+5);
-                for (int i = 0; i < h.size(); i++) {
-                    int x = (int)(it -> types[i]) % 8;
-                    int y = (int)(it -> types[i]) / 8;
-                    TextureManager::drawTexture(TextureManager::icons2, 16*x, 16*y, 16, 16, pos.X+5, pos.Y + (h[i]-1)*25, 32, 32);
-                }
-                TextManager::drawText(text, {pos.X+10, pos.Y}, 25);
-            }
-        }
-    }
+    void renderToolTip(pair<int> pos);
     
 };
 

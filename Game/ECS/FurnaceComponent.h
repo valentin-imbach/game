@@ -25,7 +25,7 @@ public:
     
     bool onMessage(const Message& message) override {
         if (message.type == MessageType::INTERACTION_ITEM) {
-            MessageManager::notify(InventoryMessage(Window::size/2 + pair<int>(0,100)));
+            MessageManager::notify(InventoryMessage(pair<int>(0,100)));
             makeGui(Window::size/2 - pair<int>(0,200));
             return true;
         }

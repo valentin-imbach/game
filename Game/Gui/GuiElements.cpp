@@ -8,6 +8,7 @@
 
 #include "GuiElements.hpp"
 #include "../TextureManager.hpp"
+#include "../TextManager.hpp"
 #include "GuiManager.hpp"
 
 GuiElement::GuiElement(pair<int> pos, pair<int> s, SDL_Texture* tex, SDL_Texture* tex2) {

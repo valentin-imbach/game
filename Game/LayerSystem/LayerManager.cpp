@@ -13,20 +13,20 @@ int Layer::entityCount = 0;
 LayerManager::LayerManager() {
     LOG("Layer Manager initialized");
 }
-    
+
 Layer* LayerManager::addLayer(Layer* l) {
     layerStack.push_back(l);
     return l;
 }
-    
+
 void LayerManager::update() {
     for (Layer* l: layerStack) if (l -> active) l -> update();
 }
-    
+
 void LayerManager::render() {
     for (Layer* l: layerStack) if (l -> active) l -> render();
 }
-    
+
 bool LayerManager::handleEvent(SDL_Event event) {
     if (event.key.repeat) { return false; }
     for (int i = (int) layerStack.size()-1; i >= 0; i--) {

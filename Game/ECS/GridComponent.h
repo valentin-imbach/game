@@ -25,7 +25,7 @@ public:
     void init() override {
         positionComponent = entity -> getComponent<PositionComponent>();
         entity -> addTag(EntityTag::STRUCT);
-        MessageManager::notify(PlaceMessage(entity));
+        MessageManager::notify(GridPlaceMessage(entity));
     }
     
     ~GridComponent() {

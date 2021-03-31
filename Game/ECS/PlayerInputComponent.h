@@ -31,6 +31,7 @@ public:
         positionComponent = entity -> getComponent<PositionComponent>();
         directionComponent = entity -> getComponent<DirectionComponent>();
         inventoryComponent = entity -> getComponent<InventoryComponent>();
+        entity -> subscribe(MessageType::TOGGLE_GOD);
     }
     
     void update() override {
@@ -118,6 +119,17 @@ public:
         } else if (event.type == SDL_USEREVENT && event.user.code == (int)EventCode::RESET) {
             keystate = false;
             return false;
+        }
+        return false;
+    }
+    
+    bool onMessage(const Message &message) override {
+        if (message.type == MessageType::TOGGLE_GOD) {
+            god = !god;
+            std::string s = "God mode ";
+            s += (god ? "true" : "false");
+            MessageManager::notify(PrintMessage(s));
+            return true;
         }
         return false;
     }

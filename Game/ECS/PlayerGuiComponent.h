@@ -12,6 +12,8 @@
 #include "Window.hpp"
 #include "../Gui/GuiManager.hpp"
 
+#define RADIUS 3
+
 class PlayerGuiComponent : public Component {
 public:
     static ComponentType componentType;
@@ -32,6 +34,8 @@ public:
         entity -> subscribe(MessageType::ITEM_THROW);
         entity -> subscribe(MessageType::INTERACTION);
         entity -> subscribe(MessageType::GIVE);
+        entity -> subscribe(MessageType::KILL_PLAYER);
+        entity -> subscribe(MessageType::TOGGLE_GOD);
     }
     
     GuiElement* makeHotbarGui() {
@@ -61,7 +65,7 @@ public:
     bool onMessage(const Message &message) override {
         if (message.type == MessageType::INVENTORY) {
             const InventoryMessage &msg = static_cast<const InventoryMessage&>(message);
-            makeInventoryGui(msg.position);
+            makeInventoryGui(msg.offset + Window::size/2);
             return true;
             
         } else if (message.type == MessageType::ITEM_THROW) {
@@ -76,6 +80,7 @@ public:
             const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
             Item* item = inventoryComponent -> containers[selected][0].item;
             if (item && item -> onClick(msg.attack)) return true;
+            if (dist(msg.position, positionComponent -> position) > RADIUS) return false;
             MessageManager::notify(InteractionItemMessage(msg.position, msg.attack, item));
             return true;
             
@@ -83,6 +88,8 @@ public:
             const GiveMessage &msg = static_cast<const GiveMessage&>(message);
             inventoryComponent -> addItem(msg.item);
             return true;
+        } else if (message.type == MessageType::KILL_PLAYER) {
+            healthComponent -> health = 0;
         }
         return false;
     }

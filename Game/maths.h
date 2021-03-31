@@ -76,3 +76,7 @@ inline int randRange(int a, int b) {
     assert(a < b);
     return a + rand() % (b-a);
 }
+
+template<typename T> float dist(pair<T> a, pair<T> b) {
+    return sqrt((b.X-a.X)*(b.X-a.X) + (b.Y-a.Y)*(b.Y-a.Y));
+}

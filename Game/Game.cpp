@@ -39,7 +39,6 @@ void Game::createWorld() {
     world -> entityLayer.entityManager.player = player;
     
     player -> addTag(EntityTag::PLAYER);
-    
     player -> addComponent<PositionComponent>(pair<float>(50,50));
     player -> addComponent<SizeComponent>();
     player -> addComponent<DirectionComponent>();

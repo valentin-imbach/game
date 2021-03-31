@@ -26,6 +26,11 @@ enum class MessageType {
     DAMAGE,
     PRINT,
     GIVE,
+    QUIT,
+    REFRESH,
+    KILL_PLAYER,
+    TOGGLE_GOD,
+    GRID_PLACE,
     
     MAX
 };
@@ -54,8 +59,8 @@ public:
 };
 
 struct InventoryMessage : public Message {
-    pair<int> position;
-    InventoryMessage(pair<int> pos = Window::size/2) : Message(MessageType::INVENTORY), position(pos) {}
+    pair<int> offset;
+    InventoryMessage(pair<int> off = 0) : Message(MessageType::INVENTORY), offset(off) {}
 };
 
 struct ItemThrowMessage : public Message {
@@ -75,15 +80,36 @@ struct InteractionItemMessage : public Message {
     InteractionItemMessage(pair<float> pos, bool a, Item* i) : Message(MessageType::INTERACTION_ITEM), item(i), attack(a), position(pos) {}
 };
 
+struct QuitMessage : public Message {
+    QuitMessage() : Message(MessageType::QUIT) {}
+};
+
+struct RefreshMessage : public Message {
+    RefreshMessage() : Message(MessageType::REFRESH) {}
+};
+
+struct KillPlayerMessage : public Message {
+    KillPlayerMessage() : Message(MessageType::KILL_PLAYER) {}
+};
+
+struct ToggleGodMessage : public Message {
+    ToggleGodMessage() : Message(MessageType::TOGGLE_GOD) {}
+};
+
 struct SpawnItemMessage : public Message {
     Item* item;
     pair<float> position;
     SpawnItemMessage(Item* item, pair<float> pos) : Message(MessageType::SPAWN_ITEM), item(item), position(pos) {}
 };
 
-struct PlaceMessage : public Message {
+struct GridPlaceMessage : public Message {
     Entity* entity;
-    PlaceMessage(Entity* e) : Message(MessageType::PLACE), entity(e) {}
+    GridPlaceMessage(Entity* e) : Message(MessageType::GRID_PLACE), entity(e) {}
+};
+
+struct PlaceMessage : public Message {
+    int n;
+    PlaceMessage(int n) : Message(MessageType::PLACE), n(n) {}
 };
 
 struct BreakMessage : public Message {

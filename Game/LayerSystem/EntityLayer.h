@@ -10,7 +10,7 @@
 
 #include "../ECS/Components.h"
 #include "../CollisionManager.h"
-#include "../ResoureTypes.hpp"
+#include "../EntityFactory.hpp"
 
 class EntityLayer : public Layer, public Observer {
 public:
@@ -23,6 +23,7 @@ public:
         
         subscribe(MessageType::SPAWN_ITEM);
         subscribe(MessageType::PLACE);
+        subscribe(MessageType::GRID_PLACE);
         subscribe(MessageType::BREAK);
         subscribe(MessageType::INTERACTION_ITEM);
         
@@ -78,9 +79,15 @@ public:
             e -> addComponent<PositionComponent>(msg.position);
             e -> addComponent<CollisionComponent>();
             e -> addComponent<ItemComponent>(msg.item);
+            return true;
             
         } else if (message.type == MessageType::PLACE) {
             const PlaceMessage &msg = static_cast<const PlaceMessage&>(message);
+            EntityFactory::createEntity(&entityManager, msg.n, (player -> getComponent<PositionComponent>() -> position).rounded());
+        }
+        
+        else if (message.type == MessageType::GRID_PLACE) {
+            const GridPlaceMessage &msg = static_cast<const GridPlaceMessage&>(message);
             GridComponent* grid = msg.entity -> getComponent<GridComponent>();
             if (!grid) return false;
             for (int i = 0; i < grid -> size.X; i++) {

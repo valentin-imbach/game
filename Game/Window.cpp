@@ -17,6 +17,7 @@ int Window::MAX_FPS = 60;
 pair<int> Window::size;
 pair<int> Window::mousePos;
 bool Window::running = true;
+int Window::ticks = 0;
 
 Window::Window(const char *title, int width, int height, bool fullscreen) {
     lastFrame = SDL_GetTicks();
@@ -49,6 +50,7 @@ void Window::update() {
     SDL_GetMouseState(&mousePos.X, &mousePos.Y);
     handleEvents();
     FPS = limitFrameRate(MAX_FPS);
+    ticks += 1;
 };
 
 void Window::handleEvents() {

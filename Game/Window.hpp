@@ -29,6 +29,7 @@ public:
     static pair<int> mousePos;
     static int MAX_FPS;
     static int FPS;
+    static int ticks;
     
 private:
     void keyPressed(SDL_KeyboardEvent& k);

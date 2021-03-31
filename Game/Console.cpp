@@ -9,10 +9,6 @@
 #include "Console.hpp"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
-#include "Window.hpp"
-#include "Game.hpp"
-
-#include "EntityFactory.hpp"
 
 void Console::render() {
     if (!active) return;
@@ -90,27 +86,25 @@ bool Console::onMessage(const Message& message) {
 }
 
 bool Console::execute(std::string s) {
-    EntityManager* manager = &(Game::world -> entityLayer.entityManager);
-    Entity* player = Game::world -> entityLayer.player;
-    LOG("Executed command",s);
-    if (s == "quit") Window::running = false;
-    else if (s == "clear") history.clear();
-    else if (s == "refresh") TextureManager::refresh();
-    if (Game::world != nullptr) {
-        if (s == "kill") player -> getComponent<HealthComponent>() -> health = 0;
-        if (s == "god") player -> getComponent<PlayerInputComponent>() -> god = !(player -> getComponent<PlayerInputComponent>() -> god);
-        if (s.substr(0,5) == "place") {
-            int n = std::stoi(s.substr(6));
-            if (0 <= n) EntityFactory::createEntity(manager, n, (player -> getComponent<PositionComponent>() -> position).rounded());
-        }
-        
-        if (s.substr(0,4) == "give") {
-            v(std::string) split = splitString(s);
-            int n = std::stoi(split[1]);
-            int t = 0;
-            if (split.size() > 2) t = std::stoi(split[2]);
-            if (0 <= n) MessageManager::notify(GiveMessage(new ItemStack((ItemID)t, n)));
-        }
-    }
+    
+    v(std::string) split = splitString(s);
+    if (split[0] == "quit") MessageManager::notify(QuitMessage());
+    else if (split[0] == "clear") history.clear();
+    else if (split[0] == "refresh") MessageManager::notify(RefreshMessage());
+    else if (split[0] == "kill") MessageManager::notify(KillPlayerMessage());
+    else if (split[0] == "god") MessageManager::notify(ToggleGodMessage());
+    else if (split[0] == "place") {
+        if (split.size() < 2) return false;
+        int n = std::stoi(split[1]);
+        if (n < 0) return false;
+        MessageManager::notify(PlaceMessage(n));
+    } else if (split[0] == "give") {
+        if (split.size() < 2) return false;
+        int t = std::stoi(split[1]);
+        int n = 0;
+        if (split.size() > 2) n = std::stoi(split[2]);
+        if (n < 0 || t < 0) return false;
+        MessageManager::notify(GiveMessage(new ItemStack((ItemID)t, n)));
+    } else return false;
     return true;
 }

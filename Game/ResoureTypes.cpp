@@ -20,6 +20,3 @@ void ResourceType::setTypes() {
     types[(int)RESOURCE::TREE] = new ResourceType({0,3},{1,2},1,ItemID::HAMMER,3);
     types[(int)RESOURCE::TREE] -> loot.addLoot(ItemID::WOOD,3,5);
 }
-
-
-

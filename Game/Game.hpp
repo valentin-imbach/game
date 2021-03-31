@@ -27,7 +27,6 @@ public:
     static void createWorld();
     
     static StateController controller;
-
     static World* world;
     PauseMenu pauseMenu;
     MainMenu mainMenu;

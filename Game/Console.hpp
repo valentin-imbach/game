@@ -7,14 +7,10 @@
 //
 
 #pragma once
-#include "tools.h"
-#include "LayerSystem/Layers.h"
 #include "MessagingSystem.hpp"
 
 class Console : public Observer {
 private:
-    EntityLayer* entityLayer;
-    
     bool active = false;
     
     int memory = 15;
