@@ -48,7 +48,7 @@ void TextureManager::refresh() {
     }
 }
 
-void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered) {
+void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered, int alpha) {
     SDL_Rect src = {sx,sy,sw,sh};
     SDL_Rect dest = {dx,dy,dw,dh};
     if (centered) {
@@ -56,6 +56,7 @@ void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int s
         dest.y -= dh/2;
     }
     if (dest.x > Window::size.X+10 || dest.y > Window::size.Y+10 || dest.x+dest.w < -10 || dest.y+dest.h < -10) return;
+    SDL_SetTextureAlphaMod(tex, alpha);
     SDL_RenderCopy(Window::renderer, tex, &src, &dest);
 }
 

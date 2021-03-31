@@ -80,3 +80,7 @@ inline int randRange(int a, int b) {
 template<typename T> float dist(pair<T> a, pair<T> b) {
     return sqrt((b.X-a.X)*(b.X-a.X) + (b.Y-a.Y)*(b.Y-a.Y));
 }
+
+template<typename T> bool isIn(pair<T> a, pair<T> pos, pair<T> size) {
+    return pos.X <= a.X && a.X <= pos.X+size.X &&  pos.Y <= a.Y && a.Y <= pos.Y+size.Y;
+}

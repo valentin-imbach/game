@@ -139,6 +139,7 @@ public:
     
     Entity* addEntity();
     Entity* createEntity(std::fstream& file);
+    Entity* getEntity(int x, int y);
     
     bool isFree(const int x, const int y, const int w = 1, const int h = 1) const;
     

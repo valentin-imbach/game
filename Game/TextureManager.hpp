@@ -23,7 +23,7 @@ public:
     static SDL_Texture* getTexture(std::string path);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, bool centered = false);
     static void drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered = false);
-    static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered = false);
+    static void drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool centered = false, int alpha = 255);
     static void drawRect(pair<int> pos, pair<int> size, int r = 0, int g = 0, int b = 0);
 private:
     static SDL_Texture* loadTexture(std::string path);

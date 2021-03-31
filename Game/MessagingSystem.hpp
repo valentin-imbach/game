@@ -31,6 +31,7 @@ enum class MessageType {
     KILL_PLAYER,
     TOGGLE_GOD,
     GRID_PLACE,
+    TELEPORT,
     
     MAX
 };
@@ -125,4 +126,9 @@ struct PrintMessage : public Message {
 struct GiveMessage : public Message {
     Item* item;
     GiveMessage(Item* i) : Message(MessageType::GIVE), item(i) {}
+};
+
+struct TeleportMessage : public Message {
+    pair<int> location;
+    TeleportMessage(pair<int> l) : Message(MessageType::TELEPORT), location(l) {}
 };

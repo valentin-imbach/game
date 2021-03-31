@@ -32,6 +32,7 @@ public:
         directionComponent = entity -> getComponent<DirectionComponent>();
         inventoryComponent = entity -> getComponent<InventoryComponent>();
         entity -> subscribe(MessageType::TOGGLE_GOD);
+        entity -> subscribe(MessageType::TELEPORT);
     }
     
     void update() override {
@@ -98,8 +99,8 @@ public:
         
         for (int i = 0; i < p2.X-p1.X+1; i++) {
             for (int j = 0; j < p2.Y-p1.Y+1; j++) {
-                Entity* str = entity -> manager -> gridEntities[p1.X+i][p1.Y+j];
-                if (str != nullptr && str -> getComponent<GridComponent>() -> solid) return true;
+                Entity* e = entity -> manager -> getEntity(p1.X+i,p1.Y+j);
+                if (e && e -> getComponent<GridComponent>() -> solid) return true;
             }
         }
         return false;
@@ -129,6 +130,11 @@ public:
             std::string s = "God mode ";
             s += (god ? "true" : "false");
             MessageManager::notify(PrintMessage(s));
+            return true;
+        }
+        if (message.type == MessageType::TELEPORT) {
+            const TeleportMessage &msg = static_cast<const TeleportMessage&>(message);
+            positionComponent -> position = msg.location;
             return true;
         }
         return false;

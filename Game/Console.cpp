@@ -93,7 +93,12 @@ bool Console::execute(std::string s) {
     else if (split[0] == "refresh") MessageManager::notify(RefreshMessage());
     else if (split[0] == "kill") MessageManager::notify(KillPlayerMessage());
     else if (split[0] == "god") MessageManager::notify(ToggleGodMessage());
-    else if (split[0] == "place") {
+    else if (split[0] == "tp") {
+        if (split.size() < 3) return false;
+        int x = std::stoi(split[1]);
+        int y = std::stoi(split[2]);
+        MessageManager::notify(TeleportMessage({x,y}));
+    } else if (split[0] == "place") {
         if (split.size() < 2) return false;
         int n = std::stoi(split[1]);
         if (n < 0) return false;

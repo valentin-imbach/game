@@ -21,6 +21,11 @@ Entity* EntityManager::createEntity(std::fstream& stream) {
     return e;
 }
 
+Entity* EntityManager::getEntity(int x, int y) {
+    if (0 <= x && x < entities.size() && 0 <= y && y < gridEntities[0].size()) return gridEntities[x][y];
+    return nullptr;
+}
+
 void EntityManager::update() const {
     for (Entity* e : entities) e -> update();
 }

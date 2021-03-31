@@ -19,8 +19,9 @@ public:
     Sprite sprite;
     
     int height;
+    bool vanish;
 
-    SpriteComponent(Sprite s = Sprite(), int h = 0) : sprite(s), height(h) {
+    SpriteComponent(Sprite s = Sprite(), int h = 0, bool v = false) : sprite(s), height(h), vanish(v) {
         if (!sprite.texture) sprite.texture = TextureManager::getTexture("default.png");
     }
     
@@ -32,7 +33,12 @@ public:
     void render() override {
         float x = (positionComponent -> position).X - (sizeComponent -> size).X/2;
         float y = (positionComponent -> position).Y - (sizeComponent -> size).Y/2 - height;
-        Camera::drawSprite(sprite, {x,y});
+        int alpha = 255;
+        pair<float> m = Window::mousePos;
+        pair<float> p = Camera::gtos({x,y});
+        pair<float> s = sizeComponent -> size;
+        if (vanish && isIn(m,p,{Camera::ZOOM * s.X, (float)Camera::ZOOM * height})) alpha = 150;
+        Camera::drawSprite(sprite, {x,y}, alpha);
     }
     
     Component* create() override {
