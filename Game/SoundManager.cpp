@@ -9,19 +9,18 @@
 #include "tools.h"
 #include "SoundManager.hpp"
 
-Mix_Music* SoundManager::music = NULL;
+auto SoundManager::sounds = std::map<std::string, Mix_Music*>();
+SoundManager SoundManager::manager = SoundManager();
 int SoundManager::volume = 0;
 
 void SoundManager::Init() {
-    if (Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096) != -1 ) LOG("Mixer initialized");
-    else ERROR("Failed to initialize Mixer");
-
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) != -1 ) LOG("Mixer initialized");
+    else {
+        ERROR("Failed to initialize Mixer");
+        return;
+    }
     volume = Mix_VolumeMusic(-1);
-    
-    const char* path = "music.mp3";
-    music = Mix_LoadMUS(path);
-    if (music != NULL) LOG("Audio loaded from", path);
-    else ERROR("Failed to load Audio from", path);
+    manager.subscribe(MessageType::SOUND);
 }
 
 void SoundManager::setVolume(int v) {
@@ -29,6 +28,27 @@ void SoundManager::setVolume(int v) {
     volume = Mix_VolumeMusic(-1);
 }
 
-void SoundManager::play() {
-    Mix_PlayMusic( music, -1 );
+bool SoundManager::playSound(const char* path) {
+    if (!path) return false;
+    if (sounds.find(path) != sounds.end()) {
+        Mix_PlayMusic(sounds[path], 1);
+        return true;
+    }
+    Mix_Music* sound = Mix_LoadMUS(path);
+    if (!sound) {
+        ERROR("Failed to load sound from ", path);
+        return false;
+    }
+    sounds[path] = Mix_LoadMUS(path);
+    LOG("Sound loaded from", path);
+    Mix_PlayMusic(sounds[path], 1);
+    return true;
+}
+
+bool SoundManager::onMessage(const Message& message) {
+    if (message.type == MessageType::SOUND) {
+        const SoundMessage &msg = static_cast<const SoundMessage&>(message);
+        return playSound(msg.path);
+    }
+    return false;
 }

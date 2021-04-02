@@ -15,12 +15,12 @@ int Camera::ZOOM = 64;
 void Camera::drawTexture(SDL_Texture *tex, int sx, int sy, int sw, int sh, pair<float> dest, pair<int> size, int offset, bool centred, int alpha) {
     float dx = ZOOM*(dest.X - position.X) + Window::size.X/2;
     float dy = ZOOM*(dest.Y - position.Y) + Window::size.Y/2 - ZOOM*offset/2;
-    if (centred) { dx -= ZOOM*size.X/2; dy -= ZOOM*size.Y/2; }
-    TextureManager::drawTexture(tex, BIT*sx, BIT*sy, BIT*sw, BIT*sh, dx, dy, ZOOM*size.X, ZOOM*size.Y, false, alpha);
+    TextureManager::drawTexture(tex, BIT*sx, BIT*sy, BIT*sw, BIT*sh, dx, dy, ZOOM*size.X, ZOOM*size.Y, centred, alpha);
 }
 
-void Camera::drawSprite(Sprite sprite, pair<float> pos, int alpha) {
-    drawTexture(sprite.texture, sprite.position.X, sprite.position.Y, sprite.size.X, sprite.size.Y, pos, sprite.size, 0, false, alpha);
+void Camera::drawSprite(Sprite sprite, pair<float> pos, bool centred, int alpha) {
+    pair<int> spos = sprite.getPosition();
+    drawTexture(sprite.texture, spos.X, spos.Y, sprite.size.X, sprite.size.Y, pos, sprite.size, 0, centred, alpha);
 }
 
 void Camera::drawRect(pair<float> pos, pair<float> size) {

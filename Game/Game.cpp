@@ -56,6 +56,15 @@ void Game::createWorld() {
     player -> addComponent<PlayerInputComponent>();
     player -> addComponent<PlayerAnimationComponent>();
     
+    Entity* cow = world -> entityLayer.entityManager.addEntity();
+    cow -> addComponent<PositionComponent>(pair<float>(53,50));
+    cow -> addComponent<SizeComponent>();
+    cow -> addComponent<DirectionComponent>();
+    cow -> addComponent<HealthComponent>(10);
+    cow -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);
+    cow -> addComponent<SpriteComponent>(Sprite(TextureManager::getTexture("cow.png")));
+    
+    
     controller.state = GameState::RUNNING;
     SoundManager::setVolume(SoundManager::volume);
     //SoundManager::play();

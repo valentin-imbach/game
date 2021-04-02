@@ -38,7 +38,7 @@ public:
         pair<float> p = Camera::gtos({x,y});
         pair<float> s = sizeComponent -> size;
         if (vanish && isIn(m,p,{Camera::ZOOM * s.X, (float)Camera::ZOOM * height})) alpha = 150;
-        Camera::drawSprite(sprite, {x,y}, alpha);
+        Camera::drawSprite(sprite, {x,y}, false, alpha);
     }
     
     Component* create() override {

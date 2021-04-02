@@ -12,7 +12,7 @@
 Tile::Tile(pair<int> pos, TileID tid) : position(pos), tileID(tid), neig() {}
 
 void Tile::render() {
-    for (auto s : sprites) Camera::drawTexture(s.texture, s.position.X, s.position.Y, 1, 1, position, {1, 1}, 0, true);
+    for (auto s : sprites) Camera::drawSprite(s, position, true);
 }
 
 void Tile::addSprite(TileID tileID, pair<int> pos) {

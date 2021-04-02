@@ -40,6 +40,7 @@ public:
     }
     
     void onBreak() {
+        MessageManager::notify(SoundMessage(ResourceType::types[type] -> sound));
         for (Loot l : ResourceType::types[type] -> loot.table)
             MessageManager::notify(SpawnItemMessage(l.createItem(),positionCompenent -> position));
         entity -> destroy();

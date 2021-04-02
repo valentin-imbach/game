@@ -8,6 +8,7 @@
 
 #pragma once
 #include "tools.h"
+#include "Window.hpp"
 
 #define BIT 16
 
@@ -31,14 +32,29 @@ private:
     static void loadIcons();
 };
 
-struct Sprite {
+struct AnimatedSprite {
     SDL_Texture* texture;
-    pair<int> position;
     pair<int> size;
+    v(pair<int>) positions;
     int priority;
-    Sprite(SDL_Texture* tex = nullptr, pair<int> pos = {0,0}, pair<int> s = {1,1}, int p = 0) : texture(tex), size(s), position(pos), priority(p) {}
+    int length;
+    int speed;
+    
+    AnimatedSprite(SDL_Texture* tex, v(pair<int>) pos, pair<int> s = {1,1}, int p = 0) : texture(tex), positions(pos), size(s), priority(p) {
+        length = (int)positions.size();
+        speed = 100;
+    }
+    virtual pair<int> getPosition() {
+        int index = (Window::ticks/speed) % length;
+        return positions[index];
+    }
 };
 
-struct AnimatedSprite : public Sprite {
-    AnimatedSprite(SDL_Texture* tex, pair<int> pos = {0,0}, pair<int> s = {1,1}) : Sprite(tex,pos,s) {}
+struct Sprite : public AnimatedSprite {
+    pair<int> position;
+    Sprite(SDL_Texture* tex = nullptr, pair<int> pos = {0,0}, pair<int> s = {1,1}, int p = 0) : AnimatedSprite(tex,{pos},s,p), position(pos) {}
+    pair<int> getPosition() override {
+        return position;
+    }
 };
+

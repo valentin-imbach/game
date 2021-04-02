@@ -8,12 +8,15 @@
 
 #pragma once
 #include <SDL2_mixer/SDL_mixer.h>
+#include "MessagingSystem.hpp"
 
-class SoundManager {
+class SoundManager : public Observer {
 public:
     static void Init();
-    static void play();
+    static SoundManager manager;
+    static bool playSound(const char* path);
     static void setVolume(int v);
-    static Mix_Music* music;
+    static std::map<std::string, Mix_Music*> sounds;
     static int volume;
+    bool onMessage(const Message& message) override;
 };

@@ -36,7 +36,8 @@ struct ResourceType {
     pair<int> size;
     int height;
     ItemID tool;
+    const char* sound;
     
-    ResourceType(pair<int> pos, pair<int> s, int h, ItemID t, int v = 1) : tool(t), size(s), height(h), position(pos), vars(v) {}
+    ResourceType(pair<int> pos, pair<int> s, int h, ItemID t, int v = 1, const char* so = "") : tool(t), size(s), height(h), position(pos), vars(v), sound(so) {}
 };
 
