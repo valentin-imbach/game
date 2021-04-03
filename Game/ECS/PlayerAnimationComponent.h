@@ -22,13 +22,12 @@ public:
         directionComponent = entity -> getComponent<DirectionComponent>();
         playerInputComponent = entity -> getComponent<PlayerInputComponent>();
         
-        spriteComponent -> sprite = Sprite(TextureManager::getTexture("new_character.png"),{0,0},{1,2});
+        spriteComponent -> sprite = Sprite(TextureManager::getTexture("new_character.png"), {0,0}, {1,2}, 6, {0,2}, 5);
     }
     
     void update() override {
-        int frame = (playerInputComponent -> ticks + 4)/5 ;
-        spriteComponent -> sprite.position.X = directionComponent -> direction;
-        spriteComponent -> sprite.position.Y = (frame % 6) * 2;
+        spriteComponent -> sprite.anker.X = directionComponent -> direction;
+        spriteComponent -> sprite.running = playerInputComponent -> walking;
     }
     
     Component* create() override {

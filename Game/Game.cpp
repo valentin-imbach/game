@@ -62,7 +62,7 @@ void Game::createWorld() {
     cow -> addComponent<DirectionComponent>();
     cow -> addComponent<HealthComponent>(10);
     cow -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);
-    cow -> addComponent<SpriteComponent>(Sprite(TextureManager::getTexture("cow.png")));
+    cow -> addComponent<SpriteComponent>(Sprite(TextureManager::getTexture("cow.png"),{0,0},{1,1},4));
     
     
     controller.state = GameState::RUNNING;

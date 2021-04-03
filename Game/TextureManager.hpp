@@ -32,29 +32,29 @@ private:
     static void loadIcons();
 };
 
-struct AnimatedSprite {
+class Sprite {
+public:
     SDL_Texture* texture;
     pair<int> size;
-    v(pair<int>) positions;
-    int priority;
-    int length;
-    int speed;
+    int priority = 0;
+    pair<int> anker;
+    bool running = true;
     
-    AnimatedSprite(SDL_Texture* tex, v(pair<int>) pos, pair<int> s = {1,1}, int p = 0) : texture(tex), positions(pos), size(s), priority(p) {
-        length = (int)positions.size();
-        speed = 100;
+    Sprite(SDL_Texture* tex = nullptr, pair<int> a = {0,0}, pair<int> s = {1,1}, int l = 1, pair<int> o = {1,0}, int d = 20) : texture(tex), anker(a), size(s), length(l), offset(o), delay(d) {}
+    
+    pair<int> getPosition() {
+        if (!running) return anker;
+        int index = ((Window::ticks-resetTime)/delay) % length;
+        return {anker.X + index * offset.X, anker.Y + index * offset.Y};
     }
-    virtual pair<int> getPosition() {
-        int index = (Window::ticks/speed) % length;
-        return positions[index];
+    
+    void reset() {
+        resetTime = Window::ticks;
     }
+    
+private:
+    pair<int> offset;
+    int resetTime = 0;
+    int length;
+    int delay;
 };
-
-struct Sprite : public AnimatedSprite {
-    pair<int> position;
-    Sprite(SDL_Texture* tex = nullptr, pair<int> pos = {0,0}, pair<int> s = {1,1}, int p = 0) : AnimatedSprite(tex,{pos},s,p), position(pos) {}
-    pair<int> getPosition() override {
-        return position;
-    }
-};
-

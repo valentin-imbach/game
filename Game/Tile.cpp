@@ -16,7 +16,9 @@ void Tile::render() {
 }
 
 void Tile::addSprite(TileID tileID, pair<int> pos) {
-    sprites.emplace_back(TextureManager::tilesets[tileID], pos, pair<int>(1,1), (int)tileID);
+    Sprite s = Sprite(TextureManager::tilesets[tileID], pos, pair<int>(1,1));
+    s.priority = (int)tileID;
+    sprites.push_back(s);
 }
 
 void Tile::updateStyle() {
