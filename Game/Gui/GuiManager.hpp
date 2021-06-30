@@ -15,8 +15,7 @@ private:
     v(GuiElement*) guiElements;
 public:
     static GuiManager* manager;
-    ItemContainer* mouseContainer = new ItemContainer();
-    ItemSlot* mouseSlot = new ItemSlot({0,0}, mouseContainer);
+    MouseSlot* mouseSlot = new MouseSlot();
     
     GuiManager() { manager = this; }
     void addGuiElement(GuiElement* gui);

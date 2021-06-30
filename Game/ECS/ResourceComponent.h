@@ -31,9 +31,10 @@ public:
     }
     
     bool onMessage(const Message& message) override {
-        if (message.type == MessageType::INTERACTION_ITEM) {
-            const InteractionItemMessage &msg = static_cast<const InteractionItemMessage&>(message);
-            if (msg.attack && msg.item && msg.item -> itemID == ResourceType::types[type] -> tool) onBreak();
+        if (message.type == MessageType::INTERACTION) {
+            const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
+            if (!msg.item || !msg.attack) return false;
+            if (msg.item -> hasType(ResourceType::types[type] -> tool)) onBreak();
             return true;
         }
         return false;

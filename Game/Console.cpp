@@ -81,12 +81,17 @@ bool Console::onMessage(const Message& message) {
         write(msg.text);
         return true;
     }
+    if (message.type == MessageType::ITEM_PICKUP) {
+        const PickupMessage &msg = static_cast<const PickupMessage&>(message);
+        std::string s = "Picked up "+std::to_string(msg.item -> count)+" item(s) of type " + std::to_string((int)(msg.item -> itemID));
+        write(s);
+        return true;
+    }
     
     return false;
 }
 
 bool Console::execute(std::string s) {
-    
     v(std::string) split = splitString(s);
     if (split[0] == "quit") MessageManager::notify(QuitMessage());
     else if (split[0] == "clear") history.clear();

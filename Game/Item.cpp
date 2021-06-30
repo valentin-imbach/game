@@ -18,13 +18,7 @@ std::array<ItemPropertyTemplate*,(int)ItemProperty::MAX> Item::itemPropertyTempl
 void Item::setTemplates() {
     
     //ITEMS
-    itemTemplates[(int)ItemID::SHOVEL] = new ItemTemplate("Iron Shovel",{ItemType::SHOVEL});
-    itemTemplates[(int)ItemID::SHOVEL] -> properties[(int)ItemProperty::EFFICIENCY] = 7;
-    
-    itemTemplates[(int)ItemID::PICK] = new ItemTemplate("Iron Pick Axe",{ItemType::PICK_AXE});
-    itemTemplates[(int)ItemID::HAMMER] = new ItemTemplate("Iron Hammer",{ItemType::HAMMER});
-    
-    itemTemplates[(int)ItemID::BRANCH] = new ItemTemplate("Branch",{ItemType::ROD, ItemType::SWORD, ItemType::FUEL});
+    itemTemplates[(int)ItemID::BRANCH] = new ItemTemplate("Branch", {ItemType::ROD, ItemType::SWORD, ItemType::FUEL});
     itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::BURN_TIME] = 2;
     itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::HEAT] = 3;
     itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::ATTACK] = 4;
@@ -49,21 +43,27 @@ void Item::setTemplates() {
 };
 
 void ItemStack::render(int x, int y, int scale, bool inv) {
-    int a = BIT*((int)itemID % 3);
-    int b = BIT*((int)itemID / 3);
-    int offset = 0;
-    if (!inv) offset = 5*sin((float)Window::ticks / 20);
-    TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), a, b, BIT, BIT, x, y+offset, scale, scale, true);
+    int a = (int)itemID % 3;
+    int b = (int)itemID / 3;
+    TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), a*BIT, b*BIT, BIT, BIT, x, y, scale, scale, true);
     if (count != 1 && inv) {
         std::string s = std::to_string(count);
         TextManager::drawText(s, {x+scale/4,y});
     }
 }
 
+Tool::Tool(std::string name, ItemType t, pair<int> p) {
+    temp = new ItemTemplate(name, {t});
+    pos = p;
+}
+
+void Tool::render(int x, int y, int scale, bool inv) {
+    TextureManager::drawTexture(TextureManager::getTexture("itemSheet.png"), pos.X*BIT, pos.Y*BIT, BIT, BIT, x, y, scale, scale, true);
+}
 
 void ItemContainer::renderToolTip(pair<int> pos) {
-    if (item != nullptr && item -> itemID != ItemID::NONE) {
-        ItemTemplate* it = Item::itemTemplates[(int)(item -> itemID)];
+    if (item != nullptr) {
+        ItemTemplate* it = item -> temp;
         if (it != nullptr) {
             v(Text) text;
             v(int) h;

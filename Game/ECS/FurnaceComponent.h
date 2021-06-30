@@ -15,7 +15,8 @@ public:
     static ComponentType componentType;
     SpriteComponent* spriteComponent;
     
-    ItemContainer a, b, c;
+    ItemContainer fuel = ItemContainer(ItemType::FUEL);
+    ItemContainer input, output;
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
@@ -24,19 +25,19 @@ public:
     }
     
     bool onMessage(const Message& message) override {
-        if (message.type == MessageType::INTERACTION_ITEM) {
-            MessageManager::notify(InventoryMessage(pair<int>(0,100)));
-            makeGui(Window::size/2 - pair<int>(0,200));
+        if (message.type == MessageType::INTERACTION) {
+            MessageManager::notify(InventoryMessage(pair<int>(0,150)));
+            makeGui(Window::size/2 - pair<int>(0,160));
             return true;
         }
         return false;
     }
     
     GuiElement* makeGui(pair<int> pos) {
-        GuiElement* gui = new Widget(pos, {270, 96}, TextureManager::getTexture("tableGui.png"), true);
-        gui -> addGuiElement(new ItemSlot({48,48}, &a));
-        gui -> addGuiElement(new ItemSlot({48+27*3,48}, &b));
-        gui -> addGuiElement(new ItemSlot({48+57*3,48}, &c));
+        GuiElement* gui = new Widget(pos, {432, 192}, TextureManager::getTexture("chestGui.png"), true);
+        gui -> addGuiElement(new ItemSlot({2*48,48+5}, &input));
+        gui -> addGuiElement(new ItemSlot({2*48,3*48-5}, &fuel));
+        gui -> addGuiElement(new ItemSlot({6*48,2*48}, &output));
         GuiManager::manager -> addGuiElement(gui);
         return gui;
     }

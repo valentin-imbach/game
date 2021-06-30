@@ -13,22 +13,29 @@
 class Entity;
 
 enum class MessageType {
+    WORLD_CLICK,
     INTERACTION,
-    INTERACTION_ITEM,
+    
     PLACE,
     BREAK,
+    
     ITEM_USE,
     ITEM_PICKUP,
-    KILL,
     ITEM_THROW,
+    
+    DAMAGE,
+    KILL,
+    KILL_PLAYER,
+    DEATH,
+    
+    GIVE,
     SPAWN_ITEM,
     INVENTORY,
-    DAMAGE,
+
     PRINT,
-    GIVE,
+
     QUIT,
     REFRESH,
-    KILL_PLAYER,
     TOGGLE_GOD,
     GRID_PLACE,
     TELEPORT,
@@ -69,17 +76,17 @@ struct ItemThrowMessage : public Message {
     ItemThrowMessage() : Message(MessageType::ITEM_THROW) {}
 };
 
-struct InteractionMessage : public Message {
+struct WorldClickMessage : public Message {
     bool attack;
     pair<float> position;
-    InteractionMessage(pair<float> pos, bool a = false) : Message(MessageType::INTERACTION), attack(a), position(pos) {}
+    WorldClickMessage(pair<float> pos, bool a = false) : Message(MessageType::WORLD_CLICK), attack(a), position(pos) {}
 };
 
-struct InteractionItemMessage : public Message {
+struct InteractionMessage : public Message {
     Item* item;
     bool attack;
     pair<float> position;
-    InteractionItemMessage(pair<float> pos, bool a, Item* i) : Message(MessageType::INTERACTION_ITEM), item(i), attack(a), position(pos) {}
+    InteractionMessage(pair<float> pos, bool a, Item* i) : Message(MessageType::INTERACTION), item(i), attack(a), position(pos) {}
 };
 
 struct QuitMessage : public Message {
@@ -137,4 +144,9 @@ struct TeleportMessage : public Message {
 struct SoundMessage : public Message {
     const char* path;
     SoundMessage(const char* p) : Message(MessageType::SOUND), path(p) {}
+};
+
+struct PickupMessage : public Message {
+    Item* item;
+    PickupMessage(Item* i) : Message(MessageType::ITEM_PICKUP), item(i) {}
 };

@@ -9,10 +9,9 @@
 #pragma once
 
 enum class ItemType {
-    
     NONE = -1,
     
-    //Material
+    //Materials
     STONE,
     CLAY,
     WOOD,
@@ -40,7 +39,6 @@ enum class ItemType {
     SCYTHE,
     HOE,
     KNIFE,
-    TOOL,
     
     //Weapons
     SWORD,
@@ -48,7 +46,7 @@ enum class ItemType {
     ARROW,
     SHIELD,
     
-    //CLOTHING
+    //Clothing
     HEAD_CLOTHING,
     BODY_CLOTHING,
     LEG_CLOTHING,
@@ -61,10 +59,10 @@ enum class ItemType {
     ACCESSORY,
 
     MAX
-    
 };
 
 enum class ItemProperty {
+    NONE = -1,
     
     //Mechanical
     WEIGHT,
@@ -103,7 +101,7 @@ enum class ItemProperty {
     VANITY,
     COMFORT,
     
-    MAX,
+    MAX
 };
 
 enum class ItemID {

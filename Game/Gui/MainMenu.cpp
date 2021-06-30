@@ -14,9 +14,9 @@ void MainMenu::buttonPressed() {
 }
 
 MainMenu::MainMenu() {
-    gui = new Widget(Window::size/2, {600,400}, TextureManager::getTexture("grey.png"));
-    gui -> addGuiElement(new Button({300,150},{200,50},&MainMenu::buttonPressed,TextureManager::getTexture("grey.png")));
-    gui -> addGuiElement(new TextField({300,250},{200,50},TextureManager::getTexture("grey.png")));
+    gui = new Widget(Window::size/2, {600,400}, TextureManager::getTexture("mm.png"));
+    gui -> addGuiElement(new Button({300,150},{200,50}, &MainMenu::buttonPressed, TextureManager::getTexture("start.png")));
+    gui -> addGuiElement(new TextField({300,250},{200,50}, TextureManager::getTexture("name.png")));
 }
 
 bool MainMenu::handleEvent(SDL_Event event) {
@@ -24,5 +24,5 @@ bool MainMenu::handleEvent(SDL_Event event) {
 }
 
 void MainMenu::render() {
-    gui -> recursiveRender();
+    gui -> render();
 }

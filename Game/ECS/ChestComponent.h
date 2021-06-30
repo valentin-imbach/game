@@ -27,7 +27,7 @@ public:
     }
     
     bool onMessage(const Message& message) override {
-        if (message.type == MessageType::INTERACTION_ITEM) {
+        if (message.type == MessageType::INTERACTION) {
             MessageManager::notify(InventoryMessage(pair<int>(0,150)));
             makeGui(Window::size/2 - pair<int>(0,160));
             return true;
@@ -37,8 +37,8 @@ public:
     
     GuiElement* makeGui(pair<int> pos) {
         GuiElement* gui = new Widget(pos,{432, 192},TextureManager::getTexture("chestGui.png"), true);
-        for (int i = 0; i < inventoryComponent -> size.X; i++)
-            for (int j = 0; j < inventoryComponent -> size.Y; j++)
+        for (int i = inventoryComponent -> size.X - 1; i >= 0; i--)
+            for (int j = inventoryComponent -> size.Y - 1; j >= 0; j--)
                 gui -> addGuiElement(new ItemSlot({60+i*78,57+j*78},&(inventoryComponent -> containers[i][j])));
         GuiManager::manager -> addGuiElement(gui);
         return gui;

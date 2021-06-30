@@ -32,7 +32,7 @@ public:
         GuiManager::manager -> addGuiElement(makeHealthGui());
         entity -> subscribe(MessageType::INVENTORY);
         entity -> subscribe(MessageType::ITEM_THROW);
-        entity -> subscribe(MessageType::INTERACTION);
+        entity -> subscribe(MessageType::WORLD_CLICK);
         entity -> subscribe(MessageType::GIVE);
         entity -> subscribe(MessageType::KILL_PLAYER);
         entity -> subscribe(MessageType::TOGGLE_GOD);
@@ -52,11 +52,11 @@ public:
     }
     
     GuiElement* makeInventoryGui(pair<int> pos) {
-        GuiElement* gui = new Widget(pos,{624, 429},TextureManager::getTexture("inventory.png"));
-        for (int i = 0; i < inventoryComponent -> size.X; i++) {
-            gui -> addGuiElement(new ItemSlot({78+i*78,78},&(inventoryComponent -> containers[i][0])));
-            for (int j = 1; j < inventoryComponent -> size.Y; j++)
-                gui -> addGuiElement(new ItemSlot({78+i*78,117+j*78},&(inventoryComponent -> containers[i][j])));
+        GuiElement* gui = new Widget(pos, {624, 429}, TextureManager::getTexture("inventory.png"));
+        for (int i = inventoryComponent -> size.X - 1; i >= 0; i--) {
+            for (int j = inventoryComponent -> size.Y - 1; j > 0; j--)
+                gui -> addGuiElement(new ItemSlot({78+i*78,117+j*78}, &(inventoryComponent -> containers[i][j])));
+            gui -> addGuiElement(new ItemSlot({78+i*78,78}, &(inventoryComponent -> containers[i][0])));
         }
         GuiManager::manager -> addGuiElement(gui);
         return gui;
@@ -67,7 +67,6 @@ public:
             const InventoryMessage &msg = static_cast<const InventoryMessage&>(message);
             makeInventoryGui(msg.offset + Window::size/2);
             return true;
-            
         } else if (message.type == MessageType::ITEM_THROW) {
             Item* item = inventoryComponent -> containers[selected][0].item;
             if (item != nullptr) {
@@ -76,12 +75,12 @@ public:
             }
             return true;
             
-        } else if (message.type == MessageType::INTERACTION) {
-            const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
+        } else if (message.type == MessageType::WORLD_CLICK) {
+            const WorldClickMessage &msg = static_cast<const WorldClickMessage&>(message);
             Item* item = inventoryComponent -> containers[selected][0].item;
             if (item && item -> onClick(msg.attack)) return true;
             if (dist(msg.position, positionComponent -> position) > RADIUS) return false;
-            MessageManager::notify(InteractionItemMessage(msg.position, msg.attack, item));
+            MessageManager::notify(InteractionMessage(msg.position, msg.attack, item));
             return true;
             
         } else if (message.type == MessageType::GIVE) {

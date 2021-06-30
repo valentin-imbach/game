@@ -16,6 +16,7 @@ private:
     PositionComponent *positionComponent;
     DirectionComponent *directionComponent;
     CollisionComponent *collisionComponent;
+    
     pair<float> oldPos;
     
 public:

@@ -24,8 +24,8 @@ public:
     }
     
     bool onMessage(const Message& message) override {
-        if (message.type == MessageType::INTERACTION_ITEM) {
-            const InteractionItemMessage &msg = static_cast<const InteractionItemMessage&>(message);
+        if (message.type == MessageType::INTERACTION) {
+            const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
             if (msg.attack) return false;
             ItemStack* stack;
             if (type == 0) stack = new ItemStack(ItemID::BRANCH);

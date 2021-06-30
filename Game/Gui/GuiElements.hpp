@@ -19,18 +19,15 @@ protected:
     pair<int> size;
     SDL_Texture* texture;
     SDL_Texture* hoverTexture;
-    GuiElement* parent = nullptr;
+    GuiElement* parent;
     v(GuiElement*) children;
     bool check(pair<int> p);
     
-    friend GuiManager;
+    //friend GuiManager;
 
 public:
     bool alive = true;
-    GuiManager* manager = nullptr;
-    
     bool hover = false;
-    
     bool absorbHover = false;
     bool absorbKeystate = false;
     
@@ -42,20 +39,11 @@ public:
     GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr, SDL_Texture* tex2 = nullptr);
     
     void addGuiElement(GuiElement* gui);
-    void setParent(GuiElement* gui);
-    void setManager(GuiManager* m);
     bool handleEvent(SDL_Event event);
     
-    void destroy();
-    virtual void onDestroy() {}
-    
-    void recursiveRender();
-    void recursiveHoverRender();
-    virtual void render() {}
-    virtual void hoverRender() {}
-    
+    void render();
+    virtual void extraRender() {}
     virtual void update();
-    
 };
 
 class Widget : public GuiElement {
@@ -74,7 +62,7 @@ private:
     bool centre;
 public:
     TextElement(pair<int> pos, std::string t, bool c = false);
-    void render() override;
+    void extraRender() override;
 };
 
 class DisplayElement : public GuiElement {
@@ -82,7 +70,7 @@ private:
     int* value;
 public:
     DisplayElement(pair<int> pos, int* v);
-    void render() override;
+    void extraRender() override;
 };
 
 class Button : public GuiElement {
@@ -102,21 +90,24 @@ public:
     bool onClick(int b) override;
     bool onKey(int k) override;
     bool onText(std::string t) override;
-    
-    void render() override;
+    void extraRender() override;
 };
 
 class ItemSlot : public GuiElement {
-private:
+protected:
     ItemContainer* itemContainer;
-    ItemType type;
 public:
-    ItemSlot(pair<int> pos, ItemContainer* c, ItemType t = ItemType::NONE);
-    void render() override;
-    void hoverRender() override;
+    ItemSlot(pair<int> pos, ItemContainer* c);
+    void extraRender() override;
     bool onClick(int b) override;
 };
 
+class MouseSlot : public ItemSlot {
+public:
+    MouseSlot();
+    void update() override;
+    void extraRender() override;
+};
 
 class Hotbar : public GuiElement {
 private:
@@ -125,7 +116,7 @@ private:
     
 public:
     Hotbar(v(ItemContainer*) items, int* sel);
-    void render() override;
+    void extraRender() override;
     bool onScroll(int y) override;
     bool onKey(int k) override;
     bool onClick(int b) override;
@@ -137,6 +128,6 @@ public:
     int* health;
     SDL_Texture* heart;
     HealthBar(int* h);
-    void render() override;
+    void extraRender() override;
 };
 

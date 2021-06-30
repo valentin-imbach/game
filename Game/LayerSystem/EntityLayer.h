@@ -25,7 +25,7 @@ public:
         subscribe(MessageType::PLACE);
         subscribe(MessageType::GRID_PLACE);
         subscribe(MessageType::BREAK);
-        subscribe(MessageType::INTERACTION_ITEM);
+        subscribe(MessageType::INTERACTION);
         
         LOG("Entity Layer constructed");
     }
@@ -54,7 +54,9 @@ public:
             Collider a = player -> getComponent<CollisionComponent>() -> collider;
             Collider b = e -> getComponent<CollisionComponent>() -> collider;
             if (CollisionManager::AABB(a,b)) {
-                player -> getComponent<InventoryComponent>() -> addItem(e -> getComponent<ItemComponent>() -> item);
+                Item* item = e -> getComponent<ItemComponent>() -> item;
+                player -> getComponent<InventoryComponent>() -> addItem(item);
+                MessageManager::notify(PickupMessage(item));
                 e -> alive = false;
             }
         }
@@ -111,8 +113,8 @@ public:
             }
             return true;
             
-        } else if (message.type == MessageType::INTERACTION_ITEM) {
-            const InteractionItemMessage &msg = static_cast<const InteractionItemMessage&>(message);
+        } else if (message.type == MessageType::INTERACTION) {
+            const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
             pair<int> pos = (msg.position).rounded();
             Entity* entity = entityManager.gridEntities[pos.X][pos.Y];
             if (entity == nullptr) return false;
@@ -130,10 +132,10 @@ public:
             Item* item = player -> getComponent<PlayerGuiComponent>() -> getSelectedItem() -> item;
              */
             if (event.button.button == SDL_BUTTON_RIGHT) {
-                MessageManager::notify(InteractionMessage(Camera::stog(Window::mousePos)));
+                MessageManager::notify(WorldClickMessage(Camera::stog(Window::mousePos)));
                 return true;
             } else if (event.button.button == SDL_BUTTON_LEFT) {
-                MessageManager::notify(InteractionMessage(Camera::stog(Window::mousePos), true));
+                MessageManager::notify(WorldClickMessage(Camera::stog(Window::mousePos), true));
                 return true;
             }
         }

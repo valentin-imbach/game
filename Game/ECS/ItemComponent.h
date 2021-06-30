@@ -33,7 +33,8 @@ public:
         if (item == nullptr) {
             TextureManager::drawTexture(TextureManager::getTexture("cross.png"), position.X, position.Y, Camera::ZOOM/2, Camera::ZOOM/2,true);
         } else {
-            item -> render(position.X,position.Y,Camera::ZOOM/2,false);
+            int offset = 5*sin((float)Window::ticks / 20);
+            item -> render(position.X, position.Y + offset ,Camera::ZOOM/2, false);
         }
     }
     

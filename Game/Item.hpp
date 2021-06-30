@@ -21,24 +21,35 @@ struct ItemPropertyTemplate {
 struct ItemTypeTemplate {
     std::string name;
     v(ItemProperty) properties;
-    ItemTypeTemplate(std::string n, v(ItemProperty) p = {}) : name(n), properties(p) {}
+    ItemTypeTemplate(std::string n, v(ItemProperty) p) : name(n), properties(p) {}
 };
 
 struct ItemTemplate {
     std::string name;
     v(ItemType) types;
-    std::array<int,(int)ItemProperty::MAX> properties = {};
-    ItemTemplate(std::string n, v(ItemType) t = {}) : name(n), types(t) {}
+    std::bitset<(int)ItemType::MAX> typeBitSet;
+    std::array<int,(int)ItemProperty::MAX> properties;
+    ItemTemplate(std::string n, v(ItemType) t) : name(n), types(t) {
+        for (ItemType type : t) typeBitSet[(int)type] = true;
+    }
 };
 
 struct Item {
     ItemID itemID;
-    int count = 1;
-    bool stack = false;
+    int count;
+    bool stack;
+    ItemTemplate* temp;
     
-    Item(ItemID i, int c = 1, bool s = false) : itemID(i), count(c), stack(s) {}
+    Item(ItemID i = ItemID::NONE, int c = 1) : itemID(i), count(c) {
+        stack = itemID != ItemID::NONE;
+    }
     
-    virtual void render(int x, int y, int scale, bool inv = true) {}
+    bool hasType(ItemType t) {
+        if (temp == nullptr) return false;
+        return temp -> typeBitSet[(int)t];
+    }
+    
+    virtual void render(int x, int y, int scale, bool inv = true) = 0;
     virtual bool onClick(bool attack) { return false; }
     
     static std::array<ItemTemplate*,(int)ItemID::MAX> itemTemplates;
@@ -48,15 +59,29 @@ struct Item {
 };
 
 struct ItemStack : public Item {
-    ItemStack(ItemID i, int c = 1) : Item(i,c,true) {}
+    ItemStack(ItemID i, int c = 1) : Item(i, c) {
+        temp = itemTemplates[(int)itemID];
+    }
+    void render(int x, int y, int scale, bool inv = true) override;
+};
+
+struct Tool : public Item {
+    pair<int> pos;
+    Tool(std::string name, ItemType t, pair<int> p);
     void render(int x, int y, int scale, bool inv = true) override;
 };
 
 struct ItemContainer {
+    
+    ItemType type;
     Item* item = nullptr;
     
+    ItemContainer(ItemType t = ItemType::NONE) : type(t) {}
+    
     bool similar(ItemContainer* other) {
-        return (item != nullptr && other -> item != nullptr && item -> stack && other -> item -> stack && item -> itemID == other -> item -> itemID);
+        if (item == nullptr || other -> item == nullptr) return false;
+        if (!item -> stack || !other -> item -> stack) return false;
+        return (item -> itemID == other -> item -> itemID);
     }
     
     bool giveHalf(ItemContainer* other) {

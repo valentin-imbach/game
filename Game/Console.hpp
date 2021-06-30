@@ -24,6 +24,7 @@ public:
     
     Console() {
         subscribe(MessageType::PRINT);
+        subscribe(MessageType::ITEM_PICKUP);
     }
     
     void render();

@@ -12,19 +12,17 @@ GuiManager* GuiManager::manager = nullptr;
 
 void GuiManager::addGuiElement(GuiElement *gui) {
     guiElements.push_back(gui);
-    gui -> setManager(this);
 }
 
 void GuiManager::update() {
     guiElements.erase(std::remove_if(std::begin(guiElements), std::end(guiElements),[](const GuiElement* gui) { return !(gui -> alive); }), std::end(guiElements));
     for (GuiElement* gui : guiElements) gui -> update();
-    mouseSlot -> position = Window::mousePos - pair<int>(24,24);
+    mouseSlot -> update();
 }
 
 void GuiManager::render() {
-    for (GuiElement* gui : guiElements) gui -> recursiveRender();
-    for (GuiElement* gui : guiElements) gui -> recursiveHoverRender();
-    mouseSlot -> render();
+    for (GuiElement* gui : guiElements) gui -> render();
+    mouseSlot -> extraRender();
 }
 
 bool GuiManager::handleEvent(SDL_Event event) {
