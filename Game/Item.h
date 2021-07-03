@@ -11,10 +11,10 @@
 enum class ItemType {
     NONE = -1,
     
-    //Materials
+    //Raw Materials
     STONE,
     CLAY,
-    WOOD,
+    LOG,
     ORE,
     GEM,
     LEATHER,
@@ -22,7 +22,7 @@ enum class ItemType {
     DUST,
     
     //Crafting
-    METAL,
+    METAL_BAR,
     GLASS,
     PAPER,
     FABRIC,
@@ -40,6 +40,8 @@ enum class ItemType {
     HOE,
     KNIFE,
     
+    X,
+    
     //Weapons
     SWORD,
     BOW,
@@ -47,10 +49,10 @@ enum class ItemType {
     SHIELD,
     
     //Clothing
-    HEAD_CLOTHING,
-    BODY_CLOTHING,
-    LEG_CLOTHING,
-    FOOT_CLOTHING,
+    HEAD,
+    BODY,
+    LEG,
+    FEET,
     
     //Misc
     FOOD,
@@ -69,14 +71,9 @@ enum class ItemProperty {
     STENGTH,
     HARDNESS,
     FLEXIBILITY,
-    ELASTICITY,
-    STIFFNESS,
     TOUGHNESS,
     
-    //Liquids
-    VISCOSITY,
-    
-    //Organic
+    //Food
     NUTRITION,
     
     //Optical
@@ -92,14 +89,16 @@ enum class ItemProperty {
     EFFICIENCY,
     DURABILITY,
     PRECISION,
+    EFFECTIVENESS,
     
     //Weapons
-    ATTACK,
+    DAMAGE,
     PARRY,
     
     //Clothing
     VANITY,
     COMFORT,
+    WARMTH,
     
     MAX
 };
