@@ -29,7 +29,7 @@ public:
     bool onMessage(const Message& message) override {
         if (message.type == MessageType::INTERACTION) {
             MessageManager::notify(InventoryMessage(pair<int>(0,150)));
-            makeGui(Window::size/2 - pair<int>(0,160));
+            makeGui(pair<int>(0,-180));
             return true;
         }
         return false;
@@ -37,9 +37,10 @@ public:
     
     GuiElement* makeGui(pair<int> pos) {
         GuiElement* gui = new Widget(pos,{432, 192},TextureManager::getTexture("chestGui.png"), true);
-        for (int i = inventoryComponent -> size.X - 1; i >= 0; i--)
-            for (int j = inventoryComponent -> size.Y - 1; j >= 0; j--)
-                gui -> addGuiElement(new ItemSlot({60+i*78,57+j*78},&(inventoryComponent -> containers[i][j])));
+        pair<int> size = inventoryComponent -> size;
+        for (int i = size.X - 1; i >= 0; i--)
+            for (int j = size.Y - 1; j >= 0; j--)
+                gui -> addGuiElement(new ItemSlot({i*78-(size.X-1)*39,j*78-(size.Y-1)*39},&(inventoryComponent -> containers[i][j])));
         GuiManager::manager -> addGuiElement(gui);
         return gui;
     }

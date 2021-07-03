@@ -12,11 +12,12 @@ GuiManager* GuiManager::manager = nullptr;
 
 void GuiManager::addGuiElement(GuiElement *gui) {
     guiElements.push_back(gui);
+    gui -> update();
 }
 
 void GuiManager::update() {
     guiElements.erase(std::remove_if(std::begin(guiElements), std::end(guiElements),[](const GuiElement* gui) { return !(gui -> alive); }), std::end(guiElements));
-    for (GuiElement* gui : guiElements) gui -> update();
+    //for (GuiElement* gui : guiElements) gui -> update();
     mouseSlot -> update();
 }
 

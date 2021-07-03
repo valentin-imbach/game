@@ -18,28 +18,40 @@ std::array<ItemPropertyTemplate*,(int)ItemProperty::MAX> Item::itemPropertyTempl
 void Item::setTemplates() {
     
     //ITEMS
-    itemTemplates[(int)ItemID::BRANCH] = new ItemTemplate("Branch", {ItemType::ROD, ItemType::SWORD, ItemType::FUEL});
+    itemTemplates[(int)ItemID::BRANCH] = new ItemTemplate("Oak Branch", {ItemType::ROD, ItemType::FUEL});
+    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::FLEXIBILITY] = 1;
+    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::STENGTH] = 7;
     itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::BURN_TIME] = 2;
     itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::HEAT] = 3;
-    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::ATTACK] = 4;
-    itemTemplates[(int)ItemID::BRANCH] -> properties[(int)ItemProperty::PARRY] = 2;
+    
+    itemTemplates[(int)ItemID::WOOD] = new ItemTemplate("Oak Log", {ItemType::LOG, ItemType::FUEL});
+    itemTemplates[(int)ItemID::WOOD] -> properties[(int)ItemProperty::BURN_TIME] = 2;
+    itemTemplates[(int)ItemID::WOOD] -> properties[(int)ItemProperty::HEAT] = 3;
+    itemTemplates[(int)ItemID::WOOD] -> properties[(int)ItemProperty::HARDNESS] = 6;
+    
+    itemTemplates[(int)ItemID::STONE] = new ItemTemplate("Granite", {ItemType::STONE});
+    itemTemplates[(int)ItemID::STONE] -> properties[(int)ItemProperty::HARDNESS] = 6;
     
     //TYPES
     itemTypeTemplates[(int)ItemType::SHOVEL] = new ItemTypeTemplate("Shovel", {ItemProperty::EFFICIENCY});
     itemTypeTemplates[(int)ItemType::HAMMER] = new ItemTypeTemplate("Hammer", {ItemProperty::EFFICIENCY});
     itemTypeTemplates[(int)ItemType::PICK_AXE] = new ItemTypeTemplate("Pick Axe", {ItemProperty::EFFICIENCY});
-    itemTypeTemplates[(int)ItemType::SWORD] = new ItemTypeTemplate("Sword", {ItemProperty::ATTACK, ItemProperty::PARRY});
+    itemTypeTemplates[(int)ItemType::SWORD] = new ItemTypeTemplate("Sword", {ItemProperty::DAMAGE, ItemProperty::PARRY});
     itemTypeTemplates[(int)ItemType::ROD] = new ItemTypeTemplate("Rod", {ItemProperty::FLEXIBILITY, ItemProperty::STENGTH});
     itemTypeTemplates[(int)ItemType::FUEL] = new ItemTypeTemplate("Fuel", {ItemProperty::BURN_TIME, ItemProperty::HEAT});
+    itemTypeTemplates[(int)ItemType::LOG] = new ItemTypeTemplate("Log", {ItemProperty::HARDNESS});
+    itemTypeTemplates[(int)ItemType::STONE] = new ItemTypeTemplate("Stone", {ItemProperty::HARDNESS});
+
     
     //PROPERTIES
     itemPropertyTemplates[(int)ItemProperty::EFFICIENCY] = new ItemPropertyTemplate("Efficiency");
-    itemPropertyTemplates[(int)ItemProperty::ATTACK] = new ItemPropertyTemplate("Attack");
+    itemPropertyTemplates[(int)ItemProperty::DAMAGE] = new ItemPropertyTemplate("Damage");
     itemPropertyTemplates[(int)ItemProperty::PARRY] = new ItemPropertyTemplate("Parry");
     itemPropertyTemplates[(int)ItemProperty::FLEXIBILITY] = new ItemPropertyTemplate("Flexibility");
     itemPropertyTemplates[(int)ItemProperty::STENGTH] = new ItemPropertyTemplate("Strength");
     itemPropertyTemplates[(int)ItemProperty::BURN_TIME] = new ItemPropertyTemplate("Burn Time");
     itemPropertyTemplates[(int)ItemProperty::HEAT] = new ItemPropertyTemplate("Heat");
+    itemPropertyTemplates[(int)ItemProperty::HARDNESS] = new ItemPropertyTemplate("Hardness");
 };
 
 void ItemStack::render(int x, int y, int scale, bool inv) {

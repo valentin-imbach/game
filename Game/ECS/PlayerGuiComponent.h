@@ -52,11 +52,11 @@ public:
     }
     
     GuiElement* makeInventoryGui(pair<int> pos) {
-        GuiElement* gui = new Widget(pos, {624, 429}, TextureManager::getTexture("inventory.png"));
+        GuiElement* gui = new Widget(pos, {582, 387}, TextureManager::getTexture("inventory.png"));
         for (int i = inventoryComponent -> size.X - 1; i >= 0; i--) {
             for (int j = inventoryComponent -> size.Y - 1; j > 0; j--)
-                gui -> addGuiElement(new ItemSlot({78+i*78,117+j*78}, &(inventoryComponent -> containers[i][j])));
-            gui -> addGuiElement(new ItemSlot({78+i*78,78}, &(inventoryComponent -> containers[i][0])));
+                gui -> addGuiElement(new ItemSlot({(i-3)*78,135+(j-3)*78}, &(inventoryComponent -> containers[i][j])));
+            gui -> addGuiElement(new ItemSlot({(i-3)*78,-138}, &(inventoryComponent -> containers[i][0])));
         }
         GuiManager::manager -> addGuiElement(gui);
         return gui;
@@ -65,7 +65,7 @@ public:
     bool onMessage(const Message &message) override {
         if (message.type == MessageType::INVENTORY) {
             const InventoryMessage &msg = static_cast<const InventoryMessage&>(message);
-            makeInventoryGui(msg.offset + Window::size/2);
+            makeInventoryGui(msg.offset);
             return true;
         } else if (message.type == MessageType::ITEM_THROW) {
             Item* item = inventoryComponent -> containers[selected][0].item;

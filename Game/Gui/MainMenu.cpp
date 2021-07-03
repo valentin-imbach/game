@@ -14,9 +14,9 @@ void MainMenu::buttonPressed() {
 }
 
 MainMenu::MainMenu() {
-    gui = new Widget(Window::size/2, {600,400}, TextureManager::getTexture("mm.png"));
-    gui -> addGuiElement(new Button({300,150},{200,50}, &MainMenu::buttonPressed, TextureManager::getTexture("start.png")));
-    gui -> addGuiElement(new TextField({300,250},{200,50}, TextureManager::getTexture("name.png")));
+    gui = new Widget({0,0}, {600,400}, TextureManager::getTexture("mm.png"));
+    gui -> addGuiElement(new Button({0,0},{200,50}, &MainMenu::buttonPressed, TextureManager::getTexture("start.png")));
+    gui -> addGuiElement(new TextField({0,100},{200,50}, TextureManager::getTexture("name.png")));
 }
 
 bool MainMenu::handleEvent(SDL_Event event) {
@@ -24,5 +24,6 @@ bool MainMenu::handleEvent(SDL_Event event) {
 }
 
 void MainMenu::render() {
+    gui -> update();
     gui -> render();
 }

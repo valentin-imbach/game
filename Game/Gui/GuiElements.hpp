@@ -11,19 +11,31 @@
 #include "../Item.hpp"
 #include "../Window.hpp"
 
+enum class Alignment {
+    NORTH_WEST,
+    NORTH,
+    NORTH_EAST,
+    WEST,
+    CENTER,
+    EAST,
+    SOUTH_WEST,
+    SOUTH,
+    SOUTH_EAST
+};
+
 class GuiManager;
 
 class GuiElement {
 protected:
     pair<int> position;
+    Alignment align;
+    pair<int> relative_pos;
     pair<int> size;
     SDL_Texture* texture;
-    SDL_Texture* hoverTexture;
-    GuiElement* parent;
+    SDL_Texture* hoverTexture = nullptr;
+    GuiElement* parent = nullptr;
     v(GuiElement*) children;
     bool check(pair<int> p);
-    
-    //friend GuiManager;
 
 public:
     bool alive = true;
@@ -36,7 +48,7 @@ public:
     virtual bool onScroll(int y) { return false; }
     virtual bool onText(std::string s) { return false; }
     
-    GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr, SDL_Texture* tex2 = nullptr);
+    GuiElement(pair<int> pos, pair<int> s = {0,0}, SDL_Texture* tex = nullptr, Alignment ali = Alignment::CENTER);
     
     void addGuiElement(GuiElement* gui);
     bool handleEvent(SDL_Event event);
@@ -77,7 +89,7 @@ class Button : public GuiElement {
 private:
     void(*function)();
 public:
-    Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex = nullptr, SDL_Texture* tex2 = nullptr);
+    Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2 = nullptr);
     bool onClick(int b) override;
 };
 

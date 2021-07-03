@@ -63,18 +63,24 @@ void TextureManager::drawTexture(SDL_Texture* tex, int sx, int sy, int sw, int s
 void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, int dw, int dh, bool centered) {
     int w, h;
     SDL_QueryTexture(tex, NULL, NULL, &w, &h);
-    drawTexture(tex, 0, 0, w, h, dx, dy, dw, dh);
+    drawTexture(tex, 0, 0, w, h, dx, dy, dw, dh, centered);
+}
+
+void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, int scale, bool centered) {
+    int w, h;
+    SDL_QueryTexture(tex, NULL, NULL, &w, &h);
+    drawTexture(tex, 0, 0, w, h, dx, dy, scale*w, scale*h, centered);
 }
 
 void TextureManager::drawTexture(SDL_Texture* tex, int dx, int dy, bool centered) {
     int w, h;
     SDL_QueryTexture(tex, NULL, NULL, &w, &h);
-    drawTexture(tex, 0, 0, w, h, dx, dy, w, h);
+    drawTexture(tex, 0, 0, w, h, dx, dy, w, h, centered);
 }
 
 void TextureManager::drawRect(pair<int> pos, pair<int> size, int r, int g, int b) {
     SDL_Rect rect = {pos.X, pos.Y, size.X, size.Y};
-    SDL_SetRenderDrawColor(Window::renderer, r,g,b, 255);
+    SDL_SetRenderDrawColor(Window::renderer, r, g, b, 255);
     SDL_RenderDrawRect(Window::renderer, &rect);
 }
 
