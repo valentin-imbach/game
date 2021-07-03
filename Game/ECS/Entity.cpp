@@ -20,10 +20,6 @@ void Entity::render() {
     for (auto& c : components) c -> render();
 }
 
-void Entity::debugRender() {
-    for (auto& c : components) c -> debugRender();
-}
-
 bool Entity::handleEvent(SDL_Event event) {
     for (auto& c : components)
         if (c -> handleEvent(event)) return true;

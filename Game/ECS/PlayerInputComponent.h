@@ -86,6 +86,7 @@ public:
         }
 
         if (dir != -1) directionComponent -> direction = (Direction)dir;
+        Camera::update(positionComponent -> position);
     }
     
     bool checkCollision(pair<float> pos) {

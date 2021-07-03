@@ -8,6 +8,7 @@
 
 #include "tools.h"
 #include "SoundManager.hpp"
+#include "ECS/Components.h"
 
 auto SoundManager::sounds = std::map<std::string, Mix_Music*>();
 SoundManager SoundManager::manager = SoundManager();
@@ -20,7 +21,7 @@ void SoundManager::Init() {
         return;
     }
     volume = Mix_VolumeMusic(-1);
-    manager.subscribe(MessageType::SOUND);
+    manager.subscribe(MessageType::BREAK);
 }
 
 void SoundManager::setVolume(int v) {
@@ -46,9 +47,12 @@ bool SoundManager::playSound(const char* path) {
 }
 
 bool SoundManager::onMessage(const Message& message) {
-    if (message.type == MessageType::SOUND) {
-        const SoundMessage &msg = static_cast<const SoundMessage&>(message);
-        return playSound(msg.path);
+    if (message.type == MessageType::BREAK) {
+        const BreakMessage &msg = static_cast<const BreakMessage&>(message);
+        if (msg.entity -> hasComponent<ResourceComponent>()) {
+            int type = msg.entity -> getComponent<ResourceComponent>() -> type;
+            playSound(ResourceType::types[type] -> sound);
+        }
     }
     return false;
 }

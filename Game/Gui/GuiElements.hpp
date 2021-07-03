@@ -10,6 +10,7 @@
 #include "tools.h"
 #include "../Item.hpp"
 #include "../Window.hpp"
+#include "../Debug.h"
 
 enum class Alignment {
     NORTH_WEST,
@@ -52,9 +53,12 @@ public:
     
     void addGuiElement(GuiElement* gui);
     bool handleEvent(SDL_Event event);
+    virtual bool preHandleEvent(SDL_Event event) { return false; }
     
-    void render();
-    virtual void extraRender() {}
+    void reposition();
+    virtual void render();
+    virtual void preRender() {}
+    virtual void postRender() {}
     virtual void update();
 };
 
@@ -68,13 +72,35 @@ public:
     bool onKey(int key) override;
 };
 
+class TabWidget : public Widget {
+private:
+    v(GuiElement*) tabs;
+public:
+    int selected = 0;
+    TabWidget(pair<int> pos, pair<int> s, SDL_Texture* tabTex, bool weak = false) : Widget(pos, s, nullptr, weak) {}
+    Widget* addTab(Widget* tab);
+    void update() override;
+    void preRender() override;
+    bool preHandleEvent(SDL_Event event) override;
+};
+
+class Tab : public GuiElement {
+private:
+    int number;
+    TabWidget* context;
+public:
+    Tab(pair<int> pos, pair<int> size, int n, TabWidget* c);
+    bool onClick(int b) override;
+    void preRender() override;
+};
+
 class TextElement : public GuiElement {
 private:
     std::string text;
     bool centre;
 public:
-    TextElement(pair<int> pos, std::string t, bool c = false);
-    void extraRender() override;
+    TextElement(pair<int> pos, std::string t, bool c = false, Alignment align = Alignment::CENTER);
+    void preRender() override;
 };
 
 class DisplayElement : public GuiElement {
@@ -82,8 +108,9 @@ private:
     int* value;
 public:
     DisplayElement(pair<int> pos, int* v);
-    void extraRender() override;
+    void preRender() override;
 };
+
 
 class Button : public GuiElement {
 private:
@@ -102,7 +129,7 @@ public:
     bool onClick(int b) override;
     bool onKey(int k) override;
     bool onText(std::string t) override;
-    void extraRender() override;
+    void preRender() override;
 };
 
 class ItemSlot : public GuiElement {
@@ -110,7 +137,7 @@ protected:
     ItemContainer* itemContainer;
 public:
     ItemSlot(pair<int> pos, ItemContainer* c);
-    void extraRender() override;
+    void preRender() override;
     bool onClick(int b) override;
 };
 
@@ -118,7 +145,7 @@ class MouseSlot : public ItemSlot {
 public:
     MouseSlot();
     void update() override;
-    void extraRender() override;
+    void preRender() override;
 };
 
 class Hotbar : public GuiElement {
@@ -128,7 +155,7 @@ private:
     
 public:
     Hotbar(v(ItemContainer*) items, int* sel);
-    void extraRender() override;
+    void preRender() override;
     bool onScroll(int y) override;
     bool onKey(int k) override;
     bool onClick(int b) override;
@@ -140,6 +167,6 @@ public:
     int* health;
     SDL_Texture* heart;
     HealthBar(int* h);
-    void extraRender() override;
+    void preRender() override;
 };
 

@@ -34,10 +34,6 @@ void EntityManager::render() {
     for (Entity* e : entities) e -> render();
 }
 
-void EntityManager::debugRender() const {
-    for (Entity* e : entities) e -> debugRender();
-}
-
 void EntityManager::refresh() {
     for (int i = (int)entities.size()-1; i >= 0; i--) {
         if (!entities[i] -> alive) {

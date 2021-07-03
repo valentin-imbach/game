@@ -20,7 +20,7 @@ public:
     static void render();
     static int ZOOM;
     static pair<float> position;
-    static void handleEvents();
+    static bool handleEvent(SDL_Event event) { return false; }
     static pair<float> stog(pair<int> p);
     static pair<int> gtos(pair<float> p);
 };

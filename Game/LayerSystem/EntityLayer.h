@@ -68,10 +68,7 @@ public:
             return a -> getComponent<PositionComponent>() -> position.Y < b -> getComponent<PositionComponent>() -> position.Y;
             return true;
         });
-        
         entityManager.render();
-        entityManager.debugRender();
-        Camera::render();
     }
     
     bool onMessage(const Message &message) override {

@@ -23,7 +23,7 @@ void GuiManager::update() {
 
 void GuiManager::render() {
     for (GuiElement* gui : guiElements) gui -> render();
-    mouseSlot -> extraRender();
+    mouseSlot -> preRender();
 }
 
 bool GuiManager::handleEvent(SDL_Event event) {

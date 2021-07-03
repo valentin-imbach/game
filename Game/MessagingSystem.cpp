@@ -11,7 +11,7 @@
 vv(Observer*) MessageManager::subscribers = vv(Observer*)((int)MessageType::MAX,v(Observer*)());
 
 void MessageManager::distribute(const Message &message) {
-    for (Observer* observer : subscribers[(int)message.type]) if (observer -> onMessage(message)) return;
+    for (Observer* observer : subscribers[(int)message.type]) observer -> onMessage(message);
 }
 
 void MessageManager::notify(const Message &message) {

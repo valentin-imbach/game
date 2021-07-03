@@ -39,7 +39,6 @@ enum class MessageType {
     TOGGLE_GOD,
     GRID_PLACE,
     TELEPORT,
-    SOUND,
     
     MAX
 };
@@ -139,11 +138,6 @@ struct GiveMessage : public Message {
 struct TeleportMessage : public Message {
     pair<int> location;
     TeleportMessage(pair<int> l) : Message(MessageType::TELEPORT), location(l) {}
-};
-
-struct SoundMessage : public Message {
-    const char* path;
-    SoundMessage(const char* p) : Message(MessageType::SOUND), path(p) {}
 };
 
 struct PickupMessage : public Message {

@@ -10,6 +10,7 @@
 #include "Components.h"
 #include "../CollisionManager.h"
 #include "../Camera.hpp"
+#include "../Debug.h"
 
 class CollisionComponent : public Component {
 public:
@@ -30,8 +31,8 @@ public:
         collider.position = positionComponent -> position - offset;
     }
     
-    void debugRender() override {
-        Camera::drawRect(collider.position,collider.size);
+    void render() override {
+        if (COLLISION_DEBUG) Camera::drawRect(collider.position,collider.size);
     }
     
     SERIALIZE(collider,offset);

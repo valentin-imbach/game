@@ -12,12 +12,21 @@
 
 class MapLayer : public Layer {
 public:
+    
     Map* map;
+    
     MapLayer(const char* path) {
         map = Map::load(path);
     }
-    void update() override { map -> update(); }
-    void render() override { map -> render(); }
+    
+    void update() override {
+        map -> update();
+    }
+    
+    void render() override {
+        map -> render();
+    }
+    
     bool handleEvent(SDL_Event event) override {
         return map -> handleEvent(event);
     }

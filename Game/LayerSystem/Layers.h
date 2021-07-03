@@ -14,3 +14,4 @@
 #include "DebugLayer.h"
 #include "GuiLayer.h"
 #include "MapLayer.h"
+#include "CameraLayer.h"

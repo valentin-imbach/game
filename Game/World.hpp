@@ -28,6 +28,7 @@ public:
     GuiLayer guiLayer;
     EntityLayer entityLayer;
     DebugLayer debugLayer;
+    CameraLayer cameraLayer;
 private:
     LayerManager layerManager;
 };

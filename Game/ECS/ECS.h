@@ -86,7 +86,6 @@ public:
     
     void update();
     void render();
-    void debugRender();
     
     bool handleEvent(SDL_Event event);
     bool onMessage(const Message& message) override;

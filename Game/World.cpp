@@ -11,6 +11,7 @@
 
 World::World(std::string n) : name(n), mapLayer("map.txt") {
     layerManager.addLayer(&mapLayer);
+    layerManager.addLayer(&cameraLayer);
     layerManager.addLayer(&entityLayer);
     layerManager.addLayer(&guiLayer);
     layerManager.addLayer(&debugLayer);

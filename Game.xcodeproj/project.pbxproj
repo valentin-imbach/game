@@ -72,6 +72,8 @@
 		041720D9245875960070F152 /* TableComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableComponent.h; sourceTree = "<group>"; };
 		041720DB245A14F20070F152 /* ItemComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ItemComponent.h; sourceTree = "<group>"; };
 		041E0BA4243B4919007435A3 /* GridComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridComponent.h; sourceTree = "<group>"; };
+		042C46E52690F36500F3867E /* Debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Debug.h; path = Game/Debug.h; sourceTree = SOURCE_ROOT; };
+		042C46E62690F54300F3867E /* CameraLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraLayer.h; sourceTree = "<group>"; };
 		0439263C244492750057C83C /* Item.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Item.hpp; sourceTree = "<group>"; };
 		043CA552247D1DDE008CA805 /* PauseMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PauseMenu.cpp; sourceTree = "<group>"; };
 		043CA553247D1DDE008CA805 /* PauseMenu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PauseMenu.hpp; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 		04C7CC862334119F0053C2E7 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				042C46E52690F36500F3867E /* Debug.h */,
 				040CAB9E242E24AB009A2728 /* ECS */,
 				04CBB503244F587100A8BC69 /* LayerSystem */,
 				04E4A34E24683F880021359B /* Gui */,
@@ -222,6 +225,7 @@
 				04CBB50624503B5700A8BC69 /* DebugLayer.h */,
 				043CA56024805A50008CA805 /* GuiLayer.h */,
 				A7F11F6825B7497300CD0CC5 /* MapLayer.h */,
+				042C46E62690F54300F3867E /* CameraLayer.h */,
 			);
 			path = LayerSystem;
 			sourceTree = "<group>";
