@@ -18,5 +18,5 @@ public:
     void render();
     bool handleEvent(SDL_Event event);
     
-    static void buttonPressed();
+    void buttonPressed();
 };

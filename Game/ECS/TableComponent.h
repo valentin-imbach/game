@@ -15,7 +15,7 @@ public:
     static ComponentType componentType;
     SpriteComponent* spriteComponent;
     
-    ItemContainer a, b, c;
+    ItemContainer input, output;
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
@@ -32,16 +32,18 @@ public:
         return false;
     }
     
+    void hammer() {
+        
+    }
+    
     GuiElement* makeGui(pair<int> pos) {
         TabWidget* gui = new TabWidget(pos, {426, 192}, TextureManager::getTexture("tab.png"), true);
-        Widget* tab1 = gui -> addTab(new Widget(pos, {426, 192}, TextureManager::getTexture("crafting.png")));
-        tab1 -> addGuiElement(new ItemSlot({-78,0}, &a));
-        tab1 -> addGuiElement(new ItemSlot({0,0}, &b));
-        tab1 -> addGuiElement(new ItemSlot({78,0}, &c));
-        Widget* tab2 = gui -> addTab(new Widget(pos, {426, 192}, TextureManager::getTexture("crafting.png")));
-        tab2 -> addGuiElement(new ItemSlot({-78,0}, &a));
-        tab2 -> addGuiElement(new ItemSlot({78,-48}, &b));
-        tab2 -> addGuiElement(new ItemSlot({78,48}, &c));
+        Widget* tab1 = gui -> addTab(new Widget(pos, {426, 192}, TextureManager::getTexture("crafting.png"), true));
+        tab1 -> addGuiElement(new ItemSlot({78,0}, &output));
+        tab1 -> addGuiElement(new Button({0,0}, {54,42}, &TableComponent::hammer, this, TextureManager::getTexture("hammerButton.png"), TextureManager::getTexture("hammerButton2.png")));
+        tab1 -> addGuiElement(new ItemSlot({-78,0}, &input));
+        gui -> addTab(new Widget(pos, {426, 192}, TextureManager::getTexture("crafting.png"), true));
+        gui -> addTab(new Widget(pos, {426, 192}, TextureManager::getTexture("crafting.png"), true));
         GuiManager::manager -> addGuiElement(gui);
         return gui;
     }

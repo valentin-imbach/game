@@ -111,13 +111,24 @@ public:
     void preRender() override;
 };
 
-
+template <typename T>
 class Button : public GuiElement {
 private:
-    void(*function)();
+    void(T::*function)();
+    T* context;
 public:
-    Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2 = nullptr);
-    bool onClick(int b) override;
+    Button(pair<int> pos, pair<int> s, void(T::*func)(), T* c, SDL_Texture* tex, SDL_Texture* tex2 = nullptr) : GuiElement(pos, s, tex) {
+        hoverTexture = tex2;
+        function = func;
+        context = c;
+    }
+    bool onClick(int b) override {
+        if (check(Window::mousePos)) {
+            if (b == SDL_BUTTON_LEFT) (context->*function)();
+            return true;
+        }
+        return false;
+    }
 };
 
 class TextField : public GuiElement {

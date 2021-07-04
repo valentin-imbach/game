@@ -13,12 +13,12 @@
 class PauseMenu {
 private:
     GuiElement* gui;
-    static void zoomLeft();
-    static void zoomRight();
-    static void fpsLeft();
-    static void fpsRight();
-    static void musicLeft();
-    static void musicRight();
+    void zoomLeft();
+    void zoomRight();
+    void fpsLeft();
+    void fpsRight();
+    void musicLeft();
+    void musicRight();
 public:
     PauseMenu();
     void render();

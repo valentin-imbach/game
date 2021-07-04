@@ -151,21 +151,6 @@ void DisplayElement::preRender() {
     TextManager::drawText(s, position, true);
 }
 
-//Button
-
-Button::Button(pair<int> pos, pair<int> s, void(*func)(), SDL_Texture* tex, SDL_Texture* tex2) : GuiElement(pos, s, tex) {
-    hoverTexture = tex2;
-    function = func;
-}
-
-bool Button::onClick(int b) {
-    if (check(Window::mousePos)) {
-        if (b == SDL_BUTTON_LEFT) (*function)();
-        return true;
-    }
-    return false;
-}
-
 //TextField
 
 TextField::TextField(pair<int> pos, pair<int> s, SDL_Texture* tex) : GuiElement(pos, s, tex) {}

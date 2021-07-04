@@ -14,8 +14,8 @@ void MainMenu::buttonPressed() {
 }
 
 MainMenu::MainMenu() {
-    gui = new Widget({0,0}, {600,400}, TextureManager::getTexture("mm.png"));
-    gui -> addGuiElement(new Button({0,0},{200,50}, &MainMenu::buttonPressed, TextureManager::getTexture("start.png")));
+    gui = new Widget({0,0}, {200,133}, TextureManager::getTexture("mm.png"));
+    gui -> addGuiElement(new Button({0,0},{200,50}, &MainMenu::buttonPressed, this, TextureManager::getTexture("start.png"), TextureManager::getTexture("start2.png")));
     gui -> addGuiElement(new TextField({0,100},{200,50}, TextureManager::getTexture("name.png")));
 }
 

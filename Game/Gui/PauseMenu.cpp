@@ -21,18 +21,18 @@ PauseMenu::PauseMenu() {
     
     gui -> addGuiElement(new TextElement({-250,-120}, "Camera Zoom:"));
     gui -> addGuiElement(new DisplayElement({0,-105}, &Camera::ZOOM));
-    gui -> addGuiElement(new Button({-50,-105}, {28,36}, &PauseMenu::zoomLeft, left, left2));
-    gui -> addGuiElement(new Button({50,-105}, {28,36}, &PauseMenu::zoomRight, right, right2));
+    gui -> addGuiElement(new Button({-50,-105}, {28,36}, &PauseMenu::zoomLeft, this, left, left2));
+    gui -> addGuiElement(new Button({50,-105}, {28,36}, &PauseMenu::zoomRight, this, right, right2));
     
     gui -> addGuiElement(new TextElement({-250,-60}, "Max FPS:"));
     gui -> addGuiElement(new DisplayElement({0,-45}, &Window::MAX_FPS));
-    gui -> addGuiElement(new Button({-50,-45}, {28,36}, &PauseMenu::fpsLeft, left, left2));
-    gui -> addGuiElement(new Button({50,-45}, {28,36}, &PauseMenu::fpsRight, right, right2));
+    gui -> addGuiElement(new Button({-50,-45}, {28,36}, &PauseMenu::fpsLeft, this, left, left2));
+    gui -> addGuiElement(new Button({50,-45}, {28,36}, &PauseMenu::fpsRight, this, right, right2));
     
     gui -> addGuiElement(new TextElement({-250,0}, "Music Volume:"));
     gui -> addGuiElement(new DisplayElement({0,15}, &SoundManager::volume));
-    gui -> addGuiElement(new Button({-50,15}, {28,36}, &PauseMenu::musicLeft, left, left2));
-    gui -> addGuiElement(new Button({50,15}, {28,36}, &PauseMenu::musicRight, right, right2));
+    gui -> addGuiElement(new Button({-50,15}, {28,36}, &PauseMenu::musicLeft, this, left, left2));
+    gui -> addGuiElement(new Button({50,15}, {28,36}, &PauseMenu::musicRight, this, right, right2));
 }
 
 bool PauseMenu::handleEvent(SDL_Event event) {
