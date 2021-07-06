@@ -141,6 +141,30 @@ struct ItemContainer {
     
 };
 
+class CraftingIndex {
+private:
+    std::map<ItemID,std::pair<ItemID,int>> index;
+    
+public:
+    
+    void add(ItemID a, std::pair<ItemID, int> b) {
+        index[a] = b;
+    }
+    
+    int craft(ItemContainer* in, ItemContainer* out, int max = -1) {
+        if (!in -> item) return 0;
+        ItemID inID = in -> item -> itemID;
+        if (index.find(inID) != index.end()) {
+            int num = in -> item -> count;
+            if (max != -1) num = std::min(num, max);
+            out -> item = new ItemStack(index[inID].first, num * index[inID].second);
+            in -> item = nullptr;
+            return num;
+        }
+        return 0;
+    }
+};
+
 struct Loot {
     int min, max;
     ItemID itemID;

@@ -16,11 +16,24 @@ public:
     SpriteComponent* spriteComponent;
     
     ItemContainer input, output;
+    CraftingIndex craftingIndex;
     
     void init() override {
         spriteComponent = entity -> getComponent<SpriteComponent>();
         spriteComponent -> height = 1;
         spriteComponent -> sprite = Sprite(TextureManager::getTexture("sprites.png"),{5,9},{1,2});
+        
+        craftingIndex.add(ItemID::PINE_LOG, {ItemID::PINE_PLANK, 4});
+        craftingIndex.add(ItemID::OAK_LOG, {ItemID::OAK_PLANK, 4});
+        craftingIndex.add(ItemID::ROSEWOOD_LOG, {ItemID::ROSEWOOD_PLANK, 4});
+        craftingIndex.add(ItemID::SPRUCE_LOG, {ItemID::SPRUCE_PLANK, 4});
+        craftingIndex.add(ItemID::ASHWOOD_LOG, {ItemID::ASHWOOD_PLANK, 4});
+        
+        craftingIndex.add(ItemID::PINE_PLANK, {ItemID::PINE_STICK, 6});
+        craftingIndex.add(ItemID::OAK_PLANK, {ItemID::OAK_STICK, 6});
+        craftingIndex.add(ItemID::ROSEWOOD_PLANK, {ItemID::ROSEWOOD_STICK, 6});
+        craftingIndex.add(ItemID::SPRUCE_PLANK, {ItemID::SPRUCE_STICK, 6});
+        craftingIndex.add(ItemID::ASHWOOD_PLANK, {ItemID::ASHWOOD_STICK, 6});
     }
     
     bool onMessage(const Message& message) override {
@@ -33,7 +46,7 @@ public:
     }
     
     void hammer() {
-        
+        craftingIndex.craft(&input, &output);
     }
     
     GuiElement* makeGui(pair<int> pos) {
