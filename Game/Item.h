@@ -12,7 +12,8 @@ enum class ItemType {
     NONE = -1,
     
     //Raw Materials
-    STONE,
+    COBBLE,
+    PEBBLE,
     CLAY,
     LOG,
     ORE,
@@ -104,25 +105,57 @@ enum class ItemProperty {
 };
 
 enum class ItemID {
+    
     NONE = -1,
-    SHOVEL,
-    PICK,
-    HAMMER,
+    
     SWORD,
+    PICK_AXE,
+    AXE,
+    SHOVEL,
     BOW,
     ARROW,
-    STONE,
-    WOOD,
-    BRANCH,
-    RING,
-    BOOK,
-    SHIELD,
-    SHOES,
+    
+    BOOTS,
     ROBE,
-    HELMET,
-    MEAT,
+    CAP,
+    SHIELD,
     POTION,
     APPLE,
+    
+    PINE_LOG,
+    OAK_LOG,
+    ROSEWOOD_LOG,
+    ASHWOOD_LOG,
+    SPRUCE_LOG,
+    X_LOG,
+    
+    PINE_PLANK,
+    OAK_PLANK,
+    ROSEWOOD_PLANK,
+    ASHWOOD_PLANK,
+    SPRUCE_PLANK,
+    X_PLANK,
+    
+    PINE_STICK,
+    OAK_STICK,
+    ROSEWOOD_STICK,
+    ASHWOOD_STICK,
+    SPRUCE_STICK,
+    X_STICK,
+    
+    GRANITE_COBBLE,
+    BASALT_COBBLE,
+    LIMESTONE_COBBLE,
+    SANDSTONE_COBBLE,
+    CHALK_COBBLE,
+    Y_COBBLE,
+    
+    GRANITE_PEBBLE,
+    BASALT_PEBBLE,
+    LIMESTONE_PEBBLE,
+    SANDSTONE_PEBBLE,
+    CHALK_PEBBLE,
+    Y_PEBBLE,
     
     MAX
 };

@@ -45,11 +45,11 @@ void Game::createWorld() {
     player -> addComponent<HealthComponent>(10);
     
     InventoryComponent* inv = player -> addComponent<InventoryComponent>(7,4);
-    inv -> addItem(new Tool("Sword", ItemType::SWORD, {0,1}));
+    inv -> addItem(new Tool("Sword", ItemType::SWORD, {0,0}));
     inv -> addItem(new Tool("Pick Axe", ItemType::PICK_AXE, {1,0}));
-    inv -> addItem(new Tool("Hammer", ItemType::HAMMER, {2,0}));
-    inv -> addItem(new Tool("Shovel" ,ItemType::SHOVEL, {0,0}));
-    inv -> addItem(new ItemStack(ItemID::BRANCH, 15));
+    inv -> addItem(new Tool("Hammer", ItemType::AXE, {2,0}));
+    inv -> addItem(new Tool("Shovel" ,ItemType::SHOVEL, {3,0}));
+    inv -> addItem(new ItemStack(ItemID::ASHWOOD_PLANK, 15));
     
     
     player -> addComponent<CollisionComponent>(0.375,0.25,0.375,0.25);

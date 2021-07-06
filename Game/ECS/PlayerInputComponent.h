@@ -34,7 +34,6 @@ public:
     }
     
     void update() override {
-        
         if (!keystate) { return; }
         
         walking = false;

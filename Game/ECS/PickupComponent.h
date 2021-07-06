@@ -28,8 +28,8 @@ public:
             const InteractionMessage &msg = static_cast<const InteractionMessage&>(message);
             if (msg.attack) return false;
             ItemStack* stack;
-            if (type == 0) stack = new ItemStack(ItemID::BRANCH);
-            else if (type == 1) stack = new ItemStack(ItemID::STONE);
+            if (type == 0) stack = new ItemStack(ItemID::OAK_STICK);
+            else if (type == 1) stack = new ItemStack(ItemID::GRANITE_PEBBLE);
             else return false;
             MessageManager::notify(GiveMessage(stack));
             entity -> destroy();
