@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/Users/valentin/Desktop/Game/game/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -isystem /usr/local/Cellar/sdl2/2.0.20/include/SDL2 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -std=gnu++17 -o CMakeFiles/Game.dir/src/Window.cpp.o -c /Users/valentin/Desktop/Game/game/src/Window.cpp",
+  "file": "/Users/valentin/Desktop/Game/game/src/Window.cpp"
+},
+{
+  "directory": "/Users/valentin/Desktop/Game/game/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -isystem /usr/local/Cellar/sdl2/2.0.20/include/SDL2 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -std=gnu++17 -o CMakeFiles/Game.dir/src/GAme.cpp.o -c /Users/valentin/Desktop/Game/game/src/GAme.cpp",
+  "file": "/Users/valentin/Desktop/Game/game/src/GAme.cpp"
+},
+{
+  "directory": "/Users/valentin/Desktop/Game/game/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -isystem /usr/local/Cellar/sdl2/2.0.20/include/SDL2 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -std=gnu++17 -o CMakeFiles/Game.dir/src/main.cpp.o -c /Users/valentin/Desktop/Game/game/src/main.cpp",
+  "file": "/Users/valentin/Desktop/Game/game/src/main.cpp"
+}
+]

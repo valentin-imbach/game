@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++ -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/Game.dir/src/Window.cpp.o CMakeFiles/Game.dir/src/GAme.cpp.o CMakeFiles/Game.dir/src/main.cpp.o -o Game  /usr/local/Cellar/sdl2/2.0.20/lib/libSDL2.dylib 
