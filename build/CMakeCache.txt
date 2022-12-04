@@ -231,6 +231,9 @@ SDL2_MIXER_LIBRARY:FILEPATH=/Library/Frameworks/SDL2_mixer.framework
 //Path to a library.
 SDL2_TTF_LIBRARY:FILEPATH=/Library/Frameworks/SDL2_ttf.framework
 
+//The directory containing a CMake configuration file for SDL2_image.
+SDL2_image_DIR:PATH=SDL2_image_DIR-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries

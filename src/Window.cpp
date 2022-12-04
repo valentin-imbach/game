@@ -2,6 +2,8 @@
 #include "Window.hpp"
 #include "utils/logger.hpp"
 
+Window* Window::instance = nullptr;
+
 Window::Window(const char* title, pair size, bool fullscreen) : title(title), size(size) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         ERROR("Failed to inizialize SDL", SDL_GetError());
@@ -25,8 +27,16 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
     }
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     LOG("Renderer created");
+
+    instance = this;
+}
+
+void Window::clear() {
+    SDL_SetRenderDrawColor(Window::renderer, 20, 20, 20, 255);
+    SDL_RenderClear(Window::renderer);
 }
 
 void Window::update() {
     SDL_GetWindowSize(sdl_window, &size.x, &size.y);
+    SDL_RenderPresent(Window::renderer);
 }

@@ -142,32 +142,59 @@ Game/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/build
 .PHONY : Game/fast
 
-src/GAme.o: src/GAme.cpp.o
+src/Game.o: src/Game.cpp.o
 
-.PHONY : src/GAme.o
+.PHONY : src/Game.o
 
 # target to build an object file
-src/GAme.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/GAme.cpp.o
-.PHONY : src/GAme.cpp.o
+src/Game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/Game.cpp.o
+.PHONY : src/Game.cpp.o
 
-src/GAme.i: src/GAme.cpp.i
+src/Game.i: src/Game.cpp.i
 
-.PHONY : src/GAme.i
+.PHONY : src/Game.i
 
 # target to preprocess a source file
-src/GAme.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/GAme.cpp.i
-.PHONY : src/GAme.cpp.i
+src/Game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/Game.cpp.i
+.PHONY : src/Game.cpp.i
 
-src/GAme.s: src/GAme.cpp.s
+src/Game.s: src/Game.cpp.s
 
-.PHONY : src/GAme.s
+.PHONY : src/Game.s
 
 # target to generate assembly for a file
-src/GAme.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/GAme.cpp.s
-.PHONY : src/GAme.cpp.s
+src/Game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/Game.cpp.s
+.PHONY : src/Game.cpp.s
+
+src/TextureManager.o: src/TextureManager.cpp.o
+
+.PHONY : src/TextureManager.o
+
+# target to build an object file
+src/TextureManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/TextureManager.cpp.o
+.PHONY : src/TextureManager.cpp.o
+
+src/TextureManager.i: src/TextureManager.cpp.i
+
+.PHONY : src/TextureManager.i
+
+# target to preprocess a source file
+src/TextureManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/TextureManager.cpp.i
+.PHONY : src/TextureManager.cpp.i
+
+src/TextureManager.s: src/TextureManager.cpp.s
+
+.PHONY : src/TextureManager.s
+
+# target to generate assembly for a file
+src/TextureManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Game.dir/build.make CMakeFiles/Game.dir/src/TextureManager.cpp.s
+.PHONY : src/TextureManager.cpp.s
 
 src/Window.o: src/Window.cpp.o
 
@@ -232,9 +259,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Game"
-	@echo "... src/GAme.o"
-	@echo "... src/GAme.i"
-	@echo "... src/GAme.s"
+	@echo "... src/Game.o"
+	@echo "... src/Game.i"
+	@echo "... src/Game.s"
+	@echo "... src/TextureManager.o"
+	@echo "... src/TextureManager.i"
+	@echo "... src/TextureManager.s"
 	@echo "... src/Window.o"
 	@echo "... src/Window.i"
 	@echo "... src/Window.s"

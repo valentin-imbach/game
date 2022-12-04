@@ -1,0 +1,3 @@
+/Users/valentin/Desktop/Game/game/CMakeFiles/rebuild_cache.dir
+/Users/valentin/Desktop/Game/game/CMakeFiles/edit_cache.dir
+/Users/valentin/Desktop/Game/game/CMakeFiles/Game.dir

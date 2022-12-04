@@ -10,13 +10,30 @@ set(CMAKE_BUILD_TYPE Debug)
 # add executables
 set(SOURCES
 src/Window.cpp
-src/GAme.cpp
+src/Game.cpp
+src/TextureManager.cpp
 src/main.cpp)
 
-find_package(SDL2 REQUIRED)
-add_executable(Game ${SOURCES})
-target_link_libraries(Game PRIVATE SDL2::SDL2)
+# add libraries
+find_library(SDL2_LIBRARY SDL2)
+find_library(SDL2_IMAGE_LIBRARY SDL2_image)
+find_library(SDL2_MIXER_LIBRARY SDL2_mixer)
+find_library(SDL2_TTF_LIBRARY SDL2_ttf)
 
-#target_link_libraries(Game ${LIBRARIES})
+set(LIBRARIES
+${SDL2_LIBRARY}
+${SDL2_IMAGE_LIBRARY}
+${SDL2_MIXER_LIBRARY}
+${SDL2_TTF_LIBRARY})
+
+#find_package(SDL2 REQUIRED)
+#find_package(SDL2_image REQUIRED)
+
+add_executable(Game ${SOURCES})
+
+target_link_libraries(Game ${LIBRARIES})
+
+#target_link_libraries(Game PRIVATE SDL2::SDL2)
+#target_link_libraries(Game PRIVATE SDL2::SDL_image)
 
 target_compile_options(Game PRIVATE)

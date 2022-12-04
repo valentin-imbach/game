@@ -30,10 +30,10 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/Applications/CMake.app/Contents/share/cmake-3.19/Modules/Platform/Darwin-Initialize.cmake"
   "/Applications/CMake.app/Contents/share/cmake-3.19/Modules/Platform/Darwin.cmake"
   "/Applications/CMake.app/Contents/share/cmake-3.19/Modules/Platform/UnixPaths.cmake"
-  "../CMakeLists.txt"
   "CMakeFiles/3.19.1/CMakeCCompiler.cmake"
   "CMakeFiles/3.19.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.19.1/CMakeSystem.cmake"
+  "CMakeLists.txt"
   )
 
 # The corresponding makefile is:

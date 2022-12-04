@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Game.dir/src/Game.cpp.o"
-  "CMakeFiles/Game.dir/src/TextureManager.cpp.o"
+  "CMakeFiles/Game.dir/src/GAme.cpp.o"
   "CMakeFiles/Game.dir/src/Window.cpp.o"
   "CMakeFiles/Game.dir/src/main.cpp.o"
   "Game"
