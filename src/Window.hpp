@@ -15,6 +15,7 @@ public:
     SDL_Renderer* renderer;
 
     pair size;
+    pair mousePosition;
 
     static Window* instance;
 };

@@ -18,11 +18,15 @@ SDL_Texture* TextureManager::loadTexture(std::string path) {
     return tex;
 }
 
-void TextureManager::drawTexture(SpriteSheet spriteSheet, pair source, pair size, pair destination, int scale) {
+void TextureManager::drawTexture(SpriteSheet spriteSheet, pair source, pair size, pair destination, int scale, bool centered) {
     SDL_Texture* texture = spriteSheets[int(spriteSheet)];
     if (!texture) return;
     SDL_Rect s = {source.x, source.y, size.x, size.y};
     SDL_Rect d = {destination.x, destination.y, scale * size.x, scale * size.y};
+    if (centered) {
+        d.x -= d.w/2;
+        d.y -= d.h/2;
+    }
     SDL_RenderCopyEx(Window::instance -> renderer, texture, &s, &d, 0, NULL, SDL_FLIP_NONE);
 }
 

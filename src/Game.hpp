@@ -4,11 +4,9 @@
 
 class Game {
 public:
-    Game(Window window);
+    Game();
 
     void update();
     void handleEvents();
-    bool running;
-    Window window;
-    
+    bool running;    
 };

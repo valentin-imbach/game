@@ -3,15 +3,16 @@
 #include "utils/logger.hpp"
 #include "TextureManager.hpp"
 
-Game::Game(Window window) : window(window) {
+Game::Game() {
     running = true;
     TextureManager::loadSpriteSheets();
 }
 
 void Game::update() {
-    window.clear();
-    TextureManager::drawTexture(SpriteSheet::HOLE, {0,0}, {16,16}, {100,100}, 5);
-    window.update();
+    Window::instance -> clear();
+    pair pos =  Window::instance -> mousePosition;
+    TextureManager::drawTexture(SpriteSheet::HOLE, {0,0}, {16,16}, pos, 5, true);
+    Window::instance -> update();
 }
 
 void Game::handleEvents() {

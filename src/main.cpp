@@ -5,7 +5,7 @@
 
 int main() {
     Window window("Title", {1024, 640});
-    Game game(window);
+    Game game;
 
     while (game.running) {
         game.handleEvents();

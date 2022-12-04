@@ -38,5 +38,6 @@ void Window::clear() {
 
 void Window::update() {
     SDL_GetWindowSize(sdl_window, &size.x, &size.y);
+    SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
     SDL_RenderPresent(Window::renderer);
 }
