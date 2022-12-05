@@ -5,17 +5,17 @@
 
 class Window {
 public:
-    Window(const char* title, pair size, bool fullscreen = false);
+	Window(const char* title, pair size, bool fullscreen = false);
 
-    void clear();
-    void update();
+	void clear();
+	void update();
 
-    const char* title;
-    SDL_Window* sdl_window;
-    SDL_Renderer* renderer;
+	const char* title;
+	SDL_Window* sdl_window;
+	SDL_Renderer* renderer;
 
-    pair size;
-    pair mousePosition;
+	pair size;
+	pair mousePosition;
 
-    static Window* instance;
+	static Window* instance;
 };

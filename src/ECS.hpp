@@ -1,27 +1,25 @@
 
 #pragma once
-#include "EntityManager.hpp"
 #include "ComponentManager.hpp"
+#include "EntityManager.hpp"
 #include "SystemManager.hpp"
 
 class ECS {
 public:
-    Entity createEntity() {
-		return entityManager.createEntity();
-	}
+	Entity createEntity() { return entityManager.createEntity(); }
 
-    void destroyEntity(Entity entity) {
+	void destroyEntity(Entity entity) {
 		entityManager.destroyEntity(entity);
 		componentManager.destroyEntity(entity);
 		systemManager.destroyEntity(entity);
 	}
 
-    template<typename T>
+	template <typename T>
 	ComponentId rosterComponent(ComponentId type = ComponentId::NONE) {
 		return componentManager.roster<T>(type);
 	}
 
-    template<typename T>
+	template <typename T>
 	void addComponent(T component, Entity entity) {
 		componentManager.add<T>(component, entity);
 		auto signature = entityManager.signatures[entity];
@@ -30,7 +28,7 @@ public:
 		systemManager.signatureChange(entity, signature);
 	}
 
-	template<typename T>
+	template <typename T>
 	void removeComponent(Entity entity) {
 		componentManager.remove<T>(entity);
 		auto signature = entityManager.signatures[entity];
@@ -39,35 +37,33 @@ public:
 		systemManager.signatureChange(entity, signature);
 	}
 
-	template<typename T>
+	template <typename T>
 	T& getComponent(Entity entity) {
 		return componentManager.get<T>(entity);
 	}
 
-    template<typename T>
+	template <typename T>
 	T* rosterSystem(SystemId id, Signature signature) {
 		T* system = systemManager.roster<T>(id, signature);
-		system -> componentManager = &componentManager;
+		system->componentManager = &componentManager;
 		return system;
 	}
 
-	template<typename T>
+	template <typename T>
 	T* rosterSystem(SystemId id, std::vector<ComponentId>&& ids) {
 		T* system = systemManager.roster<T>(id, makeSiganture(std::move(ids)));
-		system -> componentManager = &componentManager;
+		system->componentManager = &componentManager;
 		return system;
 	}
 
-    static Signature makeSiganture(std::vector<ComponentId>&& ids) {
-        Signature signature;
-        for (ComponentId id : ids) {
-            signature.set(size_t(id), true);
-        }
-        return signature;
-    }
+	static Signature makeSiganture(std::vector<ComponentId>&& ids) {
+		Signature signature;
+		for (ComponentId id : ids) { signature.set(size_t(id), true); }
+		return signature;
+	}
 
 private:
 	EntityManager entityManager;
-    ComponentManager componentManager;
+	ComponentManager componentManager;
 	SystemManager systemManager;
 };

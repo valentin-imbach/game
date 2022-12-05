@@ -1,21 +1,22 @@
 
 #pragma once
-#include "World.hpp"
 #include <memory>
+
+#include "World.hpp"
 
 class Game {
 public:
-    Game();
+	Game();
 
-    void update();
-    void handleEvents();
-    void limitFrameRate(int fps);
+	void update();
+	void handleEvents();
+	void limitFrameRate(int fps);
 
-    bool running;
-    uint lastFrameTicks;
-    int framesPerSecond;
-    uint lastSecondTicks;
-    int frameCounter;
+	bool running;
+	uint lastFrameTicks;
+	int framesPerSecond;
+	uint lastSecondTicks;
+	int frameCounter;
 
-    std::unique_ptr<World> world;
+	std::unique_ptr<World> world;
 };

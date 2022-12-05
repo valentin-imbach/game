@@ -4,15 +4,18 @@
 #include <ostream>
 
 struct pair {
-  int x, y;
-  
-  pair() : x(0), y(0) {}
-  template <typename T1, typename T2> pair(T1 x, T2 y) : x(x), y(y) {}
-  explicit operator bool() { return x != 0 || y != 0; }
+	int x, y;
+	pair() : x(0), y(0) {}
+
+	template <typename T1, typename T2>
+	pair(T1 x, T2 y) : x(x), y(y) {}
+
+	explicit operator bool() { return x != 0 || y != 0; }
 };
 
-template<> struct std::hash<pair> {
-    std::size_t operator()(::pair p) const { return std::hash<int>{}(p.x) ^ (std::hash<int>{}(p.y) << 1); }
+template <>
+struct std::hash<pair> {
+	std::size_t operator()(::pair p) const { return std::hash<int>{}(p.x) ^ (std::hash<int>{}(p.y) << 1); }
 };
 
 //* comparison
@@ -27,13 +30,13 @@ template<> struct std::hash<pair> {
 //* addition
 
 [[nodiscard]] inline pair operator+(pair p1, pair p2) { return {p1.x + p2.x, p1.y + p2.y}; }
-inline pair operator+=(pair &p1, pair p2) { return p1 = p1 + p2; }
+inline pair operator+=(pair& p1, pair p2) { return p1 = p1 + p2; }
 
 //* multiplication
 
 [[nodiscard]] inline pair operator*(int n, pair p) { return {n * p.x, n * p.y}; }
 [[nodiscard]] inline pair operator*(pair p, int n) { return n * p; }
-inline pair operator*=(pair &p, int n) { return p = n * p; }
+inline pair operator*=(pair& p, int n) { return p = n * p; }
 
 //* subtraction
 
@@ -43,12 +46,18 @@ inline pair operator-=(pair p1, pair p2) { return p1 += (-p2); }
 
 //* division
 
-[[nodiscard]] inline pair operator/(pair p, int n) { assert(n != 0); return {p.x / n, p.y / n}; }
+[[nodiscard]] inline pair operator/(pair p, int n) {
+	assert(n != 0);
+	return {p.x / n, p.y / n};
+}
 inline pair operator/=(pair& p, int n) { return p = p / n; }
 
 //* mod
 
-[[nodiscard]] inline pair operator%(pair p, int n) { assert(n != 0); return {p.x % n, p.y % n}; }
+[[nodiscard]] inline pair operator%(pair p, int n) {
+	assert(n != 0);
+	return {p.x % n, p.y % n};
+}
 inline pair operator%=(pair& p, int n) { return p = p % n; }
 
 //* scalar functions

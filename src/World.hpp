@@ -8,21 +8,22 @@
 
 class World {
 public:
-    World(std::string name);
-    void update();
+	World(std::string name);
+	void update();
+
 private:
-    void rosterComponents();
-    void rosterSystems();
+	void rosterComponents();
+	void rosterSystems();
 
-    ECS ecs;
-    SpriteSystem* spriteSystem;
-    GravitySystem* gravitySystem;
+	ECS ecs;
+	SpriteSystem* spriteSystem;
+	GravitySystem* gravitySystem;
 
-    std::string name;
+	std::string name;
 
-    Entity player;
-    Entity camera;
+	Entity player;
+	Entity camera;
 
-    Map map;
-    void renderMap();
+	Map map;
+	void renderMap();
 };
