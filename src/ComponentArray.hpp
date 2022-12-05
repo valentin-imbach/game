@@ -1,8 +1,7 @@
 
 #pragma once
-#include "EntityManager.hpp"
-#include <unordered_map>
-#include "utils/logger.hpp"
+#include "utils/utils.hpp"
+#include "ECS_types.hpp"
 
 class IComponentArray {
 public:

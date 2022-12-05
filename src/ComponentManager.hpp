@@ -1,7 +1,7 @@
 
 #pragma once
+#include "utils/utils.hpp"
 #include "ComponentArray.hpp"
-#include <array>
 
 class ComponentManager {
 public:

@@ -1,5 +1,4 @@
 
-#include <iostream>
 #include "Window.hpp"
 #include "Game.hpp"
 

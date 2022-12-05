@@ -46,7 +46,9 @@ public:
 
     template<typename T>
 	T* rosterSystem(SystemId id, Signature signature) {
-		return systemManager.roster<T>(id, signature);
+		T* system = systemManager.roster<T>(id, signature);
+		system -> componentManager = &componentManager;
+		return system;
 	}
 
     static Signature makeSiganture(std::vector<ComponentId>&& ids) {

@@ -1,10 +1,8 @@
 
 #pragma once 
-#include <unordered_map>
-#include "SystemId.hpp"
-#include "EntityManager.hpp"
+#include "utils/utils.hpp"
+#include "ECS_types.hpp"
 #include "System.hpp"
-#include "utils/logger.hpp"
 
 class SystemManager {
 public:

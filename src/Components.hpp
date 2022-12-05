@@ -1,7 +1,6 @@
 
 #pragma once
-#include "TextureManager.hpp"
-#include "utils/pair.hpp"
+#include "utils/utils.hpp"
 
 enum class SpriteSheet;
 

@@ -1,22 +1,35 @@
 
 #pragma once
-#include <cstdint>
-#include <queue>
-#include <bitset>
-#include <array>
-#include "ComponentId.hpp"
-
-typedef std::uint32_t Entity;
-constexpr Entity MAX_ENTITIES = 100;
-
-using Signature = std::bitset<size_t(ComponentId::MAX)>;
+#include "utils/utils.hpp"
+#include "ECS_types.hpp"
 
 class EntityManager {
 public:
-    EntityManager();
-    Entity createEntity();
-    void destroyEntity(Entity entity);
-    Entity entityCount();
+    EntityManager() {
+        for (int entity = 1; entity <= MAX_ENTITIES; entity += 1) {
+            availableEntities.push(entity);
+        }
+    }
+
+    Entity createEntity() {
+        if (availableEntities.empty()) {
+            WARNING("Entity limit reached");
+            return 0;
+        }
+        Entity entity = availableEntities.front();
+        availableEntities.pop();
+        return entity;
+    }
+
+    void destroyEntity(Entity entity) {
+        if (!entity) return;
+        signatures[entity].reset();
+        availableEntities.push(entity);
+    }
+
+    int entityCount() {
+        return MAX_ENTITIES - availableEntities.size();
+    }
 
     std::array<Signature, MAX_ENTITIES + 1> signatures;
 

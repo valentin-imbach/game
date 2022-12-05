@@ -1,32 +1,40 @@
 
 #include "Game.hpp"
-#include "utils/logger.hpp"
+#include "utils/utils.hpp"
 #include "TextureManager.hpp"
 #include "Components.hpp"
+#include "Window.hpp"
 
 Game::Game() {
     running = true;
     TextureManager::loadSpriteSheets();
-
-    Signature signature = ECS::makeSiganture({ComponentId::SPRITE, ComponentId::POSITION});
-    spriteSystem = ecs.rosterSystem<SpriteSystem>(SystemId::SPRITE, signature);
-
+    rosterComponents();
+    rosterSystems();
+    
     Entity player = ecs.createEntity();
 
-    ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
     PositionComponent positionComponent = {{200,100}};
-    ecs.addComponent(positionComponent, player);
-   
-    ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
+    //ecs.addComponent(positionComponent, player);
+
     SpriteComponent spriteComponent = {SpriteSheet::HOLE};
     ecs.addComponent(spriteComponent, player);
 }
 
+void Game::rosterComponents() {
+    ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
+    ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
+}
+
+void Game::rosterSystems() {
+    Signature signature = ECS::makeSiganture({ComponentId::SPRITE, ComponentId::POSITION});
+    spriteSystem = ecs.rosterSystem<SpriteSystem>(SystemId::SPRITE, signature);
+    gravitySystem = ecs.rosterSystem<GravitySystem>(SystemId::GRAVITY, ECS::makeSiganture({ComponentId::POSITION}));
+}
+
 void Game::update() {
     Window::instance -> clear();
-    //pair pos =  Window::instance -> mousePosition;
-    //TextureManager::drawTexture(SpriteSheet::HOLE, {0,0}, {16,16}, pos, 5, true);
-    spriteSystem -> update(ecs.componentManager);
+    spriteSystem -> update();
+    gravitySystem -> update();
     Window::instance -> update();
 }
 

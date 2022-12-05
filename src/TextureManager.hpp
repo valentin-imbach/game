@@ -1,13 +1,13 @@
 
 #pragma once
 #include <SDL2/SDL.h>
-#include <string>
-#include "utils/pair.hpp"
-#include <array>
+#include "utils/utils.hpp"
 
 #define SPRITE_PATH "../assets/sprites/"
 
 enum class SpriteSheet {
+    NONE,
+    
     HOLE,
 
     MAX

@@ -1,7 +1,7 @@
 
 #pragma once
 #include <SDL2/SDL.h>
-#include "utils/pair.hpp"
+#include "utils/utils.hpp"
 
 class Window {
 public:

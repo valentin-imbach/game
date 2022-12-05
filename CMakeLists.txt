@@ -12,7 +12,6 @@ set(SOURCES
 src/Window.cpp
 src/Game.cpp
 src/TextureManager.cpp
-src/EntityManager.cpp
 src/main.cpp)
 
 # add libraries

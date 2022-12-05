@@ -1,6 +1,5 @@
 
 #include "Window.hpp"
-#include "utils/logger.hpp"
 
 Window* Window::instance = nullptr;
 

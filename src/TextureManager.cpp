@@ -1,8 +1,7 @@
 
 #include "TextureManager.hpp"
-#include "utils/logger.hpp"
-#include "Window.hpp"
 #include <SDL2_image/SDL_image.h>
+#include "Window.hpp"
 
 std::array<SDL_Texture*, int(SpriteSheet::MAX)> TextureManager::spriteSheets = {};
 
