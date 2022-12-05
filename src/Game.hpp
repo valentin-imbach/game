@@ -1,6 +1,8 @@
 
 #pragma once
 #include "Window.hpp"
+#include "ECS.hpp"
+#include "Systems/SpriteSystem.hpp"
 
 class Game {
 public:
@@ -8,5 +10,9 @@ public:
 
     void update();
     void handleEvents();
-    bool running;    
+
+    bool running;
+
+    ECS ecs;
+    SpriteSystem* spriteSystem;
 };
