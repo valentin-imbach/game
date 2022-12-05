@@ -1,4 +1,4 @@
 .DS_Store
-
+.clang-format
 .cache/
 build/
