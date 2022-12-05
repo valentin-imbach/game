@@ -12,6 +12,7 @@ set(SOURCES
 src/Window.cpp
 src/Game.cpp
 src/TextureManager.cpp
+src/World.cpp
 src/main.cpp)
 
 # add libraries

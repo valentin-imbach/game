@@ -59,7 +59,7 @@ public:
         return signature;
     }
 
-//private:
+private:
 	EntityManager entityManager;
     ComponentManager componentManager;
 	SystemManager systemManager;
