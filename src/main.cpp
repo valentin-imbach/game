@@ -9,6 +9,7 @@ int main() {
     while (game.running) {
         game.handleEvents();
         game.update();
+        game.limitFrameRate(30);
     }
 
     return 0;

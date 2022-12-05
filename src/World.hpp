@@ -4,6 +4,7 @@
 #include "ECS.hpp"
 #include "Systems/SpriteSystem.hpp"
 #include "Systems/GravitySystem.hpp"
+#include "Map.hpp"
 
 class World {
 public:
@@ -18,4 +19,10 @@ private:
     GravitySystem* gravitySystem;
 
     std::string name;
+
+    Entity player;
+    Entity camera;
+
+    Map map;
+    void renderMap();
 };

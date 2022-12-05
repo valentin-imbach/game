@@ -51,6 +51,13 @@ public:
 		return system;
 	}
 
+	template<typename T>
+	T* rosterSystem(SystemId id, std::vector<ComponentId>&& ids) {
+		T* system = systemManager.roster<T>(id, makeSiganture(std::move(ids)));
+		system -> componentManager = &componentManager;
+		return system;
+	}
+
     static Signature makeSiganture(std::vector<ComponentId>&& ids) {
         Signature signature;
         for (ComponentId id : ids) {

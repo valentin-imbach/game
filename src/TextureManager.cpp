@@ -5,6 +5,10 @@
 
 std::array<SDL_Texture*, int(SpriteSheet::MAX)> TextureManager::spriteSheets = {};
 
+void TextureManager::Init() {
+    loadSpriteSheets();
+}
+
 SDL_Texture* TextureManager::loadTexture(std::string path) {
     SDL_Surface* tmpSurface = IMG_Load((SPRITE_PATH + path).c_str());
     if (!tmpSurface) {
@@ -31,4 +35,6 @@ void TextureManager::drawTexture(SpriteSheet spriteSheet, pair source, pair size
 
 void TextureManager::loadSpriteSheets() {
     spriteSheets[int(SpriteSheet::HOLE)] = loadTexture("hole.png");
+    spriteSheets[int(SpriteSheet::GRASS)] = loadTexture("grass.png");
+    spriteSheets[int(SpriteSheet::DIRT)] = loadTexture("dirt.png");
 }

@@ -5,10 +5,14 @@
 
 #define SPRITE_PATH "../assets/sprites/"
 
+constexpr int BIT = 16;
+
 enum class SpriteSheet {
     NONE,
-    
+
     HOLE,
+    GRASS,
+    DIRT,
 
     MAX
 };
@@ -16,6 +20,7 @@ enum class SpriteSheet {
 class TextureManager {
 public:
     TextureManager() = delete;
+    static void Init();
     static void loadSpriteSheets();
     static SDL_Texture* loadTexture(std::string path);
     static void drawTexture(SpriteSheet spriteSheet, pair source, pair size, pair position, int scale = 1, bool centered = false);

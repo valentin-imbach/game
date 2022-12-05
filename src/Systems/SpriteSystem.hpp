@@ -4,14 +4,20 @@
 #include "../ComponentManager.hpp"
 #include "../Components.hpp"
 #include "../TextureManager.hpp"
+#include "../Window.hpp"
 
 class SpriteSystem : public System {
 public:
-    void update() {
+    void update(Entity camera) {
         for (Entity entity : entities) {
-            auto& positionComponent = componentManager -> get<PositionComponent>(entity);
-            auto& spriteComponent = componentManager -> get<SpriteComponent>(entity);
-            TextureManager::drawTexture(spriteComponent.spriteSheet, {0,0}, {16,16}, positionComponent.position, 5, true);
+            vec entityPosition = componentManager -> get<PositionComponent>(entity).position;
+            SpriteSheet spriteSheet = componentManager -> get<SpriteComponent>(entity).spriteSheet;
+
+            vec cameraPosition = componentManager -> get<PositionComponent>(camera).position;
+            int zoom = componentManager -> get<CameraComponent>(camera).zoom;
+
+            pair screenPosition = round(BIT*zoom*(entityPosition - cameraPosition)) + (Window::instance -> size)/2;
+            TextureManager::drawTexture(spriteSheet, {0, 0}, {BIT, BIT}, screenPosition, zoom, true);
         }
     }
 };

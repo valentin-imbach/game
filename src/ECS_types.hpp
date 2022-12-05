@@ -10,6 +10,7 @@ enum class ComponentId : std::uint8_t {
 
     POSITION,
     SPRITE,
+    CAMERA,
 
     MAX
 };

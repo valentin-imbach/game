@@ -5,9 +5,13 @@
 enum class SpriteSheet;
 
 struct PositionComponent {
-    pair position;
+    vec position;
 };
 
 struct SpriteComponent {
     SpriteSheet spriteSheet;
+};
+
+struct CameraComponent {
+    int zoom;
 };
