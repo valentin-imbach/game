@@ -9,11 +9,13 @@ World::World(std::string name) : name(name) {
 
 	player = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{0, 0}}, player);
-	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE}, player);
+	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
 	ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	ecs.addComponent<MovementComponent>({2}, player);
 	ecs.addComponent<ControllerComponent>({}, player);
-	ecs.addComponent<SpriteComponent>({Sprite(SpriteSheet::HOLE, {0, 0}, {1, 1})}, player);
+
+	Sprite playerSprite = Sprite(SpriteSheet::PLAYER, {7, 0}, {1, 2}, 1, 100);
+	ecs.addComponent<SpriteComponent>({playerSprite}, player);
 
 	camera = ecs.createEntity();
 	ecs.addComponent<CameraComponent>({4, player}, camera);
@@ -35,12 +37,14 @@ void World::rosterSystems() {
 	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT, {ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION});
 	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER, {ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
 	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
+	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION, {ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
 }
 
 void World::update(uint dt) {
 	renderMap();
 	controllerSystem -> update();
 	creatureMovementSystem -> update(dt);
+	creatureAnimationSystem -> update();
 	cameraSystem -> update();
 	spriteSystem->update(camera);
 }

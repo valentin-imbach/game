@@ -28,6 +28,7 @@ enum class SystemId : std::uint8_t {
 	CREATURE_MOVEMENT,
 	CONTROLLER,
 	CAMERA,
+	CREATURE_ANIMATION,
 
 	MAX
 };

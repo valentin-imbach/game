@@ -7,9 +7,11 @@
 
 Game::Game() {
 	running = true;
-	lastFrameTicks = 0;
-	lastSecondTicks = 0;
-	frameCounter = 0;
+
+	lastFrameTicks = SDL_GetTicks();
+	sample = std::queue<uint>();
+	sampleSum = 0;
+
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();
 	TextManager::Init();
@@ -40,16 +42,20 @@ void Game::limitFrameRate(int fps) {
 	uint delay = ceil(1000.0f / fps);
 	uint ticks = SDL_GetTicks();
 	uint past = ticks - lastFrameTicks;
+	lastFrameTicks = ticks;
+
 	if (past < delay) {
 		SDL_Delay(delay - past);
 		past = delay;
 	}
-	lastFrameTicks = ticks;
-	frameCounter += 1;
-	if (ticks - lastSecondTicks > 1000) {
-		framesPerSecond = frameCounter;
-		frameCounter = 0;
-		lastSecondTicks = ticks;
-	}
+
 	dt = past;
+	
+	sample.push(dt);
+	sampleSum += dt;
+	if (sample.size() > SAMPLE_SIZE) {
+		sampleSum -= sample.front();
+		sample.pop();
+		framesPerSecond = floor(SAMPLE_SIZE * 1000.0f / sampleSum);
+	}
 }

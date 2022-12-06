@@ -30,6 +30,8 @@ enum class CreatureState : uint8_t {
 
 struct CreatureStateComponent {
 	CreatureState state;
+	Direction facing;
+	bool stateChanged;
 };
 
 struct MovementComponent {

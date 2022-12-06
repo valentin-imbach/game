@@ -19,6 +19,7 @@ private:
 	CreatureMovementSystem* creatureMovementSystem;
 	ControllerSystem* controllerSystem;
 	CameraSystem* cameraSystem;
+	CreatureAnimationSystem* creatureAnimationSystem;
 
 	std::string name;
 

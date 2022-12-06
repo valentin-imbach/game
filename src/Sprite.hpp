@@ -9,21 +9,27 @@ enum class SpriteSheet {
 	HOLE,
 	GRASS,
 	DIRT,
+	PLAYER,
 
 	MAX
 };
 
 class Sprite {
 public:
-	Sprite(SpriteSheet spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1});
+	Sprite(SpriteSheet spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uint8_t frameCount = 1, uint frameDuration = 0);
+	void draw(pair position, int scale = 1, bool centered = true);
+	static void loadSpriteSheets();
+private:
+	void animationReset();
 	SpriteSheet spriteSheet;
 	pair source;
 	pair size;
-	void draw(pair position, int scale = 1, bool centered = true);
-	static void loadSpriteSheets();
-
-private:
+	uint8_t frameCount;
+	uint frameDuration;
+	uint animationStart;
 	static std::array<SDL_Texture*, int(SpriteSheet::MAX)> spriteSheets;
+
+	friend class CreatureAnimationSystem;
 };
 
 class SpriteStack {

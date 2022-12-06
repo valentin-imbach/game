@@ -4,3 +4,4 @@
 #include "CreatureMovementSystem.hpp"
 #include "ControllerSystem.hpp"
 #include "CameraSystem.hpp"
+#include "CreatureAnimationSystem.hpp"
