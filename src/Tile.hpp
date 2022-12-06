@@ -1,8 +1,7 @@
 
 #pragma once
 #include "utils/utils.hpp"
-
-enum class SpriteSheet;
+#include "Sprite.hpp"
 
 enum class TileId : uint8_t {
 	NONE,
@@ -15,8 +14,8 @@ enum class TileId : uint8_t {
 
 class Tile {
 public:
-	Tile(TileId tileId = TileId::NONE);
+	Tile(TileId tileId, SpriteStack spriteStack);
 	TileId tileId;
-	pair style = {1, 1};
+	SpriteStack spriteStack;
 	static std::array<SpriteSheet, size_t(TileId::MAX)> spriteSheets;
 };

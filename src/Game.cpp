@@ -11,7 +11,7 @@ Game::Game() {
 	lastSecondTicks = 0;
 	frameCounter = 0;
 	framesPerSecond = 0;
-	TextureManager::Init();
+	Sprite::loadSpriteSheets();
 	TextManager::Init();
 	world = std::make_unique<World>("World");
 }

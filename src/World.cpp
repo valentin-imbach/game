@@ -13,7 +13,7 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	ecs.addComponent<MovementComponent>({1}, player);
 	ecs.addComponent<ControllerComponent>({}, player);
-	ecs.addComponent<SpriteComponent>({SpriteSheet::HOLE}, player);
+	ecs.addComponent<SpriteComponent>({Sprite(SpriteSheet::HOLE, {0, 0}, {1, 1})}, player);
 
 	camera = ecs.createEntity();
 	ecs.addComponent<CameraComponent>({4, player}, camera);
@@ -48,15 +48,14 @@ void World::update(uint dt) {
 void World::renderMap() {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
-			SpriteSheet spriteSheet = Tile::spriteSheets[size_t(map.tiles[x][y].tileId)];
-			pair style = map.tiles[x][y].style;
+			SpriteStack spriteStack = map.tiles[x][y] -> spriteStack;
 
 			vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
 			int zoom = ecs.getComponent<CameraComponent>(camera).zoom;
 			vec tilePosition = {x, y};
 
 			pair screenPosition = round(BIT * zoom * (tilePosition - cameraPosition)) + (Window::instance->size) / 2;
-			TextureManager::drawTexture(spriteSheet, BIT * style, {BIT, BIT}, screenPosition, zoom, true);
+			spriteStack.draw(screenPosition, zoom, true);
 		}
 	}
 }

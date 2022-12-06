@@ -2,6 +2,7 @@
 #pragma once
 #include "utils/utils.hpp"
 #include "ECS_types.hpp"
+#include "Sprite.hpp"
 
 enum class SpriteSheet;
 
@@ -10,7 +11,7 @@ struct PositionComponent {
 };
 
 struct SpriteComponent {
-	SpriteSheet spriteSheet;
+	Sprite sprite;
 };
 
 struct CameraComponent {

@@ -13,6 +13,7 @@ src/Window.cpp
 src/Game.cpp
 src/TextureManager.cpp
 src/TextManager.cpp
+src/Sprite.cpp
 src/World.cpp
 src/Map.cpp
 src/Tile.cpp
