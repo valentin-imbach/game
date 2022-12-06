@@ -2,14 +2,13 @@
 #pragma once
 #include "utils/utils.hpp"
 #include "ECS.hpp"
-#include "Systems/SpriteSystem.hpp"
-#include "Systems/GravitySystem.hpp"
+#include "Systems/systems.hpp"
 #include "Map.hpp"
 
 class World {
 public:
 	World(std::string name);
-	void update();
+	void update(uint dt);
 
 private:
 	void rosterComponents();
@@ -17,7 +16,9 @@ private:
 
 	ECS ecs;
 	SpriteSystem* spriteSystem;
-	GravitySystem* gravitySystem;
+	CreatureMovementSystem* creatureMovementSystem;
+	ControllerSystem* controllerSystem;
+	CameraSystem* cameraSystem;
 
 	std::string name;
 

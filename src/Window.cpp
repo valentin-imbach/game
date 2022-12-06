@@ -36,7 +36,11 @@ void Window::clear() {
 }
 
 void Window::update() {
+	keyState = SDL_GetKeyboardState(NULL);
 	SDL_GetWindowSize(sdl_window, &size.x, &size.y);
 	SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+}
+
+void Window::draw() {
 	SDL_RenderPresent(Window::renderer);
 }

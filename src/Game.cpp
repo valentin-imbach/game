@@ -18,10 +18,11 @@ Game::Game() {
 
 void Game::update() {
 	Window::instance->clear();
-	world->update();
+	Window::instance->update();
+	world->update(dt);
 	std::string text = "FPS: " + std::to_string(framesPerSecond);
 	TextManager::drawText(text, {20, 20});
-	Window::instance->update();
+	Window::instance->draw();
 }
 
 void Game::handleEvents() {
@@ -50,4 +51,5 @@ void Game::limitFrameRate(int fps) {
 		frameCounter = 0;
 		lastSecondTicks = ticks;
 	}
+	dt = past;
 }

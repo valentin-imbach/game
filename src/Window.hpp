@@ -9,6 +9,7 @@ public:
 
 	void clear();
 	void update();
+	void draw();
 
 	const char* title;
 	SDL_Window* sdl_window;
@@ -16,6 +17,8 @@ public:
 
 	pair size;
 	pair mousePosition;
+
+	const Uint8* keyState;
 
 	static Window* instance;
 };

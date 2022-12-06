@@ -1,34 +1,47 @@
 
 #include "World.hpp"
 #include "Components.hpp"
+#include "Systems/CameraSystem.hpp"
 
 World::World(std::string name) : name(name) {
 	rosterComponents();
 	rosterSystems();
 
-	camera = ecs.createEntity();
-	ecs.addComponent<CameraComponent>({4}, camera);
-	ecs.addComponent<PositionComponent>({{0, 0}}, camera);
-
 	player = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{0, 0}}, player);
+	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE}, player);
+	ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
+	ecs.addComponent<MovementComponent>({1}, player);
+	ecs.addComponent<ControllerComponent>({}, player);
 	ecs.addComponent<SpriteComponent>({SpriteSheet::HOLE}, player);
+
+	camera = ecs.createEntity();
+	ecs.addComponent<CameraComponent>({4, player}, camera);
+	ecs.addComponent<PositionComponent>({{0, 0}}, camera);
 }
 
 void World::rosterComponents() {
 	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CameraComponent>(ComponentId::CAMERA);
+	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
+	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
+	ecs.rosterComponent<DirectionComponent>(ComponentId::DIRECTION);
+	ecs.rosterComponent<MovementComponent>(ComponentId::MOVEMENT);
 }
 
 void World::rosterSystems() {
 	spriteSystem = ecs.rosterSystem<SpriteSystem>(SystemId::SPRITE, {ComponentId::SPRITE, ComponentId::POSITION});
-	gravitySystem = ecs.rosterSystem<GravitySystem>(SystemId::GRAVITY, {ComponentId::POSITION});
+	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT, {ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION});
+	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER, {ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
+	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
 }
 
-void World::update() {
-	// gravitySystem -> update();
+void World::update(uint dt) {
 	renderMap();
+	controllerSystem -> update();
+	creatureMovementSystem -> update(dt);
+	cameraSystem -> update();
 	spriteSystem->update(camera);
 }
 

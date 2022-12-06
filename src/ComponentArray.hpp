@@ -12,8 +12,12 @@ public:
 template <typename T>
 class ComponentArray : public IComponentArray {
 public:
+	bool hasComponent(Entity entity) {
+		return (entityToIndex.find(entity) != entityToIndex.end());
+	}
+
 	void addComponent(Entity entity, T component) {
-		if (entityToIndex.find(entity) != entityToIndex.end()) {
+		if (hasComponent(entity)) {
 			WARNING("Component added to same entity more than once");
 			return;
 		}
@@ -25,7 +29,7 @@ public:
 	}
 
 	void removeComponent(Entity entity) {
-		if (entityToIndex.find(entity) == entityToIndex.end()) {
+		if (!hasComponent(entity)) {
 			WARNING("Trying to removing non-existent component");
 			return;
 		}
@@ -43,16 +47,15 @@ public:
 	}
 
 	T& getComponent(Entity entity) {
-		if (entityToIndex.find(entity) == entityToIndex.end()) {
+		if (!hasComponent(entity)) {
 			ERROR("Trying to access non-existent component");
-			return components[0];
+			exit(EXIT_FAILURE);
 		}
 		return components[entityToIndex[entity]];
 	}
 
 	void destroyEntity(Entity entity) override {
-		if (entityToIndex.find(entity) != entityToIndex.end())
-			removeComponent(entity);
+		if (hasComponent(entity)) removeComponent(entity);
 	}
 
 private:

@@ -19,6 +19,11 @@ public:
 	}
 
 	template <typename T>
+	bool has(Entity entity) {
+		return getComponentArray<T>()->hasComponent(entity);
+	}
+
+	template <typename T>
 	void add(T component, Entity entity) {
 		getComponentArray<T>()->addComponent(entity, component);
 	}

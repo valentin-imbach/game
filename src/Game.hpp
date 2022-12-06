@@ -17,6 +17,7 @@ public:
 	int framesPerSecond;
 	uint lastSecondTicks;
 	int frameCounter;
+	uint dt;
 
 	std::unique_ptr<World> world;
 };
