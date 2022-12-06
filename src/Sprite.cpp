@@ -29,3 +29,7 @@ void SpriteStack::draw(pair position, int scale, bool centered) {
 		layer.first.draw(position + BIT * layer.second, scale, centered);
 	}
 }
+
+void SpriteStack::clear() {
+	stack.clear();
+}

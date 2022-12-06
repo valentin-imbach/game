@@ -11,7 +11,7 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<PositionComponent>({{0, 0}}, player);
 	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE}, player);
 	ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
-	ecs.addComponent<MovementComponent>({1}, player);
+	ecs.addComponent<MovementComponent>({2}, player);
 	ecs.addComponent<ControllerComponent>({}, player);
 	ecs.addComponent<SpriteComponent>({Sprite(SpriteSheet::HOLE, {0, 0}, {1, 1})}, player);
 

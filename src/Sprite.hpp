@@ -30,6 +30,7 @@ class SpriteStack {
 public:
 	void addSprite(Sprite sprite, pair offset = {0, 0});
 	void draw(pair position, int scale = 1, bool centered = true);
+	void clear();
 private:
 	std::vector<std::pair<Sprite, pair>> stack;
 };
