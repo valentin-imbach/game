@@ -31,7 +31,7 @@ private:
 	Entity camera;
 
 	Map map;
-	GridMap gridEntities;
+	GridMap gridMap;
 
 	void drawMap();
 	void drawEntities(DrawQueue& drawQueue);

@@ -16,7 +16,7 @@ World::World(std::string name) : name(name) {
 	SpriteStack playerSprites;
 	playerSprites.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100});
 	ecs.addComponent<SpriteComponent>({playerSprites, 1}, player);
-	Collider playerCollider = {{-0.5f, -0.5f}, {1, 1}};
+	Collider playerCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
 	ecs.addComponent<ColliderComponent>({playerCollider}, player);
 
 	camera = ecs.createEntity();
@@ -25,19 +25,19 @@ World::World(std::string name) : name(name) {
 
 	Entity tree = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{7, 4}}, tree);
-	gridEntities[{7,4}] = tree;
+	gridMap[{7, 4}] = tree;
 	SpriteStack treeSprites;
 	treeSprites.addSprite({SpriteSheet::RESOURCES, {0, 0}, {1, 3}});
 	ecs.addComponent<SpriteComponent>({treeSprites, 2}, tree);
 
 	Entity rock = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{4, 5}}, rock);
-	gridEntities[{4,5}] = rock;
+	gridMap[{4, 5}] = rock;
 	SpriteStack rockSprites;
 	rockSprites.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
 	ecs.addComponent<SpriteComponent>({rockSprites, 1}, rock);
-	Collider rockCollider = {{-0.5f, -0.5f}, {1, 1}};
-	ecs.addComponent<ColliderComponent>({rockCollider}, rock);
+	// Collider rockCollider = {{-0.5f, -0.5f}, {1, 1}};
+	// ecs.addComponent<ColliderComponent>({rockCollider}, rock);
 }
 
 void World::rosterComponents() {
@@ -64,7 +64,7 @@ void World::update(uint dt) {
 	controllerSystem->update();
 	collisionSystem->update();
 
-	creatureMovementSystem->update(dt);
+	creatureMovementSystem->update(dt, gridMap);
 	cameraSystem->update();
 
 	creatureAnimationSystem->update();
