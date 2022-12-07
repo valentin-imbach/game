@@ -67,3 +67,7 @@ inline vec operator/=(vec &v, float t) { return v = v / t; }
 [[nodiscard]] inline vec rotate(vec v, float ang) {
 	return polar(angle(v) + ang, norm(v));
 }
+
+[[nodiscard]] inline pair ceil(vec v) {
+	return {ceil(v.x), ceil(v.y)};
+}

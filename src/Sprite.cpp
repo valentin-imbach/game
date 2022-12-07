@@ -28,6 +28,7 @@ void Sprite::loadSpriteSheets() {
 	spriteSheets[int(SpriteSheet::GRASS)] = TextureManager::loadTexture("grass.png");
 	spriteSheets[int(SpriteSheet::DIRT)] = TextureManager::loadTexture("dirt.png");
 	spriteSheets[int(SpriteSheet::PLAYER)] = TextureManager::loadTexture("player.png");
+	spriteSheets[int(SpriteSheet::RESOURCES)] = TextureManager::loadTexture("resources.png");
 }
 
 //* SpriteStack

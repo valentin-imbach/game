@@ -3,15 +3,15 @@
 #include "utils/utils.hpp"
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
-
-enum class SpriteSheet;
+#include "Collider.hpp"
 
 struct PositionComponent {
 	vec position;
 };
 
 struct SpriteComponent {
-	Sprite sprite;
+	SpriteStack spriteStack;
+	uint8_t height;
 };
 
 struct CameraComponent {
@@ -44,4 +44,9 @@ struct ControllerComponent {
 
 struct DirectionComponent {
 	Direction direction;
+};
+
+struct ColliderComponent {
+	Collider collider;
+	std::vector<Entity> collisions;
 };

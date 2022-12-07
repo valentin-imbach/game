@@ -5,6 +5,9 @@
 #include "Systems/systems.hpp"
 #include "Map.hpp"
 
+typedef std::vector<std::pair<float, DrawCall>> DrawQueue;
+typedef std::unordered_map<pair, Entity> GridMap;
+
 class World {
 public:
 	World(std::string name);
@@ -20,6 +23,7 @@ private:
 	ControllerSystem* controllerSystem;
 	CameraSystem* cameraSystem;
 	CreatureAnimationSystem* creatureAnimationSystem;
+	CollisionSystem* collisionSystem;
 
 	std::string name;
 
@@ -27,5 +31,8 @@ private:
 	Entity camera;
 
 	Map map;
-	void renderMap();
+	GridMap gridEntities;
+
+	void drawMap();
+	void drawEntities(DrawQueue& drawQueue);
 };

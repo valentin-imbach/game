@@ -11,6 +11,10 @@ public:
 			float speed = componentManager->get<MovementComponent>(entity).speed;
 			PositionComponent& positionComponent = componentManager->get<PositionComponent>(entity);
 			CreatureState state = componentManager->get<CreatureStateComponent>(entity).state;
+			std::vector<Entity>& collisions = componentManager->get<ColliderComponent>(entity).collisions;
+
+			if (!collisions.empty()) continue;
+
 			if (state == CreatureState::WALKING) {
 				positionComponent.position += dt * speed * unitVectors[int(direction)] / 1000;
 			}
