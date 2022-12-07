@@ -1,8 +1,6 @@
 
 #include "Map.hpp"
-#include <memory>
-#include "Sprite.hpp"
-#include "utils/random.hpp"
+#include "utils/utils.hpp"
 
 Map::Map() {
 	seed = 0;

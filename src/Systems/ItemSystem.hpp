@@ -2,7 +2,6 @@
 #pragma once
 #include <vector>
 #include "../System.hpp"
-#include "../Components.hpp"
 #include "../ECS.hpp"
 
 class ItemSystem : public System {

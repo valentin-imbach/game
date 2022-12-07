@@ -11,6 +11,7 @@
 
 #include <cstdint>
 #include <cassert>
+#include <cmath>
 
 #include "pair.hpp"
 #include "vec.hpp"

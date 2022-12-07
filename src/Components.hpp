@@ -1,6 +1,5 @@
 
 #pragma once
-#include "utils/direction.hpp"
 #include "utils/utils.hpp"
 #include "ECS_types.hpp"
 #include "Sprite.hpp"

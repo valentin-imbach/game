@@ -18,7 +18,5 @@ public:
 	pair size;
 	pair mousePosition;
 
-	const Uint8* keyState;
-
 	static Window* instance;
 };

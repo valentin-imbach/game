@@ -1,12 +1,12 @@
 
 #pragma once
 #include "../System.hpp"
-#include "../Components.hpp"
 #include "../Window.hpp"
+#include "../Events.hpp"
 
 class ControllerSystem : public System {
 public:
-	void update() {
+	void update(InputStates& inputStates) {
 		for (Entity entity : entities) {
 			CreatureState& state = componentManager->get<CreatureStateComponent>(entity).state;
 			Direction& facing = componentManager->get<CreatureStateComponent>(entity).facing;
@@ -15,10 +15,10 @@ public:
 			Direction& direction = componentManager->get<DirectionComponent>(entity).direction;
 
 			pair sum(1, 1);
-			if (Window::instance->keyState[SDL_SCANCODE_W]) sum.y -= 1;
-			if (Window::instance->keyState[SDL_SCANCODE_A]) sum.x -= 1;
-			if (Window::instance->keyState[SDL_SCANCODE_S]) sum.y += 1;
-			if (Window::instance->keyState[SDL_SCANCODE_D]) sum.x += 1;
+			if (inputStates[size_t(InputState::MOVE_EAST)]) sum.x += 1;
+			if (inputStates[size_t(InputState::MOVE_NORTH)]) sum.y -= 1;
+			if (inputStates[size_t(InputState::MOVE_WEST)]) sum.x -= 1;
+			if (inputStates[size_t(InputState::MOVE_SOUTH)]) sum.y += 1;
 
 			Direction oldDirection = direction;
 			if (sum.x == 2 && sum.y == 1) direction = Direction(0);

@@ -1,7 +1,6 @@
 
 #pragma once
 #include "../System.hpp"
-#include "../Components.hpp"
 
 typedef std::unordered_map<pair, Entity> GridMap;
 

@@ -1,7 +1,6 @@
 
 #pragma once
 #include "../System.hpp"
-#include "../Components.hpp"
 
 class CollisionSystem : public System {
 public:

@@ -4,6 +4,7 @@
 #include "ECS.hpp"
 #include "Systems/systems.hpp"
 #include "Map.hpp"
+#include "Events.hpp"
 
 typedef std::vector<std::pair<float, DrawCall>> DrawQueue;
 typedef std::unordered_map<pair, Entity> GridMap;
@@ -12,6 +13,8 @@ class World {
 public:
 	World(std::string name);
 	void update(uint dt);
+	std::vector<InputEvent> inputEvents;
+	std::bitset<size_t(InputState::MAX)> inputStates;
 
 private:
 	void rosterComponents();
@@ -36,4 +39,5 @@ private:
 
 	void drawMap();
 	void drawEntities(DrawQueue& drawQueue);
+	void handleEvents();
 };

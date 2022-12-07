@@ -3,7 +3,6 @@
 #include <cstdint>
 #include "pair.hpp"
 #include "vec.hpp"
-#include <math.h>
 
 enum class Direction : uint8_t {
 	EAST,

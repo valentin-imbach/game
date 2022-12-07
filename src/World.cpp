@@ -1,7 +1,6 @@
 
 #include "World.hpp"
 #include "Components.hpp"
-#include "Systems/CameraSystem.hpp"
 
 World::World(std::string name) : name(name) {
 	rosterComponents();
@@ -72,7 +71,8 @@ void World::rosterSystems() {
 }
 
 void World::update(uint dt) {
-	controllerSystem->update();
+	handleEvents();
+	controllerSystem->update(inputStates);
 	collisionSystem->update();
 
 	creatureMovementSystem->update(dt, gridMap);
@@ -86,6 +86,10 @@ void World::update(uint dt) {
 
 	drawMap();
 	drawEntities(drawQueue);
+}
+
+void World::handleEvents() {
+	
 }
 
 void World::drawMap() {

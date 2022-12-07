@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
+#include <vector>
 #include "vec.hpp"
 #include "pair.hpp"
-#include <vector>
+
 
 #define LOG(args...) log(std::clog, "LOG", __FILE__, __LINE__, args);
 #define ERROR(args...) log(std::cerr, "ERROR", __FILE__, __LINE__, args);

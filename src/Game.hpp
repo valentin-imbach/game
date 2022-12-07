@@ -1,7 +1,5 @@
 
 #pragma once
-#include <memory>
-
 #include "World.hpp"
 
 #define SAMPLE_SIZE 50

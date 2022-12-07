@@ -1,6 +1,5 @@
 
 #include "Tile.hpp"
-#include "TextureManager.hpp"
 
 Tile::Tile(TileId tileId, SpriteStack spriteStack) : tileId(tileId), spriteStack(spriteStack) {}
 

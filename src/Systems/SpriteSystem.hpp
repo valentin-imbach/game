@@ -1,9 +1,6 @@
 
 #pragma once
-#include <cmath>
 #include "../System.hpp"
-#include "../ComponentManager.hpp"
-#include "../Components.hpp"
 #include "../TextureManager.hpp"
 #include "../Window.hpp"
 

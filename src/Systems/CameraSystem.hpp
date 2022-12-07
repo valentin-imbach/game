@@ -1,7 +1,6 @@
 
 #pragma once
 #include "../System.hpp"
-#include "../Components.hpp"
 
 class CameraSystem : public System {
 public:
