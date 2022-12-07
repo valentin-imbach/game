@@ -1,5 +1,6 @@
 
 #pragma once
+#include "utils/direction.hpp"
 #include "utils/utils.hpp"
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
@@ -12,6 +13,7 @@ struct PositionComponent {
 struct SpriteComponent {
 	SpriteStack spriteStack;
 	uint8_t height;
+	float scale = 1;
 };
 
 struct CameraComponent {
@@ -49,4 +51,8 @@ struct DirectionComponent {
 struct ColliderComponent {
 	Collider collider;
 	std::vector<Entity> collisions;
+};
+
+struct ItemComponent {
+
 };

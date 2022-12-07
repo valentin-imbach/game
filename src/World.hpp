@@ -24,6 +24,7 @@ private:
 	CameraSystem* cameraSystem;
 	CreatureAnimationSystem* creatureAnimationSystem;
 	CollisionSystem* collisionSystem;
+	ItemSystem* itemSystem;
 
 	std::string name;
 

@@ -38,6 +38,15 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<SpriteComponent>({rockSprites, 1}, rock);
 	// Collider rockCollider = {{-0.5f, -0.5f}, {1, 1}};
 	// ecs.addComponent<ColliderComponent>({rockCollider}, rock);
+
+	Entity sword = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({{3, 5}}, sword);
+	SpriteStack swordSprites;
+	swordSprites.addSprite({SpriteSheet::ITEMS, {0, 0}, {1, 1}});
+	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f}, sword);
+	Collider swordCollider = {{-0.2f, -0.2f}, {0.4f, 0.4f}};
+	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
+	ecs.addComponent<ItemComponent>({}, sword);
 }
 
 void World::rosterComponents() {
@@ -49,6 +58,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<DirectionComponent>(ComponentId::DIRECTION);
 	ecs.rosterComponent<MovementComponent>(ComponentId::MOVEMENT);
 	ecs.rosterComponent<ColliderComponent>(ComponentId::COLLIDER);
+	ecs.rosterComponent<ItemComponent>(ComponentId::ITEM);
 }
 
 void World::rosterSystems() {
@@ -58,6 +68,7 @@ void World::rosterSystems() {
 	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION, {ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION, {ComponentId::COLLIDER, ComponentId::POSITION});
+	itemSystem = ecs.rosterSystem<ItemSystem>(SystemId::ITEM, {ComponentId::COLLIDER, ComponentId::ITEM});
 }
 
 void World::update(uint dt) {
@@ -66,6 +77,8 @@ void World::update(uint dt) {
 
 	creatureMovementSystem->update(dt, gridMap);
 	cameraSystem->update();
+
+	itemSystem->update(ecs);
 
 	creatureAnimationSystem->update();
 	std::vector<std::pair<float, DrawCall>> drawQueue;
