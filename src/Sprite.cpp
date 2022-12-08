@@ -31,6 +31,9 @@ void Sprite::loadSpriteSheets() {
 	spriteSheets[int(SpriteSheet::RESOURCES)] = TextureManager::loadTexture("resources.png");
 	spriteSheets[int(SpriteSheet::ITEMS)] = TextureManager::loadTexture("items.png");
 	spriteSheets[int(SpriteSheet::COW)] = TextureManager::loadTexture("cow.png");
+	spriteSheets[int(SpriteSheet::ROCK)] = TextureManager::loadTexture("rock.png");
+	spriteSheets[int(SpriteSheet::SAND)] = TextureManager::loadTexture("sand.png");
+	spriteSheets[int(SpriteSheet::WATER)] = TextureManager::loadTexture("water.png");
 }
 
 //* SpriteStack

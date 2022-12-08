@@ -8,6 +8,9 @@ enum class TileId : uint8_t {
 
 	GRASS,
 	DIRT,
+	ROCK,
+	SAND,
+	WATER,
 
 	MAX
 };

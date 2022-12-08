@@ -89,7 +89,7 @@ void World::update(uint dt) {
 	controllerSystem->update(inputStates);
 	animalAiSystem->update();
 
-	creatureMovementSystem->update(dt, gridMap);
+	creatureMovementSystem->update(dt, gridMap, map);
 	collisionSystem->update();
 
 	itemSystem->update(ecs);

@@ -13,6 +13,9 @@ enum class SpriteSheet {
 	RESOURCES,
 	ITEMS,
 	COW,
+	ROCK,
+	SAND,
+	WATER,
 
 	MAX
 };

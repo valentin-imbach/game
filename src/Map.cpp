@@ -7,11 +7,20 @@ Map::Map() {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position(x, y);
+
+			int height = perlin(seed, vec(position) / 30) * 200;
+
 			TileId tileId = TileId::NONE;
-			if (bernoulli(seed++, 0.3)) {
-				tileId = TileId::GRASS;
-			} else {
+			if (height < -20) {
+				tileId = TileId::WATER;
+			} else if (height < 0) {
+				tileId = TileId::SAND;
+			} else if (height < 10) {
+				tileId = TileId::ROCK;
+			} else if (height < 20) {
 				tileId = TileId::DIRT;
+			} else {
+				tileId = TileId::GRASS;
 			}
 
 			tiles[x][y] = std::make_unique<Tile>(tileId, SpriteStack());

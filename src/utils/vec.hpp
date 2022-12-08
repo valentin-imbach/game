@@ -71,3 +71,8 @@ inline vec operator/=(vec &v, float t) { return v = v / t; }
 [[nodiscard]] inline pair ceil(vec v) {
 	return {ceil(v.x), ceil(v.y)};
 }
+
+[[nodiscard]] inline pair floor(vec v) {
+	return {floor(v.x), floor(v.y)};
+}
+
