@@ -30,6 +30,7 @@ private:
 	CollisionSystem* collisionSystem;
 	ItemSystem* itemSystem;
 	TileDrawSystem* tileDrawSystem;
+	AnimalAiSystem* animalAiSystem;
 
 	std::string name;
 

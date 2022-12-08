@@ -8,3 +8,4 @@
 #include "CollisionSystem.hpp"
 #include "ItemSystem.hpp"
 #include "TileDrawSystem.hpp"
+#include "AnimalAiSystem.hpp"

@@ -55,3 +55,7 @@ struct ColliderComponent {
 struct ItemComponent {
 
 };
+
+struct AnimalAiComponent {
+	uint nextChange;
+};

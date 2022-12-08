@@ -12,6 +12,7 @@ enum class SpriteSheet {
 	PLAYER,
 	RESOURCES,
 	ITEMS,
+	COW,
 
 	MAX
 };

@@ -36,8 +36,18 @@ World::World(std::string name) : name(name) {
 	SpriteStack rockSprites;
 	rockSprites.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
 	ecs.addComponent<SpriteComponent>({rockSprites, 1}, rock);
-	// Collider rockCollider = {{-0.5f, -0.5f}, {1, 1}};
-	// ecs.addComponent<ColliderComponent>({rockCollider}, rock);
+	
+	Entity cow = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({{3, 3}}, cow);
+	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, cow);
+	ecs.addComponent<DirectionComponent>({Direction::EAST}, cow);
+	ecs.addComponent<MovementComponent>({0.5f}, cow);
+	SpriteStack cowSprites;
+	cowSprites.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100});
+	ecs.addComponent<SpriteComponent>({cowSprites, 1}, cow);
+	Collider cowCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
+	ecs.addComponent<ColliderComponent>({cowCollider}, cow);
+	ecs.addComponent<AnimalAiComponent>({}, cow);
 
 	Entity sword = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{3, 5}}, sword);
@@ -59,6 +69,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<MovementComponent>(ComponentId::MOVEMENT);
 	ecs.rosterComponent<ColliderComponent>(ComponentId::COLLIDER);
 	ecs.rosterComponent<ItemComponent>(ComponentId::ITEM);
+	ecs.rosterComponent<AnimalAiComponent>(ComponentId::ANIMAL_AI);
 }
 
 void World::rosterSystems() {
@@ -70,19 +81,21 @@ void World::rosterSystems() {
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION, {ComponentId::COLLIDER, ComponentId::POSITION});
 	itemSystem = ecs.rosterSystem<ItemSystem>(SystemId::ITEM, {ComponentId::COLLIDER, ComponentId::ITEM});
 	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE, {ComponentId::CAMERA, ComponentId::POSITION});
+	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI, {ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
 }
 
 void World::update(uint dt) {
 	handleEvents();
 	controllerSystem->update(inputStates);
-	collisionSystem->update();
+	animalAiSystem->update();
 
 	creatureMovementSystem->update(dt, gridMap);
-	cameraSystem->update();
+	collisionSystem->update();
 
 	itemSystem->update(ecs);
 
 	creatureAnimationSystem->update();
+	cameraSystem->update();
 
 	tileDrawSystem->update(map);
 	entityDrawSystem->update(camera);
