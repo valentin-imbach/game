@@ -13,21 +13,23 @@ class World {
 public:
 	World(std::string name);
 	void update(uint dt);
+	void handleEvents();
+
 	std::vector<InputEvent> inputEvents;
 	std::bitset<size_t(InputState::MAX)> inputStates;
-
 private:
 	void rosterComponents();
 	void rosterSystems();
 
 	ECS ecs;
-	SpriteSystem* spriteSystem;
+	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;
 	ControllerSystem* controllerSystem;
 	CameraSystem* cameraSystem;
 	CreatureAnimationSystem* creatureAnimationSystem;
 	CollisionSystem* collisionSystem;
 	ItemSystem* itemSystem;
+	TileDrawSystem* tileDrawSystem;
 
 	std::string name;
 
@@ -36,8 +38,4 @@ private:
 
 	Map map;
 	GridMap gridMap;
-
-	void drawMap();
-	void drawEntities(DrawQueue& drawQueue);
-	void handleEvents();
 };

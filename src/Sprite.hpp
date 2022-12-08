@@ -43,10 +43,3 @@ private:
 	std::vector<std::pair<Sprite, pair>> stack;
 	friend class CreatureAnimationSystem;
 };
-
-struct DrawCall {
-	SpriteStack spriteStack;
-	pair position;
-	int scale;
-	bool centered;
-};

@@ -1,6 +1,7 @@
 
 #include "World.hpp"
 #include "Components.hpp"
+#include "ECS_types.hpp"
 
 World::World(std::string name) : name(name) {
 	rosterComponents();
@@ -61,13 +62,14 @@ void World::rosterComponents() {
 }
 
 void World::rosterSystems() {
-	spriteSystem = ecs.rosterSystem<SpriteSystem>(SystemId::SPRITE, {ComponentId::SPRITE, ComponentId::POSITION});
+	entityDrawSystem = ecs.rosterSystem<EntityDrawSystem>(SystemId::ENTITY_DRAW, {ComponentId::SPRITE, ComponentId::POSITION});
 	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT, {ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION, ComponentId::COLLIDER});
 	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER, {ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
 	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION, {ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION, {ComponentId::COLLIDER, ComponentId::POSITION});
 	itemSystem = ecs.rosterSystem<ItemSystem>(SystemId::ITEM, {ComponentId::COLLIDER, ComponentId::ITEM});
+	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE, {ComponentId::CAMERA, ComponentId::POSITION});
 }
 
 void World::update(uint dt) {
@@ -81,44 +83,11 @@ void World::update(uint dt) {
 	itemSystem->update(ecs);
 
 	creatureAnimationSystem->update();
-	std::vector<std::pair<float, DrawCall>> drawQueue;
-	spriteSystem->update(camera, drawQueue);
 
-	drawMap();
-	drawEntities(drawQueue);
+	tileDrawSystem->update(map);
+	entityDrawSystem->update(camera);
 }
 
 void World::handleEvents() {
 	
-}
-
-void World::drawMap() {
-	vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
-	int zoom = ecs.getComponent<CameraComponent>(camera).zoom;
-	pair screenSize = Window::instance->size;
-	int border = BIT * zoom / 2;
-
-	pair range = ceil(vec(screenSize) / (2 * BIT * zoom));
-	pair start = round(cameraPosition);
-
-	int x1 = std::max(0, start.x - range.x);
-	int x2 = std::min(MAP_WIDTH - 1, start.x + range.x);
-	int y1 = std::max(0, start.y - range.y);
-	int y2 = std::min(MAP_HEIGHT - 1, start.y + range.y);
-
-	for (int x = x1; x <= x2; x++) {
-		for (int y = y1; y <= y2; y++) {
-			SpriteStack spriteStack = map.tiles[x][y]->spriteStack;
-			vec tilePosition = {x, y};
-			pair screenPosition = round(BIT * zoom * (tilePosition - cameraPosition)) + screenSize / 2;
-			spriteStack.draw(screenPosition, zoom, true);
-		}
-	}
-}
-
-void World::drawEntities(DrawQueue& drawQueue) {
-	std::sort(drawQueue.begin(), drawQueue.end(), [](auto& l, auto& r) { return l.first < r.first; });
-	for (auto& p : drawQueue) {
-		p.second.spriteStack.draw(p.second.position, p.second.scale, p.second.centered);
-	}
 }

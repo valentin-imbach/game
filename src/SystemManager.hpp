@@ -23,6 +23,7 @@ public:
 
 	void signatureChange(Entity entity, Signature signature) {
 		for (int i = 1; i < int(SystemId::MAX); i++) {
+			//if (signatures[i].none()) continue;
 			if ((signature & signatures[i]) == signatures[i]) {
 				systems[i]->entities.insert(entity);
 			} else {

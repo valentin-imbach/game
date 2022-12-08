@@ -4,13 +4,22 @@
 #include "../TextureManager.hpp"
 #include "../Window.hpp"
 
-class SpriteSystem : public System {
+struct DrawCall {
+	SpriteStack spriteStack;
+	pair position;
+	int scale;
+	bool centered;
+};
+
+class EntityDrawSystem : public System {
 public:
-	void update(Entity camera, std::vector<std::pair<float, DrawCall>>& drawQueue) {
+	void update(Entity camera) {
 		vec cameraPosition = componentManager->get<PositionComponent>(camera).position;
 		float zoom = componentManager->get<CameraComponent>(camera).zoom;
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * zoom;
+
+		std::vector<std::pair<float, DrawCall>> drawQueue;
 
 		for (Entity entity : entities) {
 			vec entityPosition = componentManager->get<PositionComponent>(entity).position;
@@ -26,6 +35,11 @@ public:
 
 			DrawCall drawCall = {spriteStack, screenPosition, int(scale * zoom), false};
 			drawQueue.emplace_back(entityPosition.y, drawCall);
+		}
+
+		std::sort(drawQueue.begin(), drawQueue.end(), [](auto& l, auto& r) { return l.first < r.first; });
+		for (auto& p : drawQueue) {
+			p.second.spriteStack.draw(p.second.position, p.second.scale, p.second.centered);
 		}
 	}
 };

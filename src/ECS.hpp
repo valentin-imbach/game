@@ -43,7 +43,7 @@ public:
 	}
 
 	template <typename T>
-	T* rosterSystem(SystemId id, Signature signature) {
+	T* rosterSystem(SystemId id, Signature signature = 0) {
 		T* system = systemManager.roster<T>(id, signature);
 		system->componentManager = &componentManager;
 		return system;

@@ -26,13 +26,14 @@ using Signature = std::bitset<size_t(ComponentId::MAX)>;
 enum class SystemId : std::uint8_t {
 	NONE,
 
-	SPRITE,
+	ENTITY_DRAW,
 	CREATURE_MOVEMENT,
 	CONTROLLER,
 	CAMERA,
 	CREATURE_ANIMATION,
 	COLLISION,
 	ITEM,
+	TILE,
 
 	MAX
 };
