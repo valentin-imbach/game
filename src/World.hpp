@@ -12,11 +12,13 @@ typedef std::unordered_map<pair, Entity> GridMap;
 class World {
 public:
 	World(std::string name);
+	~World();
 	void update(uint dt);
 	void handleEvents();
 
 	std::vector<InputEvent> inputEvents;
 	std::bitset<size_t(InputState::MAX)> inputStates;
+	static World* world;
 private:
 	void rosterComponents();
 	void rosterSystems();

@@ -6,16 +6,16 @@
 
 class ItemSystem : public System {
 public:
-	void update(ECS& ecs) {
+	void update() {
 		std::vector<Entity> kill;
 		for (Entity entity : entities) {
-			std::vector<Entity>& collisions = componentManager->get<ColliderComponent>(entity).collisions;
+			std::vector<Entity>& collisions = ecs -> getComponent<ColliderComponent>(entity).collisions;
 			if (!collisions.empty()) {
 				kill.push_back(entity);
 			}
 		}
 		for (Entity entity : kill) {
-			ecs.destroyEntity(entity);
+			ecs -> destroyEntity(entity);
 		}
 	}
 };

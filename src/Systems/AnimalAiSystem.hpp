@@ -2,16 +2,17 @@
 #pragma once
 #include "../System.hpp"
 #include "SDL2/SDL_timer.h"
+#include "../ECS.hpp"
 
 class AnimalAiSystem : public System {
 public:
 	void update() {
 		for (Entity entity : entities) {
-			CreatureState& state = componentManager->get<CreatureStateComponent>(entity).state;
-			Direction& facing = componentManager->get<CreatureStateComponent>(entity).facing;
-			Direction& direction = componentManager->get<DirectionComponent>(entity).direction;
-			uint& nextChange = componentManager->get<AnimalAiComponent>(entity).nextChange;
-			bool& stateChanged = componentManager->get<CreatureStateComponent>(entity).stateChanged;
+			CreatureState& state = ecs -> getComponent<CreatureStateComponent>(entity).state;
+			Direction& facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
+			Direction& direction = ecs -> getComponent<DirectionComponent>(entity).direction;
+			uint& nextChange = ecs -> getComponent<AnimalAiComponent>(entity).nextChange;
+			bool& stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
 
 			uint ticks = SDL_GetTicks();
 			stateChanged = false;

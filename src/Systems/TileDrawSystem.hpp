@@ -3,13 +3,14 @@
 #include "../System.hpp"
 #include "../Window.hpp"
 #include "../Map.hpp"
+#include "../ECS.hpp"
 
 class TileDrawSystem : public System {
 public:
 	void update(Map& map) {
 		for (Entity camera : entities) {
-			vec cameraPosition = componentManager->get<PositionComponent>(camera).position;
-			int zoom = componentManager->get<CameraComponent>(camera).zoom;
+			vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
+			int zoom = ecs -> getComponent<CameraComponent>(camera).zoom;
 			pair screenSize = Window::instance->size;
 			int border = BIT * zoom / 2;
 

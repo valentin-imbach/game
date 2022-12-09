@@ -3,16 +3,17 @@
 #include "../System.hpp"
 #include "../Window.hpp"
 #include "../Events.hpp"
+#include "../ECS.hpp"
 
 class ControllerSystem : public System {
 public:
 	void update(InputStates& inputStates) {
 		for (Entity entity : entities) {
-			CreatureState& state = componentManager->get<CreatureStateComponent>(entity).state;
-			Direction& facing = componentManager->get<CreatureStateComponent>(entity).facing;
-			bool& stateChanged = componentManager->get<CreatureStateComponent>(entity).stateChanged;
+			CreatureState& state = ecs -> getComponent<CreatureStateComponent>(entity).state;
+			Direction& facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
+			bool& stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
 
-			Direction& direction = componentManager->get<DirectionComponent>(entity).direction;
+			Direction& direction = ecs -> getComponent<DirectionComponent>(entity).direction;
 
 			pair sum(1, 1);
 			if (inputStates[size_t(InputState::MOVE_EAST)]) sum.x += 1;

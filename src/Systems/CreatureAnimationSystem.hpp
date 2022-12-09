@@ -1,15 +1,16 @@
 
 #pragma once
 #include "../System.hpp"
+#include "../ECS.hpp"
 
 class CreatureAnimationSystem : public System {
 public:
 	void update() {
 		for (Entity entity : entities) {
-			SpriteStack& spriteStack = componentManager->get<SpriteComponent>(entity).spriteStack;
-			CreatureState state = componentManager->get<CreatureStateComponent>(entity).state;
-			bool stateChanged = componentManager->get<CreatureStateComponent>(entity).stateChanged;
-			Direction facing = componentManager->get<CreatureStateComponent>(entity).facing;
+			SpriteStack& spriteStack = ecs -> getComponent<SpriteComponent>(entity).spriteStack;
+			CreatureState state = ecs -> getComponent<CreatureStateComponent>(entity).state;
+			bool stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
+			Direction facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
 
 			for (auto& layer : spriteStack.stack) {
 				Sprite& sprite = layer.first;

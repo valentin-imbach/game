@@ -3,6 +3,7 @@
 #include "../System.hpp"
 #include "../TextureManager.hpp"
 #include "../Window.hpp"
+#include "../ECS.hpp"
 
 struct DrawCall {
 	SpriteStack spriteStack;
@@ -14,18 +15,18 @@ struct DrawCall {
 class EntityDrawSystem : public System {
 public:
 	void update(Entity camera) {
-		vec cameraPosition = componentManager->get<PositionComponent>(camera).position;
-		float zoom = componentManager->get<CameraComponent>(camera).zoom;
+		vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
+		float zoom = ecs -> getComponent<CameraComponent>(camera).zoom;
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * zoom;
 
 		std::vector<std::pair<float, DrawCall>> drawQueue;
 
 		for (Entity entity : entities) {
-			vec entityPosition = componentManager->get<PositionComponent>(entity).position;
-			SpriteStack spriteStack = componentManager->get<SpriteComponent>(entity).spriteStack;
-			uint8_t height = componentManager->get<SpriteComponent>(entity).height;
-			float scale = componentManager->get<SpriteComponent>(entity).scale;
+			vec entityPosition = ecs -> getComponent<PositionComponent>(entity).position;
+			SpriteStack spriteStack = ecs -> getComponent<SpriteComponent>(entity).spriteStack;
+			uint8_t height = ecs -> getComponent<SpriteComponent>(entity).height;
+			float scale = ecs -> getComponent<SpriteComponent>(entity).scale;
 
 			vec offset = {0.5f, height + 0.5f};
 			pair screenPosition = round(BIT * zoom * (entityPosition - scale * offset - cameraPosition)) + (Window::instance->size) / 2;

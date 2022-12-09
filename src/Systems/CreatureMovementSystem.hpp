@@ -2,6 +2,7 @@
 #pragma once
 #include "../System.hpp"
 #include "../Map.hpp"
+#include "../ECS.hpp"
 
 typedef std::unordered_map<pair, Entity> GridMap;
 
@@ -9,13 +10,13 @@ class CreatureMovementSystem : public System {
 public:
 	void update(uint dt, GridMap& gridMap, Map& map) {
 		for (Entity entity : entities) {
-			Direction direction = componentManager->get<DirectionComponent>(entity).direction;
-			float speed = componentManager->get<MovementComponent>(entity).speed;
-			vec& position = componentManager->get<PositionComponent>(entity).position;
-			CreatureState state = componentManager->get<CreatureStateComponent>(entity).state;
+			Direction direction = ecs -> getComponent<DirectionComponent>(entity).direction;
+			float speed = ecs -> getComponent<MovementComponent>(entity).speed;
+			vec& position = ecs -> getComponent<PositionComponent>(entity).position;
+			CreatureState state = ecs -> getComponent<CreatureStateComponent>(entity).state;
 
-			Collider collider = componentManager->get<ColliderComponent>(entity).collider;
-			std::vector<Entity>& collisions = componentManager->get<ColliderComponent>(entity).collisions;
+			Collider collider = ecs -> getComponent<ColliderComponent>(entity).collider;
+			std::vector<Entity>& collisions = ecs -> getComponent<ColliderComponent>(entity).collisions;
 
 			vec newPosition = position;
 			if (state == CreatureState::WALKING) {

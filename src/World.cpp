@@ -3,7 +3,10 @@
 #include "Components.hpp"
 #include "ECS_types.hpp"
 
+World* World::world = nullptr;
+
 World::World(std::string name) : name(name) {
+	world = this;
 	rosterComponents();
 	rosterSystems();
 
@@ -92,7 +95,7 @@ void World::update(uint dt) {
 	creatureMovementSystem->update(dt, gridMap, map);
 	collisionSystem->update();
 
-	itemSystem->update(ecs);
+	itemSystem->update();
 
 	creatureAnimationSystem->update();
 	cameraSystem->update();
@@ -103,4 +106,8 @@ void World::update(uint dt) {
 
 void World::handleEvents() {
 	
+}
+
+World::~World() {
+	world = nullptr;
 }

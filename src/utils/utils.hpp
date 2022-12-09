@@ -8,6 +8,7 @@
 #include <bitset>
 #include <unordered_map>
 #include <string>
+#include <variant>
 
 #include <cstdint>
 #include <cassert>

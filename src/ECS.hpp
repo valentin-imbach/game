@@ -38,6 +38,11 @@ public:
 	}
 
 	template <typename T>
+	bool hasComponent(Entity entity) {
+		return componentManager.has<T>(entity);
+	}
+
+	template <typename T>
 	T& getComponent(Entity entity) {
 		return componentManager.get<T>(entity);
 	}
@@ -45,14 +50,14 @@ public:
 	template <typename T>
 	T* rosterSystem(SystemId id, Signature signature = 0) {
 		T* system = systemManager.roster<T>(id, signature);
-		system->componentManager = &componentManager;
+		system->ecs = this;
 		return system;
 	}
 
 	template <typename T>
 	T* rosterSystem(SystemId id, std::vector<ComponentId>&& ids) {
 		T* system = systemManager.roster<T>(id, makeSiganture(std::move(ids)));
-		system->componentManager = &componentManager;
+		system->ecs = this;
 		return system;
 	}
 

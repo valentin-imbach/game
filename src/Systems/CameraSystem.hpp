@@ -1,16 +1,17 @@
 
 #pragma once
 #include "../System.hpp"
+#include "../ECS.hpp"
 
 class CameraSystem : public System {
 public:
 	void update() {
 		for (Entity entity : entities) {
-			vec& position = componentManager->get<PositionComponent>(entity).position;
-			Entity target = componentManager->get<CameraComponent>(entity).target;
+			vec& position = ecs -> getComponent<PositionComponent>(entity).position;
+			Entity target = ecs -> getComponent<CameraComponent>(entity).target;
 
-			if (!componentManager->has<PositionComponent>(target)) return;
-			vec targetPosition = componentManager->get<PositionComponent>(target).position;
+			if (!ecs -> hasComponent<PositionComponent>(target)) return;
+			vec targetPosition = ecs -> getComponent<PositionComponent>(target).position;
 			position = targetPosition;
 		}
 	}
