@@ -4,6 +4,7 @@
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
 #include "Collider.hpp"
+#include "Item.hpp"
 
 struct PositionComponent {
 	vec position;
@@ -53,9 +54,13 @@ struct ColliderComponent {
 };
 
 struct ItemComponent {
-
+	Item item;
 };
 
 struct AnimalAiComponent {
 	uint nextChange;
+};
+
+struct InventoryComponent {
+	Inventory inventory;
 };

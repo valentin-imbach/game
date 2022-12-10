@@ -30,7 +30,7 @@ private:
 	CameraSystem* cameraSystem;
 	CreatureAnimationSystem* creatureAnimationSystem;
 	CollisionSystem* collisionSystem;
-	ItemSystem* itemSystem;
+	ItemPickupSystem* itemPickupSystem;
 	TileDrawSystem* tileDrawSystem;
 	AnimalAiSystem* animalAiSystem;
 

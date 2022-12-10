@@ -1,9 +1,8 @@
 
 #pragma once
 #include <vector>
-#include "Components.hpp"
 #include "utils/utils.hpp"
-#include "ECS.hpp"
+#include "ECS_types.hpp"
 
 #define MAX_STACK 99
 
@@ -81,7 +80,7 @@ struct ItemSlot {
 	Item item;
 	
 	Item add(Item other) {
-		if (item) {
+		if (!item) {
 			item = other;
 			return Item();
 		} else if (item.stackable && other.stackable && item.itemId == other.itemId) {

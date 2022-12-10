@@ -18,6 +18,7 @@ enum class ComponentId : std::uint8_t {
 	COLLIDER,
 	ITEM,
 	ANIMAL_AI,
+	INVENTORY,
 
 	MAX
 };
@@ -33,7 +34,7 @@ enum class SystemId : std::uint8_t {
 	CAMERA,
 	CREATURE_ANIMATION,
 	COLLISION,
-	ITEM,
+	ITEM_PICKUP,
 	TILE,
 	ANIMAL_AI,
 

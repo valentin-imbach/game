@@ -6,6 +6,6 @@
 #include "CameraSystem.hpp"
 #include "CreatureAnimationSystem.hpp"
 #include "CollisionSystem.hpp"
-#include "ItemSystem.hpp"
+#include "ItemPickupSystem.hpp"
 #include "TileDrawSystem.hpp"
 #include "AnimalAiSystem.hpp"

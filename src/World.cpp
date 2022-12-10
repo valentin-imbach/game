@@ -2,6 +2,7 @@
 #include "World.hpp"
 #include "Components.hpp"
 #include "ECS_types.hpp"
+#include "Item.hpp"
 
 World* World::world = nullptr;
 
@@ -21,6 +22,7 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<SpriteComponent>({playerSprites, 1}, player);
 	Collider playerCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
 	ecs.addComponent<ColliderComponent>({playerCollider}, player);
+	ecs.addComponent<InventoryComponent>({Inventory(7,4)}, player);
 
 	camera = ecs.createEntity();
 	ecs.addComponent<CameraComponent>({4, player}, camera);
@@ -59,7 +61,7 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f}, sword);
 	Collider swordCollider = {{-0.2f, -0.2f}, {0.4f, 0.4f}};
 	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
-	ecs.addComponent<ItemComponent>({}, sword);
+	ecs.addComponent<ItemComponent>({Item(sword)}, sword);
 }
 
 void World::rosterComponents() {
@@ -73,6 +75,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ColliderComponent>(ComponentId::COLLIDER);
 	ecs.rosterComponent<ItemComponent>(ComponentId::ITEM);
 	ecs.rosterComponent<AnimalAiComponent>(ComponentId::ANIMAL_AI);
+	ecs.rosterComponent<InventoryComponent>(ComponentId::INVENTORY);
 }
 
 void World::rosterSystems() {
@@ -82,7 +85,7 @@ void World::rosterSystems() {
 	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION, {ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION, {ComponentId::COLLIDER, ComponentId::POSITION});
-	itemSystem = ecs.rosterSystem<ItemSystem>(SystemId::ITEM, {ComponentId::COLLIDER, ComponentId::ITEM});
+	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP, {ComponentId::COLLIDER, ComponentId::INVENTORY});
 	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE, {ComponentId::CAMERA, ComponentId::POSITION});
 	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI, {ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
 }
@@ -95,7 +98,7 @@ void World::update(uint dt) {
 	creatureMovementSystem->update(dt, gridMap, map);
 	collisionSystem->update();
 
-	itemSystem->update();
+	itemPickupSystem->update();
 
 	creatureAnimationSystem->update();
 	cameraSystem->update();
