@@ -22,7 +22,7 @@ public:
 					sprite.source.x = 0;
 				}
 
-				sprite.source.y = int(facing) / 2;
+				sprite.source.y = facing == Direction::EAST ? 0 : 2;
 
 				if (stateChanged) {
 					sprite.animationReset();

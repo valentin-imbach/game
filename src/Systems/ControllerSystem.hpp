@@ -22,14 +22,14 @@ public:
 			if (inputStates[size_t(InputState::MOVE_SOUTH)]) sum.y += 1;
 
 			Direction oldDirection = direction;
-			if (sum.x == 2 && sum.y == 1) direction = Direction(0);
-			if (sum.x == 2 && sum.y == 0) direction = Direction(1);
-			if (sum.x == 1 && sum.y == 0) direction = Direction(2);
-			if (sum.x == 0 && sum.y == 0) direction = Direction(3);
-			if (sum.x == 0 && sum.y == 1) direction = Direction(4);
-			if (sum.x == 0 && sum.y == 2) direction = Direction(5);
-			if (sum.x == 1 && sum.y == 2) direction = Direction(6);
-			if (sum.x == 2 && sum.y == 2) direction = Direction(7);
+			if (sum.x == 2 && sum.y == 1) direction = Direction(1);
+			if (sum.x == 2 && sum.y == 0) direction = Direction(2);
+			if (sum.x == 1 && sum.y == 0) direction = Direction(3);
+			if (sum.x == 0 && sum.y == 0) direction = Direction(4);
+			if (sum.x == 0 && sum.y == 1) direction = Direction(5);
+			if (sum.x == 0 && sum.y == 2) direction = Direction(6);
+			if (sum.x == 1 && sum.y == 2) direction = Direction(7);
+			if (sum.x == 2 && sum.y == 2) direction = Direction(8);
 
 			Direction oldFacing = facing;
 			if (sum.x == 2) facing = Direction::EAST;

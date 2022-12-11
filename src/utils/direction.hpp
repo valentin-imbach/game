@@ -5,6 +5,8 @@
 #include "vec.hpp"
 
 enum class Direction : uint8_t {
+    NONE,
+
 	EAST,
 	NORTH_EAST,
 	NORTH,
@@ -12,7 +14,9 @@ enum class Direction : uint8_t {
 	WEST,
 	SOUTH_WEST,
 	SOUTH,
-	SOUTH_EAST
+	SOUTH_EAST,
+
+    MAX
 };
 
 const vec unitVectors[8] = {

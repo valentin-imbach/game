@@ -12,7 +12,7 @@ World::World(std::string name) : name(name) {
 	rosterSystems();
 
 	player = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{0, 0}}, player);
+	ecs.addComponent<PositionComponent>({{8, 8}}, player);
 	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
 	ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	ecs.addComponent<MovementComponent>({2}, player);

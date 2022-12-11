@@ -25,7 +25,7 @@ public:
 				if (bernoulli(ticks, 0.3f)) state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
-					uint rand = rand_int(ticks, 0, 8);
+					uint rand = rand_int(ticks, 1, 9);
 					direction = Direction(rand);
 					if (taxiSteps[rand].x == 1) {
 						facing = Direction::EAST;
@@ -36,6 +36,7 @@ public:
 				
 				stateChanged = (facing != oldFacing || state != oldState);
 				nextChange = ticks + 2000 + rand_int(ticks, 0, 1000);
+				
 			}
 		}
 	}
