@@ -3,7 +3,7 @@
 #include <vector>
 #include "vec.hpp"
 #include "pair.hpp"
-
+#include "strings.hpp"
 
 #define LOG(args...) log(std::clog, "LOG", __FILE__, __LINE__, args);
 #define ERROR(args...) log(std::cerr, "ERROR", __FILE__, __LINE__, args);
@@ -37,6 +37,7 @@ void debug_log(std::ostream& stream, T x, TT... y) {
 
 template <typename... T>
 void log(std::ostream& stream, const char* title, const char* file, int line, T... args) {
-	debug_log(stream, title, '@', file, line);
+
+	debug_log(stream, title, '@', string_split(file, "/").back(), line);
 	debug_log(stream, ":", args..., '\n');
 }
