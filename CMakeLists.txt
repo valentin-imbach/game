@@ -9,15 +9,15 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # add executables
 set(SOURCES
-src/Window.cpp
+src/framework/Window.cpp
 src/Game.cpp
-src/TextureManager.cpp
-src/TextManager.cpp
-src/Sprite.cpp
-src/World.cpp
-src/Map.cpp
-src/Tile.cpp
-src/GuiElement.cpp
+src/framework/TextureManager.cpp
+src/framework/TextManager.cpp
+src/framework/Sprite.cpp
+src/world/World.cpp
+src/world/Map.cpp
+src/world/Tile.cpp
+src/Gui/GuiElement.cpp
 src/main.cpp)
 
 # add libraries
@@ -43,3 +43,4 @@ target_link_libraries(Game ${LIBRARIES})
 #target_link_libraries(Game PRIVATE SDL2::SDL_image)
 
 target_compile_options(Game PRIVATE)
+target_include_directories(Game PRIVATE src src/utils src/gui src/framework src/ecs src/ecs/systems src/world src/item)

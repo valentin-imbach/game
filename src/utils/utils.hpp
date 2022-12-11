@@ -22,3 +22,4 @@
 #include "strings.hpp"
 #include "enum.hpp"
 #include "direction.hpp"
+#include "collider.hpp"

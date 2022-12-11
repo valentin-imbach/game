@@ -2,7 +2,7 @@
 #include "Game.hpp"
 #include "Events.hpp"
 #include "SDL2/SDL.h"
-#include "utils/utils.hpp"
+#include "utils.hpp"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
