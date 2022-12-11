@@ -42,7 +42,7 @@ inline pair operator*=(pair& p, int n) { return p = n * p; }
 
 [[nodiscard]] inline pair operator-(pair p) { return -1 * p; }
 [[nodiscard]] inline pair operator-(pair p1, pair p2) { return p1 + (-p2); }
-inline pair operator-=(pair p1, pair p2) { return p1 += (-p2); }
+inline pair operator-=(pair& p1, pair p2) { return p1 += (-p2); }
 
 //* division
 
@@ -67,3 +67,10 @@ inline pair operator%=(pair& p, int n) { return p = p % n; }
 [[nodiscard]] inline int dist_sq(pair p1, pair p2) { return norm_sq(p1 - p2); }
 [[nodiscard]] inline int norm_tc(pair p) { return p.x + p.y; }
 [[nodiscard]] inline int dist_tc(pair p1, pair p2) { return norm_tc(p1 - p2); }
+
+//* bounds checking
+
+[[nodiscard]] inline bool isInside(pair p, pair position, pair size) {
+	pair offset = p - position;
+	return (abs(offset.x) <= size.x / 2 && abs(offset.y) <= size.y / 2);
+}

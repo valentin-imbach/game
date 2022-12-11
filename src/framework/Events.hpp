@@ -1,8 +1,9 @@
 
 #pragma once
 #include <bitset>
+#include "pair.hpp"
 
-enum class InputEvent {
+enum class InputEventId {
 	NONE,
 
 	PRIMARY,
@@ -22,7 +23,12 @@ enum class InputEvent {
 	MAX
 };
 
-enum class InputState {
+struct InputEvent {
+	InputEventId id;
+	pair mousePosition;
+};
+
+enum class InputStateId {
 	NONE,
 
 	PRIMARY,
@@ -39,4 +45,4 @@ enum class InputState {
 	MAX
 };
 
-typedef std::bitset<size_t(InputState::MAX)> InputStates;
+typedef std::bitset<size_t(InputStateId::MAX)> InputState;

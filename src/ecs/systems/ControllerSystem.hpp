@@ -7,7 +7,7 @@
 
 class ControllerSystem : public System {
 public:
-	void update(InputStates& inputStates) {
+	void update(InputState& inputState) {
 		for (Entity entity : entities) {
 			CreatureState& state = ecs -> getComponent<CreatureStateComponent>(entity).state;
 			Direction& facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
@@ -16,10 +16,10 @@ public:
 			Direction& direction = ecs -> getComponent<DirectionComponent>(entity).direction;
 
 			pair sum(1, 1);
-			if (inputStates[size_t(InputState::MOVE_EAST)]) sum.x += 1;
-			if (inputStates[size_t(InputState::MOVE_NORTH)]) sum.y -= 1;
-			if (inputStates[size_t(InputState::MOVE_WEST)]) sum.x -= 1;
-			if (inputStates[size_t(InputState::MOVE_SOUTH)]) sum.y += 1;
+			if (inputState[size_t(InputStateId::MOVE_EAST)]) sum.x += 1;
+			if (inputState[size_t(InputStateId::MOVE_NORTH)]) sum.y -= 1;
+			if (inputState[size_t(InputStateId::MOVE_WEST)]) sum.x -= 1;
+			if (inputState[size_t(InputStateId::MOVE_SOUTH)]) sum.y += 1;
 
 			Direction oldDirection = direction;
 			if (sum.x == 2 && sum.y == 1) direction = Direction(1);

@@ -30,22 +30,23 @@ void Game::update() {
 }
 
 void Game::handleEvents() {
+	pair mousePosition;
 	const Uint8* keyState = SDL_GetKeyboardState(NULL);
-	const Uint32 mouseState = SDL_GetMouseState(NULL, NULL);
+	const Uint32 mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
-	world -> inputStates.set(size_t(InputState::MOVE_EAST), keyState[SDL_SCANCODE_D]);
-	world -> inputStates.set(size_t(InputState::MOVE_NORTH), keyState[SDL_SCANCODE_W]);
-	world -> inputStates.set(size_t(InputState::MOVE_WEST), keyState[SDL_SCANCODE_A]);
-	world -> inputStates.set(size_t(InputState::MOVE_SOUTH), keyState[SDL_SCANCODE_S]);
+	world->inputState.set(size_t(InputStateId::MOVE_EAST), keyState[SDL_SCANCODE_D]);
+	world->inputState.set(size_t(InputStateId::MOVE_NORTH), keyState[SDL_SCANCODE_W]);
+	world->inputState.set(size_t(InputStateId::MOVE_WEST), keyState[SDL_SCANCODE_A]);
+	world->inputState.set(size_t(InputStateId::MOVE_SOUTH), keyState[SDL_SCANCODE_S]);
 
-	world -> inputStates.set(size_t(InputState::INFO), keyState[SDL_SCANCODE_TAB]);
-	world -> inputStates.set(size_t(InputState::ALTER), keyState[SDL_SCANCODE_LSHIFT]);
+	world->inputState.set(size_t(InputStateId::INFO), keyState[SDL_SCANCODE_TAB]);
+	world->inputState.set(size_t(InputStateId::ALTER), keyState[SDL_SCANCODE_LSHIFT]);
 
-	world -> inputStates.set(size_t(InputState::PRIMARY), mouseState & SDL_BUTTON_LMASK);
-	world -> inputStates.set(size_t(InputState::SECONDARY), mouseState & SDL_BUTTON_RMASK);
+	world->inputState.set(size_t(InputStateId::PRIMARY), mouseState & SDL_BUTTON_LMASK);
+	world->inputState.set(size_t(InputStateId::SECONDARY), mouseState & SDL_BUTTON_RMASK);
 
 	SDL_Event event;
-	world -> inputEvents.clear();
+	world->inputEvents.clear();
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT) {
 			LOG("Window closed");
@@ -54,20 +55,19 @@ void Game::handleEvents() {
 		}
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			if (event.button.button == SDL_BUTTON_LEFT) {
-				world -> inputEvents.push_back(InputEvent::PRIMARY);
+				world->inputEvents.push_back({InputEventId::PRIMARY, mousePosition});
 			} else if (event.button.button == SDL_BUTTON_RIGHT) {
-				world -> inputEvents.push_back(InputEvent::SECONDARY);
+				world->inputEvents.push_back({InputEventId::SECONDARY, mousePosition});
 			}
 		} else if (event.type == SDL_KEYDOWN) {
 			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
-				world -> inputEvents.push_back(InputEvent::ESCAPE);
+				world->inputEvents.push_back({InputEventId::ESCAPE, mousePosition});
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_E) {
-				world -> inputEvents.push_back(InputEvent::INVENTORY);
+				world->inputEvents.push_back({InputEventId::INVENTORY, mousePosition});
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
-				world -> inputEvents.push_back(InputEvent::THROW);
+				world->inputEvents.push_back({InputEventId::THROW, mousePosition});
 			}
 		}
-		
 	}
 }
 
@@ -83,7 +83,7 @@ void Game::limitFrameRate(int fps) {
 	}
 
 	dt = past;
-	
+
 	sample.push(dt);
 	sampleSum += dt;
 	if (sample.size() > SAMPLE_SIZE) {

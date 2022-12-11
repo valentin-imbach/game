@@ -8,10 +8,8 @@
 #include "Item.hpp"
 #include "Sprite.hpp"
 
-World* World::world = nullptr;
-
 World::World(std::string name) : name(name) {
-	world = this;
+	guiManager.ecs = &ecs;
 	rosterComponents();
 	rosterSystems();
 
@@ -98,8 +96,8 @@ void World::update(uint dt) {
 	handleEvents();
 	guiManager.update();
 
-	if (guiManager.active()) inputStates = 0;
-	controllerSystem->update(inputStates);
+	if (guiManager.active()) inputState = 0;
+	controllerSystem->update(inputState);
 
 	animalAiSystem->update();
 
@@ -120,8 +118,8 @@ void World::update(uint dt) {
 void World::handleEvents() {
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
-		if (event == InputEvent::INVENTORY) {
-			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10}));
+		if (event.id == InputEventId::INVENTORY) {
+			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10}));
 			Inventory& playerInventory = ecs.getComponent<InventoryComponent>(player).inventory;
 			int spacing = 20;
 
@@ -129,18 +127,14 @@ void World::handleEvents() {
 				for (int y = 1; y < playerInventory.size.y; y++) {
 					ItemContainer& container = playerInventory.itemContainers[x][y];
 					pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, spacing * (y - 2)};
-					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container, &ecs));
+					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container));
 				}
 				ItemContainer& container = playerInventory.itemContainers[x][0];
-				pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, -3*spacing};
-				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container, &ecs));
+				pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, -3 * spacing};
+				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container));
 			}
 
 			guiManager.open(std::move(inventoryGui));
 		}
 	}
-}
-
-World::~World() {
-	world = nullptr;
 }

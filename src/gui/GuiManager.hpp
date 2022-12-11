@@ -24,12 +24,15 @@ public:
 	}
 
 	bool handleEvent(InputEvent event) {
-		if (event == InputEvent::INVENTORY) {
+		if (event.id == InputEventId::INVENTORY) {
 			if (primary) {
 				close();
 				return true;
 			}
 		}
+
+		if (primary && primary->handleEvent(event)) return true;
+		if (secondary && secondary->handleEvent(event)) return true;
 		return false;
 	}
 
@@ -37,9 +40,11 @@ public:
 		primary = std::move(a);
 		secondary = std::move(b);
 		if (!primary) return;
+		primary->guiManager = this;
 		primary->position.y = 0;
 		primary->alignment = Direction::NONE;
 		if (secondary) {
+			secondary->guiManager = this;
 			secondary->position.y = 0;
 			secondary->alignment = Direction::NONE;
 
@@ -58,6 +63,8 @@ public:
 	bool active() {
 		return bool(primary);
 	}
+
+	ECS* ecs;
 
 private:
 	std::unique_ptr<GuiElement> primary;

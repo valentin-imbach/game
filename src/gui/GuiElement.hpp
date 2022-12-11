@@ -1,19 +1,24 @@
 
 #pragma once
 #include <memory>
+#include "Events.hpp"
 #include "Item.hpp"
 #include "utils.hpp"
 #include "Sprite.hpp"
 
+class GuiManager;
+
 #define GUI_SCALE 3
+#define GUI_BOX true
 
 class GuiElement {
 public:
-	GuiElement(pair position, Direction alignment = Direction::NONE);
+	GuiElement(pair position, pair size, Direction alignment = Direction::NONE);
 	virtual ~GuiElement() = default;
 	void reposition(GuiElement* parent = nullptr);
 	virtual void update() = 0;
 	virtual void draw() = 0;
+	virtual bool handleEvent(InputEvent event);
 
 protected:
 	pair size;
@@ -21,6 +26,8 @@ protected:
 	pair position;
 	pair screenPosition;
 	Direction alignment;
+	GuiManager* guiManager;
+	bool inside(pair position);
 
 	friend class Widget;
 	friend class GuiManager;
@@ -28,11 +35,12 @@ protected:
 
 class Widget : public GuiElement {
 public:
-	Widget(pair position, Sprite sprite);
+	Widget(pair position, pair size, Sprite sprite);
 	~Widget() override = default;
 	void update() override;
 	void draw() override;
 	void addGuiElement(std::unique_ptr<GuiElement> guiElement);
+	bool handleEvent(InputEvent event) override;
 
 private:
 	Sprite sprite;
@@ -43,13 +51,13 @@ class ECS;
 
 class ItemSlot : public GuiElement {
 public:
-	ItemSlot(pair position, ItemContainer& itemContainer, ECS* ecs);
+	ItemSlot(pair position, ItemContainer& itemContainer);
 	~ItemSlot() override = default;
 	void update() override;
 	void draw() override;
+	bool handleEvent(InputEvent event) override;
 
 private:
-	ECS* ecs;
 	Sprite sprite;
 	ItemContainer& itemContainer;
 };

@@ -26,3 +26,14 @@ void TextureManager::drawTexture(SDL_Texture* texture, pair source, pair size, p
 	SDL_RenderCopyEx(Window::instance->renderer, texture, &s, &d, 0, NULL, SDL_FLIP_NONE);
 }
 
+void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool centered, bool filled) {
+	if (centered) position -= size / 2;
+	SDL_Rect rect = {position.x, position.y, size.x, size.y};
+	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
+	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
+	if (filled) {
+		SDL_RenderFillRect(Window::instance->renderer, &rect);
+	} else {
+		SDL_RenderDrawRect(Window::instance->renderer, &rect);
+	}
+}
