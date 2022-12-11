@@ -16,6 +16,7 @@ enum class SpriteSheet {
 	ROCK,
 	SAND,
 	WATER,
+	INVENTORY,
 
 	MAX
 };

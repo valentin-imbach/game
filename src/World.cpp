@@ -1,8 +1,12 @@
 
 #include "World.hpp"
+#include <memory>
 #include "Components.hpp"
 #include "ECS_types.hpp"
+#include "Events.hpp"
+#include "GuiElement.hpp"
 #include "Item.hpp"
+#include "Sprite.hpp"
 
 World* World::world = nullptr;
 
@@ -92,7 +96,11 @@ void World::rosterSystems() {
 
 void World::update(uint dt) {
 	handleEvents();
+	guiManager.update();
+	
+	if (guiManager.active()) inputStates = 0;
 	controllerSystem->update(inputStates);
+
 	animalAiSystem->update();
 
 	creatureMovementSystem->update(dt, gridMap, map);
@@ -105,10 +113,18 @@ void World::update(uint dt) {
 
 	tileDrawSystem->update(map);
 	entityDrawSystem->update(camera);
+
+	guiManager.draw();
 }
 
 void World::handleEvents() {
-	
+	for (InputEvent event : inputEvents) {
+		if (guiManager.handleEvent(event)) continue;
+		if (event == InputEvent::INVENTORY) {
+			std::unique_ptr<Widget> inventory = std::make_unique<Widget>(pair(0,0), Sprite(SpriteSheet::INVENTORY, {0,0}, {10, 10}));
+			guiManager.open(std::move(inventory));
+		}
+	}
 }
 
 World::~World() {

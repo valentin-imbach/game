@@ -17,6 +17,7 @@ src/Sprite.cpp
 src/World.cpp
 src/Map.cpp
 src/Tile.cpp
+src/GuiElement.cpp
 src/main.cpp)
 
 # add libraries

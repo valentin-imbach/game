@@ -1,6 +1,7 @@
 
 #pragma once
 #include <cstdio>
+#include "Events.hpp"
 #include "Window.hpp"
 #include "utils/direction.hpp"
 #include "utils/utils.hpp"
@@ -24,6 +25,16 @@ public:
 		secondary->draw();
 	}
 
+	bool handleEvent(InputEvent event) {
+		if (event == InputEvent::INVENTORY) {
+			if (primary) {
+				close();
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void open(std::unique_ptr<GuiElement> a, std::unique_ptr<GuiElement> b = nullptr) {
 		primary = std::move(a);
 		secondary = std::move(b);
@@ -39,6 +50,15 @@ public:
 		} else {
 			primary->position.x = 0;
 		}
+	}
+
+	void close() {
+		primary = nullptr;
+		secondary = nullptr;
+	}
+
+	bool active() {
+		return bool(primary);
 	}
 
 private:

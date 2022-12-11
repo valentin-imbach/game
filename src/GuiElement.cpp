@@ -1,5 +1,6 @@
 
 #include "GuiElement.hpp"
+#include <memory>
 #include <vector>
 #include "Window.hpp"
 #include "utils/direction.hpp"
@@ -26,23 +27,25 @@ void GuiElement::reposition(GuiElement* parent) {
 }
 
 Widget::Widget(pair position, Sprite sprite) : GuiElement(position), sprite(sprite) {
-	children = std::vector<GuiElement>();
+	children = std::vector<std::unique_ptr<GuiElement>>();
 }
 
-void Widget::addGuiElement(GuiElement guiElement) {
-	children.push_back(guiElement);
+Widget::~Widget() = default;
+
+void Widget::addGuiElement(std::unique_ptr<GuiElement> guiElement) {
+	children.push_back(std::move(guiElement));
 }
 
 void Widget::update() {
-	for (GuiElement& guiElement : children) {
-		guiElement.reposition(this);
-		guiElement.update();
+	for (auto& guiElement : children) {
+		guiElement->reposition(this);
+		guiElement->update();
 	}
 }
 
 void Widget::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
-	for (GuiElement& guiElement : children) {
-		guiElement.draw();
+	for (auto& guiElement : children) {
+		guiElement->draw();
 	}
 }

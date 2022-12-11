@@ -1,5 +1,6 @@
 
 #pragma once
+#include "GuiManager.hpp"
 #include "utils/utils.hpp"
 #include "ECS.hpp"
 #include "Systems/systems.hpp"
@@ -33,6 +34,8 @@ private:
 	ItemPickupSystem* itemPickupSystem;
 	TileDrawSystem* tileDrawSystem;
 	AnimalAiSystem* animalAiSystem;
+
+	GuiManager guiManager;
 
 	std::string name;
 
