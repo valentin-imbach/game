@@ -76,9 +76,9 @@ struct Item {
 	}
 };
 
-struct ItemSlot {
+struct ItemContainer {
 	Item item;
-	
+
 	Item add(Item other) {
 		if (!item) {
 			item = other;
@@ -98,17 +98,16 @@ struct ItemSlot {
 
 class Inventory {
 public:
-	Inventory(int width = 0, int height = 0) : width(width), height(height) {
-		itemSlots = std::vector<std::vector<ItemSlot>>(width, std::vector<ItemSlot>(height));
+	Inventory(pair size = {0, 0}) : size(size) {
+		itemContainers = std::vector<std::vector<ItemContainer>>(size.x, std::vector<ItemContainer>(size.y));
 	}
-	uint8_t width;
-	uint8_t height;
-	std::vector<std::vector<ItemSlot>> itemSlots;
+	pair size;
+	std::vector<std::vector<ItemContainer>> itemContainers;
 
 	[[nodiscard]] Item add(Item item) {
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				item = itemSlots[x][y].add(item);
+		for (int y = 0; y < size.x; y++) {
+			for (int x = 0; x < size.y; x++) {
+				item = itemContainers[x][y].add(item);
 			}
 		}
 		return item;

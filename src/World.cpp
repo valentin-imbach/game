@@ -26,7 +26,7 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<SpriteComponent>({playerSprites, 1}, player);
 	Collider playerCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
 	ecs.addComponent<ColliderComponent>({playerCollider}, player);
-	ecs.addComponent<InventoryComponent>({Inventory(7,4)}, player);
+	ecs.addComponent<InventoryComponent>({Inventory({7, 6})}, player);
 
 	camera = ecs.createEntity();
 	ecs.addComponent<CameraComponent>({4, player}, camera);
@@ -45,7 +45,7 @@ World::World(std::string name) : name(name) {
 	SpriteStack rockSprites;
 	rockSprites.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
 	ecs.addComponent<SpriteComponent>({rockSprites, 1}, rock);
-	
+
 	Entity cow = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{3, 3}}, cow);
 	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, cow);
@@ -97,7 +97,7 @@ void World::rosterSystems() {
 void World::update(uint dt) {
 	handleEvents();
 	guiManager.update();
-	
+
 	if (guiManager.active()) inputStates = 0;
 	controllerSystem->update(inputStates);
 
@@ -121,8 +121,22 @@ void World::handleEvents() {
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
 		if (event == InputEvent::INVENTORY) {
-			std::unique_ptr<Widget> inventory = std::make_unique<Widget>(pair(0,0), Sprite(SpriteSheet::INVENTORY, {0,0}, {10, 10}));
-			guiManager.open(std::move(inventory));
+			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10}));
+			Inventory& playerInventory = ecs.getComponent<InventoryComponent>(player).inventory;
+			int spacing = 20;
+
+			for (int x = 0; x < playerInventory.size.x; x++) {
+				for (int y = 1; y < playerInventory.size.y; y++) {
+					ItemContainer& container = playerInventory.itemContainers[x][y];
+					pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, spacing * (y - 2)};
+					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container, &ecs));
+				}
+				ItemContainer& container = playerInventory.itemContainers[x][0];
+				pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, -3*spacing};
+				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container, &ecs));
+			}
+
+			guiManager.open(std::move(inventoryGui));
 		}
 	}
 }

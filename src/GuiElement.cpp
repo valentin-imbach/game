@@ -2,15 +2,22 @@
 #include "GuiElement.hpp"
 #include <memory>
 #include <vector>
+#include "Components.hpp"
+#include "Item.hpp"
+#include "Sprite.hpp"
 #include "Window.hpp"
 #include "utils/direction.hpp"
+#include "utils/pair.hpp"
+#include "ECS.hpp"
+
+//* GuiElement
 
 GuiElement::GuiElement(pair position, Direction alignment) : position(position), alignment(alignment) {}
 
 void GuiElement::reposition(GuiElement* parent) {
 	screenSize = GUI_SCALE * size;
 	if (parent) {
-		screenPosition = parent->position + position;
+		screenPosition = parent->screenPosition + GUI_SCALE * position;
 		if (alignment != Direction::NONE) {
 			pair step = taxiSteps[int(alignment) - 1];
 			screenPosition.x += parent->screenSize.x * step.x / 2;
@@ -26,11 +33,11 @@ void GuiElement::reposition(GuiElement* parent) {
 	}
 }
 
+//* Widget
+
 Widget::Widget(pair position, Sprite sprite) : GuiElement(position), sprite(sprite) {
 	children = std::vector<std::unique_ptr<GuiElement>>();
 }
-
-Widget::~Widget() = default;
 
 void Widget::addGuiElement(std::unique_ptr<GuiElement> guiElement) {
 	children.push_back(std::move(guiElement));
@@ -44,8 +51,24 @@ void Widget::update() {
 }
 
 void Widget::draw() {
-	sprite.draw(screenPosition, GUI_SCALE, true);
+	sprite.draw(screenPosition, GUI_SCALE);
 	for (auto& guiElement : children) {
 		guiElement->draw();
+	}
+}
+
+//* ItemSlot
+
+ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, ECS* ecs) : GuiElement(position), itemContainer(itemContainer), ecs(ecs) {
+	sprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
+}
+
+void ItemSlot::update() {}
+
+void ItemSlot::draw() {
+	sprite.draw(screenPosition, GUI_SCALE, true);
+	if (itemContainer.item.entity) {
+		SpriteStack& spriteStack = ecs->getComponent<SpriteComponent>(itemContainer.item.entity).spriteStack;
+		spriteStack.draw(screenPosition, GUI_SCALE);
 	}
 }

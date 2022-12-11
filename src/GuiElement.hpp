@@ -1,6 +1,7 @@
 
 #pragma once
 #include <memory>
+#include "Item.hpp"
 #include "utils/direction.hpp"
 #include "utils/utils.hpp"
 #include "Sprite.hpp"
@@ -29,7 +30,7 @@ protected:
 class Widget : public GuiElement {
 public:
 	Widget(pair position, Sprite sprite);
-	~Widget() override;
+	~Widget() override = default;
 	void update() override;
 	void draw() override;
 	void addGuiElement(std::unique_ptr<GuiElement> guiElement);
@@ -37,4 +38,19 @@ public:
 private:
 	Sprite sprite;
 	std::vector<std::unique_ptr<GuiElement>> children;
+};
+
+class ECS;
+
+class ItemSlot : public GuiElement {
+public:
+	ItemSlot(pair position, ItemContainer& itemContainer, ECS* ecs);
+	~ItemSlot() override = default;
+	void update() override;
+	void draw() override;
+
+private:
+	ECS* ecs;
+	Sprite sprite;
+	ItemContainer& itemContainer;
 };
