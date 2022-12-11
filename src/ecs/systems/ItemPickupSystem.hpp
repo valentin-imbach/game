@@ -1,6 +1,7 @@
 
 #pragma once
 #include <vector>
+#include "Components.hpp"
 #include "System.hpp"
 #include "ECS.hpp"
 #include "Item.hpp"

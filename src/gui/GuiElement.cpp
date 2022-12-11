@@ -84,16 +84,19 @@ void ItemSlot::update() {}
 
 void ItemSlot::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
-	if (itemContainer.item.entity) {
-		SpriteStack& spriteStack = guiManager->ecs->getComponent<SpriteComponent>(itemContainer.item.entity).spriteStack;
-		spriteStack.draw(screenPosition, GUI_SCALE);
-	}
+	itemContainer.item.draw(screenPosition, GUI_SCALE, guiManager->ecs);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 }
 
 bool ItemSlot::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
-		LOG("Slot clicked");
+		ItemContainer& mouseItemContainer = guiManager ->  mouseItemContainer;
+		if (!mouseItemContainer.item) {
+			itemContainer.item = mouseItemContainer.add(itemContainer.item);
+		} else if (!itemContainer.item) {
+			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item);
+		}
+		
 		return true;
 	}
 	return false;

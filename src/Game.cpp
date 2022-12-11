@@ -33,6 +33,7 @@ void Game::handleEvents() {
 	pair mousePosition;
 	const Uint8* keyState = SDL_GetKeyboardState(NULL);
 	const Uint32 mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	world->guiManager.mousePosition = mousePosition;
 
 	world->inputState.set(size_t(InputStateId::MOVE_EAST), keyState[SDL_SCANCODE_D]);
 	world->inputState.set(size_t(InputStateId::MOVE_NORTH), keyState[SDL_SCANCODE_W]);

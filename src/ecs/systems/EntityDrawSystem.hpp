@@ -1,6 +1,7 @@
 
 #pragma once
 #include "System.hpp"
+#include "Components.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
 #include "ECS.hpp"

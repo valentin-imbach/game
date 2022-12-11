@@ -18,6 +18,7 @@ src/world/World.cpp
 src/world/Map.cpp
 src/world/Tile.cpp
 src/Gui/GuiElement.cpp
+src/item/Item.cpp
 src/main.cpp)
 
 # add libraries

@@ -1,9 +1,11 @@
 
 #pragma once
 #include "Events.hpp"
+#include "Item.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
 #include "GuiElement.hpp"
+#include "ECS.hpp"
 
 class GuiManager {
 public:
@@ -19,8 +21,8 @@ public:
 	void draw() {
 		if (!primary) return;
 		primary->draw();
-		if (!secondary) return;
-		secondary->draw();
+		if (secondary) secondary->draw();
+		mouseItemContainer.item.draw(mousePosition, GUI_SCALE, ecs);
 	}
 
 	bool handleEvent(InputEvent event) {
@@ -65,6 +67,8 @@ public:
 	}
 
 	ECS* ecs;
+	pair mousePosition;
+	ItemContainer mouseItemContainer;
 
 private:
 	std::unique_ptr<GuiElement> primary;

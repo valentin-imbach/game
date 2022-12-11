@@ -2,7 +2,6 @@
 #pragma once
 #include "ECS_types.hpp"
 #include "utils.hpp"
-#include "Components.hpp"
 
 class ECS;
 

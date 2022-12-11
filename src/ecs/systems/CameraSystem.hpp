@@ -1,6 +1,7 @@
 
 #pragma once
 #include "System.hpp"
+#include "Components.hpp"
 #include "ECS.hpp"
 
 class CameraSystem : public System {

@@ -4,6 +4,7 @@
 #include "Window.hpp"
 #include "Events.hpp"
 #include "ECS.hpp"
+#include "Components.hpp"
 
 class ControllerSystem : public System {
 public:

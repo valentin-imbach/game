@@ -42,4 +42,6 @@ private:
 
 	Map map;
 	GridMap gridMap;
+
+	friend class Game;
 };

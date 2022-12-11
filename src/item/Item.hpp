@@ -4,6 +4,8 @@
 #include "utils.hpp"
 #include "ECS_types.hpp"
 
+class ECS;
+
 #define MAX_STACK 99
 
 enum class ItemId {
@@ -74,12 +76,13 @@ struct Item {
 	operator bool() {
 		return (entity != 0 || itemId != ItemId::NONE);
 	}
+	void draw(pair position, int scale, ECS* ecs);
 };
 
 struct ItemContainer {
 	Item item;
 
-	Item add(Item other) {
+	[[nodiscard]] Item add(Item other) {
 		if (!item) {
 			item = other;
 			return Item();
