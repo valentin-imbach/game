@@ -1,5 +1,6 @@
 
 #pragma once
+#include <_types/_uint8_t.h>
 #include <vector>
 #include "utils.hpp"
 #include "ECS_types.hpp"
@@ -67,33 +68,47 @@ enum class ItemId {
 
 struct Item {
 	Item() = default;
-	Item(Entity entity) : entity(entity), stackable(false) {}
-	Item(ItemId itemId, uint8_t count = 1) : itemId(itemId), count(count), stackable(true) {}
-	bool stackable;
-	Entity entity;
-	ItemId itemId;
-	uint8_t count;
+	Item(Entity entity) : entity(entity), count(1) {}
+	Item(ItemId itemId, int count = 1) : itemId(itemId), count(count) {
+		assert(0 < count && count <= MAX_STACK);
+	}
+	Entity entity = 0;
+	ItemId itemId = ItemId::NONE;
+	int count = 0;
+	
 	operator bool() {
 		return (entity != 0 || itemId != ItemId::NONE);
 	}
 	void draw(pair position, int scale, ECS* ecs);
 };
 
+enum class ItemAmount {
+	ALL,
+	HALF,
+	ONE
+};
+
 struct ItemContainer {
 	Item item;
 
-	[[nodiscard]] Item add(Item other) {
-		if (!item) {
-			item = other;
-			return Item();
-		} else if (item.stackable && other.stackable && item.itemId == other.itemId) {
-			if (item.count + other.count <= MAX_STACK) {
-				item.count += other.count;
-				return Item();
+	[[nodiscard]] Item add(Item other, ItemAmount amount = ItemAmount::ALL) {
+		int number = MAX_STACK - item.count;
+		if (amount == ItemAmount::ALL) number = std::min(number, other.count);
+		if (amount == ItemAmount::HALF) number = std::min(number, (other.count + 1) / 2);
+		if (amount == ItemAmount::ONE) number = std::min(number, 1);
+		if (other.entity) {
+			if (!item) {
+				item = other;
+				other = Item();
 			}
-			other.count -= (MAX_STACK - item.count);
-			item.count = MAX_STACK;
-			return other;
+		} else if (other.itemId == item.itemId || !item) {
+			item.itemId = other.itemId;
+			item.count += number;
+			other.count -= number;
+			assert(other.count >= 0);
+			if (other.count == 0) {
+				other.itemId = ItemId::NONE;
+			}
 		}
 		return other;
 	}

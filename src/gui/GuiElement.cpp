@@ -84,19 +84,27 @@ void ItemSlot::update() {}
 
 void ItemSlot::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
-	itemContainer.item.draw(screenPosition, GUI_SCALE, guiManager->ecs);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	itemContainer.item.draw(screenPosition, GUI_SCALE, guiManager->ecs);
 }
 
 bool ItemSlot::handleEvent(InputEvent event) {
+	ItemContainer& mouseItemContainer = guiManager->mouseItemContainer;
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
-		ItemContainer& mouseItemContainer = guiManager ->  mouseItemContainer;
-		if (!mouseItemContainer.item) {
-			itemContainer.item = mouseItemContainer.add(itemContainer.item);
-		} else if (!itemContainer.item) {
+		if (itemContainer.item.itemId != ItemId::NONE && itemContainer.item.itemId == mouseItemContainer.item.itemId) {
 			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item);
+		} else {
+			std::swap(mouseItemContainer.item, itemContainer.item);
 		}
-		
+		return true;
+	} else if (event.id == InputEventId::SECONDARY && inside(event.mousePosition)) {
+		if (!itemContainer.item) {
+			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item, ItemAmount::ONE);
+		} else if (itemContainer.item.itemId != ItemId::NONE && itemContainer.item.itemId == mouseItemContainer.item.itemId) {
+			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item, ItemAmount::ONE);
+		} else if (!mouseItemContainer.item) {
+			itemContainer.item = mouseItemContainer.add(itemContainer.item, ItemAmount::HALF);
+		}
 		return true;
 	}
 	return false;
