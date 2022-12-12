@@ -9,3 +9,6 @@
 #include "ItemPickupSystem.hpp"
 #include "TileDrawSystem.hpp"
 #include "AnimalAiSystem.hpp"
+#include "ForageSystem.hpp"
+#include "HealthSystem.hpp"
+#include "LootSystem.hpp"

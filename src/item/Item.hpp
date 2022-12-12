@@ -66,6 +66,17 @@ enum class ItemId {
 	MAX
 };
 
+enum class ToolId {
+	NONE,
+
+	PICK_AXE,
+	AXE,
+	SHOVEL,
+	KNIVE,
+
+	MAX
+};
+
 struct Item {
 	Item() = default;
 	Item(Entity entity) : entity(entity), count(1) {}

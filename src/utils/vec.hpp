@@ -76,3 +76,9 @@ inline vec operator/=(vec &v, float t) { return v = v / t; }
 	return {floor(v.x), floor(v.y)};
 }
 
+//* bounds checking
+
+[[nodiscard]] inline bool isInside(vec p, vec position, vec size) {
+	vec offset = p - position;
+	return (abs(offset.x) <= size.x / 2 && abs(offset.y) <= size.y / 2);
+}

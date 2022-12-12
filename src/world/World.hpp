@@ -1,6 +1,8 @@
 
 #pragma once
 #include "GuiManager.hpp"
+#include "HealthSystem.hpp"
+#include "LootSystem.hpp"
 #include "utils.hpp"
 #include "ECS.hpp"
 #include "systems.hpp"
@@ -32,6 +34,9 @@ private:
 	ItemPickupSystem* itemPickupSystem;
 	TileDrawSystem* tileDrawSystem;
 	AnimalAiSystem* animalAiSystem;
+	ForageSystem* forageSystem;
+	HealthSystem* healthSystem;
+	LootSystem* lootSystem;
 
 	GuiManager guiManager;
 

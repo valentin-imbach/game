@@ -72,3 +72,12 @@ struct HealthComponent {
 struct PlayerComponent {
 	uint activeSlot;
 };
+
+struct ResourceComponent {
+	ToolId toolId;
+};
+
+struct LootComponent {
+	ItemId itemId;
+	uint count;
+};

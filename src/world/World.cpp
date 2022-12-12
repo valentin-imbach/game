@@ -4,9 +4,12 @@
 #include "Components.hpp"
 #include "ECS_types.hpp"
 #include "Events.hpp"
+#include "ForageSystem.hpp"
 #include "GuiElement.hpp"
+#include "HealthSystem.hpp"
 #include "Item.hpp"
 #include "Sprite.hpp"
+#include "Window.hpp"
 
 World::World(std::string name) : name(name) {
 	guiManager.ecs = &ecs;
@@ -43,6 +46,9 @@ World::World(std::string name) : name(name) {
 	SpriteStack treeSprites;
 	treeSprites.addSprite({SpriteSheet::RESOURCES, {0, 0}, {1, 3}});
 	ecs.addComponent<SpriteComponent>({treeSprites, 2}, tree);
+	ecs.addComponent<ResourceComponent>({ToolId::AXE}, tree);
+	ecs.addComponent<LootComponent>({ItemId::ASHWOOD_PLANK, 3}, tree);
+	ecs.addComponent<HealthComponent>({5, 5}, tree);
 
 	Entity rock = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{4, 5}}, rock);
@@ -50,6 +56,9 @@ World::World(std::string name) : name(name) {
 	SpriteStack rockSprites;
 	rockSprites.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
 	ecs.addComponent<SpriteComponent>({rockSprites, 1}, rock);
+	ecs.addComponent<ResourceComponent>({ToolId::PICK_AXE}, rock);
+	ecs.addComponent<LootComponent>({ItemId::BASALT_COBBLE, 3}, rock);
+	ecs.addComponent<HealthComponent>({5, 5}, rock);
 
 	Entity cow = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{3, 3}}, cow);
@@ -87,6 +96,8 @@ void World::rosterComponents() {
 	ecs.rosterComponent<InventoryComponent>(ComponentId::INVENTORY);
 	ecs.rosterComponent<HealthComponent>(ComponentId::HEALTH);
 	ecs.rosterComponent<PlayerComponent>(ComponentId::PLAYER);
+	ecs.rosterComponent<ResourceComponent>(ComponentId::RESOURCE);
+	ecs.rosterComponent<LootComponent>(ComponentId::LOOT);
 }
 
 void World::rosterSystems() {
@@ -99,6 +110,9 @@ void World::rosterSystems() {
 	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP, {ComponentId::COLLIDER, ComponentId::INVENTORY});
 	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE, {ComponentId::CAMERA, ComponentId::POSITION});
 	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI, {ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
+	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE, {ComponentId::RESOURCE, ComponentId::POSITION, ComponentId::HEALTH});
+	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH, {ComponentId::HEALTH});
+	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT, {ComponentId::LOOT, ComponentId::HEALTH, ComponentId::POSITION});
 }
 
 void World::update(uint dt) {
@@ -114,6 +128,8 @@ void World::update(uint dt) {
 	collisionSystem->update();
 
 	itemPickupSystem->update();
+	lootSystem->update();
+	healthSystem->update();
 
 	creatureAnimationSystem->update();
 	cameraSystem->update();
@@ -122,6 +138,14 @@ void World::update(uint dt) {
 	entityDrawSystem->update(camera);
 
 	guiManager.draw();
+
+	for (Entity entity : ecs.dead) {
+		if (ecs.hasComponent<ResourceComponent>(entity)) {
+			pair pos = round(ecs.getComponent<PositionComponent>(entity).position);
+			gridMap.erase(gridMap.find(pos));
+		}
+	}
+	ecs.update();
 }
 
 void World::handleEvents() {
@@ -154,5 +178,14 @@ void World::handleEvents() {
 		if (event.id == InputEventId::SELECT_5) playerComponent.activeSlot = 4;
 		if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
 		if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
+
+		if (event.id == InputEventId::PRIMARY) {
+			vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
+			uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
+			pair position = round(cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT));
+			uint activeSlot = ecs.getComponent<PlayerComponent>(player).activeSlot;
+			Inventory& inventory = ecs.getComponent<InventoryComponent>(player).inventory;
+			forageSystem->update(position, inventory.itemContainers[activeSlot][0].item);
+		}
 	}
 }

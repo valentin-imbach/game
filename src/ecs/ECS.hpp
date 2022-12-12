@@ -1,6 +1,7 @@
 
 #pragma once
 #include "ComponentManager.hpp"
+#include "ECS_types.hpp"
 #include "EntityManager.hpp"
 #include "SystemManager.hpp"
 
@@ -66,6 +67,14 @@ public:
 		for (ComponentId id : ids) { signature.set(size_t(id), true); }
 		return signature;
 	}
+
+	void update() {
+		for (Entity entity : dead) {
+			destroyEntity(entity);
+		}
+	}
+
+	std::vector<Entity> dead;
 
 private:
 	EntityManager entityManager;

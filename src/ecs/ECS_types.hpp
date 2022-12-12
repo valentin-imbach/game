@@ -21,6 +21,8 @@ enum class ComponentId : std::uint8_t {
 	INVENTORY,
 	HEALTH,
 	PLAYER,
+	RESOURCE,
+	LOOT,
 
 	MAX
 };
@@ -39,6 +41,9 @@ enum class SystemId : std::uint8_t {
 	ITEM_PICKUP,
 	TILE,
 	ANIMAL_AI,
+	FORAGE,
+	HEALTH,
+	LOOT,
 
 	MAX
 };
