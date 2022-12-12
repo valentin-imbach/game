@@ -5,6 +5,7 @@
 #include "Item.hpp"
 #include "utils.hpp"
 #include "Sprite.hpp"
+#include "ECS_types.hpp"
 
 class GuiManager;
 
@@ -60,4 +61,16 @@ public:
 private:
 	Sprite sprite;
 	ItemContainer& itemContainer;
+};
+
+class HotbarGui : public GuiElement {
+public:
+	HotbarGui(Entity player);
+	~HotbarGui() override = default;
+	void update() override;
+	void draw() override;
+
+private:
+	Entity player;
+	Sprite sprite;
 };

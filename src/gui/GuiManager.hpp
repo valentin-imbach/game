@@ -1,5 +1,7 @@
 
 #pragma once
+#include <memory>
+#include <vector>
 #include "Events.hpp"
 #include "Item.hpp"
 #include "Window.hpp"
@@ -10,6 +12,8 @@
 class GuiManager {
 public:
 	void update() {
+		for (auto& guiElement : guiElements) guiElement->reposition();
+		for (auto& guiElement : guiElements) guiElement->update();
 		if (!primary) return;
 		primary->reposition();
 		primary->update();
@@ -19,6 +23,7 @@ public:
 	}
 
 	void draw() {
+		for (auto& guiElement : guiElements) guiElement->draw();
 		if (!primary) return;
 		primary->draw();
 		if (secondary) secondary->draw();
@@ -35,6 +40,9 @@ public:
 
 		if (primary && primary->handleEvent(event)) return true;
 		if (secondary && secondary->handleEvent(event)) return true;
+		for (auto& guiElement : guiElements) {
+			if (guiElement->handleEvent(event)) return true;
+		}
 		return false;
 	}
 
@@ -66,6 +74,11 @@ public:
 		return bool(primary);
 	}
 
+	void add(std::unique_ptr<GuiElement> guiElement) {
+		guiElement->guiManager = this;
+		guiElements.push_back(std::move(guiElement));
+	}
+
 	ECS* ecs;
 	pair mousePosition;
 	ItemContainer mouseItemContainer;
@@ -73,4 +86,5 @@ public:
 private:
 	std::unique_ptr<GuiElement> primary;
 	std::unique_ptr<GuiElement> secondary;
+	std::vector<std::unique_ptr<GuiElement>> guiElements;
 };

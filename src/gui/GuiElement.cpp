@@ -5,6 +5,8 @@
 #include "Sprite.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
+#include "direction.hpp"
+#include "pair.hpp"
 #include "utils.hpp"
 #include "ECS.hpp"
 #include "GuiManager.hpp"
@@ -23,7 +25,7 @@ void GuiElement::reposition(GuiElement* parent) {
 			screenPosition.y += parent->screenSize.y * step.y / 2;
 		}
 	} else {
-		screenPosition = Window::instance->size / 2;
+		screenPosition = Window::instance->size / 2 + GUI_SCALE * position;
 		if (alignment != Direction::NONE) {
 			pair step = taxiSteps[int(alignment) - 1];
 			screenPosition.x += Window::instance->size.x * step.x / 2;
@@ -108,4 +110,26 @@ bool ItemSlot::handleEvent(InputEvent event) {
 		return true;
 	}
 	return false;
+}
+
+//* HotbarGui
+
+HotbarGui::HotbarGui(Entity player) : GuiElement({0, 20}, {150, 30}, Direction::NORTH), player(player) {
+	sprite = Sprite(SpriteSheet::HOTBAR, {0, 0}, {10, 2});
+}
+
+void HotbarGui::update() {
+}
+
+void HotbarGui::draw() {
+	if (guiManager->active()) return;
+	sprite.draw(screenPosition, GUI_SCALE, true);
+	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	Inventory& inventory = guiManager->ecs->getComponent<InventoryComponent>(player).inventory;
+	int spacing = 20 * GUI_SCALE;
+	for (int x = 0; x < inventory.size.x; x++) {
+		Item& item = inventory.itemContainers[x][0].item;
+		pair offset = {spacing * x - spacing * (inventory.size.x - 1) / 2, 0};
+		item.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+	}
 }

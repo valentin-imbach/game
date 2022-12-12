@@ -18,6 +18,7 @@ enum class SpriteSheet {
 	WATER,
 	INVENTORY,
 	SLOT,
+	HOTBAR,
 
 	MAX
 };

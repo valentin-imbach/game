@@ -28,6 +28,8 @@ World::World(std::string name) : name(name) {
 
 	Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(ItemId::APPLE, 20));
 
+	guiManager.add(std::make_unique<HotbarGui>(player));
+
 	camera = ecs.createEntity();
 	ecs.addComponent<CameraComponent>({4, player}, camera);
 	ecs.addComponent<PositionComponent>({{0, 0}}, camera);
