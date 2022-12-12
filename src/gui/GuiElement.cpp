@@ -82,8 +82,6 @@ ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer) : GuiElement(pos
 	sprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
 }
 
-void ItemSlot::update() {}
-
 void ItemSlot::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
@@ -116,9 +114,8 @@ bool ItemSlot::handleEvent(InputEvent event) {
 
 HotbarGui::HotbarGui(Entity player) : GuiElement({0, 20}, {150, 30}, Direction::NORTH), player(player) {
 	sprite = Sprite(SpriteSheet::HOTBAR, {0, 0}, {10, 2});
-}
-
-void HotbarGui::update() {
+	slotSprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
+	activeSlotSprite = Sprite(SpriteSheet::SLOT, {2, 0}, {2, 2});
 }
 
 void HotbarGui::draw() {
@@ -126,10 +123,36 @@ void HotbarGui::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	Inventory& inventory = guiManager->ecs->getComponent<InventoryComponent>(player).inventory;
+	uint activeSlot = guiManager->ecs->getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GUI_SCALE;
 	for (int x = 0; x < inventory.size.x; x++) {
 		Item& item = inventory.itemContainers[x][0].item;
 		pair offset = {spacing * x - spacing * (inventory.size.x - 1) / 2, 0};
+		if (x == activeSlot) {
+			activeSlotSprite.draw(screenPosition + offset, GUI_SCALE, true);	
+		} else {
+			slotSprite.draw(screenPosition + offset, GUI_SCALE, true);
+		}
 		item.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+	}
+}
+
+//* Health Bar
+
+HealthBarGui::HealthBarGui(Entity player) : GuiElement({-90, 20}, {}, Direction::NORTH_EAST), player(player) {
+	heartSprite = Sprite(SpriteSheet::HEART, {0, 0}, {1, 1});
+	halfHeartSprite = Sprite(SpriteSheet::HEART, {1, 0}, {1, 1});
+}
+
+void HealthBarGui::draw() {
+	HealthComponent& healthComponent = guiManager->ecs->getComponent<HealthComponent>(player);
+	int spacing = 9 * GUI_SCALE;
+	for (int x = 0; x < healthComponent.health / 2; x++) {
+		pair offset = {x * spacing, 0};
+		heartSprite.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+	}
+	if (healthComponent.health % 2) {
+		pair offset = {healthComponent.health / 2 * spacing, 0};
+		halfHeartSprite.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
 	}
 }

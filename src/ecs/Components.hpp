@@ -63,3 +63,12 @@ struct AnimalAiComponent {
 struct InventoryComponent {
 	Inventory inventory;
 };
+
+struct HealthComponent {
+	uint health;
+	uint maxHealth;
+};
+
+struct PlayerComponent {
+	uint activeSlot;
+};

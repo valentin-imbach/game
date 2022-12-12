@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "Events.hpp"
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_scancode.h"
 #include "utils.hpp"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
@@ -67,6 +68,20 @@ void Game::handleEvents() {
 				world->inputEvents.push_back({InputEventId::INVENTORY, mousePosition});
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
 				world->inputEvents.push_back({InputEventId::THROW, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_1) {
+				world->inputEvents.push_back({InputEventId::SELECT_1, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_2) {
+				world->inputEvents.push_back({InputEventId::SELECT_2, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_3) {
+				world->inputEvents.push_back({InputEventId::SELECT_3, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_4) {
+				world->inputEvents.push_back({InputEventId::SELECT_4, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_5) {
+				world->inputEvents.push_back({InputEventId::SELECT_5, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_6) {
+				world->inputEvents.push_back({InputEventId::SELECT_6, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_7) {
+				world->inputEvents.push_back({InputEventId::SELECT_7, mousePosition});
 			}
 		}
 	}

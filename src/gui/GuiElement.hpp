@@ -17,7 +17,7 @@ public:
 	GuiElement(pair position, pair size, Direction alignment = Direction::NONE);
 	virtual ~GuiElement() = default;
 	void reposition(GuiElement* parent = nullptr);
-	virtual void update() = 0;
+	virtual void update() {};
 	virtual void draw() = 0;
 	virtual bool handleEvent(InputEvent event);
 
@@ -54,7 +54,6 @@ class ItemSlot : public GuiElement {
 public:
 	ItemSlot(pair position, ItemContainer& itemContainer);
 	~ItemSlot() override = default;
-	void update() override;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
 
@@ -67,10 +66,23 @@ class HotbarGui : public GuiElement {
 public:
 	HotbarGui(Entity player);
 	~HotbarGui() override = default;
-	void update() override;
 	void draw() override;
 
 private:
 	Entity player;
 	Sprite sprite;
+	Sprite slotSprite;
+	Sprite activeSlotSprite;
+};
+
+class HealthBarGui : public GuiElement {
+public:
+	HealthBarGui(Entity player);
+	~HealthBarGui() override = default;
+	void draw() override;
+
+private:
+	Entity player;
+	Sprite heartSprite;
+	Sprite halfHeartSprite;
 };

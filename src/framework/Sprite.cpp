@@ -37,6 +37,7 @@ void Sprite::loadSpriteSheets() {
 	spriteSheets[int(SpriteSheet::INVENTORY)] = TextureManager::loadTexture("inventory.png");
 	spriteSheets[int(SpriteSheet::SLOT)] = TextureManager::loadTexture("slot.png");
 	spriteSheets[int(SpriteSheet::HOTBAR)] = TextureManager::loadTexture("hotbar.png");
+	spriteSheets[int(SpriteSheet::HEART)] = TextureManager::loadTexture("heart.png");
 }
 
 //* SpriteStack

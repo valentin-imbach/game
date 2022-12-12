@@ -19,6 +19,7 @@ enum class SpriteSheet {
 	INVENTORY,
 	SLOT,
 	HOTBAR,
+	HEART,
 
 	MAX
 };

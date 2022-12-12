@@ -25,10 +25,13 @@ World::World(std::string name) : name(name) {
 	Collider playerCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
 	ecs.addComponent<ColliderComponent>({playerCollider}, player);
 	ecs.addComponent<InventoryComponent>({Inventory({7, 6})}, player);
+	ecs.addComponent<HealthComponent>({19, 20}, player);
+	ecs.addComponent<PlayerComponent>({0}, player);
 
 	Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(ItemId::APPLE, 20));
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
+	guiManager.add(std::make_unique<HealthBarGui>(player));
 
 	camera = ecs.createEntity();
 	ecs.addComponent<CameraComponent>({4, player}, camera);
@@ -82,6 +85,8 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemComponent>(ComponentId::ITEM);
 	ecs.rosterComponent<AnimalAiComponent>(ComponentId::ANIMAL_AI);
 	ecs.rosterComponent<InventoryComponent>(ComponentId::INVENTORY);
+	ecs.rosterComponent<HealthComponent>(ComponentId::HEALTH);
+	ecs.rosterComponent<PlayerComponent>(ComponentId::PLAYER);
 }
 
 void World::rosterSystems() {
@@ -140,5 +145,14 @@ void World::handleEvents() {
 
 			guiManager.open(std::move(inventoryGui));
 		}
+
+		PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+		if (event.id == InputEventId::SELECT_1) playerComponent.activeSlot = 0;
+		if (event.id == InputEventId::SELECT_2) playerComponent.activeSlot = 1;
+		if (event.id == InputEventId::SELECT_3) playerComponent.activeSlot = 2;
+		if (event.id == InputEventId::SELECT_4) playerComponent.activeSlot = 3;
+		if (event.id == InputEventId::SELECT_5) playerComponent.activeSlot = 4;
+		if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
+		if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
 	}
 }

@@ -19,6 +19,8 @@ enum class ComponentId : std::uint8_t {
 	ITEM,
 	ANIMAL_AI,
 	INVENTORY,
+	HEALTH,
+	PLAYER,
 
 	MAX
 };
