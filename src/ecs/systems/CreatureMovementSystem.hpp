@@ -11,13 +11,13 @@ class CreatureMovementSystem : public System {
 public:
 	void update(uint dt, GridMap& gridMap, Map& map) {
 		for (Entity entity : entities) {
-			Direction direction = ecs -> getComponent<DirectionComponent>(entity).direction;
-			float speed = ecs -> getComponent<MovementComponent>(entity).speed;
-			vec& position = ecs -> getComponent<PositionComponent>(entity).position;
-			CreatureState state = ecs -> getComponent<CreatureStateComponent>(entity).state;
+			Direction direction = ecs->getComponent<DirectionComponent>(entity).direction;
+			float speed = ecs->getComponent<MovementComponent>(entity).speed;
+			vec& position = ecs->getComponent<PositionComponent>(entity).position;
+			CreatureState state = ecs->getComponent<CreatureStateComponent>(entity).state;
 
-			Collider collider = ecs -> getComponent<ColliderComponent>(entity).collider;
-			std::vector<Entity>& collisions = ecs -> getComponent<ColliderComponent>(entity).collisions;
+			Collider collider = ecs->getComponent<ColliderComponent>(entity).collider;
+			std::vector<Entity>& collisions = ecs->getComponent<ColliderComponent>(entity).collisions;
 
 			vec newPosition = position;
 			if (state == CreatureState::WALKING) {
@@ -36,8 +36,8 @@ public:
 
 private:
 	bool isColliding(Collider collider, vec position, GridMap& gridMap, Map& map) {
-		pair topLeft = round(position + collider.offset);
-		pair bottomRight = round(position + collider.offset + collider.size);
+		pair topLeft = round(position - collider.size / 2);
+		pair bottomRight = round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {
 			for (int y = topLeft.y; y <= bottomRight.y; y++) {
 				if (!isFree(gridMap, map, {x, y})) return true;

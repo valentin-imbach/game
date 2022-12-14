@@ -13,3 +13,5 @@
 #include "HealthSystem.hpp"
 #include "LootSystem.hpp"
 #include "DamageSystem.hpp"
+#include "PlayerSystem.hpp"
+#include "ColliderDrawSystem.hpp"

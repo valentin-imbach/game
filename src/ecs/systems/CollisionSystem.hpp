@@ -3,6 +3,9 @@
 #include "System.hpp"
 #include "Components.hpp"
 #include "ECS.hpp"
+#include "TextureManager.hpp"
+
+#define COLLIDER_DEBUG true
 
 class CollisionSystem : public System {
 public:

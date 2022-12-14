@@ -1,26 +1,21 @@
 
 #include "World.hpp"
-#include <memory>
 #include "Components.hpp"
-#include "DamageSystem.hpp"
 #include "ECS_types.hpp"
 #include "Events.hpp"
-#include "ForageSystem.hpp"
 #include "GuiElement.hpp"
-#include "HealthSystem.hpp"
 #include "Item.hpp"
-#include "Map.hpp"
 #include "Sprite.hpp"
 #include "Tile.hpp"
 #include "Window.hpp"
 #include "EntityFactory.hpp"
-#include "random.hpp"
 
 World::World(std::string name) : name(name) {
 	rosterComponents();
 	rosterSystems();
 
 	guiManager.ecs = &ecs;
+	guiManager.world = this;
 	EntityFactory::ecs = &ecs;
 	EntityFactory::gridMap = &gridMap;
 
@@ -29,7 +24,7 @@ World::World(std::string name) : name(name) {
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	camera = EntityFactory::createCamera({0, 0}, 4, player);
+	camera = EntityFactory::createCamera({0, 0}, 4);
 
 	EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
@@ -114,9 +109,14 @@ void World::rosterSystems() {
 	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH, {ComponentId::HEALTH});
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT, {ComponentId::LOOT, ComponentId::HEALTH, ComponentId::POSITION});
 	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE, {ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
+	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER, {ComponentId::PLAYER});
+	colldierDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW, {ComponentId::COLLIDER, ComponentId::POSITION});
 }
 
 void World::update(uint dt) {
+	player = playerSystem->getPlayer();
+	camera = cameraSystem->getCamera();
+
 	handleEvents();
 	guiManager.update();
 
@@ -130,13 +130,15 @@ void World::update(uint dt) {
 
 	itemPickupSystem->update();
 	lootSystem->update();
+
+	cameraSystem->update(player);
 	healthSystem->update();
 
 	creatureAnimationSystem->update();
-	cameraSystem->update();
 
 	tileDrawSystem->update(map);
 	entityDrawSystem->update(camera);
+	colldierDrawSystem->update(camera);
 
 	guiManager.draw();
 
@@ -150,6 +152,9 @@ void World::update(uint dt) {
 }
 
 void World::handleEvents() {
+	player = playerSystem->getPlayer();
+	camera = cameraSystem->getCamera();
+	if (!player) return;
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
 		if (event.id == InputEventId::INVENTORY) {
@@ -180,6 +185,7 @@ void World::handleEvents() {
 		if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
 		if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
 
+		if (!camera) continue;
 		if (event.id == InputEventId::PRIMARY) {
 			vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
 			uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;

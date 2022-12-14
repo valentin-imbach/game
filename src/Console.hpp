@@ -93,11 +93,13 @@ private:
 		} else if (inputs[0] == "refresh") {
 			//TextureManager::Init();
 		} else if (inputs[0] == "kill") {
+			if (!player) return false;
 			ecs.getComponent<HealthComponent>(player).health = 0;
 		} else if (inputs[0] == "god") {
 			//MessageManager::notify(ToggleGodMessage());
 		} else if (inputs[0] == "tp") {
 			if (inputs.size() < 3) return false;
+			if (!player) return false;
 			int x = std::stoi(inputs[1]);
 			int y = std::stoi(inputs[2]);
 			ecs.getComponent<PositionComponent>(player).position = {x, y};
@@ -108,6 +110,7 @@ private:
 			// MessageManager::notify(PlaceMessage(n, playerRealm, playerPosition.rounded()));
 		} else if (inputs[0] == "cows") {
 			if (inputs.size() < 2) return false;
+			if (!player) return false;
 			int n = std::stoi(inputs[1]);
 			vec position = ecs.getComponent<PositionComponent>(player).position;
 			for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, position);

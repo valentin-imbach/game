@@ -10,6 +10,7 @@
 #include "utils.hpp"
 #include "ECS.hpp"
 #include "GuiManager.hpp"
+#include "World.hpp"
 
 //* GuiElement
 
@@ -118,8 +119,13 @@ HotbarGui::HotbarGui(Entity player) : GuiElement({0, 20}, {150, 30}, Direction::
 	activeSlotSprite = Sprite(SpriteSheet::SLOT, {2, 0}, {2, 2});
 }
 
+void HotbarGui::update() {
+	player = guiManager->world->player;
+}
+
 void HotbarGui::draw() {
 	if (guiManager->active()) return;
+	if (!player) return;
 	sprite.draw(screenPosition, GUI_SCALE, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	Inventory& inventory = guiManager->ecs->getComponent<InventoryComponent>(player).inventory;
@@ -144,7 +150,12 @@ HealthBarGui::HealthBarGui(Entity player) : GuiElement({-90, 20}, {}, Direction:
 	halfHeartSprite = Sprite(SpriteSheet::HEART, {1, 0}, {1, 1});
 }
 
+void HealthBarGui::update() {
+	player = guiManager->world->player;
+}
+
 void HealthBarGui::draw() {
+	if (!player) return;
 	HealthComponent& healthComponent = guiManager->ecs->getComponent<HealthComponent>(player);
 	int spacing = 9 * GUI_SCALE;
 	for (int x = 0; x < healthComponent.health / 2; x++) {

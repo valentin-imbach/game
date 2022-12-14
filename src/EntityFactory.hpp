@@ -35,7 +35,7 @@ public:
 	static GridMap* gridMap;
 
 	static Entity createPlayer(vec position);
-	static Entity createCamera(vec position, uint8_t zoom, Entity target = 0);
+	static Entity createCamera(vec position, uint8_t zoom);
 	static Entity createItemEntity(Item item, vec position);
 	static Entity createAnimal(AnimalId animalId, vec position);
 	static Entity createResource(ResourceId resourceId, pair position);

@@ -18,7 +18,7 @@ Entity EntityFactory::createPlayer(vec position) {
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100});
 	ecs->addComponent<SpriteComponent>({spriteStack, 1}, player);
-	Collider collider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
+	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs->addComponent<ColliderComponent>({collider}, player);
 	ecs->addComponent<InventoryComponent>({Inventory({7, 6})}, player);
 	ecs->addComponent<HealthComponent>({20, 20}, player);
@@ -26,9 +26,9 @@ Entity EntityFactory::createPlayer(vec position) {
 	return player;
 }
 
-Entity EntityFactory::createCamera(vec position, uint8_t zoom, Entity target) {
+Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
 	Entity camera = ecs->createEntity();
-	ecs->addComponent<CameraComponent>({zoom, target}, camera);
+	ecs->addComponent<CameraComponent>({zoom}, camera);
 	ecs->addComponent<PositionComponent>({position}, camera);
 	return camera;
 }
@@ -74,7 +74,7 @@ Entity EntityFactory::createAnimal(AnimalId animalId, vec position) {
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100});
 	ecs->addComponent<SpriteComponent>({spriteStack, 1}, animal);
-	Collider collider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
+	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs->addComponent<ColliderComponent>({collider}, animal);
 	ecs->addComponent<AnimalAiComponent>({}, animal);
 	ecs->addComponent<HealthComponent>({10, 10}, animal);
@@ -82,7 +82,7 @@ Entity EntityFactory::createAnimal(AnimalId animalId, vec position) {
 }
 
 Entity EntityFactory::createItemEntity(Item item, vec position) {
-	Collider collider = {{-0.2f, -0.2f}, {0.4f, 0.4f}};
+	Collider collider = {{0, 0}, {0.4f, 0.4f}};
 	if (item.entity) {
 		ecs->addComponent<PositionComponent>({position}, item.entity);
 		ecs->addComponent<ColliderComponent>({collider}, item.entity);

@@ -16,6 +16,7 @@ struct DrawCall {
 class EntityDrawSystem : public System {
 public:
 	void update(Entity camera) {
+		if (!camera) return;
 		vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
 		float zoom = ecs -> getComponent<CameraComponent>(camera).zoom;
 		pair screenSize = Window::instance->size;

@@ -47,6 +47,8 @@ enum class SystemId : std::uint8_t {
 	HEALTH,
 	LOOT,
 	DAMAGE,
+	PLAYER,
+	COLLIDER_DRAW,
 
 	MAX
 };

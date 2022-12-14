@@ -66,6 +66,7 @@ class HotbarGui : public GuiElement {
 public:
 	HotbarGui(Entity player);
 	~HotbarGui() override = default;
+	void update() override;
 	void draw() override;
 
 private:
@@ -79,6 +80,7 @@ class HealthBarGui : public GuiElement {
 public:
 	HealthBarGui(Entity player);
 	~HealthBarGui() override = default;
+	void update() override;
 	void draw() override;
 
 private:

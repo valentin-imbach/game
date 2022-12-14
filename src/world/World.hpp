@@ -1,6 +1,7 @@
 
 #pragma once
 #include "GuiManager.hpp"
+#include "PlayerSystem.hpp"
 #include "utils.hpp"
 #include "ECS.hpp"
 #include "systems.hpp"
@@ -17,6 +18,9 @@ public:
 
 	std::vector<InputEvent> inputEvents;
 	std::bitset<size_t(InputStateId::MAX)> inputState;
+
+	Entity player;
+	Entity camera;
 private:
 	void rosterComponents();
 	void rosterSystems();
@@ -37,13 +41,12 @@ private:
 	HealthSystem* healthSystem;
 	LootSystem* lootSystem;
 	DamageSystem* damageSystem;
+	PlayerSystem* playerSystem;
+	ColliderDrawSystem* colldierDrawSystem;
 
 	GuiManager guiManager;
 
 	std::string name;
-
-	Entity player;
-	Entity camera;
 
 	Map map;
 	GridMap gridMap;

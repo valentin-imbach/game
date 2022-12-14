@@ -17,7 +17,6 @@ struct SpriteComponent {
 
 struct CameraComponent {
 	uint8_t zoom;
-	Entity target;
 };
 
 enum class CreatureState : uint8_t {

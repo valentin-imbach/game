@@ -9,6 +9,8 @@
 #include "GuiElement.hpp"
 #include "ECS.hpp"
 
+class World;
+
 class GuiManager {
 public:
 	void update() {
@@ -80,6 +82,7 @@ public:
 	}
 
 	ECS* ecs;
+	World* world;
 	pair mousePosition;
 	ItemContainer mouseItemContainer;
 
