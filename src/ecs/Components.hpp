@@ -78,6 +78,9 @@ struct ResourceComponent {
 };
 
 struct LootComponent {
-	ItemId itemId;
-	uint count;
+	Item loot;
+};
+
+struct ToolComponent {
+	ToolId toolId;
 };

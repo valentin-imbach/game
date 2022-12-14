@@ -23,6 +23,7 @@ enum class ComponentId : std::uint8_t {
 	PLAYER,
 	RESOURCE,
 	LOOT,
+	TOOL,
 
 	MAX
 };
@@ -47,3 +48,5 @@ enum class SystemId : std::uint8_t {
 
 	MAX
 };
+
+typedef std::unordered_map<pair, Entity> GridMap;

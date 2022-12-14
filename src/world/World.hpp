@@ -10,7 +10,6 @@
 #include "Events.hpp"
 
 typedef std::vector<std::pair<float, DrawCall>> DrawQueue;
-typedef std::unordered_map<pair, Entity> GridMap;
 
 class World {
 public:

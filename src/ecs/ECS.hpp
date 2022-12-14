@@ -40,6 +40,7 @@ public:
 
 	template <typename T>
 	bool hasComponent(Entity entity) {
+		if (!entity) return false;
 		return componentManager.has<T>(entity);
 	}
 

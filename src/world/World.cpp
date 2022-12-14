@@ -10,76 +10,35 @@
 #include "Item.hpp"
 #include "Sprite.hpp"
 #include "Window.hpp"
+#include "EntityFactory.hpp"
 
 World::World(std::string name) : name(name) {
-	guiManager.ecs = &ecs;
 	rosterComponents();
 	rosterSystems();
 
-	player = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{8, 8}}, player);
-	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
-	ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
-	ecs.addComponent<MovementComponent>({2}, player);
-	ecs.addComponent<ControllerComponent>({}, player);
-	SpriteStack playerSprites;
-	playerSprites.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100});
-	ecs.addComponent<SpriteComponent>({playerSprites, 1}, player);
-	Collider playerCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
-	ecs.addComponent<ColliderComponent>({playerCollider}, player);
-	ecs.addComponent<InventoryComponent>({Inventory({7, 6})}, player);
-	ecs.addComponent<HealthComponent>({19, 20}, player);
-	ecs.addComponent<PlayerComponent>({0}, player);
+	guiManager.ecs = &ecs;
+	EntityFactory::ecs = &ecs;
+	EntityFactory::gridMap = &gridMap;
 
+	player = EntityFactory::createPlayer({8, 8});
 	Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(ItemId::APPLE, 20));
-
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	camera = ecs.createEntity();
-	ecs.addComponent<CameraComponent>({4, player}, camera);
-	ecs.addComponent<PositionComponent>({{0, 0}}, camera);
+	camera = EntityFactory::createCamera({0, 0}, 4, player);
 
-	Entity tree = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{7, 4}}, tree);
-	gridMap[{7, 4}] = tree;
-	SpriteStack treeSprites;
-	treeSprites.addSprite({SpriteSheet::RESOURCES, {0, 0}, {1, 3}});
-	ecs.addComponent<SpriteComponent>({treeSprites, 2}, tree);
-	ecs.addComponent<ResourceComponent>({ToolId::AXE}, tree);
-	ecs.addComponent<LootComponent>({ItemId::ASHWOOD_PLANK, 3}, tree);
-	ecs.addComponent<HealthComponent>({5, 5}, tree);
+	EntityFactory::createResource(ResourceId::TREE, {7, 4});
+	EntityFactory::createResource(ResourceId::ROCK, {4, 5});
 
-	Entity rock = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{4, 5}}, rock);
-	gridMap[{4, 5}] = rock;
-	SpriteStack rockSprites;
-	rockSprites.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
-	ecs.addComponent<SpriteComponent>({rockSprites, 1}, rock);
-	ecs.addComponent<ResourceComponent>({ToolId::PICK_AXE}, rock);
-	ecs.addComponent<LootComponent>({ItemId::BASALT_COBBLE, 3}, rock);
-	ecs.addComponent<HealthComponent>({5, 5}, rock);
+	EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
-	Entity cow = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{3, 3}}, cow);
-	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, cow);
-	ecs.addComponent<DirectionComponent>({Direction::EAST}, cow);
-	ecs.addComponent<MovementComponent>({0.5f}, cow);
-	SpriteStack cowSprites;
-	cowSprites.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100});
-	ecs.addComponent<SpriteComponent>({cowSprites, 1}, cow);
-	Collider cowCollider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
-	ecs.addComponent<ColliderComponent>({cowCollider}, cow);
-	ecs.addComponent<AnimalAiComponent>({}, cow);
-
-	Entity sword = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{3, 5}}, sword);
-	SpriteStack swordSprites;
-	swordSprites.addSprite({SpriteSheet::ITEMS, {0, 0}, {1, 1}});
-	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f}, sword);
-	Collider swordCollider = {{-0.2f, -0.2f}, {0.4f, 0.4f}};
-	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
-	ecs.addComponent<ItemComponent>({Item(sword)}, sword);
+	Entity axe = ecs.createEntity();
+	SpriteStack axeSprites;
+	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, {2, 0}, {1, 1}));
+	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f}, axe);
+	ecs.addComponent<ItemComponent>({Item(axe)}, axe);
+	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
+	EntityFactory::createItemEntity(Item(axe), {7, 5});
 }
 
 void World::rosterComponents() {
@@ -98,6 +57,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<PlayerComponent>(ComponentId::PLAYER);
 	ecs.rosterComponent<ResourceComponent>(ComponentId::RESOURCE);
 	ecs.rosterComponent<LootComponent>(ComponentId::LOOT);
+	ecs.rosterComponent<ToolComponent>(ComponentId::TOOL);
 }
 
 void World::rosterSystems() {
