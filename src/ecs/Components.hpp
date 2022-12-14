@@ -84,3 +84,7 @@ struct LootComponent {
 struct ToolComponent {
 	ToolId toolId;
 };
+
+struct DamageComponent {
+	uint8_t damage;
+};

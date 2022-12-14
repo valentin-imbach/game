@@ -2,15 +2,19 @@
 #include "World.hpp"
 #include <memory>
 #include "Components.hpp"
+#include "DamageSystem.hpp"
 #include "ECS_types.hpp"
 #include "Events.hpp"
 #include "ForageSystem.hpp"
 #include "GuiElement.hpp"
 #include "HealthSystem.hpp"
 #include "Item.hpp"
+#include "Map.hpp"
 #include "Sprite.hpp"
+#include "Tile.hpp"
 #include "Window.hpp"
 #include "EntityFactory.hpp"
+#include "random.hpp"
 
 World::World(std::string name) : name(name) {
 	rosterComponents();
@@ -27,9 +31,6 @@ World::World(std::string name) : name(name) {
 
 	camera = EntityFactory::createCamera({0, 0}, 4, player);
 
-	EntityFactory::createResource(ResourceId::TREE, {7, 4});
-	EntityFactory::createResource(ResourceId::ROCK, {4, 5});
-
 	EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
 	Entity axe = ecs.createEntity();
@@ -39,6 +40,44 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<ItemComponent>({Item(axe)}, axe);
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
 	EntityFactory::createItemEntity(Item(axe), {7, 5});
+
+	Entity pick = ecs.createEntity();
+	SpriteStack pickSprites;
+	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, {1, 0}, {1, 1}));
+	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f}, pick);
+	ecs.addComponent<ItemComponent>({Item(pick)}, pick);
+	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
+	EntityFactory::createItemEntity(Item(pick), {8, 5});
+
+	Entity sword = ecs.createEntity();
+	SpriteStack swordSprites;
+	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, {0, 0}, {1, 1}));
+	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f}, sword);
+	ecs.addComponent<ItemComponent>({Item(sword)}, sword);
+	ecs.addComponent<DamageComponent>({1}, sword);
+	EntityFactory::createItemEntity(Item(sword), {9, 5});
+
+	generate();
+}
+
+void World::generate() {
+	uint seed = 456;
+	for (int x = 0; x < MAP_WIDTH; x++) {
+		for (int y = 0; y < MAP_HEIGHT; y++) {
+			pair position = {x, y};
+			TileId tileId = map.getTileId(position);
+			if (tileId == TileId::WATER) continue;
+			if (tileId == TileId::GRASS) {
+				if (bernoulli(seed++, 0.1)) {
+					EntityFactory::createResource(ResourceId::TREE, position);
+					continue;
+				}
+			}
+			if (bernoulli(seed++, 0.05)) {
+				EntityFactory::createResource(ResourceId::ROCK, position);
+			}
+		}
+	}
 }
 
 void World::rosterComponents() {
@@ -58,6 +97,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ResourceComponent>(ComponentId::RESOURCE);
 	ecs.rosterComponent<LootComponent>(ComponentId::LOOT);
 	ecs.rosterComponent<ToolComponent>(ComponentId::TOOL);
+	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 }
 
 void World::rosterSystems() {
@@ -73,6 +113,7 @@ void World::rosterSystems() {
 	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE, {ComponentId::RESOURCE, ComponentId::POSITION, ComponentId::HEALTH});
 	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH, {ComponentId::HEALTH});
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT, {ComponentId::LOOT, ComponentId::HEALTH, ComponentId::POSITION});
+	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE, {ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
 }
 
 void World::update(uint dt) {
@@ -142,10 +183,12 @@ void World::handleEvents() {
 		if (event.id == InputEventId::PRIMARY) {
 			vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
 			uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
-			pair position = round(cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT));
+			vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
 			uint activeSlot = ecs.getComponent<PlayerComponent>(player).activeSlot;
 			Inventory& inventory = ecs.getComponent<InventoryComponent>(player).inventory;
+
 			forageSystem->update(position, inventory.itemContainers[activeSlot][0].item);
+			damageSystem->update(position, inventory.itemContainers[activeSlot][0].item);
 		}
 	}
 }

@@ -3,7 +3,7 @@
 #include "utils.hpp"
 
 typedef std::uint32_t Entity;
-constexpr Entity MAX_ENTITIES = 100;
+constexpr Entity MAX_ENTITIES = 500;
 
 enum class ComponentId : std::uint8_t {
 	NONE,
@@ -24,6 +24,7 @@ enum class ComponentId : std::uint8_t {
 	RESOURCE,
 	LOOT,
 	TOOL,
+	DAMAGE,
 
 	MAX
 };
@@ -45,6 +46,7 @@ enum class SystemId : std::uint8_t {
 	FORAGE,
 	HEALTH,
 	LOOT,
+	DAMAGE,
 
 	MAX
 };

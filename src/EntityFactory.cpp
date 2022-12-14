@@ -36,7 +36,7 @@ Entity EntityFactory::createCamera(vec position, uint8_t zoom, Entity target) {
 Entity EntityFactory::createResource(ResourceId resourceId, pair position) {
 	Entity resource = ecs->createEntity();
 	ecs->addComponent<PositionComponent>({position}, resource);
-	(*gridMap)[position] = resource;
+	if (resource) (*gridMap)[position] = resource;
 	SpriteStack spriteStack;
 	ToolId toolId;
 	uint8_t height;
@@ -77,6 +77,7 @@ Entity EntityFactory::createAnimal(AnimalId animalId, vec position) {
 	Collider collider = {{-0.3f, -0.3f}, {0.6f, 0.6f}};
 	ecs->addComponent<ColliderComponent>({collider}, animal);
 	ecs->addComponent<AnimalAiComponent>({}, animal);
+	ecs->addComponent<HealthComponent>({10, 10}, animal);
 	return animal;
 }
 

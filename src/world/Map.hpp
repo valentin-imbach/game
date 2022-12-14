@@ -3,8 +3,8 @@
 #include "Tile.hpp"
 #include "utils.hpp"
 
-constexpr int MAP_WIDTH = 500;
-constexpr int MAP_HEIGHT = 500;
+constexpr int MAP_WIDTH = 50;
+constexpr int MAP_HEIGHT = 50;
 
 class Map {
 public:

@@ -22,6 +22,7 @@ public:
 
 	template <typename T>
 	void addComponent(T component, Entity entity) {
+		if (!entity) return;
 		componentManager.add<T>(component, entity);
 		auto signature = entityManager.signatures[entity];
 		signature.set(size_t(componentManager.roster<T>()), true);

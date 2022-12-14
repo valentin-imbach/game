@@ -1,8 +1,6 @@
 
 #pragma once
 #include "GuiManager.hpp"
-#include "HealthSystem.hpp"
-#include "LootSystem.hpp"
 #include "utils.hpp"
 #include "ECS.hpp"
 #include "systems.hpp"
@@ -23,6 +21,8 @@ private:
 	void rosterComponents();
 	void rosterSystems();
 
+	void generate();
+
 	ECS ecs;
 	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;
@@ -36,6 +36,7 @@ private:
 	ForageSystem* forageSystem;
 	HealthSystem* healthSystem;
 	LootSystem* lootSystem;
+	DamageSystem* damageSystem;
 
 	GuiManager guiManager;
 
