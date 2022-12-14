@@ -24,7 +24,9 @@ Game::Game() {
 void Game::update() {
 	Window::instance->clear();
 	Window::instance->update();
+	console.update(world.get());
 	world->update(dt);
+	console.draw();
 	std::string text = "FPS: " + std::to_string(framesPerSecond);
 	TextManager::drawText(text, {20, 20});
 	Window::instance->draw();
@@ -53,8 +55,9 @@ void Game::handleEvents() {
 		if (event.type == SDL_QUIT) {
 			LOG("Window closed");
 			running = false;
-			break;
+			continue;
 		}
+		if (console.handleEvent(event)) continue;
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			if (event.button.button == SDL_BUTTON_LEFT) {
 				world->inputEvents.push_back({InputEventId::PRIMARY, mousePosition});
@@ -82,9 +85,13 @@ void Game::handleEvents() {
 				world->inputEvents.push_back({InputEventId::SELECT_6, mousePosition});
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_7) {
 				world->inputEvents.push_back({InputEventId::SELECT_7, mousePosition});
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_TAB) {
+				world->inputEvents.push_back({InputEventId::CONSOLE, mousePosition});
 			}
 		}
 	}
+
+	if (console.active) world->inputState = 0;
 }
 
 void Game::limitFrameRate(int fps) {

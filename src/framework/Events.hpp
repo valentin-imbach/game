@@ -20,6 +20,8 @@ enum class InputEventId {
 	SELECT_6,
 	SELECT_7,
 
+	CONSOLE,
+
 	MAX
 };
 

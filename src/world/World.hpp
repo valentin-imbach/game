@@ -49,4 +49,5 @@ private:
 	GridMap gridMap;
 
 	friend class Game;
+	friend class Console;
 };

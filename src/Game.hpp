@@ -1,6 +1,7 @@
 
 #pragma once
 #include "World.hpp"
+#include "Console.hpp"
 
 #define SAMPLE_SIZE 50
 
@@ -21,5 +22,6 @@ public:
 	uint sampleSum;
 	int framesPerSecond;
 
+	Console console;
 	std::unique_ptr<World> world;
 };
