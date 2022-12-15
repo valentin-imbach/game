@@ -9,9 +9,9 @@ class AnimalAiSystem : public System {
 public:
 	void update() {
 		for (Entity entity : entities) {
-			CreatureState& state = ecs -> getComponent<CreatureStateComponent>(entity).state;
-			Direction& facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
-			Direction& direction = ecs -> getComponent<DirectionComponent>(entity).direction;
+			CreatureState::value& state = ecs -> getComponent<CreatureStateComponent>(entity).state;
+			Direction::value& facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
+			Direction::value& direction = ecs -> getComponent<DirectionComponent>(entity).direction;
 			uint& nextChange = ecs -> getComponent<AnimalAiComponent>(entity).nextChange;
 			bool& stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
 
@@ -19,15 +19,15 @@ public:
 			stateChanged = false;
 
 			if (ticks >= nextChange) {
-				CreatureState oldState = state;
-				Direction oldFacing = facing;
+				CreatureState::value oldState = state;
+				Direction::value oldFacing = facing;
 
 				state = CreatureState::IDLE;
 				if (bernoulli(ticks, 0.3f)) state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
 					uint rand = rand_int(ticks, 0, 8);
-					direction = Direction(rand + 1);
+					direction = Direction::from_int(rand + 1);
 					if (taxiSteps[rand].x == 1) {
 						facing = Direction::EAST;
 					} else if (taxiSteps[rand].x == -1) {

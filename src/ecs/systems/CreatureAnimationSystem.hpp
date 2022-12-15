@@ -9,9 +9,9 @@ public:
 	void update() {
 		for (Entity entity : entities) {
 			SpriteStack& spriteStack = ecs -> getComponent<SpriteComponent>(entity).spriteStack;
-			CreatureState state = ecs -> getComponent<CreatureStateComponent>(entity).state;
+			CreatureState::value state = ecs -> getComponent<CreatureStateComponent>(entity).state;
 			bool stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
-			Direction facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
+			Direction::value facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
 
 			for (auto& layer : spriteStack.stack) {
 				Sprite& sprite = layer.first;

@@ -25,10 +25,10 @@ void Game::update() {
 	Window::instance->clear();
 	Window::instance->update();
 	console.update(world.get());
+	debugScreen.update(world.get(), framesPerSecond);
 	world->update(dt);
+	debugScreen.draw();
 	console.draw();
-	std::string text = "FPS: " + std::to_string(framesPerSecond);
-	TextManager::drawText(text, {20, 20});
 	Window::instance->draw();
 }
 
@@ -58,6 +58,7 @@ void Game::handleEvents() {
 			continue;
 		}
 		if (console.handleEvent(event)) continue;
+		if (debugScreen.handleEvent(event)) continue;
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			if (event.button.button == SDL_BUTTON_LEFT) {
 				world->inputEvents.push_back({InputEventId::PRIMARY, mousePosition});

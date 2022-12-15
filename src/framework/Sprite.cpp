@@ -1,9 +1,9 @@
 
 #include "Sprite.hpp"
 
-std::array<SDL_Texture*, int(SpriteSheet::MAX)> Sprite::spriteSheets = {};
+std::array<SDL_Texture*, SpriteSheet::count> Sprite::spriteSheets = {};
 
-Sprite::Sprite(SpriteSheet spriteSheet, pair source, pair size, uint8_t frameCount, uint frameDuration) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration) {
+Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uint8_t frameCount, uint frameDuration) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration) {
 	animationStart = SDL_GetTicks();
 }
 
@@ -24,20 +24,10 @@ void Sprite::animationReset() {
 }
 
 void Sprite::loadSpriteSheets() {
-	spriteSheets[int(SpriteSheet::HOLE)] = TextureManager::loadTexture("hole.png");
-	spriteSheets[int(SpriteSheet::GRASS)] = TextureManager::loadTexture("grass.png");
-	spriteSheets[int(SpriteSheet::DIRT)] = TextureManager::loadTexture("dirt.png");
-	spriteSheets[int(SpriteSheet::PLAYER)] = TextureManager::loadTexture("player.png");
-	spriteSheets[int(SpriteSheet::RESOURCES)] = TextureManager::loadTexture("resources.png");
-	spriteSheets[int(SpriteSheet::ITEMS)] = TextureManager::loadTexture("items.png");
-	spriteSheets[int(SpriteSheet::COW)] = TextureManager::loadTexture("cow.png");
-	spriteSheets[int(SpriteSheet::ROCK)] = TextureManager::loadTexture("rock.png");
-	spriteSheets[int(SpriteSheet::SAND)] = TextureManager::loadTexture("sand.png");
-	spriteSheets[int(SpriteSheet::WATER)] = TextureManager::loadTexture("water.png");
-	spriteSheets[int(SpriteSheet::INVENTORY)] = TextureManager::loadTexture("inventory.png");
-	spriteSheets[int(SpriteSheet::SLOT)] = TextureManager::loadTexture("slot.png");
-	spriteSheets[int(SpriteSheet::HOTBAR)] = TextureManager::loadTexture("hotbar.png");
-	spriteSheets[int(SpriteSheet::HEART)] = TextureManager::loadTexture("heart.png");
+	for (int i = 1; i < SpriteSheet::count; i++) {
+		std::string fileName = SpriteSheet::strings[i] + ".png";
+		spriteSheets[i] = TextureManager::loadTexture(fileName);
+	}
 }
 
 //* SpriteStack

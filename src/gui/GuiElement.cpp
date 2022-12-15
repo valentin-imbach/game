@@ -14,7 +14,7 @@
 
 //* GuiElement
 
-GuiElement::GuiElement(pair position, pair size, Direction alignment) : position(position), size(size), alignment(alignment) {}
+GuiElement::GuiElement(pair position, pair size, Direction::value alignment) : position(position), size(size), alignment(alignment) {}
 
 void GuiElement::reposition(GuiElement* parent) {
 	screenSize = GUI_SCALE * size;

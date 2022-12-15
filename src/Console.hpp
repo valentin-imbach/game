@@ -20,7 +20,7 @@ public:
 	void draw() {
 		if (!active) return;
 		pair windowSize = Window::instance->size;
-		TextureManager::drawRect({20, windowSize.y / 2}, {300, windowSize.y / 2 - 20}, {0, 0, 0, 100}, false, true);
+		TextureManager::drawRect({20, windowSize.y / 2 + 10}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
 		for (int i = 0; i < history.size(); i++) {
 			TextManager::drawText(history[i], {40, windowSize.y - 60 - (history.size() - i) * 30});
 		}
@@ -115,18 +115,26 @@ private:
 			vec position = ecs.getComponent<PositionComponent>(player).position;
 			for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, position);
 		} else if (inputs[0] == "give") {
-			// if (inputs.size() == 1) return false;
-			// ItemId itemID = ItemIdFromString(split[1]);
-			// if (itemID == ItemId::NONE) return false;
-			// int num = 1;
-			// if (split.size() > 2) {
-			// 	if (!isUInt(split[2])) return false;
-			// 	num = std::stoi(split[2]);
-			// }
-			// MessageManager::notify(GiveMessage(std::make_unique<Item>(itemID, num)));
+			if (!player) return false;
+			if (inputs.size() < 2) return false;
+			ItemId::value itemId = ItemId::from_string(inputs[1]);
+			if (!itemId) return false;
+			int count = 1;
+			if (inputs.size() > 2) {
+				//if (!isUInt(inputs[2])) return false;
+				count = std::stoi(inputs[2]);
+			}
+			while (count > 0) {
+				int batch = std::min(count, MAX_STACK);
+				count -= batch;
+				Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(itemId, batch));
+			}
+		} else if (inputs[0] == "empty") {
+			if (!player) return false;
+			ecs.getComponent<InventoryComponent>(player).inventory.clear();
 		} else if (inputs[0] == "tile") {
 			// if (inputs.size() != 2) return false;
-			// TileId t = TileIdFromString(split[1]);
+			// TileId::value t = TileIdFromString(split[1]);
 			// MessageManager::notify(TileMessage(t, playerRealm, playerPosition.rounded()));
 		} else if (inputs[0] == "weather") {
 			// if (split.size() != 2) return false;

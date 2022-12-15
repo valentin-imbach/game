@@ -6,8 +6,8 @@
 class ComponentManager {
 public:
 	template <typename T>
-	ComponentId roster(ComponentId type = ComponentId::NONE) {
-		static ComponentId s_type = ComponentId::NONE;
+	ComponentId::value roster(ComponentId::value type = ComponentId::NONE) {
+		static ComponentId::value s_type = ComponentId::NONE;
 		if (type == ComponentId::NONE) {
 			if (s_type == ComponentId::NONE)
 				ERROR("Using non-registered component");
@@ -39,7 +39,7 @@ public:
 	}
 
 	void destroyEntity(Entity entity) {
-		for (int i = 1; i < int(ComponentId::MAX); i++) {
+		for (int i = 1; i < ComponentId::count; i++) {
 			componentArrays[i]->destroyEntity(entity);
 		}
 	}

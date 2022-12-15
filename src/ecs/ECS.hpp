@@ -9,6 +9,10 @@ class ECS {
 public:
 	Entity createEntity() { return entityManager.createEntity(); }
 
+	int entityCount() {
+		return entityManager.entityCount();
+	}
+
 	void destroyEntity(Entity entity) {
 		entityManager.destroyEntity(entity);
 		componentManager.destroyEntity(entity);
@@ -16,7 +20,7 @@ public:
 	}
 
 	template <typename T>
-	ComponentId rosterComponent(ComponentId type = ComponentId::NONE) {
+	ComponentId::value rosterComponent(ComponentId::value type = ComponentId::NONE) {
 		return componentManager.roster<T>(type);
 	}
 
@@ -51,22 +55,15 @@ public:
 	}
 
 	template <typename T>
-	T* rosterSystem(SystemId id, Signature signature = 0) {
-		T* system = systemManager.roster<T>(id, signature);
-		system->ecs = this;
-		return system;
-	}
-
-	template <typename T>
-	T* rosterSystem(SystemId id, std::vector<ComponentId>&& ids) {
+	T* rosterSystem(SystemId::value id, std::vector<ComponentId::value>&& ids) {
 		T* system = systemManager.roster<T>(id, makeSiganture(std::move(ids)));
 		system->ecs = this;
 		return system;
 	}
 
-	static Signature makeSiganture(std::vector<ComponentId>&& ids) {
+	static Signature makeSiganture(std::vector<ComponentId::value>&& ids) {
 		Signature signature;
-		for (ComponentId id : ids) { signature.set(size_t(id), true); }
+		for (ComponentId::value id : ids) { signature.set(size_t(id), true); }
 		return signature;
 	}
 
@@ -74,11 +71,20 @@ public:
 		for (Entity entity : dead) {
 			destroyEntity(entity);
 		}
+		dead.clear();
 	}
 
 	std::vector<Entity> dead;
 
 private:
+
+	// template <typename T>
+	// T* rosterSystem(SystemId::value id, Signature signature) {
+	// 	T* system = systemManager.roster<T>(id, signature);
+	// 	system->ecs = this;
+	// 	return system;
+	// }
+
 	EntityManager entityManager;
 	ComponentManager componentManager;
 	SystemManager systemManager;

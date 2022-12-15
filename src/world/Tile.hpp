@@ -3,22 +3,17 @@
 #include "utils.hpp"
 #include "Sprite.hpp"
 
-enum class TileId : uint8_t {
-	NONE,
-
-	GRASS,
-	DIRT,
-	ROCK,
-	SAND,
-	WATER,
-
-	MAX
-};
+ENUM(TileId,
+GRASS,
+DIRT,
+ROCK,
+SAND,
+WATER)
 
 class Tile {
 public:
-	Tile(TileId tileId, SpriteStack spriteStack);
-	TileId tileId;
+	Tile(TileId::value tileId, SpriteStack spriteStack);
+	TileId::value tileId;
 	SpriteStack spriteStack;
-	static std::array<SpriteSheet, size_t(TileId::MAX)> spriteSheets;
+	static std::array<SpriteSheet::value, TileId::count> spriteSheets;
 };

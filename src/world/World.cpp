@@ -20,6 +20,7 @@ World::World(std::string name) : name(name) {
 	EntityFactory::gridMap = &gridMap;
 
 	player = EntityFactory::createPlayer({8, 8});
+
 	Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(ItemId::APPLE, 20));
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -60,7 +61,7 @@ void World::generate() {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position = {x, y};
-			TileId tileId = map.getTileId(position);
+			TileId::value tileId = map.getTileId(position);
 			if (tileId == TileId::WATER) continue;
 			if (tileId == TileId::GRASS) {
 				if (bernoulli(seed++, 0.1)) {
@@ -149,11 +150,12 @@ void World::update(uint dt) {
 		}
 	}
 	ecs.update();
+
+	player = playerSystem->getPlayer();
+	camera = cameraSystem->getCamera();
 }
 
 void World::handleEvents() {
-	player = playerSystem->getPlayer();
-	camera = cameraSystem->getCamera();
 	if (!player) return;
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;

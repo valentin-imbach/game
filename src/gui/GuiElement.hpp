@@ -14,7 +14,7 @@ class GuiManager;
 
 class GuiElement {
 public:
-	GuiElement(pair position, pair size, Direction alignment = Direction::NONE);
+	GuiElement(pair position, pair size, Direction::value alignment = Direction::NONE);
 	virtual ~GuiElement() = default;
 	void reposition(GuiElement* parent = nullptr);
 	virtual void update() {};
@@ -26,7 +26,7 @@ protected:
 	pair screenSize;
 	pair position;
 	pair screenPosition;
-	Direction alignment;
+	Direction::value alignment;
 	GuiManager* guiManager;
 	bool inside(pair position);
 

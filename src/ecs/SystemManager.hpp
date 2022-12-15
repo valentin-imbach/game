@@ -7,7 +7,7 @@
 class SystemManager {
 public:
 	template <typename T>
-	T* roster(SystemId id, Signature signature) {
+	T* roster(SystemId::value id, Signature signature) {
 		signatures[size_t(id)] = signature;
 		std::unique_ptr<T> system = std::make_unique<T>();
 		T* ret = system.get();

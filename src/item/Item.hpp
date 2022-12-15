@@ -9,82 +9,72 @@ class ECS;
 
 #define MAX_STACK 99
 
-enum class ItemId {
-	NONE,
+ENUM(ItemId,
+SWORD,
+PICK_AXE,
+AXE,
+SHOVEL,
+BOW,
+ARROW,
 
-	SWORD,
-	PICK_AXE,
-	AXE,
-	SHOVEL,
-	BOW,
-	ARROW,
+BOOTS,
+ROBE,
+CAP,
+SHIELD,
+POTION,
+APPLE,
 
-	BOOTS,
-	ROBE,
-	CAP,
-	SHIELD,
-	POTION,
-	APPLE,
+PINE_LOG,
+OAK_LOG,
+ROSEWOOD_LOG,
+ASHWOOD_LOG,
+SPRUCE_LOG,
+X_LOG,
 
-	PINE_LOG,
-	OAK_LOG,
-	ROSEWOOD_LOG,
-	ASHWOOD_LOG,
-	SPRUCE_LOG,
-	X_LOG,
+PINE_PLANK,
+OAK_PLANK,
+ROSEWOOD_PLANK,
+ASHWOOD_PLANK,
+SPRUCE_PLANK,
+X_PLANK,
 
-	PINE_PLANK,
-	OAK_PLANK,
-	ROSEWOOD_PLANK,
-	ASHWOOD_PLANK,
-	SPRUCE_PLANK,
-	X_PLANK,
+PINE_STICK,
+OAK_STICK,
+ROSEWOOD_STICK,
+ASHWOOD_STICK,
+SPRUCE_STICK,
+X_STICK,
 
-	PINE_STICK,
-	OAK_STICK,
-	ROSEWOOD_STICK,
-	ASHWOOD_STICK,
-	SPRUCE_STICK,
-	X_STICK,
+BASALT_COBBLE,
+OBSIDIAN_COBBLE,
+GRANITE_COBBLE,
+SANDSTONE_COBBLE,
+CHALK_COBBLE,
+Y_COBBLE,
 
-	BASALT_COBBLE,
-	OBSIDIAN_COBBLE,
-	GRANITE_COBBLE,
-	SANDSTONE_COBBLE,
-	CHALK_COBBLE,
-	Y_COBBLE,
+BASALT_PEBBLE,
+OBSIDIAN_PEBBLE,
+GRANITE_PEBBLE,
+SANDSTONE_PEBBLE,
+CHALK_PEBBLE,
+Y_PEBBLE,
 
-	BASALT_PEBBLE,
-	OBSIDIAN_PEBBLE,
-	GRANITE_PEBBLE,
-	SANDSTONE_PEBBLE,
-	CHALK_PEBBLE,
-	Y_PEBBLE,
+GRASS_FIBRE)
 
-	GRASS_FIBRE,
-
-	MAX
-};
-
-enum class ToolId {
-	NONE,
-
-	PICK_AXE,
-	AXE,
-	SHOVEL,
-	KNIVE,
-
-	MAX
-};
+ENUM(ToolId,
+PICK_AXE,
+AXE,
+SHOVEL,
+KNIVE)
 
 struct Item {
 	Item() = default;
 	Item(Entity entity) : entity(entity), count(1) {}
-	Item(ItemId itemId, int count = 1) : itemId(itemId), count(count) {
+	Item(ItemId::value itemId, int count = 1) : itemId(itemId), count(count) {
 		assert(0 < count && count <= MAX_STACK);
 	}
 	Entity entity = 0;
-	ItemId itemId = ItemId::NONE;
+	ItemId::value itemId = ItemId::NONE;
 	int count = 0;
 	
 	operator bool() {
@@ -93,16 +83,15 @@ struct Item {
 	void draw(pair position, int scale, ECS* ecs);
 };
 
-enum class ItemAmount {
-	ALL,
-	HALF,
-	ONE
-};
+ENUM(ItemAmount,
+ALL,
+HALF,
+ONE)
 
 struct ItemContainer {
 	Item item;
 
-	[[nodiscard]] Item add(Item other, ItemAmount amount = ItemAmount::ALL) {
+	[[nodiscard]] Item add(Item other, ItemAmount::value amount = ItemAmount::ALL) {
 		int number = MAX_STACK - item.count;
 		if (amount == ItemAmount::ALL) number = std::min(number, other.count);
 		if (amount == ItemAmount::HALF) number = std::min(number, (other.count + 1) / 2);
@@ -123,6 +112,11 @@ struct ItemContainer {
 		}
 		return other;
 	}
+
+	void clear() {
+		item = Item();
+		//TODO delete Entity
+	}
 };
 
 class Inventory {
@@ -134,11 +128,19 @@ public:
 	std::vector<std::vector<ItemContainer>> itemContainers;
 
 	[[nodiscard]] Item add(Item item) {
-		for (int y = 0; y < size.x; y++) {
-			for (int x = 0; x < size.y; x++) {
+		for (int y = 0; y < size.y; y++) {
+			for (int x = 0; x < size.x; x++) {
 				item = itemContainers[x][y].add(item);
 			}
 		}
 		return item;
+	}
+
+	void clear() {
+		for (int y = 0; y < size.y; y++) {
+			for (int x = 0; x < size.x; x++) {
+				itemContainers[x][y].clear();
+			}
+		}
 	}
 };

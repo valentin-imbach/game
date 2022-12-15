@@ -1,7 +1,7 @@
 
 #pragma once
-#include "World.hpp"
 #include "Console.hpp"
+#include "DebugScreen.hpp"
 
 #define SAMPLE_SIZE 50
 
@@ -23,5 +23,6 @@ public:
 	int framesPerSecond;
 
 	Console console;
+	DebugScreen debugScreen;
 	std::unique_ptr<World> world;
 };

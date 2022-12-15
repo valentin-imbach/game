@@ -11,10 +11,10 @@ class CreatureMovementSystem : public System {
 public:
 	void update(uint dt, GridMap& gridMap, Map& map) {
 		for (Entity entity : entities) {
-			Direction direction = ecs->getComponent<DirectionComponent>(entity).direction;
+			Direction::value direction = ecs->getComponent<DirectionComponent>(entity).direction;
 			float speed = ecs->getComponent<MovementComponent>(entity).speed;
 			vec& position = ecs->getComponent<PositionComponent>(entity).position;
-			CreatureState state = ecs->getComponent<CreatureStateComponent>(entity).state;
+			CreatureState::value state = ecs->getComponent<CreatureStateComponent>(entity).state;
 
 			Collider collider = ecs->getComponent<ColliderComponent>(entity).collider;
 			std::vector<Entity>& collisions = ecs->getComponent<ColliderComponent>(entity).collisions;

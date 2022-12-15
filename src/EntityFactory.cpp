@@ -33,12 +33,12 @@ Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
 	return camera;
 }
 
-Entity EntityFactory::createResource(ResourceId resourceId, pair position) {
+Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
 	Entity resource = ecs->createEntity();
 	ecs->addComponent<PositionComponent>({position}, resource);
 	if (resource) (*gridMap)[position] = resource;
 	SpriteStack spriteStack;
-	ToolId toolId;
+	ToolId::value toolId;
 	uint8_t height;
 	Item loot;
 	switch (resourceId) {
@@ -65,7 +65,7 @@ Entity EntityFactory::createResource(ResourceId resourceId, pair position) {
 	return resource;
 }
 
-Entity EntityFactory::createAnimal(AnimalId animalId, vec position) {
+Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	Entity animal = ecs->createEntity();
 	ecs->addComponent<PositionComponent>({position}, animal);
 	ecs->addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);

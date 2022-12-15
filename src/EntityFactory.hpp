@@ -3,29 +3,18 @@
 #include "utils.hpp"
 #include "ECS_types.hpp"
 
-enum class ItemId;
 class ECS;
 class Item;
 
-enum class AnimalId {
-	NONE,
+ENUM(AnimalId,
+COW,
+PIG,
+HORSE)
 
-	COW,
-	PIG,
-	HORSE,
-
-	MAX
-};
-
-enum class ResourceId {
-	NONE,
-
-	ROCK,
-	TREE,
-	GRASS,
-
-	MAX
-};
+ENUM(ResourceId,
+ROCK,
+TREE,
+GRASS)
 
 class EntityFactory {
 public:
@@ -37,6 +26,6 @@ public:
 	static Entity createPlayer(vec position);
 	static Entity createCamera(vec position, uint8_t zoom);
 	static Entity createItemEntity(Item item, vec position);
-	static Entity createAnimal(AnimalId animalId, vec position);
-	static Entity createResource(ResourceId resourceId, pair position);
+	static Entity createAnimal(AnimalId::value animalId, vec position);
+	static Entity createResource(ResourceId::value resourceId, pair position);
 };

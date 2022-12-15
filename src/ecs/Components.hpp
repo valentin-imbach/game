@@ -19,18 +19,17 @@ struct CameraComponent {
 	uint8_t zoom;
 };
 
-enum class CreatureState : uint8_t {
-	IDLE,
-	WALKING,
-	RUNNING,
-	SITTING,
-	EATING,
-	JUMPING
-};
+ENUM(CreatureState,
+IDLE,
+WALKING,
+RUNNING,
+SITTING,
+EATING,
+JUMPING)
 
 struct CreatureStateComponent {
-	CreatureState state;
-	Direction facing;
+	CreatureState::value state;
+	Direction::value facing;
 	bool stateChanged;
 };
 
@@ -43,7 +42,7 @@ struct ControllerComponent {
 };
 
 struct DirectionComponent {
-	Direction direction;
+	Direction::value direction;
 };
 
 struct ColliderComponent {
@@ -73,7 +72,7 @@ struct PlayerComponent {
 };
 
 struct ResourceComponent {
-	ToolId toolId;
+	ToolId::value toolId;
 };
 
 struct LootComponent {
@@ -81,7 +80,7 @@ struct LootComponent {
 };
 
 struct ToolComponent {
-	ToolId toolId;
+	ToolId::value toolId;
 };
 
 struct DamageComponent {

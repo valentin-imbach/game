@@ -53,4 +53,5 @@ private:
 
 	friend class Game;
 	friend class Console;
+	friend class DebugScreen;
 };

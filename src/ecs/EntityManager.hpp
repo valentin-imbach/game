@@ -23,6 +23,7 @@ public:
 
 	void destroyEntity(Entity entity) {
 		if (!entity) return;
+		LOG("destriyed", entity);
 		signatures[entity].reset();
 		availableEntities.push(entity);
 	}
