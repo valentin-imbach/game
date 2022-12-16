@@ -22,7 +22,8 @@ PLAYER,
 RESOURCE,
 LOOT,
 TOOL,
-DAMAGE)
+DAMAGE,
+FORCE)
 
 using Signature = std::bitset<ComponentId::count>;
 

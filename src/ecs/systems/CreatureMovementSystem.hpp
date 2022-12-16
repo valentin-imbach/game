@@ -24,6 +24,12 @@ public:
 				newPosition += dt * speed * unitVectors[int(direction) - 1] / 1000;
 			}
 
+			if (ecs->hasComponent<ForceComponent>(entity)) {
+				ForceComponent& forceComponent = ecs->getComponent<ForceComponent>(entity);
+				newPosition += forceComponent.force;
+				forceComponent.force *= 0.9f;
+			}
+
 			if (!isColliding(collider, newPosition, gridMap, map)) {
 				position = newPosition;
 			} else if (!isColliding(collider, {newPosition.x, position.y}, gridMap, map)) {

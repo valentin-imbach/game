@@ -64,12 +64,12 @@ void World::generate() {
 			TileId::value tileId = map.getTileId(position);
 			if (tileId == TileId::WATER) continue;
 			if (tileId == TileId::GRASS) {
-				if (bernoulli(seed++, 0.1)) {
+				if (bernoulli(seed++, 0.1f)) {
 					EntityFactory::createResource(ResourceId::TREE, position);
 					continue;
 				}
 			}
-			if (bernoulli(seed++, 0.05)) {
+			if (bernoulli(seed++, 0.05f)) {
 				EntityFactory::createResource(ResourceId::ROCK, position);
 			}
 		}
@@ -94,6 +94,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<LootComponent>(ComponentId::LOOT);
 	ecs.rosterComponent<ToolComponent>(ComponentId::TOOL);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
+	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
 }
 
 void World::rosterSystems() {
@@ -196,7 +197,7 @@ void World::handleEvents() {
 			Inventory& inventory = ecs.getComponent<InventoryComponent>(player).inventory;
 
 			forageSystem->update(position, inventory.itemContainers[activeSlot][0].item);
-			damageSystem->update(position, inventory.itemContainers[activeSlot][0].item);
+			damageSystem->update(player, position, inventory.itemContainers[activeSlot][0].item);
 		}
 	}
 }

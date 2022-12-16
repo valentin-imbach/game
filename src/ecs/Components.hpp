@@ -56,6 +56,7 @@ struct ItemComponent {
 
 struct AnimalAiComponent {
 	uint nextChange;
+	uint panic;
 };
 
 struct InventoryComponent {
@@ -65,6 +66,7 @@ struct InventoryComponent {
 struct HealthComponent {
 	uint health;
 	uint maxHealth;
+	bool damaged;
 };
 
 struct PlayerComponent {
@@ -85,4 +87,8 @@ struct ToolComponent {
 
 struct DamageComponent {
 	uint8_t damage;
+};
+
+struct ForceComponent {
+	vec force;
 };

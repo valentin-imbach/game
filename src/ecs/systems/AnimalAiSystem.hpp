@@ -9,21 +9,26 @@ class AnimalAiSystem : public System {
 public:
 	void update() {
 		for (Entity entity : entities) {
-			CreatureState::value& state = ecs -> getComponent<CreatureStateComponent>(entity).state;
-			Direction::value& facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
-			Direction::value& direction = ecs -> getComponent<DirectionComponent>(entity).direction;
-			uint& nextChange = ecs -> getComponent<AnimalAiComponent>(entity).nextChange;
-			bool& stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
+			CreatureState::value& state = ecs->getComponent<CreatureStateComponent>(entity).state;
+			Direction::value& facing = ecs->getComponent<CreatureStateComponent>(entity).facing;
+			Direction::value& direction = ecs->getComponent<DirectionComponent>(entity).direction;
+			AnimalAiComponent& animalAiComponent = ecs->getComponent<AnimalAiComponent>(entity);
+			bool& stateChanged = ecs->getComponent<CreatureStateComponent>(entity).stateChanged;
+
+			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 
 			uint ticks = SDL_GetTicks();
-			stateChanged = false;
+			CreatureState::value oldState = state;
+			Direction::value oldFacing = facing;
 
-			if (ticks >= nextChange) {
-				CreatureState::value oldState = state;
-				Direction::value oldFacing = facing;
+			if (healthComponent.damaged) {
+				animalAiComponent.panic = 20;
+				animalAiComponent.nextChange = ticks;
+			}
 
+			if (ticks >= animalAiComponent.nextChange) {
 				state = CreatureState::IDLE;
-				if (bernoulli(ticks, 0.3f)) state = CreatureState::WALKING;
+				if (bernoulli(ticks, 0.3f) || animalAiComponent.panic) state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
 					uint rand = rand_int(ticks, 0, 8);
@@ -34,11 +39,15 @@ public:
 						facing = Direction::WEST;
 					}
 				}
-				
-				stateChanged = (facing != oldFacing || state != oldState);
-				nextChange = ticks + 2000 + rand_int(ticks, 0, 1000);
-				
+
+				animalAiComponent.nextChange = ticks + 2000 + rand_int(ticks, 0, 1000);
+				if (animalAiComponent.panic > 0) {
+					animalAiComponent.nextChange = ticks + 100 + rand_int(ticks, 0, 100);
+					animalAiComponent.panic -= 1;
+				}
 			}
+
+			stateChanged = (facing != oldFacing || state != oldState);
 		}
 	}
 };

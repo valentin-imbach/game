@@ -76,8 +76,9 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	ecs->addComponent<SpriteComponent>({spriteStack, 1}, animal);
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs->addComponent<ColliderComponent>({collider}, animal);
-	ecs->addComponent<AnimalAiComponent>({}, animal);
+	ecs->addComponent<AnimalAiComponent>({0, 0}, animal);
 	ecs->addComponent<HealthComponent>({10, 10}, animal);
+	ecs->addComponent<ForceComponent>({{0, 0}}, animal);
 	return animal;
 }
 

@@ -10,6 +10,7 @@ public:
 		for (Entity entity : entities) {
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			if (healthComponent.health <= 0) ecs->dead.push_back(entity);
+			healthComponent.damaged = false;
 		}
 	}
 };
