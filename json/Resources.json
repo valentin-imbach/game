@@ -1,0 +1,17 @@
+
+{
+    "basalt_rock": {
+        "tool": "pick_axe",
+        "level": 2,
+        "sprite": {
+            "position": [0, 4],
+            "size": [1,2],
+            "height": 1
+        },
+        "sound": "rock",
+        "loot": {
+            "basalt_cobble": [3, 6],
+            "basalt_pebble": [1, 3]
+        }
+    }
+}

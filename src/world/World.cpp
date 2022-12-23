@@ -11,9 +11,13 @@
 #include "EntityFactory.hpp"
 #include "utils.hpp"
 
+#include "ItemTemplates.hpp"
+
 World::World(std::string name) : name(name) {
 	rosterComponents();
 	rosterSystems();
+
+	ItemPropertyTemplate::setTemplates();
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;

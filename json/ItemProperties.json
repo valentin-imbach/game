@@ -1,0 +1,46 @@
+
+{
+    "hardness": {
+        "name": "Hardness"
+    },
+
+    "burn_time": {
+        "name": "Burn Time"
+    },
+
+    "heat": {
+        "name": "Heat"
+    },
+
+    "efficiency": {
+        "name": "Efficiency"
+    },
+
+    "durability": {
+        "name": "Durability"
+    },
+
+    "level": {
+        "name": "Level"
+    },
+
+    "flexibility": {
+        "name": "Flexibility"
+    },
+
+    "strength": {
+        "name": "Strength"
+    },
+
+    "nutrition": {
+        "name": "Nutrition"
+    },
+
+    "damage": {
+        "name": "Damage"
+    },
+
+    "parry": {
+        "name": "Parry"
+    }
+}

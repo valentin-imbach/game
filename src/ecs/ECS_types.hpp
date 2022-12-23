@@ -2,9 +2,6 @@
 #pragma once
 #include "utils.hpp"
 
-typedef std::uint32_t Entity;
-constexpr Entity MAX_ENTITIES = 500;
-
 ENUM(ComponentId,
 POSITION,
 SPRITE,
@@ -25,8 +22,6 @@ TOOL,
 DAMAGE,
 FORCE)
 
-using Signature = std::bitset<ComponentId::count>;
-
 ENUM(SystemId,
 ENTITY_DRAW,
 CREATURE_MOVEMENT,
@@ -44,4 +39,7 @@ DAMAGE,
 PLAYER,
 COLLIDER_DRAW)
 
-typedef std::unordered_map<pair, Entity> GridMap;
+using Entity = std::uint32_t;
+using Signature = std::bitset<ComponentId::count>;
+using GridMap = std::unordered_map<pair, Entity>;
+constexpr Entity MAX_ENTITIES = 500;

@@ -1,0 +1,68 @@
+
+{
+    "log": {
+        "name": "Log",
+        "properties": ["hardness"]
+    },
+
+    "plank": {
+        "name": "Plank",
+        "properties": ["flexibility", "strength", "burn_time", "heat"]
+    },
+
+    "rod": {
+        "name": "Rod",
+        "properties": ["flexibility", "strength", "burn_time", "heat"]
+    },
+
+    "cobble": {
+        "name": "Cobble",
+        "properties": ["hardness"]
+    },
+
+    "pebble": {
+        "name": "Pebble",
+        "properties": ["hardness"]
+    },
+
+    "fuel": {
+        "name": "Fuel",
+        "properties": ["burn_time", "heat"]
+    },
+
+    "rope": {
+        "name": "Rope",
+        "properties": ["strength"]
+    },
+
+    "food": {
+        "name": "Food",
+        "properties": ["nutrition"]
+    },
+
+    "shovel": {
+        "name": "Shovel",
+        "properties": ["efficiency", "durability", "level"]
+    },
+
+    "hammer": {
+        "name": "Hammer",
+        "properties": ["efficiency", "durability", "level"]
+    },
+
+    "pick_axe": {
+        "name": "Pick Axe",
+        "properties": ["efficiency", "durability", "level"]
+    },
+
+    "axe": {
+        "name": "Axe",
+        "properties": ["efficiency", "durability", "level"]
+    },
+
+    "sword": {
+        "name": "Sword",
+        "properties": ["damage", "parry", "durability"]
+    }
+}
+
