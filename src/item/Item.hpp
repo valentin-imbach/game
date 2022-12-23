@@ -1,6 +1,5 @@
 
 #pragma once
-#include <_types/_uint8_t.h>
 #include <vector>
 #include "utils.hpp"
 #include "ECS_types.hpp"
@@ -67,80 +66,37 @@ AXE,
 SHOVEL,
 KNIVE)
 
-struct Item {
-	Item() = default;
-	Item(Entity entity) : entity(entity), count(1) {}
-	Item(ItemId::value itemId, int count = 1) : itemId(itemId), count(count) {
-		assert(0 < count && count <= MAX_STACK);
-	}
-	Entity entity = 0;
-	ItemId::value itemId = ItemId::NONE;
-	int count = 0;
-	
-	operator bool() {
-		return (entity != 0 || itemId != ItemId::NONE);
-	}
-	void draw(pair position, int scale, ECS* ecs);
-};
-
 ENUM(ItemAmount,
 ALL,
 HALF,
 ONE)
 
+struct Item {
+	Item() = default;
+	Item(Entity entity);
+	Item(ItemId::value itemId, int count = 1);
+	Entity entity = 0;
+	ItemId::value itemId = ItemId::NONE;
+	int count = 0;
+	
+	operator bool();
+	void draw(pair position, int scale, ECS* ecs);
+};
+
 struct ItemContainer {
 	Item item;
-
-	[[nodiscard]] Item add(Item other, ItemAmount::value amount = ItemAmount::ALL) {
-		int number = MAX_STACK - item.count;
-		if (amount == ItemAmount::ALL) number = std::min(number, other.count);
-		if (amount == ItemAmount::HALF) number = std::min(number, (other.count + 1) / 2);
-		if (amount == ItemAmount::ONE) number = std::min(number, 1);
-		if (other.entity) {
-			if (!item) {
-				item = other;
-				other = Item();
-			}
-		} else if (other.itemId == item.itemId || !item) {
-			item.itemId = other.itemId;
-			item.count += number;
-			other.count -= number;
-			assert(other.count >= 0);
-			if (other.count == 0) {
-				other.itemId = ItemId::NONE;
-			}
-		}
-		return other;
-	}
-
-	void clear() {
-		item = Item();
-		//TODO delete Entity
-	}
+	[[nodiscard]] Item add(Item other, ItemAmount::value amount = ItemAmount::ALL);
+	void clear();
 };
 
 class Inventory {
 public:
-	Inventory(pair size = {0, 0}) : size(size) {
-		itemContainers = std::vector<std::vector<ItemContainer>>(size.x, std::vector<ItemContainer>(size.y));
-	}
 	pair size;
+	Inventory(pair size = {0, 0});
+	
 	std::vector<std::vector<ItemContainer>> itemContainers;
 
-	[[nodiscard]] Item add(Item item) {
-		for (int y = 0; y < size.y; y++) {
-			for (int x = 0; x < size.x; x++) {
-				item = itemContainers[x][y].add(item);
-			}
-		}
-		return item;
-	}
+	[[nodiscard]] Item add(Item item);
 
-	void clear() {
-		for (int y = 0; y < size.y; y++) {
-			for (int x = 0; x < size.x; x++) {
-				itemContainers[x][y].clear();
-			}
-		}
-	}
+	void clear();
 };

@@ -21,6 +21,8 @@ public:
 			CreatureState::value oldState = state;
 			Direction::value oldFacing = facing;
 
+			uint seed = ticks + entity;
+
 			if (healthComponent.damaged) {
 				animalAiComponent.panic = 20;
 				animalAiComponent.nextChange = ticks;
@@ -31,7 +33,7 @@ public:
 				if (bernoulli(ticks, 0.3f) || animalAiComponent.panic) state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
-					uint rand = rand_int(ticks, 0, 8);
+					uint rand = rand_int(seed, 0, 8);
 					direction = Direction::from_int(rand + 1);
 					if (taxiSteps[rand].x == 1) {
 						facing = Direction::EAST;
@@ -40,9 +42,9 @@ public:
 					}
 				}
 
-				animalAiComponent.nextChange = ticks + 2000 + rand_int(ticks, 0, 1000);
+				animalAiComponent.nextChange = ticks + 2000 + rand_int(seed, 0, 1000);
 				if (animalAiComponent.panic > 0) {
-					animalAiComponent.nextChange = ticks + 100 + rand_int(ticks, 0, 100);
+					animalAiComponent.nextChange = ticks + 100 + rand_int(seed, 0, 100);
 					animalAiComponent.panic -= 1;
 				}
 			}

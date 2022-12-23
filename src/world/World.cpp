@@ -9,6 +9,7 @@
 #include "Tile.hpp"
 #include "Window.hpp"
 #include "EntityFactory.hpp"
+#include "utils.hpp"
 
 World::World(std::string name) : name(name) {
 	rosterComponents();
@@ -158,28 +159,36 @@ void World::update(uint dt) {
 
 void World::handleEvents() {
 	if (!player) return;
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
+	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+	ItemContainer& activeItemContainer = inventoryComponent.inventory.itemContainers[playerComponent.activeSlot][0];
+
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
 		if (event.id == InputEventId::INVENTORY) {
-			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10}));
-			Inventory& playerInventory = ecs.getComponent<InventoryComponent>(player).inventory;
+			Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
+			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+			
 			int spacing = 20;
-
-			for (int x = 0; x < playerInventory.size.x; x++) {
-				for (int y = 1; y < playerInventory.size.y; y++) {
-					ItemContainer& container = playerInventory.itemContainers[x][y];
-					pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, spacing * (y - 2)};
-					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container));
+			Inventory& inventory = inventoryComponent.inventory;
+			for (int x = 0; x < inventory.size.x; x++) {
+				for (int y = 1; y < inventory.size.y; y++) {
+					pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, spacing * (y - 2)};
+					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][y]));
 				}
-				ItemContainer& container = playerInventory.itemContainers[x][0];
-				pair position = {spacing * x - spacing * (playerInventory.size.x - 1) / 2, -3 * spacing};
-				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, container));
+				pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, -3 * spacing};
+				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][0]));
 			}
-
 			guiManager.open(std::move(inventoryGui));
+
+		} else if (event.id == InputEventId::THROW) {
+			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing - 1];
+			EntityFactory::createItemEntity(activeItemContainer.item, position);
+			activeItemContainer.item = Item();
 		}
 
-		PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 		if (event.id == InputEventId::SELECT_1) playerComponent.activeSlot = 0;
 		if (event.id == InputEventId::SELECT_2) playerComponent.activeSlot = 1;
 		if (event.id == InputEventId::SELECT_3) playerComponent.activeSlot = 2;
@@ -193,11 +202,8 @@ void World::handleEvents() {
 			vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
 			uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
 			vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
-			uint activeSlot = ecs.getComponent<PlayerComponent>(player).activeSlot;
-			Inventory& inventory = ecs.getComponent<InventoryComponent>(player).inventory;
-
-			forageSystem->update(position, inventory.itemContainers[activeSlot][0].item);
-			damageSystem->update(player, position, inventory.itemContainers[activeSlot][0].item);
+			forageSystem->update(position, activeItemContainer.item);
+			damageSystem->update(player, position, activeItemContainer.item);
 		}
 	}
 }
