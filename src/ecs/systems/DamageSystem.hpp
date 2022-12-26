@@ -8,10 +8,10 @@
 
 class DamageSystem : public System {
 public:
-	void update(Entity actor, vec position, Item& item) {
-		if (!ecs->hasComponent<DamageComponent>(item.entity)) return;
+	void update(Entity actor, vec position, Entity item) {
+		if (!ecs->hasComponent<DamageComponent>(item)) return;
 		vec actorPosition = ecs->getComponent<PositionComponent>(actor).position;
-		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item.entity);
+		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item);
 		for (Entity entity : entities) {
 			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);

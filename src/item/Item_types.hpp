@@ -2,7 +2,7 @@
 #pragma once
 #include "enum.hpp"
 
-#define MAX_STACK 99
+#define MAX_STACK 99u
 
 ENUM(ItemKind,
 COBBLE,

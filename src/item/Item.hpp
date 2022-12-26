@@ -5,23 +5,10 @@
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
 
-class ECS;
-
-struct Item {
-	Item() = default;
-	Item(Entity entity);
-	Item(ItemId::value itemId, int count = 1);
-	Entity entity = 0;
-	ItemId::value itemId = ItemId::NONE;
-	int count = 0;
-	
-	operator bool();
-	void draw(pair position, int scale, ECS* ecs);
-};
-
 struct ItemContainer {
-	Item item;
-	[[nodiscard]] Item add(Item other, ItemAmount::value amount = ItemAmount::ALL);
+	Entity item;
+	[[nodiscard]] Entity add(Entity other, ItemAmount::value amount = ItemAmount::ALL);
+	void draw(pair position, uint scale);
 	void clear();
 };
 
@@ -32,7 +19,7 @@ public:
 	
 	std::vector<std::vector<ItemContainer>> itemContainers;
 
-	[[nodiscard]] Item add(Item item);
+	[[nodiscard]] Entity add(Entity item);
 
 	void clear();
 };

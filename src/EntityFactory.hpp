@@ -2,9 +2,9 @@
 #pragma once
 #include "utils.hpp"
 #include "ECS_types.hpp"
+#include "Item_types.hpp"
 
 class ECS;
-class Item;
 
 ENUM(AnimalId,
 COW,
@@ -25,7 +25,8 @@ public:
 
 	static Entity createPlayer(vec position);
 	static Entity createCamera(vec position, uint8_t zoom);
-	static Entity createItemEntity(Item item, vec position);
+	static Entity createItem(ItemId::value itemId, uint8_t count);
+	static Entity createItem(ItemId::value itemId, uint8_t count, vec position);
 	static Entity createAnimal(AnimalId::value animalId, vec position);
 	static Entity createResource(ResourceId::value resourceId, pair position);
 };

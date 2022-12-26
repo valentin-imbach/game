@@ -29,7 +29,7 @@ public:
 		if (!primary) return;
 		primary->draw();
 		if (secondary) secondary->draw();
-		mouseItemContainer.item.draw(mousePosition, GUI_SCALE, ecs);
+		mouseItemContainer.draw(mousePosition, GUI_SCALE);
 	}
 
 	bool handleEvent(InputEvent event) {

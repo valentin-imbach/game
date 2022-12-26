@@ -40,19 +40,22 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	SpriteStack spriteStack;
 	ToolId::value toolId;
 	uint8_t height;
-	Item loot;
+	ItemId::value lootId;
+	uint8_t lootCount;
 	switch (resourceId) {
 		case ResourceId::TREE:
 			spriteStack.addSprite({SpriteSheet::RESOURCES, {0, 0}, {1, 3}});
 			toolId = ToolId::AXE;
 			height = 2;
-			loot = Item(ItemId::ASHWOOD_PLANK, 3);
+			lootId = ItemId::ASHWOOD_PLANK;
+			lootCount = 3;
 			break;
 		case ResourceId::ROCK:
 			spriteStack.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
 			toolId = ToolId::PICK_AXE;
 			height = 1;
-			loot = Item(ItemId::BASALT_COBBLE, 3);
+			lootId = ItemId::BASALT_COBBLE;
+			lootCount = 3;
 			break;
 		default:
 			return 0;
@@ -60,7 +63,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	
 	ecs->addComponent<SpriteComponent>({spriteStack, height}, resource);
 	ecs->addComponent<ResourceComponent>({toolId}, resource);
-	ecs->addComponent<LootComponent>({loot}, resource);
+	ecs->addComponent<LootComponent>({lootId, lootCount}, resource);
 	ecs->addComponent<HealthComponent>({5, 5}, resource);
 	return resource;
 }
@@ -82,20 +85,19 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	return animal;
 }
 
-Entity EntityFactory::createItemEntity(Item item, vec position) {
+Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
+	Entity item = ecs -> createEntity();
 	Collider collider = {{0, 0}, {0.4f, 0.4f}};
-	if (item.entity) {
-		ecs->addComponent<PositionComponent>({position}, item.entity);
-		ecs->addComponent<ColliderComponent>({collider}, item.entity);
-		return item.entity;
-	}
-	Entity entity = ecs -> createEntity();
-	ecs->addComponent<PositionComponent>({position}, entity);
-	int index = int(item.itemId) - 1;
+	ecs->addComponent<ColliderComponent>({collider}, item);
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::ITEMS, {index % 6, index / 6}, {1, 1}});
-	ecs->addComponent<SpriteComponent>({spriteStack, 0, 0.5f}, entity);
-	ecs->addComponent<ColliderComponent>({collider}, entity);
-	ecs->addComponent<ItemComponent>({item}, entity);
-	return entity;
+	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
+	ecs->addComponent<SpriteComponent>({spriteStack, 0, 0.5f}, item);
+	ecs->addComponent<ItemComponent>({itemId, count}, item);
+	return item;
+}
+
+Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count, vec position) {
+	Entity item = createItem(itemId, count);
+	ecs->addComponent<PositionComponent>({position}, item);
+	return item;
 }

@@ -119,7 +119,7 @@ private:
 			if (inputs.size() < 2) return false;
 			ItemId::value itemId = ItemId::from_string(inputs[1]);
 			if (!itemId) return false;
-			int count = 1;
+			uint count = 1;
 			if (inputs.size() > 2) {
 				//if (!isUInt(inputs[2])) return false;
 				count = std::stoi(inputs[2]);
@@ -127,7 +127,9 @@ private:
 			while (count > 0) {
 				int batch = std::min(count, MAX_STACK);
 				count -= batch;
-				Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(itemId, batch));
+				Entity item = EntityFactory::createItem(itemId, batch);
+				Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
+				if (rest) ecs.destroyEntity(rest);
 			}
 		} else if (inputs[0] == "empty") {
 			if (!player) return false;

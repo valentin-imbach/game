@@ -86,26 +86,31 @@ ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer) : GuiElement(pos
 void ItemSlot::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-	itemContainer.item.draw(screenPosition, GUI_SCALE, guiManager->ecs);
+	itemContainer.draw(screenPosition, GUI_SCALE);
 }
 
 bool ItemSlot::handleEvent(InputEvent event) {
 	ItemContainer& mouseItemContainer = guiManager->mouseItemContainer;
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
-		if (itemContainer.item.itemId != ItemId::NONE && itemContainer.item.itemId == mouseItemContainer.item.itemId) {
+		if (!itemContainer.item || !mouseItemContainer.item) {
+			std::swap(mouseItemContainer.item, itemContainer.item);
+			return true;
+		}
+		ItemComponent& itemComponent = guiManager->ecs->getComponent<ItemComponent>(itemContainer.item);
+		ItemComponent& mouseItemComponent = guiManager->ecs->getComponent<ItemComponent>(mouseItemContainer.item);
+
+		if (itemComponent.itemId != ItemId::NONE && itemComponent.itemId == mouseItemComponent.itemId) {
 			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item);
 		} else {
 			std::swap(mouseItemContainer.item, itemContainer.item);
 		}
 		return true;
 	} else if (event.id == InputEventId::SECONDARY && inside(event.mousePosition)) {
-		if (!itemContainer.item) {
-			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item, ItemAmount::ONE);
-		} else if (itemContainer.item.itemId != ItemId::NONE && itemContainer.item.itemId == mouseItemContainer.item.itemId) {
-			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item, ItemAmount::ONE);
-		} else if (!mouseItemContainer.item) {
+		if (!mouseItemContainer.item) {
 			itemContainer.item = mouseItemContainer.add(itemContainer.item, ItemAmount::HALF);
+			return true;
 		}
+		mouseItemContainer.item = itemContainer.add(mouseItemContainer.item, ItemAmount::ONE);
 		return true;
 	}
 	return false;
@@ -132,14 +137,13 @@ void HotbarGui::draw() {
 	uint activeSlot = guiManager->ecs->getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GUI_SCALE;
 	for (int x = 0; x < inventory.size.x; x++) {
-		Item& item = inventory.itemContainers[x][0].item;
 		pair offset = {spacing * x - spacing * (inventory.size.x - 1) / 2, 0};
 		if (x == activeSlot) {
 			activeSlotSprite.draw(screenPosition + offset, GUI_SCALE, true);	
 		} else {
 			slotSprite.draw(screenPosition + offset, GUI_SCALE, true);
 		}
-		item.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+		inventory.itemContainers[x][0].draw(screenPosition + offset, GUI_SCALE);
 	}
 }
 

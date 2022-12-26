@@ -26,7 +26,9 @@ World::World(std::string name) : name(name) {
 
 	player = EntityFactory::createPlayer({8, 8});
 
-	Item rest = ecs.getComponent<InventoryComponent>(player).inventory.add(Item(ItemId::APPLE, 20));
+	Entity item = EntityFactory::createItem(ItemId::APPLE, 20);
+	Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
+
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
@@ -38,25 +40,31 @@ World::World(std::string name) : name(name) {
 	SpriteStack axeSprites;
 	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, {2, 0}, {1, 1}));
 	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f}, axe);
-	ecs.addComponent<ItemComponent>({Item(axe)}, axe);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
-	EntityFactory::createItemEntity(Item(axe), {7, 5});
+	Collider axeCollider = {{0, 0}, {0.4f, 0.4f}};
+	ecs.addComponent<ColliderComponent>({axeCollider}, axe);
+	ecs.addComponent<PositionComponent>({{7, 5}}, axe);
 
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
 	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, {1, 0}, {1, 1}));
 	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f}, pick);
-	ecs.addComponent<ItemComponent>({Item(pick)}, pick);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
 	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
-	EntityFactory::createItemEntity(Item(pick), {8, 5});
+	Collider pickCollider = {{0, 0}, {0.4f, 0.4f}};
+	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
+	ecs.addComponent<PositionComponent>({{8, 5}}, pick);
 
 	Entity sword = ecs.createEntity();
 	SpriteStack swordSprites;
 	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, {0, 0}, {1, 1}));
 	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f}, sword);
-	ecs.addComponent<ItemComponent>({Item(sword)}, sword);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
-	EntityFactory::createItemEntity(Item(sword), {9, 5});
+	Collider swordCollider = {{0, 0}, {0.4f, 0.4f}};
+	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
+	ecs.addComponent<PositionComponent>({{9, 5}}, sword);
 
 	generate();
 }
@@ -189,8 +197,8 @@ void World::handleEvents() {
 
 		} else if (event.id == InputEventId::THROW) {
 			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing - 1];
-			EntityFactory::createItemEntity(activeItemContainer.item, position);
-			activeItemContainer.item = Item();
+			ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);
+			activeItemContainer.clear();
 		}
 
 		if (event.id == InputEventId::SELECT_1) playerComponent.activeSlot = 0;

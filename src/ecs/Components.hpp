@@ -51,7 +51,8 @@ struct ColliderComponent {
 };
 
 struct ItemComponent {
-	Item item;
+	ItemId::value itemId;
+	uint count;
 };
 
 struct AnimalAiComponent {
@@ -78,7 +79,8 @@ struct ResourceComponent {
 };
 
 struct LootComponent {
-	Item loot;
+	ItemId::value itemId;
+	uint count;
 };
 
 struct ToolComponent {
