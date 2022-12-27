@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <string>
 #include <variant>
+#include <fstream>
 
 #include <cstdint>
 #include <cassert>

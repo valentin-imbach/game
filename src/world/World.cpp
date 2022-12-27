@@ -26,15 +26,17 @@ World::World(std::string name) : name(name) {
 	EntityFactory::ecs = &ecs;
 	EntityFactory::gridMap = &gridMap;
 
-	player = EntityFactory::createPlayer({8, 8});
+	Entity playerEntity = EntityFactory::createPlayer({8, 8});
 
 	Entity item = EntityFactory::createItem(ItemId::APPLE, 20);
-	Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
+	Entity rest = ecs.getComponent<InventoryComponent>(playerEntity).inventory.add(item);
+
+	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	camera = EntityFactory::createCamera({0, 0}, 4);
+	EntityFactory::createCamera({0, 0}, 4);
 
 	EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
@@ -69,6 +71,28 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<PositionComponent>({{9, 5}}, sword);
 
 	generate();
+}
+
+World::World(std::fstream& stream) : ecs(stream) {
+	rosterComponents();
+	rosterSystems();
+	ecs.deserialiseComponents(stream);
+
+	ItemPropertyTemplate::setTemplates();
+	ItemKindTemplate::setTemplates();
+	ItemTemplate::setTemplates();
+
+	guiManager.ecs = &ecs;
+	guiManager.world = this;
+	EntityFactory::ecs = &ecs;
+	EntityFactory::gridMap = &gridMap;
+
+	player = playerSystem->getPlayer();
+
+	guiManager.add(std::make_unique<HotbarGui>(player));
+	guiManager.add(std::make_unique<HealthBarGui>(player));
+
+	gridSystem->rebuild(&gridMap);
 }
 
 void World::generate() {
@@ -110,6 +134,9 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ToolComponent>(ComponentId::TOOL);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
+	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
+
+	LOG("Components rostered");
 }
 
 void World::rosterSystems() {
@@ -128,11 +155,16 @@ void World::rosterSystems() {
 	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE, {ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
 	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER, {ComponentId::PLAYER});
 	colldierDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW, {ComponentId::COLLIDER, ComponentId::POSITION});
+	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID, {ComponentId::GRID});
+
+	LOG("Systems rostered")
 }
 
 void World::update(uint dt) {
 	player = playerSystem->getPlayer();
 	camera = cameraSystem->getCamera();
+
+	std::unordered_map<Entity, std::vector<Entity>> collisions;
 
 	handleEvents();
 	guiManager.update();
@@ -142,9 +174,9 @@ void World::update(uint dt) {
 	animalAiSystem->update();
 
 	creatureMovementSystem->update(dt, gridMap, map);
-	collisionSystem->update();
+	collisionSystem->update(collisions);
 
-	itemPickupSystem->update();
+	itemPickupSystem->update(collisions);
 	lootSystem->update();
 
 	cameraSystem->update(player);
@@ -161,6 +193,11 @@ void World::update(uint dt) {
 	for (Entity entity : ecs.dead) {
 		if (ecs.hasComponent<ResourceComponent>(entity)) {
 			pair pos = round(ecs.getComponent<PositionComponent>(entity).position);
+			auto it = gridMap.find(pos);
+			if (it == gridMap.end()) {
+				ERROR("Resource was not in gridMap");
+				continue;
+			}
 			gridMap.erase(gridMap.find(pos));
 		}
 	}
@@ -183,7 +220,7 @@ void World::handleEvents() {
 		if (event.id == InputEventId::INVENTORY) {
 			Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
 			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-			
+
 			int spacing = 20;
 			Inventory& inventory = inventoryComponent.inventory;
 
@@ -223,4 +260,8 @@ void World::handleEvents() {
 			damageSystem->update(player, position, activeItemContainer.item);
 		}
 	}
+}
+
+void World::serialise(std::fstream& stream) {
+	ecs.serialise(stream);
 }

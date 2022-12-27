@@ -5,8 +5,6 @@
 #include "Map.hpp"
 #include "ECS.hpp"
 
-typedef std::unordered_map<pair, Entity> GridMap;
-
 class CreatureMovementSystem : public System {
 public:
 	void update(uint dt, GridMap& gridMap, Map& map) {
@@ -17,7 +15,6 @@ public:
 			CreatureState::value state = ecs->getComponent<CreatureStateComponent>(entity).state;
 
 			Collider collider = ecs->getComponent<ColliderComponent>(entity).collider;
-			std::vector<Entity>& collisions = ecs->getComponent<ColliderComponent>(entity).collisions;
 
 			vec newPosition = position;
 			if (state == CreatureState::WALKING) {

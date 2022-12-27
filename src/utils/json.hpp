@@ -31,7 +31,7 @@
 #include <utility> // declval, forward, move, pair, swap
 #include <vector> // vector
 
-// #include <nlohmann/adl_serializer.hpp>
+// #include <nlohmann/adl_serialiser.hpp>
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++
 // |  |  |__   |  |  | | | |  version 3.11.2
@@ -3373,12 +3373,12 @@ NLOHMANN_JSON_NAMESPACE_END
     /*!
     @brief default JSONSerializer template argument
 
-    This serializer ignores the template arguments and uses ADL
+    This serialiser ignores the template arguments and uses ADL
     ([argument-dependent lookup](https://en.cppreference.com/w/cpp/language/adl))
     for serialization.
     */
     template<typename T = void, typename SFINAE = void>
-    struct adl_serializer;
+    struct adl_serialiser;
 
     /// a class to store JSON values
     /// @sa https://json.nlohmann.me/api/basic_json/
@@ -3391,7 +3391,7 @@ NLOHMANN_JSON_NAMESPACE_END
     class NumberFloatType = double,
     template<typename U> class AllocatorType = std::allocator,
     template<typename T, typename SFINAE = void> class JSONSerializer =
-    adl_serializer,
+    adl_serialiser,
     class BinaryType = std::vector<std::uint8_t>, // cppcheck-suppress syntaxError
     class CustomBaseClass = void>
     class basic_json;
@@ -3525,10 +3525,10 @@ struct is_getable
 template<typename BasicJsonType, typename T>
 struct has_from_json < BasicJsonType, T, enable_if_t < !is_basic_json<T>::value >>
 {
-    using serializer = typename BasicJsonType::template json_serializer<T, void>;
+    using serialiser = typename BasicJsonType::template json_serialiser<T, void>;
 
     static constexpr bool value =
-        is_detected_exact<void, from_json_function, serializer,
+        is_detected_exact<void, from_json_function, serialiser,
         const BasicJsonType&, T&>::value;
 };
 
@@ -3540,14 +3540,14 @@ struct has_non_default_from_json : std::false_type {};
 template<typename BasicJsonType, typename T>
 struct has_non_default_from_json < BasicJsonType, T, enable_if_t < !is_basic_json<T>::value >>
 {
-    using serializer = typename BasicJsonType::template json_serializer<T, void>;
+    using serialiser = typename BasicJsonType::template json_serialiser<T, void>;
 
     static constexpr bool value =
-        is_detected_exact<T, from_json_function, serializer,
+        is_detected_exact<T, from_json_function, serialiser,
         const BasicJsonType&>::value;
 };
 
-// This trait checks if BasicJsonType::json_serializer<T>::to_json exists
+// This trait checks if BasicJsonType::json_serialiser<T>::to_json exists
 // Do not evaluate the trait when T is a basic_json type, to avoid template instantiation infinite recursion.
 template<typename BasicJsonType, typename T, typename = void>
 struct has_to_json : std::false_type {};
@@ -3555,10 +3555,10 @@ struct has_to_json : std::false_type {};
 template<typename BasicJsonType, typename T>
 struct has_to_json < BasicJsonType, T, enable_if_t < !is_basic_json<T>::value >>
 {
-    using serializer = typename BasicJsonType::template json_serializer<T, void>;
+    using serialiser = typename BasicJsonType::template json_serialiser<T, void>;
 
     static constexpr bool value =
-        is_detected_exact<void, to_json_function, serializer, BasicJsonType&,
+        is_detected_exact<void, to_json_function, serialiser, BasicJsonType&,
         T>::value;
 };
 
@@ -5760,12 +5760,12 @@ NLOHMANN_JSON_NAMESPACE_END
 
 NLOHMANN_JSON_NAMESPACE_BEGIN
 
-/// @sa https://json.nlohmann.me/api/adl_serializer/
+/// @sa https://json.nlohmann.me/api/adl_serialiser/
 template<typename ValueType, typename>
-struct adl_serializer
+struct adl_serialiser
 {
     /// @brief convert a JSON value to any value type
-    /// @sa https://json.nlohmann.me/api/adl_serializer/from_json/
+    /// @sa https://json.nlohmann.me/api/adl_serialiser/from_json/
     template<typename BasicJsonType, typename TargetType = ValueType>
     static auto from_json(BasicJsonType && j, TargetType& val) noexcept(
         noexcept(::nlohmann::from_json(std::forward<BasicJsonType>(j), val)))
@@ -5775,7 +5775,7 @@ struct adl_serializer
     }
 
     /// @brief convert a JSON value to any value type
-    /// @sa https://json.nlohmann.me/api/adl_serializer/from_json/
+    /// @sa https://json.nlohmann.me/api/adl_serialiser/from_json/
     template<typename BasicJsonType, typename TargetType = ValueType>
     static auto from_json(BasicJsonType && j) noexcept(
     noexcept(::nlohmann::from_json(std::forward<BasicJsonType>(j), detail::identity_tag<TargetType> {})))
@@ -5785,7 +5785,7 @@ struct adl_serializer
     }
 
     /// @brief convert any value type to a JSON value
-    /// @sa https://json.nlohmann.me/api/adl_serializer/to_json/
+    /// @sa https://json.nlohmann.me/api/adl_serialiser/to_json/
     template<typename BasicJsonType, typename TargetType = ValueType>
     static auto to_json(BasicJsonType& j, TargetType && val) noexcept(
         noexcept(::nlohmann::to_json(j, std::forward<TargetType>(val))))
@@ -15007,7 +15007,7 @@ class binary_writer
     }
 
     /*!
-    @param[in] j  JSON value to serialize
+    @param[in] j  JSON value to serialise
     @pre       j.type() == value_t::object
     */
     void write_bson(const BasicJsonType& j)
@@ -15031,13 +15031,13 @@ class binary_writer
             case value_t::discarded:
             default:
             {
-                JSON_THROW(type_error::create(317, concat("to serialize to BSON, top-level type must be object, but is ", j.type_name()), &j));
+                JSON_THROW(type_error::create(317, concat("to serialise to BSON, top-level type must be object, but is ", j.type_name()), &j));
             }
         }
     }
 
     /*!
-    @param[in] j  JSON value to serialize
+    @param[in] j  JSON value to serialise
     */
     void write_cbor(const BasicJsonType& j)
     {
@@ -15361,7 +15361,7 @@ class binary_writer
     }
 
     /*!
-    @param[in] j  JSON value to serialize
+    @param[in] j  JSON value to serialise
     */
     void write_msgpack(const BasicJsonType& j)
     {
@@ -15683,7 +15683,7 @@ class binary_writer
     }
 
     /*!
-    @param[in] j  JSON value to serialize
+    @param[in] j  JSON value to serialise
     @param[in] use_count   whether to use '#' prefixes (optimized format)
     @param[in] use_type    whether to use '$' prefixes (optimized format)
     @param[in] add_prefix  whether prefixes need to be used for this value
@@ -16111,7 +16111,7 @@ class binary_writer
     }
 
     /*!
-    @brief Calculates the size necessary to serialize the JSON value @a j with its @a name
+    @brief Calculates the size necessary to serialise the JSON value @a j with its @a name
     @return The calculated size for the BSON document entry for @a j with the given @a name.
     */
     static std::size_t calc_bson_element_size(const string_t& name,
@@ -16206,7 +16206,7 @@ class binary_writer
     /*!
     @brief Calculates the size of the BSON serialization of the given
            JSON-object @a j.
-    @param[in] value  JSON value to serialize
+    @param[in] value  JSON value to serialise
     @pre       value.type() == value_t::object
     */
     static std::size_t calc_bson_object_size(const typename BasicJsonType::object_t& value)
@@ -16221,7 +16221,7 @@ class binary_writer
     }
 
     /*!
-    @param[in] value  JSON value to serialize
+    @param[in] value  JSON value to serialise
     @pre       value.type() == value_t::object
     */
     void write_bson_object(const typename BasicJsonType::object_t& value)
@@ -16792,7 +16792,7 @@ NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/output/output_adapters.hpp>
 
-// #include <nlohmann/detail/output/serializer.hpp>
+// #include <nlohmann/detail/output/serialiser.hpp>
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++
 // |  |  |__   |  |  | | | |  version 3.11.2
@@ -17970,7 +17970,7 @@ enum class error_handler_t
 };
 
 template<typename BasicJsonType>
-class serializer
+class serialiser
 {
     using string_t = typename BasicJsonType::string_t;
     using number_float_t = typename BasicJsonType::number_float_t;
@@ -17982,11 +17982,11 @@ class serializer
 
   public:
     /*!
-    @param[in] s  output stream to serialize to
+    @param[in] s  output stream to serialise to
     @param[in] ichar  indentation character to use
     @param[in] error_handler_  how to react on decoding errors
     */
-    serializer(output_adapter_t<char> s, const char ichar,
+    serialiser(output_adapter_t<char> s, const char ichar,
                error_handler_t error_handler_ = error_handler_t::strict)
         : o(std::move(s))
         , loc(std::localeconv())
@@ -17998,11 +17998,11 @@ class serializer
     {}
 
     // delete because of pointer members
-    serializer(const serializer&) = delete;
-    serializer& operator=(const serializer&) = delete;
-    serializer(serializer&&) = delete;
-    serializer& operator=(serializer&&) = delete;
-    ~serializer() = default;
+    serialiser(const serialiser&) = delete;
+    serialiser& operator=(const serialiser&) = delete;
+    serialiser(serialiser&&) = delete;
+    serialiser& operator=(serialiser&&) = delete;
+    ~serialiser() = default;
 
     /*!
     @brief internal implementation of the serialization function
@@ -18015,10 +18015,10 @@ class serializer
     - strings and object keys are escaped using `escape_string()`
     - integer numbers are converted implicitly via `operator<<`
     - floating-point numbers are converted to a string using `"%g"` format
-    - binary values are serialized as objects containing the subtype and the
+    - binary values are serialised as objects containing the subtype and the
       byte array
 
-    @param[in] val               value to serialize
+    @param[in] val               value to serialise
     @param[in] pretty_print      whether the output shall be pretty-printed
     @param[in] ensure_ascii If @a ensure_ascii is true, all non-ASCII characters
     in the output are escaped with `\uXXXX` sequences, and the result consists
@@ -18881,7 +18881,7 @@ class serializer
     }
 
   private:
-    /// the output of the serializer
+    /// the output of the serialiser
     output_adapter_t<char> o = nullptr;
 
     /// a (hopefully) large enough character buffer
@@ -19321,7 +19321,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     template<typename BasicJsonType, typename InputType>
     friend class ::nlohmann::detail::parser;
-    friend ::nlohmann::detail::serializer<basic_json>;
+    friend ::nlohmann::detail::serialiser<basic_json>;
     template<typename BasicJsonType>
     friend class ::nlohmann::detail::iter_impl;
     template<typename BasicJsonType, typename CharType>
@@ -19372,14 +19372,14 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     template<typename CharType> using binary_writer = ::nlohmann::detail::binary_writer<basic_json, CharType>;
 
   JSON_PRIVATE_UNLESS_TESTED:
-    using serializer = ::nlohmann::detail::serializer<basic_json>;
+    using serialiser = ::nlohmann::detail::serialiser<basic_json>;
 
   public:
     using value_t = detail::value_t;
     /// JSON Pointer, see @ref nlohmann::json_pointer
     using json_pointer = ::nlohmann::json_pointer<StringType>;
     template<typename T, typename SFINAE>
-    using json_serializer = JSONSerializer<T, SFINAE>;
+    using json_serialiser = JSONSerializer<T, SFINAE>;
     /// how to treat decoding errors
     using error_handler_t = detail::error_handler_t;
     /// how to treat CBOR tags
@@ -20484,7 +20484,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                   const error_handler_t error_handler = error_handler_t::strict) const
     {
         string_t result;
-        serializer s(detail::output_adapter<char, string_t>(result), indent_char, error_handler);
+        serialiser s(detail::output_adapter<char, string_t>(result), indent_char, error_handler);
 
         if (indent >= 0)
         {
@@ -20775,7 +20775,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     Explicit type conversion between the JSON value and a compatible value
     which is [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
     and [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
-    The value is converted by calling the @ref json_serializer<ValueType>
+    The value is converted by calling the @ref json_serialiser<ValueType>
     `from_json()` method.
 
     The function is equivalent to executing
@@ -20787,16 +20787,16 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     This overloads is chosen if:
     - @a ValueType is not @ref basic_json,
-    - @ref json_serializer<ValueType> has a `from_json()` method of the form
+    - @ref json_serialiser<ValueType> has a `from_json()` method of the form
       `void from_json(const basic_json&, ValueType&)`, and
-    - @ref json_serializer<ValueType> does not have a `from_json()` method of
+    - @ref json_serialiser<ValueType> does not have a `from_json()` method of
       the form `ValueType from_json(const basic_json&)`
 
     @tparam ValueType the returned value type
 
     @return copy of the JSON value, converted to @a ValueType
 
-    @throw what @ref json_serializer<ValueType> `from_json()` method throws
+    @throw what @ref json_serialiser<ValueType> `from_json()` method throws
 
     @liveexample{The example below shows several conversions from JSON values
     to other types. There a few things to note: (1) Floating-point numbers can
@@ -20826,7 +20826,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     Explicit type conversion between the JSON value and a compatible value
     which is **not** [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
     and **not** [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
-    The value is converted by calling the @ref json_serializer<ValueType>
+    The value is converted by calling the @ref json_serialiser<ValueType>
     `from_json()` method.
 
     The function is equivalent to executing
@@ -20836,17 +20836,17 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     This overloads is chosen if:
     - @a ValueType is not @ref basic_json and
-    - @ref json_serializer<ValueType> has a `from_json()` method of the form
+    - @ref json_serialiser<ValueType> has a `from_json()` method of the form
       `ValueType from_json(const basic_json&)`
 
-    @note If @ref json_serializer<ValueType> has both overloads of
+    @note If @ref json_serialiser<ValueType> has both overloads of
     `from_json()`, this one is chosen.
 
     @tparam ValueType the returned value type
 
     @return copy of the JSON value, converted to @a ValueType
 
-    @throw what @ref json_serializer<ValueType> `from_json()` method throws
+    @throw what @ref json_serialiser<ValueType> `from_json()` method throws
 
     @since version 2.1.0
     */
@@ -20934,7 +20934,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     - If the requested type is the current @ref basic_json, or a different @ref basic_json convertible
     from the current @ref basic_json.
 
-    - Otherwise the value is converted by calling the @ref json_serializer<ValueType> `from_json()`
+    - Otherwise the value is converted by calling the @ref json_serialiser<ValueType> `from_json()`
     method.
 
     @tparam ValueTypeCV the provided value type
@@ -20942,7 +20942,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
     @return copy of the JSON value, converted to @tparam ValueType if necessary
 
-    @throw what @ref json_serializer<ValueType> `from_json()` method throws if conversion is required
+    @throw what @ref json_serialiser<ValueType> `from_json()` method throws if conversion is required
 
     @since version 2.1.0
     */
@@ -23184,7 +23184,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @name serialization
     /// @{
 #ifndef JSON_NO_IO
-    /// @brief serialize to stream
+    /// @brief serialise to stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_ltlt/
     friend std::ostream& operator<<(std::ostream& o, const basic_json& j)
     {
@@ -23196,12 +23196,12 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         o.width(0);
 
         // do the actual serialization
-        serializer s(detail::output_adapter<char>(o), o.fill());
+        serialiser s(detail::output_adapter<char>(o), o.fill());
         s.dump(j, pretty_print, false, static_cast<unsigned int>(indentation));
         return o;
     }
 
-    /// @brief serialize to stream
+    /// @brief serialise to stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_ltlt/
     /// @deprecated This function is deprecated since 3.0.0 and will be removed in
     ///             version 4.0.0 of the library. Please use
@@ -23223,7 +23223,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @name deserialization
     /// @{
 
-    /// @brief deserialize from a compatible input
+    /// @brief deserialise from a compatible input
     /// @sa https://json.nlohmann.me/api/basic_json/parse/
     template<typename InputType>
     JSON_HEDLEY_WARN_UNUSED_RESULT
@@ -23237,7 +23237,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         return result;
     }
 
-    /// @brief deserialize from a pair of character iterators
+    /// @brief deserialise from a pair of character iterators
     /// @sa https://json.nlohmann.me/api/basic_json/parse/
     template<typename IteratorType>
     JSON_HEDLEY_WARN_UNUSED_RESULT
@@ -23341,7 +23341,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                : detail::binary_reader<basic_json, decltype(ia), SAX>(std::move(ia), format).sax_parse(format, sax, strict);
     }
 #ifndef JSON_NO_IO
-    /// @brief deserialize from stream
+    /// @brief deserialise from stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_gtgt/
     /// @deprecated This stream operator is deprecated since 3.0.0 and will be removed in
     ///             version 4.0.0 of the library. Please use
@@ -23353,7 +23353,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         return operator>>(i, j);
     }
 
-    /// @brief deserialize from stream
+    /// @brief deserialise from stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_gtgt/
     friend std::istream& operator>>(std::istream& i, basic_json& j)
     {

@@ -8,19 +8,23 @@
 #include "Map.hpp"
 #include "Events.hpp"
 
-typedef std::vector<std::pair<float, DrawCall>> DrawQueue;
+using DrawQueue = std::vector<std::pair<float, DrawCall>>;
 
 class World {
 public:
 	World(std::string name);
+	World(std::fstream& stream);
 	void update(uint dt);
 	void handleEvents();
+
+	void serialise(std::fstream& stream);
+	void deserialise(std::fstream& stream);
 
 	std::vector<InputEvent> inputEvents;
 	std::bitset<size_t(InputStateId::MAX)> inputState;
 
-	Entity player;
-	Entity camera;
+	Entity player = 0;
+	Entity camera = 0;
 private:
 	void rosterComponents();
 	void rosterSystems();
@@ -43,6 +47,7 @@ private:
 	DamageSystem* damageSystem;
 	PlayerSystem* playerSystem;
 	ColliderDrawSystem* colldierDrawSystem;
+	GridSystem* gridSystem;
 
 	GuiManager guiManager;
 

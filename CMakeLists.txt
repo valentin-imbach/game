@@ -21,6 +21,7 @@ src/Gui/GuiElement.cpp
 src/item/Item.cpp
 src/Item/ItemTemplates.cpp
 src/EntityFactory.cpp
+src/Console.cpp
 src/main.cpp)
 
 # add libraries

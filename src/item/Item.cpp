@@ -109,8 +109,11 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 	}
 }
 
+//* Inventory
+
 Inventory::Inventory(pair size) : size(size) {
-	itemContainers = std::vector<std::vector<ItemContainer>>(size.x, std::vector<ItemContainer>(size.y));
+	assert(0 <= size.x && size.x <= INV_WIDTH);
+	assert(0 <= size.y && size.y <= INV_HEIGHT);
 }
 
 Entity Inventory::add(Entity item) {

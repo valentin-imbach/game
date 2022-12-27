@@ -36,6 +36,7 @@ Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
 Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
 	Entity resource = ecs->createEntity();
 	ecs->addComponent<PositionComponent>({position}, resource);
+	ecs->addComponent<GridComponent>({position, {1, 1}}, resource);
 	if (resource) (*gridMap)[position] = resource;
 	SpriteStack spriteStack;
 	ToolId::value toolId;

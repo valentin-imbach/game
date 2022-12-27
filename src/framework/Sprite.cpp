@@ -33,15 +33,17 @@ void Sprite::loadSpriteSheets() {
 //* SpriteStack
 
 void SpriteStack::addSprite(Sprite sprite, pair offset) {
-	stack.emplace_back(sprite, offset);
+	assert(depth < SPRITE_LAYERS);
+	stack[depth] = std::make_pair(sprite, offset);
+	depth += 1;
 }
 
 void SpriteStack::draw(pair position, int scale, bool centered) {
-	for (auto& layer : stack) {
-		layer.first.draw(position + BIT * layer.second, scale, centered);
+	for (int layer = 0; layer < depth; layer++) {
+		stack[layer].first.draw(position + BIT * stack[layer].second, scale, centered);
 	}
 }
 
 void SpriteStack::clear() {
-	stack.clear();
+	stack = {};
 }

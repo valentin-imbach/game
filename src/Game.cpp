@@ -8,7 +8,7 @@
 #include "TextureManager.hpp"
 #include "Window.hpp"
 
-Game::Game() {
+Game::Game() : console(this) {
 	running = true;
 
 	lastFrameTicks = SDL_GetTicks();
@@ -24,7 +24,6 @@ Game::Game() {
 void Game::update() {
 	Window::instance->clear();
 	Window::instance->update();
-	console.update(world.get());
 	debugScreen.update(world.get(), framesPerSecond);
 	world->update(dt);
 	debugScreen.draw();

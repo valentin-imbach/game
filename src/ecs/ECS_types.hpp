@@ -20,7 +20,8 @@ RESOURCE,
 LOOT,
 TOOL,
 DAMAGE,
-FORCE)
+FORCE,
+GRID)
 
 ENUM(SystemId,
 ENTITY_DRAW,
@@ -37,9 +38,13 @@ HEALTH,
 LOOT,
 DAMAGE,
 PLAYER,
-COLLIDER_DRAW)
+COLLIDER_DRAW,
+GRID)
 
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;
 using GridMap = std::unordered_map<pair, Entity>;
 constexpr Entity MAX_ENTITIES = 500;
+
+using Collisions = std::unordered_map<Entity,std::vector<Entity>>;
+using gridMap = std::unordered_map<pair, Entity>;

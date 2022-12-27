@@ -3,6 +3,8 @@
 #include "utils.hpp"
 #include "TextureManager.hpp"
 
+#define SPRITE_LAYERS 10
+
 ENUM(SpriteSheet,
 HOLE,
 GRASS,
@@ -45,6 +47,7 @@ public:
 	void draw(pair position, int scale = 1, bool centered = true);
 	void clear();
 private:
-	std::vector<std::pair<Sprite, pair>> stack;
+	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
+	uint depth = 0;
 	friend class CreatureAnimationSystem;
 };

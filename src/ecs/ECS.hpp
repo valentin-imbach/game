@@ -7,6 +7,24 @@
 
 class ECS {
 public:
+
+	ECS() {};
+
+	ECS(std::fstream& stream) : entityManager(stream) {}
+
+	void deserialiseComponents(std::fstream& stream) {
+		componentManager.deserialise(stream);
+		for (Entity entity = 1; entity <= MAX_ENTITIES; entity++) {
+			for (int comp = 1; comp < ComponentId::count; comp++) {
+				if (componentManager.has(entity, ComponentId::from_int(comp))) {
+					//LOG("Comp:", entity, comp);
+					entityManager.signatures[entity].set(comp, true);
+				}
+			}
+			systemManager.signatureChange(entity, entityManager.signatures[entity]);
+		}
+	}
+
 	Entity createEntity() { return entityManager.createEntity(); }
 
 	int entityCount() {
@@ -19,6 +37,11 @@ public:
 		systemManager.destroyEntity(entity);
 	}
 
+	void serialise(std::fstream& stream) {
+		entityManager.serialise(stream);
+		componentManager.serialise(stream);
+	}
+
 	template <typename T>
 	ComponentId::value rosterComponent(ComponentId::value type = ComponentId::NONE) {
 		return componentManager.roster<T>(type);
@@ -29,7 +52,7 @@ public:
 		if (!entity) return;
 		componentManager.add<T>(component, entity);
 		auto signature = entityManager.signatures[entity];
-		signature.set(size_t(componentManager.roster<T>()), true);
+		signature.set(componentManager.roster<T>(), true);
 		entityManager.signatures[entity] = signature;
 		systemManager.signatureChange(entity, signature);
 	}

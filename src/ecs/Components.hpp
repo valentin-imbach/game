@@ -49,7 +49,6 @@ struct DirectionComponent {
 
 struct ColliderComponent {
 	Collider collider;
-	std::vector<Entity> collisions;
 };
 
 struct ItemComponent {
@@ -94,4 +93,9 @@ struct DamageComponent {
 
 struct ForceComponent {
 	vec force;
+};
+
+struct GridComponent {
+	pair anker;
+	pair size;
 };
