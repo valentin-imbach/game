@@ -34,7 +34,7 @@ private:
 	pair source;
 	pair size;
 	uint8_t frameCount;
-	uint frameDuration;
+	uint8_t frameDuration;
 	uint animationStart;
 	static std::array<SDL_Texture*, SpriteSheet::count> spriteSheets;
 
@@ -46,8 +46,9 @@ public:
 	void addSprite(Sprite sprite, pair offset = {0, 0});
 	void draw(pair position, int scale = 1, bool centered = true);
 	void clear();
+
 private:
 	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
-	uint depth = 0;
+	uint8_t depth = 0;
 	friend class CreatureAnimationSystem;
 };

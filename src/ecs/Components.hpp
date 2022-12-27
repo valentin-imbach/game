@@ -66,13 +66,13 @@ struct InventoryComponent {
 };
 
 struct HealthComponent {
-	uint health;
-	uint maxHealth;
+	uint8_t health;
+	uint8_t maxHealth;
 	bool damaged;
 };
 
 struct PlayerComponent {
-	uint activeSlot;
+	uint8_t activeSlot;
 };
 
 struct ResourceComponent {

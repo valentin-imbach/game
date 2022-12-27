@@ -6,7 +6,7 @@
 
 #define ENUM(name, items...)                                                         \
 	namespace name {                                                                 \
-	enum value : unsigned short { NONE,                                              \
+	enum value : uint8_t { NONE,                                                     \
 		items,                                                                       \
 		MAX };                                                                       \
 	constexpr size_t count = value::MAX;                                             \
