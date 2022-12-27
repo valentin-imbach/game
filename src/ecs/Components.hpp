@@ -4,6 +4,7 @@
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
 #include "Item.hpp"
+#include "ItemTemplates.hpp"
 
 struct PositionComponent {
 	vec position;

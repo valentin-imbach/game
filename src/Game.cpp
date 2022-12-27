@@ -38,16 +38,16 @@ void Game::handleEvents() {
 	const Uint32 mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 	world->guiManager.mousePosition = mousePosition;
 
-	world->inputState.set(size_t(InputStateId::MOVE_EAST), keyState[SDL_SCANCODE_D]);
-	world->inputState.set(size_t(InputStateId::MOVE_NORTH), keyState[SDL_SCANCODE_W]);
-	world->inputState.set(size_t(InputStateId::MOVE_WEST), keyState[SDL_SCANCODE_A]);
-	world->inputState.set(size_t(InputStateId::MOVE_SOUTH), keyState[SDL_SCANCODE_S]);
+	world->inputState.set(InputStateId::MOVE_EAST, keyState[SDL_SCANCODE_D]);
+	world->inputState.set(InputStateId::MOVE_NORTH, keyState[SDL_SCANCODE_W]);
+	world->inputState.set(InputStateId::MOVE_WEST, keyState[SDL_SCANCODE_A]);
+	world->inputState.set(InputStateId::MOVE_SOUTH, keyState[SDL_SCANCODE_S]);
 
-	world->inputState.set(size_t(InputStateId::INFO), keyState[SDL_SCANCODE_TAB]);
-	world->inputState.set(size_t(InputStateId::ALTER), keyState[SDL_SCANCODE_LSHIFT]);
+	world->inputState.set(InputStateId::INFO, keyState[SDL_SCANCODE_TAB]);
+	world->inputState.set(InputStateId::ALTER, keyState[SDL_SCANCODE_LSHIFT]);
 
-	world->inputState.set(size_t(InputStateId::PRIMARY), mouseState & SDL_BUTTON_LMASK);
-	world->inputState.set(size_t(InputStateId::SECONDARY), mouseState & SDL_BUTTON_RMASK);
+	world->inputState.set(InputStateId::PRIMARY, mouseState & SDL_BUTTON_LMASK);
+	world->inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
 
 	SDL_Event event;
 	world->inputEvents.clear();
@@ -58,6 +58,7 @@ void Game::handleEvents() {
 			continue;
 		}
 		if (console.handleEvent(event)) continue;
+		if (event.key.repeat) continue;
 		if (debugScreen.handleEvent(event)) continue;
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
 			if (event.button.button == SDL_BUTTON_LEFT) {

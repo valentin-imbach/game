@@ -64,8 +64,8 @@ void Widget::update() {
 
 void Widget::draw() {
 	sprite.draw(screenPosition, GUI_SCALE);
-	for (auto& guiElement : children) {
-		guiElement->draw();
+	for (int i = children.size() - 1; i >= 0; i--) {
+		children[i]->draw();
 	}
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 }
@@ -87,6 +87,10 @@ void ItemSlot::draw() {
 	sprite.draw(screenPosition, GUI_SCALE, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	itemContainer.draw(screenPosition, GUI_SCALE);
+	if (inside(guiManager->mousePosition)) {
+		pair infoPosition = {screenPosition.x + 35, screenPosition.y - 30};
+		itemContainer.drawInfo(infoPosition, guiManager->world->inputState[InputStateId::ALTER]);
+	}
 }
 
 bool ItemSlot::handleEvent(InputEvent event) {
@@ -139,7 +143,7 @@ void HotbarGui::draw() {
 	for (int x = 0; x < inventory.size.x; x++) {
 		pair offset = {spacing * x - spacing * (inventory.size.x - 1) / 2, 0};
 		if (x == activeSlot) {
-			activeSlotSprite.draw(screenPosition + offset, GUI_SCALE, true);	
+			activeSlotSprite.draw(screenPosition + offset, GUI_SCALE, true);
 		} else {
 			slotSprite.draw(screenPosition + offset, GUI_SCALE, true);
 		}

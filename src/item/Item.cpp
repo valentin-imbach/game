@@ -37,7 +37,7 @@
 		} else {
 			otherComponent.count -= addCount;
 			item = EntityFactory::createItem(otherComponent.itemId, addCount);
-		}		
+		}
 	}
 	return other;
 }
@@ -54,6 +54,59 @@ void ItemContainer::draw(pair position, uint scale) {
 	if (itemComponent.count == 1) return;
 	std::string text = std::to_string(itemComponent.count);
 	TextManager::drawText(text, position);
+}
+
+void ItemContainer::drawInfo(pair position, bool elaborate) {
+	if (!item) return;
+	ItemComponent& itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
+	if (!itemComponent.itemId) return;
+	ItemTemplate* itemTemplate = ItemTemplate::templates[itemComponent.itemId].get();
+
+	// std::vector<Text> texts;
+	//  v(int) h;
+
+	int spacing = 30;
+	int width = 0;
+
+	std::vector<std::pair<Text, pair>> texts;
+	std::vector<std::pair<pair, pair>> icons;
+	pair pos = position;
+
+	if (elaborate) {
+		texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_UNDERLINE), pos);
+		pos.y += spacing;
+		for (int kind = 1; kind <= ItemKind::count; kind++) {
+			if (!itemTemplate->kinds[kind]) continue;
+			icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
+			ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
+			std::string kindText = "   " + itemKindTemplate->name;
+			texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
+			pos.y += spacing;
+			for (int property = 1; property <= ItemProperty::count; property++) {
+				if (!itemKindTemplate->properties[property]) continue;
+				ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
+				int value = itemTemplate->properties[ItemProperty::from_int(property)];
+				std::string propertyText = itempPropertyTemplate->name + ": " + std::to_string(value);
+				texts.emplace_back(Text(propertyText, TTF_STYLE_NORMAL), pos);
+				pos.y += spacing;
+			}
+		}
+	} else {
+		texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_NORMAL), pos);
+	}
+
+	pair size = {0, texts.size() * spacing};
+	for (auto& text : texts) size.x = std::max(size.x, TextManager::textSize(text.first.text).x);
+	TextureManager::drawRect({position.x - 10, position.y}, {size.x + 20, size.y}, {0, 0, 0, 150}, false, true);
+
+	for (auto& text : texts) {
+		TextManager::drawText(text.first, text.second);
+	}
+
+	for (auto& icon : icons) {
+		Sprite sprite = Sprite(SpriteSheet::ICONS_WHITE, icon.first);
+		sprite.draw(icon.second, 2, false);
+	}
 }
 
 Inventory::Inventory(pair size) : size(size) {

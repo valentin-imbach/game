@@ -9,6 +9,7 @@ struct ItemContainer {
 	Entity item;
 	[[nodiscard]] Entity add(Entity other, ItemAmount::value amount = ItemAmount::ALL);
 	void draw(pair position, uint scale);
+	void drawInfo(pair position, bool elaborate);
 	void clear();
 };
 

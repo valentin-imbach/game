@@ -18,6 +18,8 @@ World::World(std::string name) : name(name) {
 	rosterSystems();
 
 	ItemPropertyTemplate::setTemplates();
+	ItemKindTemplate::setTemplates();
+	ItemTemplate::setTemplates();
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
@@ -135,8 +137,7 @@ void World::update(uint dt) {
 	handleEvents();
 	guiManager.update();
 
-	if (guiManager.active()) inputState = 0;
-	controllerSystem->update(inputState);
+	controllerSystem->update(inputState, !guiManager.active());
 
 	animalAiSystem->update();
 
@@ -185,13 +186,17 @@ void World::handleEvents() {
 			
 			int spacing = 20;
 			Inventory& inventory = inventoryComponent.inventory;
+
 			for (int x = 0; x < inventory.size.x; x++) {
-				for (int y = 1; y < inventory.size.y; y++) {
+				pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, -3 * spacing};
+				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][0]));
+			}
+
+			for (int y = 1; y < inventory.size.y; y++) {
+				for (int x = 0; x < inventory.size.x; x++) {
 					pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, spacing * (y - 2)};
 					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][y]));
 				}
-				pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, -3 * spacing};
-				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][0]));
 			}
 			guiManager.open(std::move(inventoryGui));
 

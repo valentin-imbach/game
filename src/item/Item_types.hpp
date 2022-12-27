@@ -5,6 +5,7 @@
 #define MAX_STACK 99u
 
 ENUM(ItemKind,
+//Materials
 COBBLE,
 PEBBLE,
 LOG,
@@ -40,22 +41,17 @@ BOW,
 ARROW,
 SHIELD,
 
-//Misc
-FOOD,
-FUEL,
-POTION,
-ACCESSORY,
-
 //Clothing
 HEAD,
 BODY,
 LEG,
 FEET,
 
-HEAD_GEAR,
-BODY_GEAR,
-LEG_GEAR,
-FEET_GEAR)
+//Misc
+FOOD,
+FUEL,
+POTION,
+ACCESSORY)
 
 ENUM(ItemProperty,
 //Mechanical

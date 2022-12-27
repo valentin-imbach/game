@@ -28,8 +28,7 @@ pair TextManager::textSize(std::string& text) {
 	return size;
 }
 
-void TextManager::drawText(
-    std::string& text, pair position, bool centred, SDL_Color colour) {
+void TextManager::drawText(std::string& text, pair position, bool centred, SDL_Color colour) {
 	if (text.empty()) return;
 	if (!font) {
 		ERROR("Trying to render text without font loaded");
@@ -43,4 +42,10 @@ void TextManager::drawText(
 	SDL_RenderCopy(Window::instance->renderer, texture, NULL, &renderQuad);
 	SDL_FreeSurface(textSurface);
 	SDL_DestroyTexture(texture);
+}
+
+void TextManager::drawText(Text& text, pair position, bool centred) {
+	TTF_SetFontStyle(font, text.style);
+	drawText(text.text, position, centred, text.colour);
+	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 }

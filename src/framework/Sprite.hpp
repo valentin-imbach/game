@@ -17,7 +17,9 @@ WATER,
 INVENTORY,
 SLOT,
 HOTBAR,
-HEART)
+HEART,
+ICONS_WHITE,
+ICONS_BLACK)
 
 class Sprite {
 public:

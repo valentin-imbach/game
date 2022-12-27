@@ -5,14 +5,14 @@
         "properties": ["hardness"]
     },
 
-    "plank": {
-        "name": "Plank",
-        "properties": ["flexibility", "strength", "burn_time", "heat"]
+    "plate": {
+        "name": "Plate",
+        "properties": ["flexibility", "strength"]
     },
 
     "rod": {
         "name": "Rod",
-        "properties": ["flexibility", "strength", "burn_time", "heat"]
+        "properties": ["flexibility", "strength"]
     },
 
     "cobble": {

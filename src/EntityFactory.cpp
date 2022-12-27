@@ -92,7 +92,12 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
 	ecs->addComponent<SpriteComponent>({spriteStack, 0, 0.5f}, item);
-	ecs->addComponent<ItemComponent>({itemId, count}, item);
+	ItemComponent itemComponent = {itemId, count};
+	if (itemId) {
+		ItemTemplate* temp = ItemTemplate::templates[itemId].get();
+		
+	}
+	ecs->addComponent<ItemComponent>(itemComponent, item);
 	return item;
 }
 

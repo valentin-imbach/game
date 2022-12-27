@@ -66,6 +66,7 @@ void ItemTemplate::setTemplates() {
         }
 
         std::string name = value["name"];
+
 		ItemKindBitset itemKinds;
 		for (auto& k : value["kinds"]) {
             ItemKind::value kind = ItemKind::from_string(k);
@@ -77,5 +78,14 @@ void ItemTemplate::setTemplates() {
         }
 
         templates[id] = std::make_unique<ItemTemplate>(name, itemKinds);
+
+        for (auto& [pkey, pvalue] : value["properties"].items()) {
+            ItemProperty::value property = ItemProperty::from_string(pkey);
+            if (!property) {
+                WARNING("Unrecognised ItemProperty", pkey);
+                continue;
+            }
+            templates[id]->properties[property] = pvalue;
+        }
     }
 }
