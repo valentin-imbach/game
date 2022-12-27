@@ -5,6 +5,7 @@
 #include "Sprite.hpp"
 #include "Item.hpp"
 #include "ItemTemplates.hpp"
+#include "Loot.hpp"
 
 struct PositionComponent {
 	vec position;
@@ -80,8 +81,7 @@ struct ResourceComponent {
 };
 
 struct LootComponent {
-	ItemId::value itemId;
-	uint count;
+	Loot loot;
 };
 
 struct ToolComponent {

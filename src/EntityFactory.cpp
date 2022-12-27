@@ -41,29 +41,29 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	ToolId::value toolId;
 	uint8_t height;
 	ItemId::value lootId;
-	uint8_t lootCount;
+	pair lootRange;
 	switch (resourceId) {
 		case ResourceId::TREE:
 			spriteStack.addSprite({SpriteSheet::RESOURCES, {0, 0}, {1, 3}});
 			toolId = ToolId::AXE;
 			height = 2;
 			lootId = ItemId::ASHWOOD_PLANK;
-			lootCount = 3;
+			lootRange = {2, 4};
 			break;
 		case ResourceId::ROCK:
 			spriteStack.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
 			toolId = ToolId::PICK_AXE;
 			height = 1;
 			lootId = ItemId::BASALT_COBBLE;
-			lootCount = 3;
+			lootRange = {2, 4};
 			break;
 		default:
 			return 0;
 	}
-	
+
 	ecs->addComponent<SpriteComponent>({spriteStack, height}, resource);
 	ecs->addComponent<ResourceComponent>({toolId}, resource);
-	ecs->addComponent<LootComponent>({lootId, lootCount}, resource);
+	ecs->addComponent<LootComponent>({lootId, lootRange, 1.0f}, resource);
 	ecs->addComponent<HealthComponent>({5, 5}, resource);
 	return resource;
 }
@@ -80,13 +80,14 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs->addComponent<ColliderComponent>({collider}, animal);
 	ecs->addComponent<AnimalAiComponent>({0, 0}, animal);
+	//ecs->addComponent<LootComponent>({ItemId::LEATHER, {1,3}, 1.0f}, animal);
 	ecs->addComponent<HealthComponent>({10, 10}, animal);
 	ecs->addComponent<ForceComponent>({{0, 0}}, animal);
 	return animal;
 }
 
 Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
-	Entity item = ecs -> createEntity();
+	Entity item = ecs->createEntity();
 	Collider collider = {{0, 0}, {0.4f, 0.4f}};
 	ecs->addComponent<ColliderComponent>({collider}, item);
 	SpriteStack spriteStack;
@@ -95,7 +96,6 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	ItemComponent itemComponent = {itemId, count};
 	if (itemId) {
 		ItemTemplate* temp = ItemTemplate::templates[itemId].get();
-		
 	}
 	ecs->addComponent<ItemComponent>(itemComponent, item);
 	return item;

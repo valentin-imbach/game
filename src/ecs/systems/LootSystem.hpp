@@ -13,7 +13,7 @@ public:
 			LootComponent& lootComponent = ecs->getComponent<LootComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			if (healthComponent.health <= 0) {
-				EntityFactory::createItem(lootComponent.itemId, lootComponent.count, positionComponent.position);
+				lootComponent.loot.create(SDL_GetTicks(), positionComponent.position);
 			}
 		}
 	}
