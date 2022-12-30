@@ -41,7 +41,7 @@ public:
 
 	void removeComponent(Entity entity) {
 		if (!hasComponent(entity)) {
-			WARNING("Trying to removing non-existent component");
+			WARNING("Trying to remove non-existent component");
 			return;
 		}
 

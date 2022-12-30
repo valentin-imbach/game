@@ -19,7 +19,9 @@ src/world/Map.cpp
 src/world/Tile.cpp
 src/Gui/GuiElement.cpp
 src/item/Item.cpp
-src/Item/ItemTemplates.cpp
+src/item/ItemTemplates.cpp
+src/item/Loot.cpp
+src/ResourceTemplates.cpp
 src/EntityFactory.cpp
 src/Console.cpp
 src/main.cpp)

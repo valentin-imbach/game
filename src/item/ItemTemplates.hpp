@@ -11,7 +11,7 @@ struct ItemPropertyTemplate {
 	std::string name;
 	ItemPropertyTemplate(std::string name) : name(name) {}
 
-	static std::array<std::unique_ptr<ItemPropertyTemplate>, ItemProperty::count + 1> templates;
+	static std::array<std::unique_ptr<ItemPropertyTemplate>, ItemProperty::count> templates;
 	static void setTemplates();
 };
 
@@ -20,7 +20,7 @@ struct ItemKindTemplate {
 	ItemPropertyBitset properties;
 	ItemKindTemplate(std::string name, ItemPropertyBitset properties) : name(name), properties(properties) {}
 
-	static std::array<std::unique_ptr<ItemKindTemplate>, ItemKind::count + 1> templates;
+	static std::array<std::unique_ptr<ItemKindTemplate>, ItemKind::count> templates;
 	static void setTemplates();
 };
 
@@ -30,6 +30,6 @@ struct ItemTemplate {
 	std::unordered_map<ItemProperty::value, int> properties;
 	ItemTemplate(std::string name, ItemKindBitset kinds) : name(name), kinds(kinds) {}
 
-	static std::array<std::unique_ptr<ItemTemplate>, ItemId::count + 1> templates;
+	static std::array<std::unique_ptr<ItemTemplate>, ItemId::count> templates;
 	static void setTemplates();
 };

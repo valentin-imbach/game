@@ -80,7 +80,7 @@ struct ResourceComponent {
 };
 
 struct LootComponent {
-	Loot loot;
+	LootTable lootTable;
 };
 
 struct ToolComponent {

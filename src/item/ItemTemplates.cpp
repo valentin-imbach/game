@@ -3,9 +3,9 @@
 #include "json.hpp"
 #include <fstream>
 
-std::array<std::unique_ptr<ItemPropertyTemplate>, ItemProperty::count + 1> ItemPropertyTemplate::templates;
-std::array<std::unique_ptr<ItemKindTemplate>, ItemKind::count + 1> ItemKindTemplate::templates;
-std::array<std::unique_ptr<ItemTemplate>, ItemId::count + 1> ItemTemplate::templates;
+std::array<std::unique_ptr<ItemPropertyTemplate>, ItemProperty::count> ItemPropertyTemplate::templates;
+std::array<std::unique_ptr<ItemKindTemplate>, ItemKind::count> ItemKindTemplate::templates;
+std::array<std::unique_ptr<ItemTemplate>, ItemId::count> ItemTemplate::templates;
 
 using namespace nlohmann;
 

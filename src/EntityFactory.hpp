@@ -3,6 +3,7 @@
 #include "utils.hpp"
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
+#include "ResourceTemplates.hpp"
 
 class ECS;
 
@@ -10,11 +11,6 @@ ENUM(AnimalId,
 COW,
 PIG,
 HORSE)
-
-ENUM(ResourceId,
-ROCK,
-TREE,
-GRASS)
 
 class EntityFactory {
 public:

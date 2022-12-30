@@ -13,7 +13,9 @@ public:
 			LootComponent& lootComponent = ecs->getComponent<LootComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			if (healthComponent.health <= 0) {
-				lootComponent.loot.create(SDL_GetTicks(), positionComponent.position);
+				for (int i = 0; i < lootComponent.lootTable.size; i++) {
+					lootComponent.lootTable.table[i].create(SDL_GetTicks(), positionComponent.position);
+				}
 			}
 		}
 	}

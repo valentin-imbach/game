@@ -20,6 +20,7 @@ World::World(std::string name) : name(name) {
 	ItemPropertyTemplate::setTemplates();
 	ItemKindTemplate::setTemplates();
 	ItemTemplate::setTemplates();
+	ResourceTemplate::setTemplates();
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
@@ -81,6 +82,7 @@ World::World(std::fstream& stream) : ecs(stream) {
 	ItemPropertyTemplate::setTemplates();
 	ItemKindTemplate::setTemplates();
 	ItemTemplate::setTemplates();
+	ResourceTemplate::setTemplates();
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
@@ -104,12 +106,17 @@ void World::generate() {
 			if (tileId == TileId::WATER) continue;
 			if (tileId == TileId::GRASS) {
 				if (bernoulli(seed++, 0.1f)) {
-					EntityFactory::createResource(ResourceId::TREE, position);
+					int type = rand_int(seed++, 6, 11);
+					EntityFactory::createResource(ResourceId::from_int(type), position);
+					continue;
+				} else if (bernoulli(seed++, 0.05f)) {
+					EntityFactory::createResource(ResourceId::BUSH, position);
 					continue;
 				}
 			}
 			if (bernoulli(seed++, 0.05f)) {
-				EntityFactory::createResource(ResourceId::ROCK, position);
+				int type = rand_int(seed++, 1, 6);
+				EntityFactory::createResource(ResourceId::from_int(type), position);
 			}
 		}
 	}

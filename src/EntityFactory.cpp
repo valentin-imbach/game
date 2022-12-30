@@ -34,37 +34,29 @@ Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
 }
 
 Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
-	Entity resource = ecs->createEntity();
-	ecs->addComponent<PositionComponent>({position}, resource);
-	ecs->addComponent<GridComponent>({position, {1, 1}}, resource);
-	if (resource) (*gridMap)[position] = resource;
-	SpriteStack spriteStack;
-	ToolId::value toolId;
-	uint8_t height;
-	ItemId::value lootId;
-	pair lootRange;
-	switch (resourceId) {
-		case ResourceId::TREE:
-			spriteStack.addSprite({SpriteSheet::RESOURCES, {0, 0}, {1, 3}});
-			toolId = ToolId::AXE;
-			height = 2;
-			lootId = ItemId::ASHWOOD_PLANK;
-			lootRange = {2, 4};
-			break;
-		case ResourceId::ROCK:
-			spriteStack.addSprite({SpriteSheet::RESOURCES, {0, 3}, {1, 2}});
-			toolId = ToolId::PICK_AXE;
-			height = 1;
-			lootId = ItemId::BASALT_COBBLE;
-			lootRange = {2, 4};
-			break;
-		default:
-			return 0;
-	}
+	
+	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
+	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
 
-	ecs->addComponent<SpriteComponent>({spriteStack, height}, resource);
-	ecs->addComponent<ResourceComponent>({toolId}, resource);
-	ecs->addComponent<LootComponent>({lootId, lootRange, 1.0f}, resource);
+	Entity resource = ecs->createEntity();
+	if (!resource) return 0;
+	ecs->addComponent<PositionComponent>({position}, resource);
+	ecs->addComponent<GridComponent>({position, resourceTemplate->size}, resource);
+	for (int x = 0; x < resourceTemplate->size.x; x++) {
+		for (int y = 0; y < resourceTemplate->size.y; y++) {
+			pair offset(x,y);
+			(*gridMap)[position + offset] = resource;
+		}
+	}
+	
+	SpriteStack spriteStack;
+	pair spritePosition(resourceTemplate->position.x, resourceTemplate->position.y - resourceTemplate->height);
+	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
+	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize});
+
+	ecs->addComponent<SpriteComponent>({spriteStack, resourceTemplate->height}, resource);
+	ecs->addComponent<ResourceComponent>({resourceTemplate->toolId}, resource);
+	ecs->addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	ecs->addComponent<HealthComponent>({5, 5}, resource);
 	return resource;
 }
@@ -95,9 +87,9 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
 	ecs->addComponent<SpriteComponent>({spriteStack, 0, 0.5f}, item);
 	ItemComponent itemComponent = {itemId, count};
-	if (itemId) {
-		ItemTemplate* temp = ItemTemplate::templates[itemId].get();
-	}
+	// if (itemId && ItemTemplate::templates[itemId]) {
+	// 	ItemTemplate* temp = ItemTemplate::templates[itemId].get();
+	// }
 	ecs->addComponent<ItemComponent>(itemComponent, item);
 	return item;
 }

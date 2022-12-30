@@ -22,7 +22,7 @@
 		otherComponent.count -= addCount;
 		itemComponent.count += addCount;
 		if (!otherComponent.count) {
-			EntityFactory::ecs->destroyEntity(other);
+			EntityFactory::ecs->dead.push_back(other);
 			return 0;
 		}
 	} else {
