@@ -14,11 +14,11 @@ public:
 
 	EntityManager(std::fstream& stream) {
 		size_t count;
-		stream.read((char*)&count, sizeof(count));
+		deserialise_object(stream, count);
 		availableEntities.reserve(count);
 		for (int i = 0; i < count; i++) {
 			Entity entity;
-			stream.read((char*)&entity, sizeof(entity));
+			deserialise_object(stream, entity);
 			availableEntities.push_back(entity);
 		}
 		LOG("Entity manager deserialised");
@@ -43,9 +43,9 @@ public:
 
 	void serialise(std::fstream& stream) {
 		size_t count = availableEntities.size();
-		stream.write((char*)&count, sizeof(count));
+		serialise_object(stream, count);
 		for (Entity entity: availableEntities) {
-			stream.write((char*)&entity, sizeof(entity));
+			serialise_object(stream, entity);
 		}
 		LOG("Entity Manager serialised");
 	}

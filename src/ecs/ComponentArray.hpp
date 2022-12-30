@@ -70,24 +70,24 @@ public:
 	}
 
 	void serialise(std::fstream& stream) override {
-		stream.write((char*)&size, sizeof(size));
+		serialise_object(stream, size);
 		for (int index = 0; index < size; index++) {
 			Entity entity = indexToEntity[index];
-			stream.write((char*)&entity, sizeof(entity));
-			stream.write((char*)&components[index], sizeof(T));
+			serialise_object(stream, entity);
+			serialise_object(stream, components[index]);
 		}
 	}
 
 	void deserialise(std::fstream& stream) override {
 		entityToIndex.clear();
 		indexToEntity.clear();
-		stream.read((char*)&size, sizeof(size));
+		deserialise_object(stream, size);
 		for (int index = 0; index < size; index++) {
 			Entity entity;
-			stream.read((char*)&entity, sizeof(entity));
+			deserialise_object(stream, entity);
 			indexToEntity[index] = entity;
 			entityToIndex[entity] = index;
-			stream.read((char*)&components[index], sizeof(T));
+			deserialise_object(stream, components[index]);
 		}
 	}
 

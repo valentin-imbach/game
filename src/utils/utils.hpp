@@ -24,3 +24,4 @@
 #include "enum.hpp"
 #include "direction.hpp"
 #include "collider.hpp"
+#include "serialiser.hpp"
