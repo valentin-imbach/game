@@ -8,8 +8,8 @@ Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uint8_t f
 }
 
 void Sprite::draw(pair position, int scale, bool centered) {
-	if (spriteSheet == SpriteSheet::NONE) {
-		WARNING("Trying to draw NULL sprite");
+	if (!spriteSheet) {
+		//WARNING("Trying to draw NULL sprite");
 		return;
 	}
 	uint ticks = SDL_GetTicks();

@@ -43,7 +43,7 @@ public:
 	void addGuiElement(std::unique_ptr<GuiElement> guiElement);
 	bool handleEvent(InputEvent event) override;
 
-private:
+protected:
 	Sprite sprite;
 	std::vector<std::unique_ptr<GuiElement>> children;
 };
@@ -87,4 +87,13 @@ private:
 	Entity player;
 	Sprite heartSprite;
 	Sprite halfHeartSprite;
+};
+
+class InventoryGui : public Widget {
+public:
+	InventoryGui(Inventory* inventory, int spacing);
+	~InventoryGui() override = default;
+private:
+	Inventory* inventory;
+	int spacing;
 };

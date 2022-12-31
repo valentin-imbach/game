@@ -56,9 +56,9 @@ void Widget::addGuiElement(std::unique_ptr<GuiElement> guiElement) {
 
 void Widget::update() {
 	for (auto& guiElement : children) {
+		guiElement->guiManager = guiManager;
 		guiElement->reposition(this);
 		guiElement->update();
-		guiElement->guiManager = guiManager;
 	}
 }
 
@@ -173,5 +173,16 @@ void HealthBarGui::draw() {
 	if (healthComponent.health % 2) {
 		pair offset = {healthComponent.health / 2 * spacing, 0};
 		halfHeartSprite.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+	}
+}
+
+//* InventoryGui
+
+InventoryGui::InventoryGui(Inventory* inventory, int spacing) : Widget({}, spacing * inventory->size, Sprite()), inventory(inventory), spacing(spacing) {
+	for (int x = 0; x < inventory->size.x; x++) {
+		for (int y = 0; y < inventory->size.y; y++) {
+			pair position(spacing * x - spacing * (inventory->size.x - 1) / 2, spacing * y - spacing * (inventory->size.y - 1) / 2);
+			addGuiElement(std::make_unique<ItemSlot>(position, inventory->itemContainers[x][y]));
+		}
 	}
 }
