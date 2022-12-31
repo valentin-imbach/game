@@ -50,7 +50,7 @@ inline vec operator/=(vec &v, float t) { return v = v / t; }
 
 [[nodiscard]] inline float norm(vec v) { return std::sqrt(v * v); }
 [[nodiscard]] inline float dist(vec v1, vec v2) { return norm(v1 - v2); }
-[[nodiscard]] inline float angle(vec v) { return std::atan2f(v.y, v.x); }
+[[nodiscard]] inline float angle(vec v) { return std::atan2f(-v.y, v.x); }
 
 //* utility functions
 

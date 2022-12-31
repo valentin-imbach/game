@@ -49,7 +49,8 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
 	Collider axeCollider = {{0, 0}, {0.4f, 0.4f}};
 	ecs.addComponent<ColliderComponent>({axeCollider}, axe);
-	ecs.addComponent<PositionComponent>({{7, 5}}, axe);
+	ecs.addComponent<PositionComponent>({{6, 5}}, axe);
+	ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
 
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
@@ -59,7 +60,8 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
 	Collider pickCollider = {{0, 0}, {0.4f, 0.4f}};
 	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
-	ecs.addComponent<PositionComponent>({{8, 5}}, pick);
+	ecs.addComponent<PositionComponent>({{7, 5}}, pick);
+	ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, pick);
 
 	Entity sword = ecs.createEntity();
 	SpriteStack swordSprites;
@@ -69,7 +71,31 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<DamageComponent>({1}, sword);
 	Collider swordCollider = {{0, 0}, {0.4f, 0.4f}};
 	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
-	ecs.addComponent<PositionComponent>({{9, 5}}, sword);
+	ecs.addComponent<PositionComponent>({{8, 5}}, sword);
+	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
+
+	Entity chest = ecs.createEntity();
+	SpriteStack chestSprites;
+	chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}));
+	ecs.addComponent<SpriteComponent>({chestSprites, 1}, chest);
+	ecs.addComponent<PositionComponent>({{9, 9}}, chest);
+	ecs.addComponent<GridComponent>({{9, 9}, {1, 1}}, chest);
+	ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
+	ecs.addComponent<InteractionComponent>({InteractionId::CHEST}, chest);
+	gridMap[{9, 9}] = chest;
+
+	Entity monster = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({{5, 8}}, monster);
+	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, monster);
+	ecs.addComponent<DirectionComponent>({Direction::EAST}, monster);
+	ecs.addComponent<MovementComponent>({1}, monster);
+	SpriteStack spriteStack;
+	spriteStack.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100});
+	ecs.addComponent<SpriteComponent>({spriteStack, 1}, monster);
+	Collider collider = {{0, 0}, {0.6f, 0.6f}};
+	ecs.addComponent<ColliderComponent>({collider}, monster);
+	ecs.addComponent<HealthComponent>({20, 20}, monster);
+	ecs.addComponent<MonsterAiComponent>({}, monster);
 
 	generate();
 }
@@ -142,6 +168,9 @@ void World::rosterComponents() {
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
 	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
+	ecs.rosterComponent<InteractionComponent>(ComponentId::INTERACTION);
+	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
+	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
 
 	LOG("Components rostered");
 }
@@ -163,6 +192,8 @@ void World::rosterSystems() {
 	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER, {ComponentId::PLAYER});
 	colldierDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW, {ComponentId::COLLIDER, ComponentId::POSITION});
 	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID, {ComponentId::GRID});
+	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION, {ComponentId::INTERACTION});
+	monsterAiSystem = ecs.rosterSystem<MonsterAiSystem>(SystemId::MONSTER_AI, {ComponentId::CREATURE_STATE, ComponentId::MONSTER_AI, ComponentId::DIRECTION});
 
 	LOG("Systems rostered")
 }
@@ -179,6 +210,7 @@ void World::update(uint dt) {
 	controllerSystem->update(inputState, !guiManager.active());
 
 	animalAiSystem->update();
+	monsterAiSystem->update(player);
 
 	creatureMovementSystem->update(dt, gridMap, map);
 	collisionSystem->update(collisions);
@@ -214,6 +246,31 @@ void World::update(uint dt) {
 	camera = cameraSystem->getCamera();
 }
 
+std::unique_ptr<GuiElement> World::makeInventory() {
+	if (!player) return nullptr;
+	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+
+	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
+
+	std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+
+	int spacing = 20;
+	Inventory& inventory = inventoryComponent.inventory;
+
+	for (int x = 0; x < inventory.size.x; x++) {
+		pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, -3 * spacing};
+		inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][0]));
+	}
+
+	for (int y = 1; y < inventory.size.y; y++) {
+		for (int x = 0; x < inventory.size.x; x++) {
+			pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, spacing * (y - 2)};
+			inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][y]));
+		}
+	}
+	return inventoryGui;
+}
+
 void World::handleEvents() {
 	if (!player) return;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
@@ -225,25 +282,7 @@ void World::handleEvents() {
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
 		if (event.id == InputEventId::INVENTORY) {
-			Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
-			std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-
-			int spacing = 20;
-			Inventory& inventory = inventoryComponent.inventory;
-
-			for (int x = 0; x < inventory.size.x; x++) {
-				pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, -3 * spacing};
-				inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][0]));
-			}
-
-			for (int y = 1; y < inventory.size.y; y++) {
-				for (int x = 0; x < inventory.size.x; x++) {
-					pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, spacing * (y - 2)};
-					inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][y]));
-				}
-			}
-			guiManager.open(std::move(inventoryGui));
-
+			guiManager.open(makeInventory());
 		} else if (event.id == InputEventId::THROW) {
 			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing - 1];
 			ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);
@@ -259,12 +298,18 @@ void World::handleEvents() {
 		if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
 
 		if (!camera) continue;
+		vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
+		uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
+		vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
+
 		if (event.id == InputEventId::PRIMARY) {
-			vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
-			uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
-			vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
 			forageSystem->update(position, activeItemContainer.item);
 			damageSystem->update(player, position, activeItemContainer.item);
+		} else if (event.id == InputEventId::SECONDARY) {
+			std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
+			if (gui) {
+				guiManager.open(makeInventory(), std::move(gui));
+			}
 		}
 	}
 }

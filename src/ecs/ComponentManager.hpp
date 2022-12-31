@@ -38,6 +38,9 @@ public:
 
 	template <typename T>
 	T &get(Entity entity) {
+		if (!getComponentArray<T>()->hasComponent(entity)) {
+			ERROR("Trying to access non-existent component of type", ComponentId::strings[roster<T>()]);
+		}
 		return getComponentArray<T>()->getComponent(entity);
 	}
 

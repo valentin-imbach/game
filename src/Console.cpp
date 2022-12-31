@@ -84,10 +84,11 @@ bool Console::execute(std::string input) {
 		int y = std::stoi(inputs[2]);
 		ecs.getComponent<PositionComponent>(player).position = {x, y};
 	} else if (inputs[0] == "place") {
-		// if (split.size() < 2) return false;
-		// int n = std::stoi(split[1]);
-		// if (n < 0) return false;
-		// MessageManager::notify(PlaceMessage(n, playerRealm, playerPosition.rounded()));
+		if (inputs.size() < 2) return false;
+		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
+		if (!player || !resourceId) return false;
+		pair position = round(ecs.getComponent<PositionComponent>(player).position);
+		EntityFactory::createResource(resourceId, position);
 	} else if (inputs[0] == "cows") {
 		if (inputs.size() < 2) return false;
 		if (!player) return false;
@@ -95,10 +96,9 @@ bool Console::execute(std::string input) {
 		vec position = ecs.getComponent<PositionComponent>(player).position;
 		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, position);
 	} else if (inputs[0] == "give") {
-		if (!player) return false;
 		if (inputs.size() < 2) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);
-		if (!itemId) return false;
+		if (!itemId || !player) return false;
 		uint count = 1;
 		if (inputs.size() > 2) {
 			//if (!isUInt(inputs[2])) return false;
@@ -113,11 +113,14 @@ bool Console::execute(std::string input) {
 		}
 	} else if (inputs[0] == "empty") {
 		if (!player) return false;
-		ecs.getComponent<InventoryComponent>(player).inventory.clear();
+		ecs.getComponent<InventoryComponent>(player).inventory.clear(true);
 	} else if (inputs[0] == "tile") {
-		// if (inputs.size() != 2) return false;
-		// TileId::value t = TileIdFromString(split[1]);
-		// MessageManager::notify(TileMessage(t, playerRealm, playerPosition.rounded()));
+		if (inputs.size() != 2) return false;
+		TileId::value tileId = TileId::from_string(inputs[1]);
+		if (!tileId || !game->world || !player) return false;
+		pair position = round(ecs.getComponent<PositionComponent>(player).position);
+		game->world->map.tiles[position.x][position.y]->tileId = tileId;
+		game->world->map.updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
 		// if (split.size() != 2) return false;
 		// WeatherType w = WeatherTypeFromString(split[1]);

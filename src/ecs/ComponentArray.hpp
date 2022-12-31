@@ -58,10 +58,6 @@ public:
 	}
 
 	T& getComponent(Entity entity) {
-		if (!hasComponent(entity)) {
-			ERROR("Trying to access non-existent component");
-			exit(EXIT_FAILURE);
-		}
 		return components[entityToIndex[entity]];
 	}
 

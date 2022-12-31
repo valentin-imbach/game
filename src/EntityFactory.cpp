@@ -36,6 +36,8 @@ Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
 Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
 	
 	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
+	if ((*gridMap)[position]) return 0;
+	
 	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
 
 	Entity resource = ecs->createEntity();

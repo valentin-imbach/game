@@ -27,8 +27,8 @@ public:
 	void draw() {
 		for (auto& guiElement : guiElements) guiElement->draw();
 		if (!primary) return;
-		primary->draw();
 		if (secondary) secondary->draw();
+		primary->draw();
 		mouseItemContainer.draw(mousePosition, GUI_SCALE);
 	}
 
@@ -60,8 +60,8 @@ public:
 			secondary->position.y = 0;
 			secondary->alignment = Direction::NONE;
 
-			primary->position.x = -400;
-			secondary->position.x = 400;
+			primary->position.x = -80;
+			secondary->position.x = 80;
 		} else {
 			primary->position.x = 0;
 		}

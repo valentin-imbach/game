@@ -42,7 +42,8 @@
 	return other;
 }
 
-void ItemContainer::clear() {
+void ItemContainer::clear(bool destroy) {
+	if (destroy) EntityFactory::ecs->dead.push_back(item);
 	item = 0;
 }
 
@@ -59,11 +60,6 @@ void ItemContainer::draw(pair position, uint scale) {
 void ItemContainer::drawInfo(pair position, bool elaborate) {
 	if (!item) return;
 	ItemComponent& itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
-	if (!itemComponent.itemId) return;
-	ItemTemplate* itemTemplate = ItemTemplate::templates[itemComponent.itemId].get();
-
-	// std::vector<Text> texts;
-	//  v(int) h;
 
 	int spacing = 30;
 	int width = 0;
@@ -72,27 +68,60 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 	std::vector<std::pair<pair, pair>> icons;
 	pair pos = position;
 
-	if (elaborate) {
-		texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_UNDERLINE), pos);
-		pos.y += spacing;
-		for (int kind = 1; kind <= ItemKind::count; kind++) {
-			if (!itemTemplate->kinds[kind]) continue;
-			icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
-			ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
-			std::string kindText = "   " + itemKindTemplate->name;
-			texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
+	if (!itemComponent.itemId) {
+		std::string name = "No Name";
+		if (EntityFactory::ecs->hasComponent<NameComponent>(item)) {
+			name = EntityFactory::ecs->getComponent<NameComponent>(item).name.get();	
+		}
+		if (elaborate) {
+			texts.emplace_back(Text(name, TTF_STYLE_UNDERLINE), pos);
 			pos.y += spacing;
-			for (int property = 1; property <= ItemProperty::count; property++) {
-				if (!itemKindTemplate->properties[property]) continue;
-				ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
-				int value = itemTemplate->properties[ItemProperty::from_int(property)];
-				std::string propertyText = itempPropertyTemplate->name + ": " + std::to_string(value);
-				texts.emplace_back(Text(propertyText, TTF_STYLE_NORMAL), pos);
+
+			if (EntityFactory::ecs->hasComponent<DamageComponent>(item)) {
+				DamageComponent& damageComponent = EntityFactory::ecs->getComponent<DamageComponent>(item);
+				texts.emplace_back(Text("  Weapon", TTF_STYLE_BOLD), pos);
+				pos.y += spacing;
+				std::string text = "Damage: " + std::to_string(damageComponent.damage);
+				texts.emplace_back(Text(text), pos);
 				pos.y += spacing;
 			}
+			if (EntityFactory::ecs->hasComponent<ToolComponent>(item)) {
+				ToolComponent& toolComponent = EntityFactory::ecs->getComponent<ToolComponent>(item);
+				texts.emplace_back(Text("  Tool", TTF_STYLE_BOLD), pos);
+				pos.y += spacing;
+				std::string text = "Type: " + ToolId::to_string(toolComponent.toolId);
+				texts.emplace_back(Text(text), pos);
+				pos.y += spacing;
+			}
+		} else {
+			texts.emplace_back(Text(name), pos);
+			pos.y += spacing;
 		}
+		
 	} else {
-		texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_NORMAL), pos);
+		ItemTemplate* itemTemplate = ItemTemplate::templates[itemComponent.itemId].get();
+		if (elaborate) {
+			texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_UNDERLINE), pos);
+			pos.y += spacing;
+			for (int kind = 1; kind <= ItemKind::count; kind++) {
+				if (!itemTemplate->kinds[kind]) continue;
+				icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
+				ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
+				std::string kindText = "   " + itemKindTemplate->name;
+				texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
+				pos.y += spacing;
+				for (int property = 1; property <= ItemProperty::count; property++) {
+					if (!itemKindTemplate->properties[property]) continue;
+					ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
+					int value = itemTemplate->properties[ItemProperty::from_int(property)];
+					std::string propertyText = itempPropertyTemplate->name + ": " + std::to_string(value);
+					texts.emplace_back(Text(propertyText, TTF_STYLE_NORMAL), pos);
+					pos.y += spacing;
+				}
+			}
+		} else {
+			texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_NORMAL), pos);
+		}
 	}
 
 	pair size = {0, texts.size() * spacing};
@@ -125,10 +154,10 @@ Entity Inventory::add(Entity item) {
 	return item;
 }
 
-void Inventory::clear() {
+void Inventory::clear(bool destroy) {
 	for (int y = 0; y < size.y; y++) {
 		for (int x = 0; x < size.x; x++) {
-			itemContainers[x][y].clear();
+			itemContainers[x][y].clear(destroy);
 		}
 	}
 }

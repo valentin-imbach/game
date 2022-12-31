@@ -41,7 +41,7 @@ TileId::value Map::getTileId(pair position) {
 	return tiles[position.x][position.y]->tileId;
 }
 
-void Map::updateStyle(pair position) {
+void Map::updateStyle(pair position, bool propagate) {
 	SpriteStack& spriteStack = tiles[position.x][position.y]->spriteStack;
 	spriteStack.clear();
 	TileId::value tileId = getTileId(position);
@@ -97,5 +97,11 @@ void Map::updateStyle(pair position) {
 	TileId::value id4 = getTileId(position + taxiSteps[6]);
 	if (id1 < tileId && id1 != TileId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
 		spriteStack.addSprite(Sprite(Tile::spriteSheets[int(id1)], {4, 4}));
+	}
+
+	if (propagate) {
+		for (pair step : taxiSteps) {
+			updateStyle(position + step);
+		}
 	}
 }

@@ -13,7 +13,7 @@ struct ItemContainer {
 	[[nodiscard]] Entity add(Entity other, ItemAmount::value amount = ItemAmount::ALL);
 	void draw(pair position, uint scale);
 	void drawInfo(pair position, bool elaborate);
-	void clear();
+	void clear(bool destroy = false);
 };
 
 class Inventory {
@@ -25,5 +25,5 @@ public:
 
 	[[nodiscard]] Entity add(Entity item);
 
-	void clear();
+	void clear(bool destroy = false);
 };

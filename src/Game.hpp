@@ -16,7 +16,7 @@ public:
 	bool running;
 
 	uint lastFrameTicks;
-	uint dt;
+	uint dt = 0;
 
 	std::queue<uint> sample;
 	uint sampleSum;

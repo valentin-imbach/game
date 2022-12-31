@@ -16,3 +16,5 @@
 #include "PlayerSystem.hpp"
 #include "ColliderDrawSystem.hpp"
 #include "GridSystem.hpp"
+#include "InteractionSystem.hpp"
+#include "MonsterAiSystem.hpp"

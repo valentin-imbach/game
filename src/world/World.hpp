@@ -31,6 +31,8 @@ private:
 
 	void generate();
 
+	std::unique_ptr<GuiElement> makeInventory();
+
 	ECS ecs;
 	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;
@@ -48,6 +50,8 @@ private:
 	PlayerSystem* playerSystem;
 	ColliderDrawSystem* colldierDrawSystem;
 	GridSystem* gridSystem;
+	InteractionSystem* interactionSystem;
+	MonsterAiSystem* monsterAiSystem;
 
 	GuiManager guiManager;
 

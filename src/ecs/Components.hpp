@@ -61,6 +61,10 @@ struct AnimalAiComponent {
 	uint panic;
 };
 
+struct MonsterAiComponent {
+	
+};
+
 struct InventoryComponent {
 	Inventory inventory;
 };
@@ -98,4 +102,31 @@ struct ForceComponent {
 struct GridComponent {
 	pair anker;
 	pair size;
+};
+
+ENUM(InteractionId,
+CHEST)
+
+struct InteractionComponent {
+	InteractionId::value interactionId;
+};
+
+struct Textblock {
+	uint8_t size;
+	std::array<char, 20> chars;
+	Textblock(std::string text = "") : size(0), chars() {
+		assert(text.size() <= 20);
+		size = text.size();
+		for (int i = 0; i < size; i++) chars[i] = text[i]; 
+	}
+
+	std::string get() {
+		std::string text;
+		for (int i = 0; i < size; i++) text += chars[i];
+		return text;
+	}
+};
+
+struct NameComponent {
+	Textblock name;
 };

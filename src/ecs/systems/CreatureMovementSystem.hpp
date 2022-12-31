@@ -27,7 +27,7 @@ public:
 				forceComponent.force *= 0.9f;
 			}
 
-			if (!isColliding(collider, newPosition, gridMap, map)) {
+			if (!isColliding(collider, newPosition, gridMap, map) || isColliding(collider, position, gridMap, map)) {
 				position = newPosition;
 			} else if (!isColliding(collider, {newPosition.x, position.y}, gridMap, map)) {
 				position.x = newPosition.x;

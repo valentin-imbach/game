@@ -16,7 +16,6 @@ public:
 				for (int y = 0; y < size.y; y++) {
 					pair offset(x,y);
 					(*gridMap)[anker + offset] = entity;
-					LOG(entity, anker);
 				}
 			}
 			
