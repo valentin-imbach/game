@@ -24,7 +24,8 @@ HEART,
 ICONS_WHITE,
 ICONS_BLACK,
 STATIONS,
-MONSTER)
+MONSTER,
+PICKUPS)
 
 class Sprite {
 public:
@@ -54,4 +55,13 @@ private:
 	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
 	uint8_t depth = 0;
 	friend class CreatureAnimationSystem;
+};
+
+ENUM(ShaderId,
+SHAKE,
+BOUNCE)
+
+struct Shader {
+	ShaderId::value shaderId;
+	uint start;
 };

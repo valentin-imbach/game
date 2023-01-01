@@ -15,6 +15,7 @@ struct SpriteComponent {
 	SpriteStack spriteStack;
 	uint8_t height;
 	float scale = 1;
+	Shader shader = {ShaderId::NONE, 0};
 };
 
 struct CameraComponent {
@@ -103,6 +104,7 @@ struct ForceComponent {
 struct GridComponent {
 	pair anker;
 	pair size;
+	bool solid;
 };
 
 ENUM(InteractionId,
@@ -131,3 +133,5 @@ struct Textblock {
 struct NameComponent {
 	Textblock name;
 };
+
+struct GatherComponent {};

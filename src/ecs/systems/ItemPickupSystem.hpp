@@ -10,12 +10,14 @@ class ItemPickupSystem : public System {
 public:
 	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions) {
 		for (Entity entity : entities) {
-			Inventory& inventory = ecs->getComponent<InventoryComponent>(entity).inventory;
+			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
+			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
+
 			for (Entity other : collisions[entity]) {
 				if (ecs->hasComponent<ItemComponent>(other)) {
-					if (!inventory.add(other)) {
-						ecs->removeComponent<PositionComponent>(other);
-					}
+					Entity rest = playerComponent.hotbar.add(other);
+					rest = inventoryComponent.inventory.add(rest);
+					if (!rest) ecs->removeComponent<PositionComponent>(other);
 				}
 			}
 		}

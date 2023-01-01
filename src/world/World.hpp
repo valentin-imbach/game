@@ -52,6 +52,7 @@ private:
 	GridSystem* gridSystem;
 	InteractionSystem* interactionSystem;
 	MonsterAiSystem* monsterAiSystem;
+	GatherSystem* gatherSystem;
 
 	GuiManager guiManager;
 

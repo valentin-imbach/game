@@ -18,3 +18,4 @@
 #include "GridSystem.hpp"
 #include "InteractionSystem.hpp"
 #include "MonsterAiSystem.hpp"
+#include "GatherSystem.hpp"

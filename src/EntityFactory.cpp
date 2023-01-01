@@ -33,24 +33,27 @@ Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
 	return camera;
 }
 
+bool EntityFactory::free(pair position, pair size) {
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			pair offset(x,y);
+			if ((*gridMap)[position + offset]) return false;
+		}
+	}
+	return true;
+}
+
 Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
-	
 	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
-	if ((*gridMap)[position]) return 0;
-	
 	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
+	if (!free(position, resourceTemplate->size)) return 0;
 
 	Entity resource = ecs->createEntity();
 	if (!resource) return 0;
+
 	ecs->addComponent<PositionComponent>({position}, resource);
-	ecs->addComponent<GridComponent>({position, resourceTemplate->size}, resource);
-	for (int x = 0; x < resourceTemplate->size.x; x++) {
-		for (int y = 0; y < resourceTemplate->size.y; y++) {
-			pair offset(x,y);
-			(*gridMap)[position + offset] = resource;
-		}
-	}
-	
+	ecs->addComponent<GridComponent>({position, resourceTemplate->size, true}, resource);
+
 	SpriteStack spriteStack;
 	pair spritePosition(resourceTemplate->position.x, resourceTemplate->position.y - resourceTemplate->height);
 	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
@@ -60,6 +63,14 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	ecs->addComponent<ResourceComponent>({resourceTemplate->toolId}, resource);
 	ecs->addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	ecs->addComponent<HealthComponent>({5, 5}, resource);
+
+	for (int x = 0; x < resourceTemplate->size.x; x++) {
+		for (int y = 0; y < resourceTemplate->size.y; y++) {
+			pair offset(x,y);
+			(*gridMap)[position + offset] = resource;
+		}
+	}
+	
 	return resource;
 }
 
@@ -87,7 +98,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	ecs->addComponent<ColliderComponent>({collider}, item);
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
-	ecs->addComponent<SpriteComponent>({spriteStack, 0, 0.5f}, item);
+	ecs->addComponent<SpriteComponent>({spriteStack, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, item);
 	ItemComponent itemComponent = {itemId, count};
 	// if (itemId && ItemTemplate::templates[itemId]) {
 	// 	ItemTemplate* temp = ItemTemplate::templates[itemId].get();

@@ -5,8 +5,8 @@
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
 
-#define INV_WIDTH 10
-#define INV_HEIGHT 10
+#define INV_WIDTH 7
+#define INV_HEIGHT 5
 
 struct ItemContainer {
 	Entity item = 0;
@@ -22,7 +22,7 @@ public:
 	pair size;
 	Inventory(pair size = {0, 0});
 	
-	ItemContainer itemContainers[10][10];
+	ItemContainer itemContainers[INV_WIDTH][INV_HEIGHT];
 
 	[[nodiscard]] Entity add(Entity item);
 

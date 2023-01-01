@@ -50,7 +50,10 @@ private:
 	}
 
 	bool isFree(GridMap& gridMap, Map& map, pair position) {
-		if (gridMap.find(position) != gridMap.end()) return false;
+		if (gridMap[position]) {
+			GridComponent& gridComponent = ecs->getComponent<GridComponent>(gridMap[position]);
+			if (gridComponent.solid) return false;
+		}
 		if (map.getTileId(position) == TileId::WATER) return false;
 		return true;
 	}

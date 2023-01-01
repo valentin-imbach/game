@@ -44,7 +44,7 @@ World::World(std::string name) : name(name) {
 	Entity axe = ecs.createEntity();
 	SpriteStack axeSprites;
 	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, {2, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f}, axe);
+	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, axe);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
 	Collider axeCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -55,7 +55,7 @@ World::World(std::string name) : name(name) {
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
 	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, {1, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f}, pick);
+	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, pick);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
 	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
 	Collider pickCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -66,7 +66,7 @@ World::World(std::string name) : name(name) {
 	Entity sword = ecs.createEntity();
 	SpriteStack swordSprites;
 	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, {0, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f}, sword);
+	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, sword);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
 	Collider swordCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -89,13 +89,25 @@ World::World(std::string name) : name(name) {
 	ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, monster);
 	ecs.addComponent<DirectionComponent>({Direction::EAST}, monster);
 	ecs.addComponent<MovementComponent>({1}, monster);
-	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100});
-	ecs.addComponent<SpriteComponent>({spriteStack, 1}, monster);
+	SpriteStack monsterSprites;
+	monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100});
+	ecs.addComponent<SpriteComponent>({monsterSprites, 1}, monster);
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs.addComponent<ColliderComponent>({collider}, monster);
 	ecs.addComponent<HealthComponent>({20, 20}, monster);
 	ecs.addComponent<MonsterAiComponent>({}, monster);
+
+	Entity stick = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({{6, 8}}, stick);
+	SpriteStack stickSprites;
+	stickSprites.addSprite({SpriteSheet::PICKUPS, {0, 0}, {1, 1}});
+	ecs.addComponent<SpriteComponent>({stickSprites, 0}, stick);
+	ecs.addComponent<GridComponent>({{6, 8}, {1, 1}, false}, stick);
+	ecs.addComponent<HealthComponent>({1, 1}, stick);
+	ecs.addComponent<ResourceComponent>({ToolId::NONE}, stick);
+	LootTable lootTable;
+	lootTable.addLoot({ItemId::SPRUCE_STICK, {1, 2}});
+	ecs.addComponent<LootComponent>({lootTable}, stick);
 
 	generate();
 }
@@ -171,6 +183,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<InteractionComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
+	ecs.rosterComponent<GatherComponent>(ComponentId::GATHER);
 
 	LOG("Components rostered");
 }
@@ -182,7 +195,7 @@ void World::rosterSystems() {
 	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION, {ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION, {ComponentId::COLLIDER, ComponentId::POSITION});
-	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP, {ComponentId::COLLIDER, ComponentId::INVENTORY});
+	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP, {ComponentId::PLAYER, ComponentId::INVENTORY});
 	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE, {ComponentId::CAMERA, ComponentId::POSITION});
 	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI, {ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
 	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE, {ComponentId::RESOURCE, ComponentId::POSITION, ComponentId::HEALTH});
@@ -194,6 +207,7 @@ void World::rosterSystems() {
 	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID, {ComponentId::GRID});
 	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION, {ComponentId::INTERACTION});
 	monsterAiSystem = ecs.rosterSystem<MonsterAiSystem>(SystemId::MONSTER_AI, {ComponentId::CREATURE_STATE, ComponentId::MONSTER_AI, ComponentId::DIRECTION});
+	gatherSystem = ecs.rosterSystem<GatherSystem>(SystemId::GATHER, {ComponentId::GATHER, ComponentId::POSITION, ComponentId::LOOT});
 
 	LOG("Systems rostered")
 }
@@ -252,18 +266,17 @@ std::unique_ptr<GuiElement> World::makeInventory() {
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
 	std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, &playerComponent.hotbar));
 	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
+	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, &playerComponent.hotbar));
 	return gui;
 }
 
 void World::handleEvents() {
 	if (!player) return;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
-	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
 	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
 	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-	ItemContainer& activeItemContainer = inventoryComponent.inventory.itemContainers[playerComponent.activeSlot][0];
+	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
 
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
@@ -290,6 +303,7 @@ void World::handleEvents() {
 
 		if (event.id == InputEventId::PRIMARY) {
 			forageSystem->update(position, activeItemContainer.item);
+			gatherSystem->update(player, position);
 			damageSystem->update(player, position, activeItemContainer.item);
 		} else if (event.id == InputEventId::SECONDARY) {
 			std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
