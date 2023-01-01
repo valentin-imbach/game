@@ -16,6 +16,7 @@ struct ItemContainer {
 	void clear(bool destroy = false);
 };
 
+
 class Inventory {
 public:
 	pair size;
