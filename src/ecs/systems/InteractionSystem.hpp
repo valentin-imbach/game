@@ -18,7 +18,7 @@ public:
 					InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
 					Sprite sprite = Sprite(SpriteSheet::CHEST, {0, 0}, {10, 10});
 					std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-					gui->addGuiElement(std::make_unique<InventoryGui>(&inventoryComponent.inventory, 20));
+					gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20));
 					return gui;
 				}
 			}

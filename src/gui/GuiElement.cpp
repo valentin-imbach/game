@@ -79,7 +79,7 @@ bool Widget::handleEvent(InputEvent event) {
 
 //* ItemSlot
 
-ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer) : GuiElement(position, {18, 18}), itemContainer(itemContainer) {
+ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link) : GuiElement(position, {18, 18}), itemContainer(itemContainer), link(link) {
 	sprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
 }
 
@@ -96,6 +96,10 @@ void ItemSlot::draw() {
 bool ItemSlot::handleEvent(InputEvent event) {
 	ItemContainer& mouseItemContainer = guiManager->mouseItemContainer;
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
+		if (guiManager->world->inputState[InputStateId::ALTER] && link) {
+			itemContainer.item = link->add(itemContainer.item);
+			return true;
+		}
 		if (!itemContainer.item || !mouseItemContainer.item) {
 			std::swap(mouseItemContainer.item, itemContainer.item);
 			return true;
@@ -133,11 +137,10 @@ void HotbarGui::update() {
 }
 
 void HotbarGui::draw() {
-	if (guiManager->active()) return;
-	if (!player) return;
+	if (guiManager->active() || !player) return;
 	sprite.draw(screenPosition, GUI_SCALE, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-	Inventory& inventory = guiManager->ecs->getComponent<InventoryComponent>(player).inventory;
+	Inventory& inventory = guiManager->ecs->getComponent<PlayerComponent>(player).hotbar;
 	uint activeSlot = guiManager->ecs->getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GUI_SCALE;
 	for (int x = 0; x < inventory.size.x; x++) {
@@ -178,11 +181,11 @@ void HealthBarGui::draw() {
 
 //* InventoryGui
 
-InventoryGui::InventoryGui(Inventory* inventory, int spacing) : Widget({}, spacing * inventory->size, Sprite()), inventory(inventory), spacing(spacing) {
+InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link) : Widget(position, spacing * inventory->size, Sprite()), inventory(inventory), spacing(spacing), link(link) {
 	for (int x = 0; x < inventory->size.x; x++) {
 		for (int y = 0; y < inventory->size.y; y++) {
 			pair position(spacing * x - spacing * (inventory->size.x - 1) / 2, spacing * y - spacing * (inventory->size.y - 1) / 2);
-			addGuiElement(std::make_unique<ItemSlot>(position, inventory->itemContainers[x][y]));
+			addGuiElement(std::make_unique<ItemSlot>(position, inventory->itemContainers[x][y], link));
 		}
 	}
 }

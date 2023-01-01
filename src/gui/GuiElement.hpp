@@ -52,10 +52,11 @@ class ECS;
 
 class ItemSlot : public GuiElement {
 public:
-	ItemSlot(pair position, ItemContainer& itemContainer);
+	ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link = nullptr);
 	~ItemSlot() override = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
+	Inventory* link;
 
 private:
 	Sprite sprite;
@@ -91,8 +92,9 @@ private:
 
 class InventoryGui : public Widget {
 public:
-	InventoryGui(Inventory* inventory, int spacing);
+	InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link = nullptr);
 	~InventoryGui() override = default;
+	Inventory* link;
 private:
 	Inventory* inventory;
 	int spacing;

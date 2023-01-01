@@ -20,9 +20,9 @@ Entity EntityFactory::createPlayer(vec position) {
 	ecs->addComponent<SpriteComponent>({spriteStack, 1}, player);
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs->addComponent<ColliderComponent>({collider}, player);
-	ecs->addComponent<InventoryComponent>({Inventory({7, 6})}, player);
+	ecs->addComponent<InventoryComponent>({Inventory({7, 5})}, player);
 	ecs->addComponent<HealthComponent>({20, 20}, player);
-	ecs->addComponent<PlayerComponent>({0}, player);
+	ecs->addComponent<PlayerComponent>({Inventory({7, 1}), 0}, player);
 	return player;
 }
 

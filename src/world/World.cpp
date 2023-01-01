@@ -249,26 +249,12 @@ void World::update(uint dt) {
 std::unique_ptr<GuiElement> World::makeInventory() {
 	if (!player) return nullptr;
 	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
-
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
-
-	std::unique_ptr<Widget> inventoryGui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-
-	int spacing = 20;
-	Inventory& inventory = inventoryComponent.inventory;
-
-	for (int x = 0; x < inventory.size.x; x++) {
-		pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, -3 * spacing};
-		inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][0]));
-	}
-
-	for (int y = 1; y < inventory.size.y; y++) {
-		for (int x = 0; x < inventory.size.x; x++) {
-			pair position = {spacing * x - spacing * (inventory.size.x - 1) / 2, spacing * (y - 2)};
-			inventoryGui->addGuiElement(std::make_unique<ItemSlot>(position, inventory.itemContainers[x][y]));
-		}
-	}
-	return inventoryGui;
+	std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, &playerComponent.hotbar));
+	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
+	return gui;
 }
 
 void World::handleEvents() {
