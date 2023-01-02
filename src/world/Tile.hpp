@@ -12,8 +12,8 @@ WATER)
 
 class Tile {
 public:
-	Tile(TileId::value tileId, SpriteStack spriteStack);
+	Tile(TileId::value tileId);
 	TileId::value tileId;
-	SpriteStack spriteStack;
+	std::vector<std::pair<TileId::value, Sprite>> sprites;
 	static std::array<SpriteSheet::value, TileId::count> spriteSheets;
 };

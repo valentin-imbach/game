@@ -13,7 +13,7 @@
 
 #include "ItemTemplates.hpp"
 
-World::World(std::string name) : name(name) {
+World::World(std::string name) : name(name), map(123) {
 	rosterComponents();
 	rosterSystems();
 
@@ -79,7 +79,7 @@ World::World(std::string name) : name(name) {
 	chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}));
 	ecs.addComponent<SpriteComponent>({chestSprites, 1}, chest);
 	ecs.addComponent<PositionComponent>({{9, 9}}, chest);
-	ecs.addComponent<GridComponent>({{9, 9}, {1, 1}}, chest);
+	ecs.addComponent<GridComponent>({{9, 9}, {1, 1}, true}, chest);
 	ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
 	ecs.addComponent<InteractionComponent>({InteractionId::CHEST}, chest);
 	gridMap[{9, 9}] = chest;
@@ -112,7 +112,7 @@ World::World(std::string name) : name(name) {
 	generate();
 }
 
-World::World(std::fstream& stream) : ecs(stream) {
+World::World(std::fstream& stream) : ecs(stream), map(123) {
 	rosterComponents();
 	rosterSystems();
 	ecs.deserialiseComponents(stream);

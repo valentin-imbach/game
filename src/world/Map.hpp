@@ -6,12 +6,38 @@
 constexpr int MAP_WIDTH = 50;
 constexpr int MAP_HEIGHT = 50;
 
+ENUM(Biome,
+OCEAN,
+DESERT,
+TUNDRA,
+TAIGA,
+SWAMP,
+GRASSLAND,
+FOREST,
+SAVANNA,
+RAINFOREST,
+MOUNTAIN)
+
 class Map {
 public:
-	Map();
+	Map(uint seed);
+
+	Biome::value getBiome(pair position);
+	int getTemperature(pair position);
+	int getPrecipitation(pair position);
+	int getElevation(pair position);
+	int getVegetation(pair position);
+	int getVariation(pair position);
+
+	void generate();
+
 	void updateStyle(pair position, bool propagate = false);
 	std::unique_ptr<Tile> tiles[MAP_WIDTH][MAP_HEIGHT];
 	TileId::value getTileId(pair position);
+
+	void analyse(int samples);
+
 private:
+	uint mapSeed;
 	uint seed;
 };

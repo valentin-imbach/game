@@ -2,28 +2,106 @@
 #include "Map.hpp"
 #include "utils.hpp"
 
-Map::Map() {
-	seed = 0;
+Map::Map(uint seed) : mapSeed(seed) {
+	generate();
+	analyse(100000);
+}
+
+int Map::getTemperature(pair position) {
+	return 10 + perlin(mapSeed + 234667, vec(position) / 200) * 120;
+}
+
+int Map::getPrecipitation(pair position) {
+	return std::max(0, 130 + int(perlin(mapSeed + 372342, vec(position) / 100) * 800));
+}
+
+int Map::getElevation(pair position) {
+	return 500 + perlin(mapSeed + 267443, vec(position) / 50) * 3000;
+}
+
+int Map::getVegetation(pair position) {
+	return std::min(std::max(0, 50 + int(perlin(mapSeed + 934328, vec(position) / 30) * 200)), 100);
+}
+
+int Map::getVariation(pair position) {
+	return std::min(std::max(0, 50 + int(perlin(mapSeed + 825934, vec(position) / 10) * 200)), 100);
+}
+
+Biome::value Map::getBiome(pair position) {
+	int temperature = getTemperature(position);
+	int precipitation = getPrecipitation(position);
+	int elevation = getElevation(position);
+	int vegetation = getVegetation(position);
+
+	if (elevation <= 0) return Biome::OCEAN;
+	if (elevation >= 1000) return Biome::MOUNTAIN;
+
+	if (temperature < -5) return Biome::TUNDRA;
+	if (temperature < 0) return Biome::TAIGA;
+
+	if (temperature < 10) {
+		if (precipitation < 40) return Biome::DESERT;
+		if (precipitation < 120) return Biome::GRASSLAND;
+		if (precipitation < 200) return Biome::FOREST;
+	}
+
+	if (temperature < 20) {
+		if (precipitation < 60) return Biome::DESERT;
+		if (precipitation < 140) return Biome::SAVANNA;
+		if (precipitation < 200) return Biome::FOREST;
+		return Biome::SWAMP;
+	}
+
+	if (precipitation < 70) return Biome::DESERT;
+	if (precipitation < 150) return Biome::SAVANNA;
+	if (precipitation < 250) return Biome::FOREST;
+	return Biome::RAINFOREST;
+}
+
+void Map::generate() {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position(x, y);
+			Biome::value biome = getBiome(position);
+			int variation = getVariation(position);
 
-			int height = perlin(seed, vec(position) / 30) * 200;
+			TileId::value tileId = TileId::GRASS;
 
-			TileId::value tileId = TileId::NONE;
-			if (height < -20) {
+			if (biome == Biome::OCEAN) {
 				tileId = TileId::WATER;
-			} else if (height < 0) {
-				tileId = TileId::SAND;
-			} else if (height < 10) {
-				tileId = TileId::ROCK;
-			} else if (height < 20) {
-				tileId = TileId::DIRT;
-			} else {
-				tileId = TileId::GRASS;
+			} else if (biome == Biome::DESERT) {
+				if (variation < 30) tileId = TileId::ROCK;
+				else tileId = TileId::SAND;
+			} else if (biome == Biome::TUNDRA) {
+				if (variation < 30) tileId = TileId::ROCK;
+				else if (variation > 70) tileId = TileId::DIRT;
+				else tileId = TileId::GRASS;
+			} else if (biome == Biome::TAIGA) {
+				if (variation < 20) tileId = TileId::ROCK;
+				else if (variation > 80) tileId = TileId::DIRT;
+				else tileId = TileId::GRASS;
+			} else if (biome == Biome::SWAMP) {
+				if (variation < 30) tileId = TileId::WATER;
+				else if (variation > 70) tileId = TileId::GRASS;
+				else tileId = TileId::DIRT;
+			} else if (biome == Biome::GRASSLAND) {
+				if (variation < 30) tileId = TileId::DIRT;
+				else tileId = TileId::GRASS;
+			} else if (biome == Biome::FOREST) {
+				if (variation < 30) tileId = TileId::DIRT;
+				else tileId = TileId::GRASS;
+			} else if (biome == Biome::SAVANNA) {
+				if (variation < 40) tileId = TileId::DIRT;
+				else tileId = TileId::GRASS;
+			} else if (biome == Biome::RAINFOREST) {
+				if (variation < 30) tileId = TileId::WATER;
+				else tileId = TileId::GRASS;
+			} else if (biome == Biome::MOUNTAIN) {
+				if (variation < 30) tileId = TileId::GRASS;
+				else tileId = TileId::ROCK;
 			}
 
-			tiles[x][y] = std::make_unique<Tile>(tileId, SpriteStack());
+			tiles[x][y] = std::make_unique<Tile>(tileId);
 		}
 	}
 
@@ -42,12 +120,12 @@ TileId::value Map::getTileId(pair position) {
 }
 
 void Map::updateStyle(pair position, bool propagate) {
-	SpriteStack& spriteStack = tiles[position.x][position.y]->spriteStack;
-	spriteStack.clear();
+	std::vector<std::pair<TileId::value, Sprite>>& sprites = tiles[position.x][position.y]->sprites;
+	sprites.clear();
 	TileId::value tileId = getTileId(position);
 	pair baseVariant = rand_choice<pair>(seed++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
 	Sprite baseSprite = Sprite(Tile::spriteSheets[int(tileId)], baseVariant);
-	spriteStack.addSprite(baseSprite);
+	sprites.emplace_back(tileId, baseSprite);
 
 	for (int d = 0; d < 8; d += 2) {
 		TileId::value id = getTileId(position + taxiSteps[d]);
@@ -59,13 +137,15 @@ void Map::updateStyle(pair position, bool propagate) {
 		// Straights
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-			spriteStack.addSprite(Sprite(Tile::spriteSheets[int(id)], rand_choice<pair>(seed++, variants[d / 2])));
+			Sprite sprite = Sprite(Tile::spriteSheets[int(id)], rand_choice<pair>(seed++, variants[d / 2]));
+			sprites.emplace_back(id, sprite);
 		}
 
 		// Us
 		if (left == id && right == id && opposite != id) {
 			pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
-			spriteStack.addSprite(Sprite(Tile::spriteSheets[int(id)], variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[int(id)], variants[d / 2]);
+			sprites.emplace_back(id, sprite);
 		}
 	}
 
@@ -78,15 +158,19 @@ void Map::updateStyle(pair position, bool propagate) {
 		TileId::value right2 = getTileId(position + taxiSteps[(d + 5) % 8]);
 
 		// Curves
+		TileId::value curve = TileId::MAX;
 		if (left < tileId && left == right && left2 != left && right2 != right) {
 			pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
-			spriteStack.addSprite(Sprite(Tile::spriteSheets[int(left)], variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[int(left)], variants[d / 2]);
+			sprites.emplace_back(left, sprite);
+			curve = left;
 		}
 
 		// Corners
-		if (id < tileId && left != id && right != id) {
+		if (id < tileId && left != id && right != id && id < curve) {
 			pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
-			spriteStack.addSprite(Sprite(Tile::spriteSheets[int(id)], variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[int(id)], variants[d / 2]);
+			sprites.emplace_back(id, sprite);
 		}
 	}
 
@@ -96,12 +180,34 @@ void Map::updateStyle(pair position, bool propagate) {
 	TileId::value id3 = getTileId(position + taxiSteps[4]);
 	TileId::value id4 = getTileId(position + taxiSteps[6]);
 	if (id1 < tileId && id1 != TileId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
-		spriteStack.addSprite(Sprite(Tile::spriteSheets[int(id1)], {4, 4}));
+		Sprite sprite = Sprite(Tile::spriteSheets[int(id1)], {4, 4});
+		sprites.emplace_back(id1, sprite);
 	}
+
+	auto lambda = [](const std::pair<TileId::value, Sprite> left, const std::pair<TileId::value, Sprite> right) {
+		return left.first > right.first;
+	};
+
+	std::sort(sprites.begin(), sprites.end(), lambda);
 
 	if (propagate) {
 		for (pair step : taxiSteps) {
 			updateStyle(position + step);
 		}
+	}
+}
+
+void Map::analyse(int samples) {
+	uint count[Biome::count] = {};
+	uint total = 0;
+	for (int i = 0; i < samples; i++) {
+		int x = rand_int(seed++, -10000, 10000);
+		int y = rand_int(seed++, -10000, 10000);
+		count[getBiome({x, y})] += 1;
+		total += 1;
+	}
+	for (int b = 1; b < Biome::count; b++) {
+		int percent = round((100.0f * count[b]) / total);
+		LOG(Biome::strings[b], std::to_string(percent) + "%");
 	}
 }

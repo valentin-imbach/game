@@ -51,7 +51,7 @@ GATHER)
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;
 using GridMap = std::unordered_map<pair, Entity>;
-constexpr Entity MAX_ENTITIES = 500;
+constexpr Entity MAX_ENTITIES = 1000;
 
 using Collisions = std::unordered_map<Entity,std::vector<Entity>>;
 using gridMap = std::unordered_map<pair, Entity>;
