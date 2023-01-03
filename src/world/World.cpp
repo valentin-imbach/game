@@ -139,7 +139,7 @@ void World::generate() {
 	uint seed = 456;
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
-			pair position = {x, y};
+			pair position(x, y);
 			TileId::value tileId = map.getTileId(position);
 			if (tileId == TileId::WATER) continue;
 			if (tileId == TileId::GRASS) {
@@ -152,9 +152,12 @@ void World::generate() {
 					continue;
 				}
 			}
-			if (bernoulli(seed++, 0.05f)) {
-				int type = rand_int(seed++, 1, 6);
-				EntityFactory::createResource(ResourceId::from_int(type), position);
+			if (tileId == TileId::ROCK) {
+				if (bernoulli(seed++, 0.05f)) {
+					int type = rand_int(seed++, 1, 6);
+					EntityFactory::createResource(ResourceId::from_int(type), position);
+					continue;
+				}
 			}
 		}
 	}
@@ -271,6 +274,25 @@ std::unique_ptr<GuiElement> World::makeInventory() {
 	return gui;
 }
 
+std::unique_ptr<GuiElement> World::makeMenu() {
+	if (!player) return nullptr;
+	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+	Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
+
+	std::unique_ptr<TabWidget> gui = std::make_unique<TabWidget>(pair(0, 0), pair(150, 150));
+	std::unique_ptr<Widget> tab1 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+	std::unique_ptr<Widget> tab2 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+	tab1->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 10), &playerComponent.equipment, 20, &inventoryComponent.inventory));
+
+	gui->addTab(std::move(tab1));
+	gui->addTab(std::move(tab2));
+
+	// gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
+	// gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, &playerComponent.hotbar));
+	return gui;
+}
+
 void World::handleEvents() {
 	if (!player) return;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
@@ -281,7 +303,7 @@ void World::handleEvents() {
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
 		if (event.id == InputEventId::INVENTORY) {
-			guiManager.open(makeInventory());
+			guiManager.open(makeInventory(), makeMenu());
 		} else if (event.id == InputEventId::THROW) {
 			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing - 1];
 			ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);

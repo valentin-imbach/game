@@ -14,19 +14,20 @@
 
 //* GuiElement
 
+uint GuiManager::scale = 3;
 GuiElement::GuiElement(pair position, pair size, Direction::value alignment) : position(position), size(size), alignment(alignment) {}
 
 void GuiElement::reposition(GuiElement* parent) {
-	screenSize = GUI_SCALE * size;
+	screenSize = GuiManager::scale * size;
 	if (parent) {
-		screenPosition = parent->screenPosition + GUI_SCALE * position;
+		screenPosition = parent->screenPosition + GuiManager::scale * position;
 		if (alignment != Direction::NONE) {
 			pair step = taxiSteps[int(alignment) - 1];
 			screenPosition.x += parent->screenSize.x * step.x / 2;
 			screenPosition.y += parent->screenSize.y * step.y / 2;
 		}
 	} else {
-		screenPosition = Window::instance->size / 2 + GUI_SCALE * position;
+		screenPosition = Window::instance->size / 2 + GuiManager::scale * position;
 		if (alignment != Direction::NONE) {
 			pair step = taxiSteps[int(alignment) - 1];
 			screenPosition.x += Window::instance->size.x * step.x / 2;
@@ -50,20 +51,19 @@ Widget::Widget(pair position, pair size, Sprite sprite) : GuiElement(position, s
 }
 
 void Widget::addGuiElement(std::unique_ptr<GuiElement> guiElement) {
-	guiElement->guiManager = guiManager;
 	children.push_back(std::move(guiElement));
 }
 
-void Widget::update() {
+void Widget::update(GuiManager* manager) {
+	guiManager = manager;
 	for (auto& guiElement : children) {
-		guiElement->guiManager = guiManager;
 		guiElement->reposition(this);
-		guiElement->update();
+		guiElement->update(guiManager);
 	}
 }
 
 void Widget::draw() {
-	sprite.draw(screenPosition, GUI_SCALE);
+	sprite.draw(screenPosition, GuiManager::scale);
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->draw();
 	}
@@ -77,6 +77,64 @@ bool Widget::handleEvent(InputEvent event) {
 	return false;
 }
 
+//* Tab
+
+Tab::Tab(TabWidget* parent, uint index) : GuiElement({25 + 40 * index, 11}, {24, 24}, Direction::NORTH_WEST), parent(parent), index(index) {}
+
+bool Tab::handleEvent(InputEvent event) {
+	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
+		parent->selectTab(index);
+	}
+	return false;
+}
+
+void Tab::draw() {
+	bool selected = parent->selected == index;
+	Sprite sprite = Sprite(SpriteSheet::TAB, {2 * selected, 0}, {2, 2});
+	sprite.draw(screenPosition, GuiManager::scale);
+	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+}
+
+//* TabWidget
+
+TabWidget::TabWidget(pair position, pair size) : Widget(position, size, Sprite()) {}
+
+void TabWidget::draw() {
+	tabs[selected]->draw();
+	for (int i = children.size() - 1; i >= 0; i--) {
+		children[i]->draw();
+	}
+	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+}
+
+void TabWidget::addTab(std::unique_ptr<GuiElement> guiElement) {
+	uint index = tabs.size();
+	tabs.push_back(std::move(guiElement));
+	pair position(index * 50, 0);
+	addGuiElement(std::make_unique<Tab>(this, index));
+}
+
+void TabWidget::selectTab(uint sel) {
+	if (selected < tabs.size()) selected = sel;
+}
+
+void TabWidget::update(GuiManager* manager) {
+	guiManager = manager;
+	for (auto& guiElement : children) {
+		guiElement->reposition(this);
+		guiElement->update(guiManager);
+	}
+	tabs[selected]->reposition(this);
+	tabs[selected]->update(guiManager);
+}
+
+bool TabWidget::handleEvent(InputEvent event) {
+	for (auto& guiElement : children) {
+		if (guiElement->handleEvent(event)) return true;
+	}
+	return tabs[selected]->handleEvent(event);
+}
+
 //* ItemSlot
 
 ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link) : GuiElement(position, {18, 18}), itemContainer(itemContainer), link(link) {
@@ -84,9 +142,9 @@ ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link)
 }
 
 void ItemSlot::draw() {
-	sprite.draw(screenPosition, GUI_SCALE, true);
+	sprite.draw(screenPosition, GuiManager::scale, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-	itemContainer.draw(screenPosition, GUI_SCALE);
+	itemContainer.draw(screenPosition, GuiManager::scale);
 	if (inside(guiManager->mousePosition)) {
 		pair infoPosition = {screenPosition.x + 35, screenPosition.y - 30};
 		itemContainer.drawInfo(infoPosition, guiManager->world->inputState[InputStateId::ALTER]);
@@ -132,25 +190,26 @@ HotbarGui::HotbarGui(Entity player) : GuiElement({0, 20}, {150, 30}, Direction::
 	activeSlotSprite = Sprite(SpriteSheet::SLOT, {2, 0}, {2, 2});
 }
 
-void HotbarGui::update() {
+void HotbarGui::update(GuiManager* manager) {
+	guiManager = manager;
 	player = guiManager->world->player;
 }
 
 void HotbarGui::draw() {
 	if (guiManager->active() || !player) return;
-	sprite.draw(screenPosition, GUI_SCALE, true);
+	sprite.draw(screenPosition, GuiManager::scale, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	Inventory& inventory = guiManager->ecs->getComponent<PlayerComponent>(player).hotbar;
 	uint activeSlot = guiManager->ecs->getComponent<PlayerComponent>(player).activeSlot;
-	int spacing = 20 * GUI_SCALE;
+	int spacing = 20 * GuiManager::scale;
 	for (int x = 0; x < inventory.size.x; x++) {
 		pair offset = {spacing * x - spacing * (inventory.size.x - 1) / 2, 0};
 		if (x == activeSlot) {
-			activeSlotSprite.draw(screenPosition + offset, GUI_SCALE, true);
+			activeSlotSprite.draw(screenPosition + offset, GuiManager::scale, true);
 		} else {
-			slotSprite.draw(screenPosition + offset, GUI_SCALE, true);
+			slotSprite.draw(screenPosition + offset, GuiManager::scale, true);
 		}
-		inventory.itemContainers[x][0].draw(screenPosition + offset, GUI_SCALE);
+		inventory.itemContainers[x][0].draw(screenPosition + offset, GuiManager::scale);
 	}
 }
 
@@ -161,21 +220,22 @@ HealthBarGui::HealthBarGui(Entity player) : GuiElement({-90, 20}, {}, Direction:
 	halfHeartSprite = Sprite(SpriteSheet::HEART, {1, 0}, {1, 1});
 }
 
-void HealthBarGui::update() {
+void HealthBarGui::update(GuiManager* manager) {
+	guiManager = manager;
 	player = guiManager->world->player;
 }
 
 void HealthBarGui::draw() {
 	if (!player) return;
 	HealthComponent& healthComponent = guiManager->ecs->getComponent<HealthComponent>(player);
-	int spacing = 9 * GUI_SCALE;
+	int spacing = 9 * GuiManager::scale;
 	for (int x = 0; x < healthComponent.health / 2; x++) {
 		pair offset = {x * spacing, 0};
-		heartSprite.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+		heartSprite.draw(screenPosition + offset, GuiManager::scale, guiManager->ecs);
 	}
 	if (healthComponent.health % 2) {
 		pair offset = {healthComponent.health / 2 * spacing, 0};
-		halfHeartSprite.draw(screenPosition + offset, GUI_SCALE, guiManager->ecs);
+		halfHeartSprite.draw(screenPosition + offset, GuiManager::scale, guiManager->ecs);
 	}
 }
 

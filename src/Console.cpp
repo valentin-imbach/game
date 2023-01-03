@@ -66,12 +66,17 @@ bool Console::execute(std::string input) {
 	if (!game -> world) return false;
 	ECS& ecs = game->world->ecs;
 	Entity player = game->world->player;
+	Entity camera = game->world->camera;
 	std::vector<std::string> inputs = string_split(input);
 
 	if (inputs[0] == "clear") {
 		history.clear();
 	} else if (inputs[0] == "refresh") {
-		//TextureManager::Init();
+		Sprite::loadSpriteSheets();
+		ItemPropertyTemplate::setTemplates();
+		ItemKindTemplate::setTemplates();
+		ItemTemplate::setTemplates();
+		ResourceTemplate::setTemplates();
 	} else if (inputs[0] == "kill") {
 		if (!player) return false;
 		ecs.getComponent<HealthComponent>(player).health = 0;
@@ -125,6 +130,14 @@ bool Console::execute(std::string input) {
 		// if (split.size() != 2) return false;
 		// WeatherType w = WeatherTypeFromString(split[1]);
 		// MessageManager::notify(SetWeatherMessage(w));
+	} else if (inputs[0] == "zoom") {
+		if (inputs.size() != 2 || !camera) return false;
+		int zoom = std::stoi(inputs[1]);
+		ecs.getComponent<CameraComponent>(camera).zoom = zoom;
+	} else if (inputs[0] == "gui") {
+		if (inputs.size() != 2) return false;
+		uint scale = std::stoi(inputs[1]);
+		GuiManager::scale = scale;
 	} else if (inputs[0] == "tools") {
 		// vup(Item) tools = LootTable::tools();
 		// for (unsigned int i = 0; i < tools.size(); i++) MessageManager::notify(GiveMessage(std::move(tools[i])));

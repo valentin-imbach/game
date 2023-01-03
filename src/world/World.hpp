@@ -32,6 +32,7 @@ private:
 	void generate();
 
 	std::unique_ptr<GuiElement> makeInventory();
+	std::unique_ptr<GuiElement> makeMenu();
 
 	ECS ecs;
 	EntityDrawSystem* entityDrawSystem;

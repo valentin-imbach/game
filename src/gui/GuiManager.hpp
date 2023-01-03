@@ -15,13 +15,13 @@ class GuiManager {
 public:
 	void update() {
 		for (auto& guiElement : guiElements) guiElement->reposition();
-		for (auto& guiElement : guiElements) guiElement->update();
+		for (auto& guiElement : guiElements) guiElement->update(this);
 		if (!primary) return;
 		primary->reposition();
-		primary->update();
+		primary->update(this);
 		if (!secondary) return;
 		secondary->reposition();
-		secondary->update();
+		secondary->update(this);
 	}
 
 	void draw() {
@@ -29,7 +29,7 @@ public:
 		if (!primary) return;
 		if (secondary) secondary->draw();
 		primary->draw();
-		mouseItemContainer.draw(mousePosition, GUI_SCALE);
+		mouseItemContainer.draw(mousePosition, GuiManager::scale);
 	}
 
 	bool handleEvent(InputEvent event) {
@@ -52,11 +52,9 @@ public:
 		primary = std::move(a);
 		secondary = std::move(b);
 		if (!primary) return;
-		primary->guiManager = this;
 		primary->position.y = 0;
 		primary->alignment = Direction::NONE;
 		if (secondary) {
-			secondary->guiManager = this;
 			secondary->position.y = 0;
 			secondary->alignment = Direction::NONE;
 
@@ -77,7 +75,6 @@ public:
 	}
 
 	void add(std::unique_ptr<GuiElement> guiElement) {
-		guiElement->guiManager = this;
 		guiElements.push_back(std::move(guiElement));
 	}
 
@@ -85,6 +82,8 @@ public:
 	World* world;
 	pair mousePosition;
 	ItemContainer mouseItemContainer;
+
+	static uint scale;
 
 private:
 	std::unique_ptr<GuiElement> primary;

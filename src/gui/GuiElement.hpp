@@ -9,7 +9,6 @@
 
 class GuiManager;
 
-#define GUI_SCALE 3
 #define GUI_BOX true
 
 class GuiElement {
@@ -17,7 +16,7 @@ public:
 	GuiElement(pair position, pair size, Direction::value alignment = Direction::NONE);
 	virtual ~GuiElement() = default;
 	void reposition(GuiElement* parent = nullptr);
-	virtual void update() {};
+	virtual void update(GuiManager* manager) { guiManager = manager; };
 	virtual void draw() = 0;
 	virtual bool handleEvent(InputEvent event);
 
@@ -38,7 +37,7 @@ class Widget : public GuiElement {
 public:
 	Widget(pair position, pair size, Sprite sprite);
 	~Widget() override = default;
-	void update() override;
+	void update(GuiManager* manager) override;
 	void draw() override;
 	void addGuiElement(std::unique_ptr<GuiElement> guiElement);
 	bool handleEvent(InputEvent event) override;
@@ -46,6 +45,35 @@ public:
 protected:
 	Sprite sprite;
 	std::vector<std::unique_ptr<GuiElement>> children;
+};
+
+class TabWidget;
+
+class Tab : public GuiElement {
+public:
+	Tab(TabWidget* parent, uint index);
+	~Tab() override = default;
+	void draw() override;
+	bool handleEvent(InputEvent event) override;
+private:
+	TabWidget* parent;
+	uint index;
+};
+
+class TabWidget : public Widget {
+public:
+	TabWidget(pair position, pair size);
+	~TabWidget() override = default;
+	void draw() override;
+	void update(GuiManager* manager) override;
+	void addTab(std::unique_ptr<GuiElement> guiElement);
+	void selectTab(uint selected);
+	bool handleEvent(InputEvent event) override;
+
+private:
+	uint selected = 0;
+	std::vector<std::unique_ptr<GuiElement>> tabs;
+	friend class Tab;
 };
 
 class ECS;
@@ -67,7 +95,7 @@ class HotbarGui : public GuiElement {
 public:
 	HotbarGui(Entity player);
 	~HotbarGui() override = default;
-	void update() override;
+	void update(GuiManager* manager) override;
 	void draw() override;
 
 private:
@@ -81,7 +109,7 @@ class HealthBarGui : public GuiElement {
 public:
 	HealthBarGui(Entity player);
 	~HealthBarGui() override = default;
-	void update() override;
+	void update(GuiManager* manager) override;
 	void draw() override;
 
 private:

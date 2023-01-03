@@ -78,6 +78,7 @@ struct HealthComponent {
 
 struct PlayerComponent {
 	Inventory hotbar;
+	Inventory equipment;
 	uint8_t activeSlot;
 };
 

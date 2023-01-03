@@ -48,7 +48,14 @@ void ItemContainer::clear(bool destroy) {
 }
 
 void ItemContainer::draw(pair position, uint scale) {
-	if (!item) return;
+	if (!item) {
+		if (itemKind) {
+			pair source((itemKind - 1) % 8, (itemKind - 1) / 8);
+			Sprite sprite = Sprite(SpriteSheet::ICONS_BLACK, source);
+			sprite.draw(position, scale);
+		}
+		return;
+	}
 	ItemComponent& itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
 	SpriteStack& spriteStack = EntityFactory::ecs->getComponent<SpriteComponent>(item).spriteStack;
 	spriteStack.draw(position, scale);

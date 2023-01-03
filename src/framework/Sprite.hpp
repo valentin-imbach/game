@@ -3,7 +3,7 @@
 #include "utils.hpp"
 #include "TextureManager.hpp"
 
-#define SPRITE_LAYERS 10
+#define SPRITE_LAYERS 3
 
 ENUM(SpriteSheet,
 HOLE,
@@ -25,7 +25,9 @@ ICONS_WHITE,
 ICONS_BLACK,
 STATIONS,
 MONSTER,
-PICKUPS)
+PICKUPS,
+TAB,
+MENU)
 
 class Sprite {
 public:

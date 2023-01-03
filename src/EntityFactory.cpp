@@ -22,7 +22,17 @@ Entity EntityFactory::createPlayer(vec position) {
 	ecs->addComponent<ColliderComponent>({collider}, player);
 	ecs->addComponent<InventoryComponent>({Inventory({7, 5})}, player);
 	ecs->addComponent<HealthComponent>({20, 20}, player);
-	ecs->addComponent<PlayerComponent>({Inventory({7, 1}), 0}, player);
+	Inventory equipment({3,4});
+	equipment.itemContainers[0][0].itemKind = ItemKind::CLOTHING_HEAD;
+	equipment.itemContainers[0][1].itemKind = ItemKind::CLOTHING_BODY;
+	equipment.itemContainers[0][2].itemKind = ItemKind::CLOTHING_LEGS;
+	equipment.itemContainers[0][3].itemKind = ItemKind::CLOTHING_FEET;
+	equipment.itemContainers[1][0].itemKind = ItemKind::ARMOR_HEAD;
+	equipment.itemContainers[1][1].itemKind = ItemKind::ARMOR_BODY;
+	equipment.itemContainers[1][2].itemKind = ItemKind::ARMOR_LEGS;
+	equipment.itemContainers[1][3].itemKind = ItemKind::ARMOR_FEET;
+	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
+	ecs->addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
 	return player;
 }
 
