@@ -55,6 +55,7 @@ public:
 	~Tab() override = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
+
 private:
 	TabWidget* parent;
 	uint index;
@@ -123,7 +124,20 @@ public:
 	InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link = nullptr);
 	~InventoryGui() override = default;
 	Inventory* link;
+
 private:
 	Inventory* inventory;
 	int spacing;
+};
+
+class CraftingGui : public Widget {
+public:
+	CraftingGui(pair position, Inventory* link = nullptr);
+	~CraftingGui() override;
+
+private:
+	Inventory* link;
+	ItemContainer inputA;
+	ItemContainer inputB;
+	ItemContainer output;
 };

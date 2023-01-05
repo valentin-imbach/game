@@ -124,8 +124,10 @@ void TabWidget::update(GuiManager* manager) {
 		guiElement->reposition(this);
 		guiElement->update(guiManager);
 	}
-	tabs[selected]->reposition(this);
-	tabs[selected]->update(guiManager);
+	for (auto& tab : tabs) {
+		tab->reposition(this);
+		tab->update(guiManager);
+	}
 }
 
 bool TabWidget::handleEvent(InputEvent event) {
@@ -248,4 +250,24 @@ InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inv
 			addGuiElement(std::make_unique<ItemSlot>(position, inventory->itemContainers[x][y], link));
 		}
 	}
+}
+
+//* CraftingGui
+
+CraftingGui::CraftingGui(pair position, Inventory* link) : Widget(position, {80, 20}, Sprite()), link(link) {
+	addGuiElement(std::make_unique<ItemSlot>(pair(-30, 0), inputA, link));
+	addGuiElement(std::make_unique<ItemSlot>(pair(-10, 0), inputB, link));
+	addGuiElement(std::make_unique<ItemSlot>(pair(30, 0), output, link));
+}
+
+CraftingGui::~CraftingGui() {
+	if (link) {
+		inputA.item = link->add(inputA.item);
+		inputB.item = link->add(inputB.item);
+		output.item = link->add(output.item);
+	}
+	vec pos = EntityFactory::ecs->getComponent<PositionComponent>(guiManager->world->player).position;
+	EntityFactory::ecs->addComponent<PositionComponent>({pos}, inputA.item);
+	EntityFactory::ecs->addComponent<PositionComponent>({pos}, inputB.item);
+	EntityFactory::ecs->addComponent<PositionComponent>({pos}, output.item);
 }
