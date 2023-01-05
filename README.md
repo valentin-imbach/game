@@ -18,8 +18,11 @@ cmake --build .
 ## Dependencies
 
 * [SDL2](https://www.libsdl.org/download-2.0.php)
+
 * [SDL2_image](https://www.libsdl.org/projects/SDL_image/)
+
 * [SDL2_ttf](https://github.com/libsdl-org/SDL_ttf)
+
 * [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 
 ## Controls

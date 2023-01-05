@@ -1,11 +1,11 @@
 
 #pragma once
-#include <memory>
+#include "ECS_types.hpp"
 #include "Events.hpp"
 #include "Item.hpp"
-#include "utils.hpp"
 #include "Sprite.hpp"
-#include "ECS_types.hpp"
+#include "utils.hpp"
+#include <memory>
 
 class GuiManager;
 
@@ -15,8 +15,8 @@ class GuiElement {
 public:
 	GuiElement(pair position, pair size, Direction::value alignment = Direction::NONE);
 	virtual ~GuiElement() = default;
-	void reposition(GuiElement* parent = nullptr);
-	virtual void update(GuiManager* manager) { guiManager = manager; };
+	void reposition(GuiElement *parent = nullptr);
+	virtual void update(GuiManager *manager) { guiManager = manager; };
 	virtual void draw() = 0;
 	virtual bool handleEvent(InputEvent event);
 
@@ -26,7 +26,7 @@ protected:
 	pair position;
 	pair screenPosition;
 	Direction::value alignment;
-	GuiManager* guiManager;
+	GuiManager *guiManager;
 	bool inside(pair position);
 
 	friend class Widget;
@@ -37,7 +37,7 @@ class Widget : public GuiElement {
 public:
 	Widget(pair position, pair size, Sprite sprite);
 	~Widget() override = default;
-	void update(GuiManager* manager) override;
+	void update(GuiManager *manager) override;
 	void draw() override;
 	void addGuiElement(std::unique_ptr<GuiElement> guiElement);
 	bool handleEvent(InputEvent event) override;
@@ -51,13 +51,13 @@ class TabWidget;
 
 class Tab : public GuiElement {
 public:
-	Tab(TabWidget* parent, uint index);
+	Tab(TabWidget *parent, uint index);
 	~Tab() override = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
 
 private:
-	TabWidget* parent;
+	TabWidget *parent;
 	uint index;
 };
 
@@ -66,7 +66,7 @@ public:
 	TabWidget(pair position, pair size);
 	~TabWidget() override = default;
 	void draw() override;
-	void update(GuiManager* manager) override;
+	void update(GuiManager *manager) override;
 	void addTab(std::unique_ptr<GuiElement> guiElement);
 	void selectTab(uint selected);
 	bool handleEvent(InputEvent event) override;
@@ -81,22 +81,23 @@ class ECS;
 
 class ItemSlot : public GuiElement {
 public:
-	ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link = nullptr);
+	ItemSlot(pair position, ItemContainer &itemContainer,
+			 Inventory *link = nullptr);
 	~ItemSlot() override = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
-	Inventory* link;
+	Inventory *link;
 
 private:
 	Sprite sprite;
-	ItemContainer& itemContainer;
+	ItemContainer &itemContainer;
 };
 
 class HotbarGui : public GuiElement {
 public:
 	HotbarGui(Entity player);
 	~HotbarGui() override = default;
-	void update(GuiManager* manager) override;
+	void update(GuiManager *manager) override;
 	void draw() override;
 
 private:
@@ -110,7 +111,7 @@ class HealthBarGui : public GuiElement {
 public:
 	HealthBarGui(Entity player);
 	~HealthBarGui() override = default;
-	void update(GuiManager* manager) override;
+	void update(GuiManager *manager) override;
 	void draw() override;
 
 private:
@@ -121,22 +122,45 @@ private:
 
 class InventoryGui : public Widget {
 public:
-	InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link = nullptr);
+	InventoryGui(pair position, Inventory *inventory, int spacing, Inventory *link = nullptr);
 	~InventoryGui() override = default;
-	Inventory* link;
+	Inventory *link;
 
 private:
-	Inventory* inventory;
+	Inventory *inventory;
 	int spacing;
+};
+
+template <typename T>
+class Button : public GuiElement {
+public:
+	Button(pair position, pair size, void (T::*callback)(), T *object, Sprite sprite)
+		: GuiElement(position, size), sprite(sprite), callback(callback), object(object) {}
+	~Button() override = default;
+	bool handleEvent(InputEvent event) override {
+		if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
+			(object->*callback)();
+		}
+	}
+
+	void draw() override {
+		if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	}
+
+private:
+	Sprite sprite;
+	void (T::*callback)();
+	T *object;
 };
 
 class CraftingGui : public Widget {
 public:
-	CraftingGui(pair position, Inventory* link = nullptr);
+	CraftingGui(pair position, Inventory *link = nullptr);
 	~CraftingGui() override;
+	void craft();
 
 private:
-	Inventory* link;
+	Inventory *link;
 	ItemContainer inputA;
 	ItemContainer inputB;
 	ItemContainer output;

@@ -21,6 +21,7 @@ src/Gui/GuiElement.cpp
 src/item/Item.cpp
 src/item/ItemTemplates.cpp
 src/item/Loot.cpp
+src/item/Crafting.cpp
 src/ResourceTemplates.cpp
 src/EntityFactory.cpp
 src/Console.cpp

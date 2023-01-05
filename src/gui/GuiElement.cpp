@@ -12,6 +12,8 @@
 #include "GuiManager.hpp"
 #include "World.hpp"
 
+#include "Crafting.hpp"
+
 //* GuiElement
 
 uint GuiManager::scale = 3;
@@ -258,6 +260,7 @@ CraftingGui::CraftingGui(pair position, Inventory* link) : Widget(position, {80,
 	addGuiElement(std::make_unique<ItemSlot>(pair(-30, 0), inputA, link));
 	addGuiElement(std::make_unique<ItemSlot>(pair(-10, 0), inputB, link));
 	addGuiElement(std::make_unique<ItemSlot>(pair(30, 0), output, link));
+	addGuiElement(std::make_unique<Button<CraftingGui>>(pair(10, 0), pair(20, 20), &CraftingGui::craft, this, Sprite())); 
 }
 
 CraftingGui::~CraftingGui() {
@@ -270,4 +273,14 @@ CraftingGui::~CraftingGui() {
 	EntityFactory::ecs->addComponent<PositionComponent>({pos}, inputA.item);
 	EntityFactory::ecs->addComponent<PositionComponent>({pos}, inputB.item);
 	EntityFactory::ecs->addComponent<PositionComponent>({pos}, output.item);
+}
+
+void CraftingGui::craft() {
+	for (auto& recipe : CraftingRecipe::recipes) {
+		if (recipe->ingredients[0].check(inputA.item) && recipe->ingredients[1].check(inputB.item)) {
+			inputA.item = recipe->ingredients[0].take(inputA.item);
+			inputB.item = recipe->ingredients[0].take(inputB.item);
+			output.item = EntityFactory::createItem(recipe->product.itemId, recipe->product.count);
+		}
+	}
 }

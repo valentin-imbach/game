@@ -12,8 +12,9 @@
 #include "utils.hpp"
 
 #include "ItemTemplates.hpp"
+#include "Crafting.hpp"
 
-World::World(std::string name) : name(name), map(123) {
+World::World(std::string name) : name(name), map(42) {
 	rosterComponents();
 	rosterSystems();
 
@@ -21,6 +22,7 @@ World::World(std::string name) : name(name), map(123) {
 	ItemKindTemplate::setTemplates();
 	ItemTemplate::setTemplates();
 	ResourceTemplate::setTemplates();
+	CraftingRecipe::setRecipes();
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
@@ -112,7 +114,7 @@ World::World(std::string name) : name(name), map(123) {
 	generate();
 }
 
-World::World(std::fstream& stream) : ecs(stream), map(123) {
+World::World(std::fstream& stream) : ecs(stream), map(42) {
 	rosterComponents();
 	rosterSystems();
 	ecs.deserialiseComponents(stream);
@@ -121,6 +123,7 @@ World::World(std::fstream& stream) : ecs(stream), map(123) {
 	ItemKindTemplate::setTemplates();
 	ItemTemplate::setTemplates();
 	ResourceTemplate::setTemplates();
+	CraftingRecipe::setRecipes();
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
