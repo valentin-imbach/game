@@ -17,6 +17,7 @@ src/framework/Sprite.cpp
 src/world/World.cpp
 src/world/Map.cpp
 src/world/Tile.cpp
+src/world/Generation.cpp
 src/Gui/GuiElement.cpp
 src/item/Item.cpp
 src/item/ItemTemplates.cpp

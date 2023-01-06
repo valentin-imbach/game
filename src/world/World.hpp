@@ -59,7 +59,7 @@ private:
 
 	std::string name;
 
-	Map map;
+	std::unique_ptr<Map> map;
 	GridMap gridMap;
 
 	friend class Game;

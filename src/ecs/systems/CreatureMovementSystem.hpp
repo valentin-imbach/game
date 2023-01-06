@@ -7,7 +7,7 @@
 
 class CreatureMovementSystem : public System {
 public:
-	void update(uint dt, GridMap& gridMap, Map& map) {
+	void update(uint dt, GridMap& gridMap, Map* map) {
 		for (Entity entity : entities) {
 			Direction::value direction = ecs->getComponent<DirectionComponent>(entity).direction;
 			float speed = ecs->getComponent<MovementComponent>(entity).speed;
@@ -38,7 +38,7 @@ public:
 	}
 
 private:
-	bool isColliding(Collider collider, vec position, GridMap& gridMap, Map& map) {
+	bool isColliding(Collider collider, vec position, GridMap& gridMap, Map* map) {
 		pair topLeft = round(position - collider.size / 2);
 		pair bottomRight = round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {
@@ -49,12 +49,12 @@ private:
 		return false;
 	}
 
-	bool isFree(GridMap& gridMap, Map& map, pair position) {
+	bool isFree(GridMap& gridMap, Map* map, pair position) {
 		if (gridMap[position]) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(gridMap[position]);
 			if (gridComponent.solid) return false;
 		}
-		if (map.getTileId(position) == TileId::WATER) return false;
+		if (map->getTileId(position) == TileId::WATER) return false;
 		return true;
 	}
 };

@@ -1,162 +1,309 @@
-
 {
     "pine_log": {
         "name": "Pine Log",
-        "kinds": ["log", "fuel"],
-        "properties": {"hardness": 3, "burn_time": 5, "heat": 4}
+        "kinds": [
+            "log",
+            "fuel"
+        ],
+        "properties": {
+            "hardness": 3,
+            "burn_time": 5,
+            "heat": 4
+        }
     },
-
     "oak_log": {
         "name": "Oak Log",
-        "kinds": ["log", "fuel"],
-        "properties": {"hardness": 6, "burn_time": 8, "heat": 5}
+        "kinds": [
+            "log",
+            "fuel"
+        ],
+        "properties": {
+            "hardness": 6,
+            "burn_time": 8,
+            "heat": 5
+        }
     },
-
     "rosewood_log": {
         "name": "Rosewood Log",
-        "kinds": ["log", "fuel"],
-        "properties": {"hardness": 9, "burn_time": 8, "heat": 6}
+        "kinds": [
+            "log",
+            "fuel"
+        ],
+        "properties": {
+            "hardness": 9,
+            "burn_time": 8,
+            "heat": 6
+        }
     },
-
     "ashwood_log": {
         "name": "Ashwood Log",
-        "kinds": ["log", "fuel"],
-        "properties": {"hardness": 7, "burn_time": 5, "heat": 9}
+        "kinds": [
+            "log",
+            "fuel"
+        ],
+        "properties": {
+            "hardness": 7,
+            "burn_time": 5,
+            "heat": 9
+        }
     },
-
     "spruce_log": {
         "name": "Spruce Log",
-        "kinds": ["log", "fuel"],
-        "properties": {"hardness": 7, "burn_time": 6, "heat": 5}
+        "kinds": [
+            "log",
+            "fuel"
+        ],
+        "properties": {
+            "hardness": 7,
+            "burn_time": 6,
+            "heat": 5
+        }
     },
-
     "pine_plank": {
         "name": "Pine Plank",
-        "kinds": ["plate", "fuel"],
-        "properties": {"flexibility": 7, "strength": 3, "burn_time": 5, "heat": 4}
+        "kinds": [
+            "plate",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 7,
+            "strength": 3,
+            "burn_time": 5,
+            "heat": 4
+        }
     },
-
     "oak_plank": {
         "name": "Oak Plank",
-        "kinds": ["plate", "fuel"],
-        "properties": {"flexibility": 3, "strength": 6, "burn_time": 8, "heat": 5}
+        "kinds": [
+            "plate",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 6,
+            "burn_time": 8,
+            "heat": 5
+        }
     },
-
     "rosewood_plank": {
         "name": "Rosewood Plank",
-        "kinds": ["plate", "fuel"],
-        "properties": {"flexibility": 3, "strength": 9, "burn_time": 8, "heat": 6}
+        "kinds": [
+            "plate",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 9,
+            "burn_time": 8,
+            "heat": 6
+        }
     },
     "ashwood_plank": {
         "name": "Ashwood Plank",
-        "kinds": ["plate", "fuel"],
-        "properties": {"flexibility": 4, "strength": 7, "burn_time": 5, "heat": 9}
+        "kinds": [
+            "plate",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 4,
+            "strength": 7,
+            "burn_time": 5,
+            "heat": 9
+        }
     },
-
     "spruce_plank": {
         "name": "Spruce Plank",
-        "kinds": ["plate", "fuel"],
-        "properties": {"flexibility": 5, "strength": 7, "burn_time": 6, "heat": 5}
+        "kinds": [
+            "plate",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 5,
+            "strength": 7,
+            "burn_time": 6,
+            "heat": 5
+        }
     },
-
     "pine_stick": {
         "name": "Pine Stick",
-        "kinds": ["rod", "fuel"],
-        "properties": {"flexibility": 7, "strength": 3, "burn_time": 2, "heat": 4}
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 7,
+            "strength": 3,
+            "burn_time": 2,
+            "heat": 4
+        }
     },
-
     "oak_stick": {
         "name": "Oak Stick",
-        "kinds": ["rod", "fuel"],
-        "properties": {"flexibility": 3, "strength": 6, "burn_time": 3, "heat": 5}
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 6,
+            "burn_time": 3,
+            "heat": 5
+        }
     },
-
     "rosewood_stick": {
         "name": "Rosewood Stick",
-        "kinds": ["rod", "fuel"],
-        "properties": {"flexibility": 3, "strength": 9, "burn_time": 2, "heat": 6}
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 9,
+            "burn_time": 2,
+            "heat": 6
+        }
     },
     "ashwood_stick": {
         "name": "Ashwood Stick",
-        "kinds": ["rod", "fuel"],
-        "properties": {"flexibility": 4, "strength": 7, "burn_time": 1, "heat": 9}
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 4,
+            "strength": 7,
+            "burn_time": 1,
+            "heat": 9
+        }
     },
-
     "spruce_stick": {
         "name": "Spruce Stick",
-        "kinds": ["rod", "fuel"],
-        "properties": {"flexibility": 5, "strength": 7, "burn_time": 2, "heat": 5}
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 5,
+            "strength": 7,
+            "burn_time": 2,
+            "heat": 5
+        }
     },
-
     "granite_cobble": {
         "name": "Granite Cobble",
-        "kinds": ["cobble"],
-        "properties": {"hardness": 7}
+        "kinds": [
+            "cobble"
+        ],
+        "properties": {
+            "hardness": 7
+        }
     },
-
     "basalt_cobble": {
         "name": "Basalt Cobble",
-        "kinds": ["cobble"],
-        "properties": {"hardness": 9}
+        "kinds": [
+            "cobble"
+        ],
+        "properties": {
+            "hardness": 9
+        }
     },
-
     "obsidian_cobble": {
         "name": "Obsidian Cobble",
-        "kinds": ["cobble"],
-        "properties": {"hardness": 6}
+        "kinds": [
+            "cobble"
+        ],
+        "properties": {
+            "hardness": 6
+        }
     },
-
     "sandstone_cobble": {
         "name": "Sandstone Cobble",
-        "kinds": ["cobble"],
-        "properties": {"hardness": 4}
+        "kinds": [
+            "cobble"
+        ],
+        "properties": {
+            "hardness": 4
+        }
     },
-
     "chalk_cobble": {
         "name": "Chalk Cobble",
-        "kinds": ["cobble"],
-        "properties": {"hardness": 2}
+        "kinds": [
+            "cobble"
+        ],
+        "properties": {
+            "hardness": 2
+        }
     },
-
     "granite_pebble": {
         "name": "Granite Pebble",
-        "kinds": ["pebble"],
-        "properties": {"hardness": 7}
+        "kinds": [
+            "pebble"
+        ],
+        "properties": {
+            "hardness": 7
+        }
     },
-
     "basalt_pebble": {
         "name": "Basalt Pebble",
-        "kinds": ["pebble"],
-        "properties": {"hardness": 9}
+        "kinds": [
+            "pebble"
+        ],
+        "properties": {
+            "hardness": 9
+        }
     },
-
     "obsidian_pebble": {
         "name": "Obsidian Pebble",
-        "kinds": ["pebble"],
-        "properties": {"hardness": 6}
+        "kinds": [
+            "pebble"
+        ],
+        "properties": {
+            "hardness": 6
+        }
     },
-
     "sandstone_pebble": {
         "name": "Sandstone Pebble",
-        "kinds": ["pebble"],
-        "properties": {"hardness": 4}
+        "kinds": [
+            "pebble"
+        ],
+        "properties": {
+            "hardness": 4
+        }
     },
-
     "chalk_pebble": {
         "name": "Chalk Pebble",
-        "kinds": ["pebble"],
-        "properties": {"hardness": 2}
+        "kinds": [
+            "pebble"
+        ],
+        "properties": {
+            "hardness": 2
+        }
     },
-
-    "grass_fibre": {
-        "name": "Grass Fibre",
-        "kinds": ["rope"],
-        "properties": {"strength": 3}
+    "grass_fiber": {
+        "name": "Grass Fiber",
+        "kinds": [
+            "rope"
+        ],
+        "properties": {
+            "strength": 3
+        }
     },
-
     "apple": {
         "name": "Apple",
-        "kinds": ["food"],
-        "properties": {"nutrition": 3}
+        "kinds": [
+            "food"
+        ],
+        "properties": {
+            "nutrition": 3
+        }
+    },
+    "potion": {
+        "name": "Potion",
+        "kinds": [
+            "food"
+        ],
+        "properties": {
+            "nutrition": 3
+        }
     }
 }

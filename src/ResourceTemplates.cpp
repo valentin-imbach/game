@@ -7,33 +7,40 @@ std::array<std::unique_ptr<ResourceTemplate>, ResourceId::count> ResourceTemplat
 using namespace nlohmann;
 
 void ResourceTemplate::setTemplates() {
-    std::ifstream file("../json/Resources.json");
+	std::ifstream file("../json/Resources.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
 
-	for (auto& [key, value] : data.items()) {
-        ResourceId::value resourceId = ResourceId::from_string(key);
-        if (!resourceId) {
-            WARNING("Unrecognised Resource:", key);
-            continue;
-        }
+	for (auto &[key, value] : data.items()) {
+		ResourceId::value resourceId = ResourceId::from_string(key);
+		if (!resourceId) {
+			WARNING("Unrecognised Resource:", key);
+			continue;
+		}
 
-        ToolId::value tool = ToolId::from_string(value["tool"]);
-        int level = value["level"];
-        pair size(value["size"][0], value["size"][1]);
-        pair position(value["position"][0], value["position"][1]);
-        int height = value["height"];
+		pair anker(value["anker"][0], value["anker"][1]);
+
+		pair size(1, 1);
+		if (value.contains("size")) size = pair(value["size"][0], value["size"][1]);
         
-        templates[resourceId] = std::make_unique<ResourceTemplate>(size, position, height, tool, level);
+		int height = 0;
+		if (value.contains("height")) height = value["height"];
 
-        for (auto& [key, value] : value["loot"].items()) {
-            ItemId::value itemId = ItemId::from_string(key);
-            if (!itemId) {
-                WARNING("Unrecognised ItemId:", key);
-                continue;
-            }
-            pair range(value[0], value[1]);
-            templates[resourceId] -> lootTable.addLoot({itemId, range});
-        }
-    }
+		templates[resourceId] = std::make_unique<ResourceTemplate>(anker, size, height);
+
+		if (value.contains("variations")) templates[resourceId]->variations = value["variations"];
+		if (value.contains("solid")) templates[resourceId]->solid = value["solid"];
+		if (value.contains("tool")) templates[resourceId]->toolId = ToolId::from_string(value["tool"]);
+		if (value.contains("level")) templates[resourceId]->level = value["level"];
+
+		for (auto &[key, value] : value["loot"].items()) {
+			ItemId::value itemId = ItemId::from_string(key);
+			if (!itemId) {
+				WARNING("Unrecognised ItemId:", key);
+				continue;
+			}
+			pair range(value[0], value[1]);
+			templates[resourceId]->lootTable.addLoot({itemId, range});
+		}
+	}
 }

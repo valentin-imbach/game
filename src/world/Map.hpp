@@ -2,21 +2,11 @@
 #pragma once
 #include "Tile.hpp"
 #include "utils.hpp"
+#include "ResourceTemplates.hpp"
+#include "Generation.hpp"
 
 constexpr int MAP_WIDTH = 50;
 constexpr int MAP_HEIGHT = 50;
-
-ENUM(Biome,
-OCEAN,
-DESERT,
-TUNDRA,
-TAIGA,
-SWAMP,
-GRASSLAND,
-FOREST,
-SAVANNA,
-RAINFOREST,
-MOUNTAIN)
 
 class Map {
 public:

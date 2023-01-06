@@ -140,7 +140,9 @@ public:
 	bool handleEvent(InputEvent event) override {
 		if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
 			(object->*callback)();
+			return true;
 		}
+		return false;
 	}
 
 	void draw() override {

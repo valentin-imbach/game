@@ -62,17 +62,17 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	if (!resource) return 0;
 
 	ecs->addComponent<PositionComponent>({position}, resource);
-	ecs->addComponent<GridComponent>({position, resourceTemplate->size, true}, resource);
+	ecs->addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid}, resource);
 
 	SpriteStack spriteStack;
-	pair spritePosition(resourceTemplate->position.x, resourceTemplate->position.y - resourceTemplate->height);
+	pair spritePosition(resourceTemplate->anker.x, resourceTemplate->anker.y - resourceTemplate->height);
 	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
 	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize});
 
 	ecs->addComponent<SpriteComponent>({spriteStack, resourceTemplate->height}, resource);
 	ecs->addComponent<ResourceComponent>({resourceTemplate->toolId}, resource);
 	ecs->addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
-	ecs->addComponent<HealthComponent>({5, 5}, resource);
+	ecs->addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
 
 	for (int x = 0; x < resourceTemplate->size.x; x++) {
 		for (int y = 0; y < resourceTemplate->size.y; y++) {

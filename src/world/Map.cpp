@@ -65,43 +65,8 @@ void Map::generate() {
 			Biome::value biome = getBiome(position);
 			int variation = getVariation(position);
 
-			TileId::value tileId = TileId::GRASS;
-
-			if (biome == Biome::OCEAN) {
-				tileId = TileId::WATER;
-			} else if (biome == Biome::DESERT) {
-				if (variation < 30) tileId = TileId::ROCK;
-				else tileId = TileId::SAND;
-			} else if (biome == Biome::TUNDRA) {
-				if (variation < 30) tileId = TileId::ROCK;
-				else if (variation > 70) tileId = TileId::DIRT;
-				else tileId = TileId::GRASS;
-			} else if (biome == Biome::TAIGA) {
-				if (variation < 20) tileId = TileId::ROCK;
-				else if (variation > 80) tileId = TileId::DIRT;
-				else tileId = TileId::GRASS;
-			} else if (biome == Biome::SWAMP) {
-				if (variation < 30) tileId = TileId::WATER;
-				else if (variation > 70) tileId = TileId::GRASS;
-				else tileId = TileId::DIRT;
-			} else if (biome == Biome::GRASSLAND) {
-				if (variation < 30) tileId = TileId::DIRT;
-				else tileId = TileId::GRASS;
-			} else if (biome == Biome::FOREST) {
-				if (variation < 30) tileId = TileId::DIRT;
-				else tileId = TileId::GRASS;
-			} else if (biome == Biome::SAVANNA) {
-				if (variation < 40) tileId = TileId::DIRT;
-				else tileId = TileId::GRASS;
-			} else if (biome == Biome::RAINFOREST) {
-				if (variation < 30) tileId = TileId::WATER;
-				else tileId = TileId::GRASS;
-			} else if (biome == Biome::MOUNTAIN) {
-				if (variation < 30) tileId = TileId::GRASS;
-				else tileId = TileId::ROCK;
-			}
-
-			tiles[x][y] = std::make_unique<Tile>(tileId);
+			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome] -> getGround(variation);
+			tiles[x][y] = std::make_unique<Tile>(ground->tileId);
 		}
 	}
 

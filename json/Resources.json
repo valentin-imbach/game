@@ -1,11 +1,11 @@
 
 {
 	"basalt_rock": {
-		"size": [1, 1],
-		"position": [0, 4],
+		"anker": [0, 4],
 		"height": 1,
 		"tool": "pick_axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"basalt_cobble": [3, 6],
@@ -13,11 +13,11 @@
 		}
 	},
 	"obsidian_rock": {
-		"size": [1, 1],
-		"position": [1, 4],
+		"anker": [1, 4],
 		"height": 1,
 		"tool": "pick_axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"obsidian_cobble": [3, 6],
@@ -25,11 +25,11 @@
 		}
 	},
 	"granite_rock": {
-		"size": [1, 1],
-		"position": [2, 4],
+		"anker": [2, 4],
 		"height": 1,
 		"tool": "pick_axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"granite_cobble": [3, 6],
@@ -37,11 +37,11 @@
 		}
 	},
 	"sandstone_rock": {
-		"size": [1, 1],
-		"position": [3, 4],
+		"anker": [3, 4],
 		"height": 1,
 		"tool": "pick_axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"sandstone_cobble": [3, 6],
@@ -49,11 +49,11 @@
 		}
 	},
 	"chalk_rock": {
-		"size": [1, 1],
-		"position": [4, 4],
+		"anker": [4, 4],
 		"height": 1,
 		"tool": "pick_axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"chalk_cobble": [3, 6],
@@ -61,69 +61,100 @@
 		}
 	},
 	"pine_tree": {
-		"size": [1, 1],
-		"position": [0, 2],
+		"anker": [0, 2],
 		"height": 2,
 		"tool": "axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"pine_log": [3, 6]
 		}
 	},
 	"oak_tree": {
-		"size": [1, 1],
-		"position": [1, 2],
+		"anker": [1, 2],
 		"height": 2,
 		"tool": "axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"oak_log": [3, 6]
 		}
 	},
 	"rosewood_tree": {
-		"size": [1, 1],
-		"position": [2, 2],
+		"anker": [2, 2],
 		"height": 2,
 		"tool": "axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"rosewood_log": [3, 6]
 		}
 	},
 	"ashwood_tree": {
-		"size": [1, 1],
-		"position": [3, 2],
+		"anker": [3, 2],
 		"height": 2,
 		"tool": "axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"ashwood_log": [3, 6]
 		}
 	},
 	"spruce_tree": {
-		"size": [1, 1],
-		"position": [4, 2],
+		"anker": [4, 2],
 		"height": 2,
 		"tool": "axe",
 		"level": 2,
+		"health": 5,
 		"sound": "rock",
 		"loot": {
 			"spruce_log": [3, 6]
 		}
 	},
 	"bush": {
-		"size": [1, 1],
-		"position": [0, 5],
-		"height": 0,
+		"anker": [0, 5],
 		"tool": "shovel",
 		"level": 2,
+		"health": 3,
 		"sound": "rock",
 		"loot": {
 			"apple": [3, 6]
+		}
+	},
+	"branch": {
+		"anker": [5, 0],
+		"solid" : false,
+		"sound": "rock",
+		"loot": {
+			"oak_stick": [1, 2]
+		}
+	},
+	"pebble": {
+		"anker": [5, 1],
+		"solid" : false,
+		"sound": "rock",
+		"loot": {
+			"granite_pebble": [1, 2]
+		}
+	},
+	"grass": {
+		"anker": [5, 2],
+		"solid" : false,
+		"sound": "rock",
+		"loot": {
+			"grass_fiber": [1, 2]
+		}
+	},
+	"mushroom": {
+		"anker": [5, 3],
+		"solid" : false,
+		"sound": "rock",
+		"loot": {
+			"potion": [1, 2]
 		}
 	}
 }

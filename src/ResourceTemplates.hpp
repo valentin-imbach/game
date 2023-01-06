@@ -17,24 +17,31 @@ ROSEWOOD_TREE,
 ASHWOOD_TREE,
 SPRUCE_TREE,
 
-BUSH)
+BUSH,
+
+BRANCH,
+PEBBLE,
+GRASS,
+MUSHROOM)
 
 struct ResourceTemplate {
-    
+    pair anker;
     pair size;
-
-    pair position;
     uint8_t height;
-    uint8_t variations = 1;
 
-    ToolId::value toolId;
-    uint8_t level;
+    uint8_t variations = 1;
+    bool solid = true;
+
+    ToolId::value toolId = ToolId::NONE;
+    uint8_t level = 1;
+
+    uint8_t health = 1;
 
     //SoundID sound;
 
     LootTable lootTable;
 
-    ResourceTemplate(pair size, pair position, int height, ToolId::value toolId, int level) : size(size), position(position), height(height), toolId(toolId), level(level) {}
+    ResourceTemplate(pair anker, pair size = {1, 1}, uint8_t height = 0) : anker(anker), size(size), height(height) {}
 
     static std::array<std::unique_ptr<ResourceTemplate>, ResourceId::count> templates;
     static void setTemplates();

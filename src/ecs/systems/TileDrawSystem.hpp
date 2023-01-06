@@ -8,7 +8,7 @@
 
 class TileDrawSystem : public System {
 public:
-	void update(Map& map) {
+	void update(Map* map) {
 		for (Entity camera : entities) {
 			vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
 			int zoom = ecs -> getComponent<CameraComponent>(camera).zoom;
@@ -25,7 +25,7 @@ public:
 
 			for (int x = x1; x <= x2; x++) {
 				for (int y = y1; y <= y2; y++) {
-					for (auto& layer : map.tiles[x][y]->sprites) {
+					for (auto& layer : map->tiles[x][y]->sprites) {
 						vec tilePosition = {x, y};
 						pair screenPosition = round(BIT * zoom * (tilePosition - cameraPosition)) + screenSize / 2;
 						layer.second.draw(screenPosition, zoom, true);

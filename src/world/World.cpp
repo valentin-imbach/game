@@ -2,19 +2,21 @@
 #include "World.hpp"
 #include "Components.hpp"
 #include "ECS_types.hpp"
+#include "EntityFactory.hpp"
 #include "Events.hpp"
 #include "GuiElement.hpp"
 #include "Item.hpp"
 #include "Sprite.hpp"
 #include "Tile.hpp"
 #include "Window.hpp"
-#include "EntityFactory.hpp"
 #include "utils.hpp"
 
-#include "ItemTemplates.hpp"
 #include "Crafting.hpp"
+#include "Generation.hpp"
+#include "ItemTemplates.hpp"
 
-World::World(std::string name) : name(name), map(42) {
+World::World(std::string name)
+	: name(name) {
 	rosterComponents();
 	rosterSystems();
 
@@ -23,6 +25,9 @@ World::World(std::string name) : name(name), map(42) {
 	ItemTemplate::setTemplates();
 	ResourceTemplate::setTemplates();
 	CraftingRecipe::setRecipes();
+	BiomeTemplate::setTemplates();
+
+	map = std::make_unique<Map>(1729);
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
@@ -99,22 +104,25 @@ World::World(std::string name) : name(name), map(42) {
 	ecs.addComponent<HealthComponent>({20, 20}, monster);
 	ecs.addComponent<MonsterAiComponent>({}, monster);
 
-	Entity stick = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{6, 8}}, stick);
-	SpriteStack stickSprites;
-	stickSprites.addSprite({SpriteSheet::PICKUPS, {0, 0}, {1, 1}});
-	ecs.addComponent<SpriteComponent>({stickSprites, 0}, stick);
-	ecs.addComponent<GridComponent>({{6, 8}, {1, 1}, false}, stick);
-	ecs.addComponent<HealthComponent>({1, 1}, stick);
-	ecs.addComponent<ResourceComponent>({ToolId::NONE}, stick);
-	LootTable lootTable;
-	lootTable.addLoot({ItemId::SPRUCE_STICK, {1, 2}});
-	ecs.addComponent<LootComponent>({lootTable}, stick);
+	// Entity stick = ecs.createEntity();
+	// ecs.addComponent<PositionComponent>({{6, 8}}, stick);
+	// SpriteStack stickSprites;
+	// stickSprites.addSprite({SpriteSheet::PICKUPS, {0, 0}, {1, 1}});
+	// ecs.addComponent<SpriteComponent>({stickSprites, 0}, stick);
+	// ecs.addComponent<GridComponent>({{6, 8}, {1, 1}, false}, stick);
+	// ecs.addComponent<HealthComponent>({1, 1}, stick);
+	// ecs.addComponent<ResourceComponent>({ToolId::NONE}, stick);
+	// LootTable lootTable;
+	// lootTable.addLoot({ItemId::SPRUCE_STICK, {1, 2}});
+	// ecs.addComponent<LootComponent>({lootTable}, stick);
+
+	EntityFactory::createResource(ResourceId::BRANCH, {6, 8});
 
 	generate();
 }
 
-World::World(std::fstream& stream) : ecs(stream), map(42) {
+World::World(std::fstream &stream)
+	: ecs(stream) {
 	rosterComponents();
 	rosterSystems();
 	ecs.deserialiseComponents(stream);
@@ -124,6 +132,9 @@ World::World(std::fstream& stream) : ecs(stream), map(42) {
 	ItemTemplate::setTemplates();
 	ResourceTemplate::setTemplates();
 	CraftingRecipe::setRecipes();
+	BiomeTemplate::setTemplates();
+
+	map = std::make_unique<Map>(1729);
 
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
@@ -143,7 +154,7 @@ void World::generate() {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position(x, y);
-			TileId::value tileId = map.getTileId(position);
+			TileId::value tileId = map->getTileId(position);
 			if (tileId == TileId::WATER) continue;
 			if (tileId == TileId::GRASS) {
 				if (bernoulli(seed++, 0.1f)) {
@@ -232,7 +243,7 @@ void World::update(uint dt) {
 	animalAiSystem->update();
 	monsterAiSystem->update(player);
 
-	creatureMovementSystem->update(dt, gridMap, map);
+	creatureMovementSystem->update(dt, gridMap, map.get());
 	collisionSystem->update(collisions);
 
 	itemPickupSystem->update(collisions);
@@ -243,7 +254,7 @@ void World::update(uint dt) {
 
 	creatureAnimationSystem->update();
 
-	tileDrawSystem->update(map);
+	tileDrawSystem->update(map.get());
 	entityDrawSystem->update(camera);
 	colldierDrawSystem->update(camera);
 
@@ -268,8 +279,8 @@ void World::update(uint dt) {
 
 std::unique_ptr<GuiElement> World::makeInventory() {
 	if (!player) return nullptr;
-	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
-	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+	InventoryComponent &inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	PlayerComponent &playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
 	std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
@@ -279,8 +290,8 @@ std::unique_ptr<GuiElement> World::makeInventory() {
 
 std::unique_ptr<GuiElement> World::makeMenu() {
 	if (!player) return nullptr;
-	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
-	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+	InventoryComponent &inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	PlayerComponent &playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
 
 	std::unique_ptr<TabWidget> gui = std::make_unique<TabWidget>(pair(0, 0), pair(150, 150));
@@ -299,10 +310,10 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 
 void World::handleEvents() {
 	if (!player) return;
-	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
-	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
-	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
+	PlayerComponent &playerComponent = ecs.getComponent<PlayerComponent>(player);
+	CreatureStateComponent &creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
+	PositionComponent &positionComponent = ecs.getComponent<PositionComponent>(player);
+	ItemContainer &activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
 
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
@@ -340,6 +351,6 @@ void World::handleEvents() {
 	}
 }
 
-void World::serialise(std::fstream& stream) {
+void World::serialise(std::fstream &stream) {
 	ecs.serialise(stream);
 }

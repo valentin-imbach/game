@@ -1,0 +1,191 @@
+{
+	"ocean": {
+		"grounds": [
+			{
+				"tile": "water",
+				"resources": {}
+			}
+		]
+	},
+	"desert": {
+		"grounds": [
+			{
+				"tile": "sand",
+				"resources": {
+					"sandstone_rock": 2,
+					"pebble": 3
+				}
+			},
+			{
+				"tile": "rock",
+				"resources": {
+					"basalt_rock": 3,
+					"pebble": 2
+				}
+			}
+		]
+	},
+	"tundra": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"spruce_tree": 2,
+					"branch": 3,
+					"pebble": 2,
+					"grass": 3
+				}
+			},
+			{
+				"tile": "rock",
+				"resources": {
+					"granite_rock": 3,
+					"pebble": 3
+				}
+			}
+		]
+	},
+	"taiga": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"spruce_tree": 3,
+					"branch": 3,
+					"pebble": 2,
+					"grass": 2,
+					"mushroom": 1
+				}
+			},
+			{
+				"tile": "dirt",
+				"resources": {
+					"granite_rock": 2,
+					"pebble": 3
+				}
+			}
+		]
+	},
+	"swamp": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"ashwood_tree": 2,
+					"branch": 3,
+					"pebble": 2,
+					"grass": 3,
+					"mushroom": 2
+				}
+			},
+			{
+				"tile": "dirt",
+				"resources": {
+					"pebble": 2,
+					"grass": 3,
+					"mushroom": 3
+				}
+			}
+		]
+	},
+	"grassland": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"oak_tree": 2,
+					"branch": 3,
+					"pebble": 2,
+					"grass": 3
+				}
+			},
+			{
+				"tile": "dirt",
+				"resources": {
+					"chalk_rock": 2,
+					"pebble": 3
+				}
+			}
+		]
+	},
+	"forest": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"oak_tree": 3,
+					"granite_rock": 1,
+					"branch": 3,
+					"pebble": 1,
+					"grass": 2,
+					"bush": 1
+				}
+			},
+			{
+				"tile": "dirt",
+				"resources": {
+					"granite_rock": 2,
+					"pebble": 2,
+					"mushroom": 1
+				}
+			}
+		]
+	},
+	"savanna": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"rosewood_tree": 3,
+					"pebble": 2,
+					"grass": 3,
+					"bush": 2
+				}
+			},
+			{
+				"tile": "sand",
+				"resources": {
+					"sandstone_rock": 3,
+					"pebble": 2,
+					"grass": 1
+				}
+			}
+		]
+	},
+	"rainforest": {
+		"grounds": [
+			{
+				"tile": "grass",
+				"resources": {
+					"pine_tree": 4,
+					"granite_rock": 1,
+					"branch": 3,
+					"pebble": 2,
+					"grass": 2,
+					"bush": 3,
+					"mushroom": 2
+				}
+			},
+			{
+				"tile": "dirt",
+				"resources": {
+					"granite_rock": 2,
+					"pebble": 3,
+					"mushroom": 2
+				}
+			}
+		]
+	},
+	"mountain": {
+		"grounds": [
+			{
+				"tile": "rock",
+				"resources": {
+					"basalt_rock": 4,
+					"obsidian_rock": 2,
+					"pebble": 3
+				}
+			}
+		]
+	}
+}
