@@ -126,7 +126,8 @@
 		}
 	},
 	"branch": {
-		"anker": [5, 0],
+		"anker": [0, 6],
+		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
 		"loot": {
@@ -134,7 +135,8 @@
 		}
 	},
 	"pebble": {
-		"anker": [5, 1],
+		"anker": [0, 7],
+		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
 		"loot": {
@@ -142,7 +144,8 @@
 		}
 	},
 	"grass": {
-		"anker": [5, 2],
+		"anker": [0, 8],
+		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
 		"loot": {
@@ -150,7 +153,8 @@
 		}
 	},
 	"mushroom": {
-		"anker": [5, 3],
+		"anker": [0, 9],
+		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
 		"loot": {

@@ -7,6 +7,7 @@
 
 ECS* EntityFactory::ecs = nullptr;
 GridMap* EntityFactory::gridMap = nullptr;
+uint EntityFactory::seed = 1729;
 
 Entity EntityFactory::createPlayer(vec position) {
 	Entity player = ecs->createEntity();
@@ -65,7 +66,8 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	ecs->addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid}, resource);
 
 	SpriteStack spriteStack;
-	pair spritePosition(resourceTemplate->anker.x, resourceTemplate->anker.y - resourceTemplate->height);
+	uint variation = rand_uint(seed++, resourceTemplate->variations);
+	pair spritePosition(resourceTemplate->anker.x + variation * resourceTemplate->size.x, resourceTemplate->anker.y - resourceTemplate->height);
 	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
 	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize});
 

@@ -45,7 +45,7 @@ void BiomeTemplate::setTemplates() {
 					continue;
 				}
 
-				biomeGround->resources.push_back(resourceId);
+				biomeGround->resources.emplace_back(resourceId, resource_value);
 			}
 			
 			templates[biome]->grounds.push_back(std::move(biomeGround));

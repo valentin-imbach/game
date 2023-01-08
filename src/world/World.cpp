@@ -154,23 +154,19 @@ void World::generate() {
 	for (int x = 0; x < MAP_WIDTH; x++) {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position(x, y);
-			TileId::value tileId = map->getTileId(position);
-			if (tileId == TileId::WATER) continue;
-			if (tileId == TileId::GRASS) {
-				if (bernoulli(seed++, 0.1f)) {
-					int type = rand_int(seed++, 6, 11);
-					EntityFactory::createResource(ResourceId::from_int(type), position);
-					continue;
-				} else if (bernoulli(seed++, 0.05f)) {
-					EntityFactory::createResource(ResourceId::BUSH, position);
-					continue;
-				}
-			}
-			if (tileId == TileId::ROCK) {
-				if (bernoulli(seed++, 0.05f)) {
-					int type = rand_int(seed++, 1, 6);
-					EntityFactory::createResource(ResourceId::from_int(type), position);
-					continue;
+			Biome::value biome = map->getBiome(position);
+			int variation = map->getVariation(position);
+
+			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
+
+			int vegetation = map->getVegetation(position);
+			int choice = rand_int(seed++, 50 + vegetation);
+
+			for (auto& p: ground->resources) {
+				choice -= p.second;
+				if (choice < 0) {
+					EntityFactory::createResource(p.first, position);
+					break;
 				}
 			}
 		}

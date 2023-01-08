@@ -28,4 +28,5 @@ public:
 	static Entity createItem(ItemId::value itemId, uint8_t count, vec position);
 
 	static bool free(pair position, pair size);
+	static uint seed;
 };

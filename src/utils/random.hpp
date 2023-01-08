@@ -42,12 +42,14 @@ typedef unsigned int uint;
 
 template <typename T>
 [[nodiscard]] inline T rand_choice(uint seed, std::vector<T> &vec) {
+	assert(!vec.empty());
 	uint index = rand_uint(seed, vec.size());
 	return vec[index];
 }
 
 template <typename T>
 [[nodiscard]] inline T rand_choice(uint seed, std::vector<T> &&vec) {
+	assert(!vec.empty());
 	uint index = rand_uint(seed, vec.size());
 	return vec[index];
 }

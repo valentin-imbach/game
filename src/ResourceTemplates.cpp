@@ -32,6 +32,7 @@ void ResourceTemplate::setTemplates() {
 		if (value.contains("solid")) templates[resourceId]->solid = value["solid"];
 		if (value.contains("tool")) templates[resourceId]->toolId = ToolId::from_string(value["tool"]);
 		if (value.contains("level")) templates[resourceId]->level = value["level"];
+		if (value.contains("health")) templates[resourceId]->health = value["health"];
 
 		for (auto &[key, value] : value["loot"].items()) {
 			ItemId::value itemId = ItemId::from_string(key);

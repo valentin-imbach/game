@@ -18,7 +18,7 @@ MOUNTAIN)
 struct BiomeGroundTemplate {
 	BiomeGroundTemplate(TileId::value tileId);
 	TileId::value tileId;
-	std::vector<ResourceId::value> resources;
+	std::vector<std::pair<ResourceId::value, int>> resources;
 };
 
 class BiomeTemplate {
