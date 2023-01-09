@@ -23,7 +23,7 @@ public:
 	}
 
 	bool has(Entity entity, ComponentId::value comp) {
-		return componentArrays[comp] -> has(entity);
+		return componentArrays[comp]->has(entity);
 	}
 
 	template <typename T>
@@ -37,7 +37,7 @@ public:
 	}
 
 	template <typename T>
-	T &get(Entity entity) {
+	T& get(Entity entity) {
 		if (!getComponentArray<T>()->hasComponent(entity)) {
 			ERROR("Trying to access non-existent component of type", ComponentId::strings[roster<T>()]);
 		}
@@ -45,22 +45,16 @@ public:
 	}
 
 	void destroyEntity(Entity entity) {
-		for (int i = 1; i < ComponentId::count; i++) {
-			componentArrays[i]->destroyEntity(entity);
-		}
+		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->destroyEntity(entity);
 	}
 
-	void serialise(std::fstream &stream) {
-		for (int i = 1; i < ComponentId::count; i++) {
-			componentArrays[i]->serialise(stream);
-		}
+	void serialise(std::fstream& stream) {
+		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->serialise(stream);
 		LOG("Component manager serialised")
 	}
 
-	void deserialise(std::fstream &stream) {
-		for (int i = 1; i < ComponentId::count; i++) {
-			componentArrays[i]->deserialise(stream);
-		}
+	void deserialise(std::fstream& stream) {
+		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->deserialise(stream);
 		LOG("Components manager deserialised")
 	}
 
@@ -68,7 +62,7 @@ private:
 	std::array<std::unique_ptr<IComponentArray>, ComponentId::count> componentArrays = {};
 
 	template <typename T>
-	ComponentArray<T> *getComponentArray() {
-		return static_cast<ComponentArray<T> *>(componentArrays[size_t(roster<T>())].get());
+	ComponentArray<T>* getComponentArray() {
+		return static_cast<ComponentArray<T>*>(componentArrays[size_t(roster<T>())].get());
 	}
 };

@@ -69,7 +69,7 @@
 	"swamp": {
 		"grounds": [
 			{
-				"tile": "dirt",
+				"tile": "mud",
 				"resources": {
 					"pebble": 4,
 					"grass": 6,
@@ -180,6 +180,14 @@
 		"grounds": [
 			{
 				"tile": "rock",
+				"resources": {
+					"basalt_rock": 8,
+					"obsidian_rock": 4,
+					"pebble": 6
+				}
+			},
+			{
+				"tile": "gravel",
 				"resources": {
 					"basalt_rock": 8,
 					"obsidian_rock": 4,

@@ -23,17 +23,13 @@ void TextManager::loadFont(std::string path, int size) {
 }
 
 pair TextManager::textSize(std::string& text) {
-	pair size = {0, 0};
-	if (TTF_SizeText(font, text.c_str(), &size.x, &size.y)) ERROR("Failed to determine size of string");
+	pair size(0, 0);
+	if (TTF_SizeText(font, text.c_str(), &size.x, &size.y)) ERROR("Failed to determine size of string", text);
 	return size;
 }
 
 void TextManager::drawText(std::string& text, pair position, bool centred, SDL_Color colour) {
-	if (text.empty()) return;
-	if (!font) {
-		ERROR("Trying to render text without font loaded");
-		return;
-	}
+	if (!font || text.empty()) return;
 	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), colour);
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::instance->renderer, textSurface);
 	pair textSize(textSurface->w, textSurface->h);

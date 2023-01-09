@@ -6,7 +6,9 @@
 ENUM(TileId,
 GRASS,
 DIRT,
+MUD,
 ROCK,
+GRAVEL,
 SAND,
 WATER)
 

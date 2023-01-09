@@ -30,9 +30,9 @@ public:
 				float ang = angle(targetPosition - positionComponent.position);
 				int quad = int(ang / M_PI_4 + 8.5f) % 8;
 				direction = Direction::from_int(quad + 1);
-				if (taxiSteps[quad].x == 1) {
+				if (taxiSteps[direction].x == 1) {
 					facing = Direction::EAST;
-				} else if (taxiSteps[quad].x == -1) {
+				} else if (taxiSteps[direction].x == -1) {
 					facing = Direction::WEST;
 				}
 				state = CreatureState::WALKING;

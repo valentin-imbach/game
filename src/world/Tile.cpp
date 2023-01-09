@@ -10,7 +10,9 @@ std::array<SpriteSheet::value, TileId::count> Tile::spriteSheets = {
     SpriteSheet::NONE,
     SpriteSheet::GRASS,
     SpriteSheet::DIRT,
+    SpriteSheet::MUD,
     SpriteSheet::ROCK,
+    SpriteSheet::GRAVEL,
     SpriteSheet::SAND,
     SpriteSheet::WATER,
 };

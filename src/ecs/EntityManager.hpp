@@ -44,13 +44,13 @@ public:
 	void serialise(std::fstream& stream) {
 		size_t count = availableEntities.size();
 		serialise_object(stream, count);
-		for (Entity entity: availableEntities) {
-			serialise_object(stream, entity);
-		}
+		for (Entity entity : availableEntities) serialise_object(stream, entity);
 		LOG("Entity Manager serialised");
 	}
 
-	int entityCount() { return MAX_ENTITIES - availableEntities.size(); }
+	int entityCount() {
+		return MAX_ENTITIES - availableEntities.size();
+	}
 
 	std::array<Signature, MAX_ENTITIES + 1> signatures;
 

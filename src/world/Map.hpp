@@ -5,8 +5,8 @@
 #include "ResourceTemplates.hpp"
 #include "Generation.hpp"
 
-constexpr int MAP_WIDTH = 50;
-constexpr int MAP_HEIGHT = 50;
+constexpr int MAP_WIDTH = 100;
+constexpr int MAP_HEIGHT = 100;
 
 class Map {
 public:

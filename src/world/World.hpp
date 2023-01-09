@@ -1,12 +1,12 @@
 
 #pragma once
-#include "GuiManager.hpp"
-#include "PlayerSystem.hpp"
-#include "utils.hpp"
 #include "ECS.hpp"
-#include "systems.hpp"
-#include "Map.hpp"
 #include "Events.hpp"
+#include "GuiManager.hpp"
+#include "Map.hpp"
+#include "PlayerSystem.hpp"
+#include "systems.hpp"
+#include "utils.hpp"
 
 using DrawQueue = std::vector<std::pair<float, DrawCall>>;
 
@@ -25,10 +25,12 @@ public:
 
 	Entity player = 0;
 	Entity camera = 0;
+
 private:
 	void rosterComponents();
 	void rosterSystems();
 
+	void init();
 	void generate();
 
 	std::unique_ptr<GuiElement> makeInventory();

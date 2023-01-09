@@ -2,12 +2,11 @@
 #include "Generation.hpp"
 #include "json.hpp"
 
-std::array<std::unique_ptr<BiomeTemplate>, Biome::count> BiomeTemplate::templates = {};
-
 using namespace nlohmann;
 
-BiomeTemplate::BiomeTemplate(std::string name) : name(name) {}
+std::array<std::unique_ptr<BiomeTemplate>, Biome::count> BiomeTemplate::templates = {};
 
+BiomeTemplate::BiomeTemplate(std::string name) : name(name) {}
 BiomeGroundTemplate::BiomeGroundTemplate(TileId::value tileId) : tileId(tileId) {}
 
 BiomeGroundTemplate* BiomeTemplate::getGround(int variation) {

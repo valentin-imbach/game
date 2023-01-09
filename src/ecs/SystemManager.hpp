@@ -1,8 +1,8 @@
 
 #pragma once
-#include "utils.hpp"
 #include "ECS_types.hpp"
 #include "System.hpp"
+#include "utils.hpp"
 
 class SystemManager {
 public:
@@ -16,14 +16,11 @@ public:
 	}
 
 	void destroyEntity(Entity entity) {
-		for (int i = 1; i < int(SystemId::MAX); i++) {
-			systems[i]->entities.erase(entity);
-		}
+		for (int i = 1; i < int(SystemId::MAX); i++) systems[i]->entities.erase(entity);
 	}
 
 	void signatureChange(Entity entity, Signature signature) {
 		for (int i = 1; i < int(SystemId::MAX); i++) {
-			//if (signatures[i].none()) continue;
 			if ((signature & signatures[i]) == signatures[i]) {
 				systems[i]->entities.insert(entity);
 			} else {

@@ -118,9 +118,8 @@ struct InteractionComponent {
 struct Textblock {
 	uint8_t size;
 	std::array<char, 20> chars;
-	Textblock(std::string text = "") : size(0), chars() {
-		assert(text.size() <= 20);
-		size = text.size();
+	Textblock(std::string text = "") : size(text.size()), chars() {
+		assert(size <= 20);
 		for (int i = 0; i < size; i++) chars[i] = text[i]; 
 	}
 

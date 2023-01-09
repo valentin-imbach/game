@@ -40,7 +40,7 @@ public:
 				entityPosition += vec(0, sinf(float(SDL_GetTicks()) / 200) / 30);
 			}
 
-			vec offset = {0.5f, spriteComponent.height + 0.5f};
+			vec offset(0.5f, spriteComponent.height + 0.5f);
 			pair screenPosition = round(BIT * zoom * (entityPosition - spriteComponent.scale * offset - cameraPosition)) + (Window::instance->size) / 2;
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;

@@ -1,22 +1,21 @@
 
 #include "World.hpp"
+
 #include "Components.hpp"
+#include "Crafting.hpp"
 #include "ECS_types.hpp"
 #include "EntityFactory.hpp"
 #include "Events.hpp"
+#include "Generation.hpp"
 #include "GuiElement.hpp"
 #include "Item.hpp"
+#include "ItemTemplates.hpp"
 #include "Sprite.hpp"
 #include "Tile.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
 
-#include "Crafting.hpp"
-#include "Generation.hpp"
-#include "ItemTemplates.hpp"
-
-World::World(std::string name)
-	: name(name) {
+void World::init() {
 	rosterComponents();
 	rosterSystems();
 
@@ -27,12 +26,16 @@ World::World(std::string name)
 	CraftingRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
 
-	map = std::make_unique<Map>(1729);
-
 	guiManager.ecs = &ecs;
 	guiManager.world = this;
 	EntityFactory::ecs = &ecs;
 	EntityFactory::gridMap = &gridMap;
+}
+
+World::World(std::string name)
+	: name(name) {
+	init();
+	map = std::make_unique<Map>(1729);
 
 	Entity playerEntity = EntityFactory::createPlayer({8, 8});
 
@@ -104,42 +107,14 @@ World::World(std::string name)
 	ecs.addComponent<HealthComponent>({20, 20}, monster);
 	ecs.addComponent<MonsterAiComponent>({}, monster);
 
-	// Entity stick = ecs.createEntity();
-	// ecs.addComponent<PositionComponent>({{6, 8}}, stick);
-	// SpriteStack stickSprites;
-	// stickSprites.addSprite({SpriteSheet::PICKUPS, {0, 0}, {1, 1}});
-	// ecs.addComponent<SpriteComponent>({stickSprites, 0}, stick);
-	// ecs.addComponent<GridComponent>({{6, 8}, {1, 1}, false}, stick);
-	// ecs.addComponent<HealthComponent>({1, 1}, stick);
-	// ecs.addComponent<ResourceComponent>({ToolId::NONE}, stick);
-	// LootTable lootTable;
-	// lootTable.addLoot({ItemId::SPRUCE_STICK, {1, 2}});
-	// ecs.addComponent<LootComponent>({lootTable}, stick);
-
-	EntityFactory::createResource(ResourceId::BRANCH, {6, 8});
-
 	generate();
 }
 
-World::World(std::fstream &stream)
+World::World(std::fstream& stream)
 	: ecs(stream) {
-	rosterComponents();
-	rosterSystems();
+	init();
 	ecs.deserialiseComponents(stream);
-
-	ItemPropertyTemplate::setTemplates();
-	ItemKindTemplate::setTemplates();
-	ItemTemplate::setTemplates();
-	ResourceTemplate::setTemplates();
-	CraftingRecipe::setRecipes();
-	BiomeTemplate::setTemplates();
-
 	map = std::make_unique<Map>(1729);
-
-	guiManager.ecs = &ecs;
-	guiManager.world = this;
-	EntityFactory::ecs = &ecs;
-	EntityFactory::gridMap = &gridMap;
 
 	player = playerSystem->getPlayer();
 
@@ -156,13 +131,10 @@ void World::generate() {
 			pair position(x, y);
 			Biome::value biome = map->getBiome(position);
 			int variation = map->getVariation(position);
-
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
-
 			int vegetation = map->getVegetation(position);
 			int choice = rand_int(seed++, 50 + vegetation);
-
-			for (auto& p: ground->resources) {
+			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
+			for (auto& p : ground->resources) {
 				choice -= p.second;
 				if (choice < 0) {
 					EntityFactory::createResource(p.first, position);
@@ -202,25 +174,44 @@ void World::rosterComponents() {
 }
 
 void World::rosterSystems() {
-	entityDrawSystem = ecs.rosterSystem<EntityDrawSystem>(SystemId::ENTITY_DRAW, {ComponentId::SPRITE, ComponentId::POSITION});
-	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT, {ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION, ComponentId::COLLIDER});
-	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER, {ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
-	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA, {ComponentId::CAMERA, ComponentId::POSITION});
-	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION, {ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
-	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION, {ComponentId::COLLIDER, ComponentId::POSITION});
-	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP, {ComponentId::PLAYER, ComponentId::INVENTORY});
-	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE, {ComponentId::CAMERA, ComponentId::POSITION});
-	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI, {ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
-	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE, {ComponentId::RESOURCE, ComponentId::POSITION, ComponentId::HEALTH});
-	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH, {ComponentId::HEALTH});
-	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT, {ComponentId::LOOT, ComponentId::HEALTH, ComponentId::POSITION});
-	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE, {ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
-	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER, {ComponentId::PLAYER});
-	colldierDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW, {ComponentId::COLLIDER, ComponentId::POSITION});
-	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID, {ComponentId::GRID});
-	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION, {ComponentId::INTERACTION});
-	monsterAiSystem = ecs.rosterSystem<MonsterAiSystem>(SystemId::MONSTER_AI, {ComponentId::CREATURE_STATE, ComponentId::MONSTER_AI, ComponentId::DIRECTION});
-	gatherSystem = ecs.rosterSystem<GatherSystem>(SystemId::GATHER, {ComponentId::GATHER, ComponentId::POSITION, ComponentId::LOOT});
+	entityDrawSystem = ecs.rosterSystem<EntityDrawSystem>(SystemId::ENTITY_DRAW,
+		{ComponentId::SPRITE, ComponentId::POSITION});
+	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT,
+		{ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION, ComponentId::COLLIDER});
+	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER,
+		{ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
+	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA,
+		{ComponentId::CAMERA, ComponentId::POSITION});
+	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION,
+		{ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
+	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION,
+		{ComponentId::COLLIDER, ComponentId::POSITION});
+	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,
+		{ComponentId::PLAYER, ComponentId::INVENTORY});
+	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE,
+		{ComponentId::CAMERA, ComponentId::POSITION});
+	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI,
+		{ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
+	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE,
+		{ComponentId::RESOURCE, ComponentId::POSITION, ComponentId::HEALTH});
+	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH,
+		{ComponentId::HEALTH});
+	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,
+		{ComponentId::LOOT, ComponentId::HEALTH, ComponentId::POSITION});
+	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE,
+		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
+	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER,
+		{ComponentId::PLAYER});
+	colldierDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
+		{ComponentId::COLLIDER, ComponentId::POSITION});
+	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID,
+		{ComponentId::GRID});
+	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION,
+		{ComponentId::INTERACTION});
+	monsterAiSystem = ecs.rosterSystem<MonsterAiSystem>(SystemId::MONSTER_AI,
+		{ComponentId::CREATURE_STATE, ComponentId::MONSTER_AI, ComponentId::DIRECTION});
+	gatherSystem = ecs.rosterSystem<GatherSystem>(SystemId::GATHER,
+		{ComponentId::GATHER, ComponentId::POSITION, ComponentId::LOOT});
 
 	LOG("Systems rostered")
 }
@@ -259,8 +250,7 @@ void World::update(uint dt) {
 	for (Entity entity : ecs.dead) {
 		if (ecs.hasComponent<ResourceComponent>(entity)) {
 			pair pos = round(ecs.getComponent<PositionComponent>(entity).position);
-			auto it = gridMap.find(pos);
-			if (it == gridMap.end()) {
+			if (gridMap.find(pos) == gridMap.end()) {
 				ERROR("Resource was not in gridMap");
 				continue;
 			}
@@ -275,8 +265,8 @@ void World::update(uint dt) {
 
 std::unique_ptr<GuiElement> World::makeInventory() {
 	if (!player) return nullptr;
-	InventoryComponent &inventoryComponent = ecs.getComponent<InventoryComponent>(player);
-	PlayerComponent &playerComponent = ecs.getComponent<PlayerComponent>(player);
+	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
 	std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
@@ -286,8 +276,8 @@ std::unique_ptr<GuiElement> World::makeInventory() {
 
 std::unique_ptr<GuiElement> World::makeMenu() {
 	if (!player) return nullptr;
-	InventoryComponent &inventoryComponent = ecs.getComponent<InventoryComponent>(player);
-	PlayerComponent &playerComponent = ecs.getComponent<PlayerComponent>(player);
+	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
 
 	std::unique_ptr<TabWidget> gui = std::make_unique<TabWidget>(pair(0, 0), pair(150, 150));
@@ -298,25 +288,22 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 
 	gui->addTab(std::move(tab1));
 	gui->addTab(std::move(tab2));
-
-	// gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
-	// gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, &playerComponent.hotbar));
 	return gui;
 }
 
 void World::handleEvents() {
 	if (!player) return;
-	PlayerComponent &playerComponent = ecs.getComponent<PlayerComponent>(player);
-	CreatureStateComponent &creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
-	PositionComponent &positionComponent = ecs.getComponent<PositionComponent>(player);
-	ItemContainer &activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
+	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
 
 	for (InputEvent event : inputEvents) {
 		if (guiManager.handleEvent(event)) continue;
 		if (event.id == InputEventId::INVENTORY) {
 			guiManager.open(makeInventory(), makeMenu());
 		} else if (event.id == InputEventId::THROW) {
-			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing - 1];
+			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing];
 			ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);
 			activeItemContainer.clear();
 		}
@@ -340,13 +327,11 @@ void World::handleEvents() {
 			damageSystem->update(player, position, activeItemContainer.item);
 		} else if (event.id == InputEventId::SECONDARY) {
 			std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
-			if (gui) {
-				guiManager.open(makeInventory(), std::move(gui));
-			}
+			if (gui) guiManager.open(makeInventory(), std::move(gui));
 		}
 	}
 }
 
-void World::serialise(std::fstream &stream) {
+void World::serialise(std::fstream& stream) {
 	ecs.serialise(stream);
 }

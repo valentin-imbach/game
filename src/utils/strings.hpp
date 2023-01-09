@@ -20,6 +20,8 @@ inline std::string& string_lower(std::string& str) {
 	return str;
 }
 
+
+
 inline bool string_is_int(const std::string& s) {
 	return !s.empty() && std::all_of(s.begin() + 1, s.end(), ::isdigit) && (std::isdigit(s[0]) || s[0] == '-');
 }

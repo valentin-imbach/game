@@ -27,10 +27,10 @@ inline float smoothstep(float x) {
 	pair cell = floor(position);
 	vec offset = position - cell;
 	float dots[4] = {
-	    polar(rand_float(hash(seed, cell + steps[0]))) * (offset - steps[0]),
-	    polar(rand_float(hash(seed, cell + steps[1]))) * (offset - steps[1]),
-	    polar(rand_float(hash(seed, cell + steps[2]))) * (offset - steps[2]),
-	    polar(rand_float(hash(seed, cell + steps[3]))) * (offset - steps[3])};
+		polar(rand_float(hash(seed, cell + steps[0]))) * (offset - steps[0]),
+		polar(rand_float(hash(seed, cell + steps[1]))) * (offset - steps[1]),
+		polar(rand_float(hash(seed, cell + steps[2]))) * (offset - steps[2]),
+		polar(rand_float(hash(seed, cell + steps[3]))) * (offset - steps[3])};
 	float left = dots[0] + smoothstep(offset.y) * (dots[2] - dots[0]);
 	float right = dots[1] + smoothstep(offset.y) * (dots[3] - dots[1]);
 	return left + smoothstep(offset.x) * (right - left);

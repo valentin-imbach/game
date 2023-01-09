@@ -33,11 +33,10 @@ public:
 				if (bernoulli(ticks, 0.3f) || animalAiComponent.panic) state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
-					uint rand = rand_int(seed, 0, 8);
-					direction = Direction::from_int(rand + 1);
-					if (taxiSteps[rand].x == 1) {
+					direction = Direction::from_int(rand_int(seed, 1, 9));
+					if (taxiSteps[direction].x == 1) {
 						facing = Direction::EAST;
-					} else if (taxiSteps[rand].x == -1) {
+					} else if (taxiSteps[direction].x == -1) {
 						facing = Direction::WEST;
 					}
 				}

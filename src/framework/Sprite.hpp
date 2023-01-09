@@ -26,7 +26,9 @@ ICONS_BLACK,
 STATIONS,
 MONSTER,
 TAB,
-MENU)
+MENU,
+GRAVEL,
+MUD)
 
 class Sprite {
 public:

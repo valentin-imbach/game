@@ -2,7 +2,8 @@
 #include "Console.hpp"
 #include "Game.hpp"
 
-Console::Console(Game* game) : game(game) {}
+Console::Console(Game* game)
+	: game(game) {}
 
 void Console::draw() {
 	if (!active) return;
@@ -29,41 +30,40 @@ bool Console::handleEvent(SDL_Event event) {
 		}
 	} else if (event.type == SDL_KEYDOWN) {
 		switch (event.key.keysym.scancode) {
-			case SDL_SCANCODE_BACKSPACE:
-				if (input.length() > 0) {
-					input.pop_back();
-					index = history.size();
-				}
-				break;
-			case SDL_SCANCODE_ESCAPE:
-				active = false;
-				break;
-			case SDL_SCANCODE_RETURN:
-				if (execute(input)) {
-					history.push_back(input);
-					input.clear();
-					index = history.size();
-				}
-				break;
-			case SDL_SCANCODE_UP:
-				index = std::max(index, 1UL) - 1;
-				if (index < history.size()) input = history[index];
-				break;
-			case SDL_SCANCODE_DOWN:
-				index = std::min(index + 1, history.size());
-				if (index == history.size()) input.clear();
-				if (index < history.size()) input = history[index];
-				break;
-			default:
-				return true;
+		case SDL_SCANCODE_BACKSPACE:
+			if (input.length() > 0) {
+				input.pop_back();
+				index = history.size();
+			}
+			break;
+		case SDL_SCANCODE_ESCAPE:
+			active = false;
+			break;
+		case SDL_SCANCODE_RETURN:
+			if (execute(input)) {
+				history.push_back(input);
+				input.clear();
+				index = history.size();
+			}
+			break;
+		case SDL_SCANCODE_UP:
+			index = std::max(index, 1UL) - 1;
+			if (index < history.size()) input = history[index];
+			break;
+		case SDL_SCANCODE_DOWN:
+			index = std::min(index + 1, history.size());
+			if (index == history.size()) input.clear();
+			if (index < history.size()) input = history[index];
+			break;
+		default:
+			return true;
 		}
-		
 	}
 	return true;
 }
 
 bool Console::execute(std::string input) {
-	if (!game -> world) return false;
+	if (!game->world) return false;
 	ECS& ecs = game->world->ecs;
 	Entity player = game->world->player;
 	Entity camera = game->world->camera;
@@ -81,7 +81,7 @@ bool Console::execute(std::string input) {
 		if (!player) return false;
 		ecs.getComponent<HealthComponent>(player).health = 0;
 	} else if (inputs[0] == "god") {
-		//MessageManager::notify(ToggleGodMessage());
+		// MessageManager::notify(ToggleGodMessage());
 	} else if (inputs[0] == "tp") {
 		if (inputs.size() < 3) return false;
 		if (!player) return false;
@@ -95,18 +95,17 @@ bool Console::execute(std::string input) {
 		pair position = round(ecs.getComponent<PositionComponent>(player).position);
 		EntityFactory::createResource(resourceId, position);
 	} else if (inputs[0] == "cows") {
-		if (inputs.size() < 2) return false;
-		if (!player) return false;
+		if (inputs.size() < 2 || !player) return false;
 		int n = std::stoi(inputs[1]);
 		vec position = ecs.getComponent<PositionComponent>(player).position;
 		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, position);
 	} else if (inputs[0] == "give") {
-		if (inputs.size() < 2) return false;
+		if (inputs.size() < 2 || !player) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);
-		if (!itemId || !player) return false;
+		if (!itemId) return false;
 		uint count = 1;
 		if (inputs.size() > 2) {
-			//if (!isUInt(inputs[2])) return false;
+			// if (!isUInt(inputs[2])) return false;
 			count = std::stoi(inputs[2]);
 		}
 		while (count > 0) {
@@ -120,9 +119,9 @@ bool Console::execute(std::string input) {
 		if (!player) return false;
 		ecs.getComponent<InventoryComponent>(player).inventory.clear(true);
 	} else if (inputs[0] == "tile") {
-		if (inputs.size() != 2) return false;
+		if (inputs.size() != 2 || !game->world || !player) return false;
 		TileId::value tileId = TileId::from_string(inputs[1]);
-		if (!tileId || !game->world || !player) return false;
+		if (!tileId) return false;
 		pair position = round(ecs.getComponent<PositionComponent>(player).position);
 		game->world->map->tiles[position.x][position.y]->tileId = tileId;
 		game->world->map->updateStyle(position, true);
@@ -147,19 +146,19 @@ bool Console::execute(std::string input) {
 			ERROR("No file");
 			return true;
 		}
-		game -> world -> serialise(file);
+		game->world->serialise(file);
 		file.close();
 		LOG("World saved");
-	}  else if (inputs[0] == "load") {
+	} else if (inputs[0] == "load") {
 		std::fstream file = std::fstream("../saves/save.binary", std::ios::in | std::ios::binary);
 		if (!file) {
 			ERROR("No file");
 			return true;
 		}
-		game -> world = std::make_unique<World>(file);
+		game->world = std::make_unique<World>(file);
 		file.close();
 		LOG("World loaded");
-	}else {
+	} else {
 		return false;
 	}
 

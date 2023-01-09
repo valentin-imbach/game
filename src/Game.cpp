@@ -108,8 +108,8 @@ void Game::limitFrameRate(int fps) {
 
 	dt = past;
 
-	sample.push(dt);
-	sampleSum += dt;
+	sample.push(past);
+	sampleSum += past;
 	if (sample.size() > SAMPLE_SIZE) {
 		sampleSum -= sample.front();
 		sample.pop();

@@ -8,14 +8,10 @@ Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uint8_t f
 }
 
 void Sprite::draw(pair position, int scale, bool centered) {
-	if (!spriteSheet) {
-		//WARNING("Trying to draw NULL sprite");
-		return;
-	}
-	uint ticks = SDL_GetTicks();
-	int frame = frameCount > 1 ? (((ticks - animationStart) / frameDuration) % frameCount) : 0;
+	if (!spriteSheet) return;
+	int frame = frameCount > 1 ? (((SDL_GetTicks() - animationStart) / frameDuration) % frameCount) : 0;
 	pair offset(frame, 0);
-	SDL_Texture* texture = spriteSheets[int(spriteSheet)];
+	SDL_Texture* texture = spriteSheets[spriteSheet];
 	TextureManager::drawTexture(texture, BIT * (source + offset), BIT * size, position, scale, centered);
 }
 

@@ -1,8 +1,10 @@
 
 #include "Map.hpp"
+
 #include "utils.hpp"
 
-Map::Map(uint seed) : mapSeed(seed) {
+Map::Map(uint seed)
+	: mapSeed(seed) {
 	generate();
 	analyse(100000);
 }
@@ -64,8 +66,7 @@ void Map::generate() {
 			pair position(x, y);
 			Biome::value biome = getBiome(position);
 			int variation = getVariation(position);
-
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome] -> getGround(variation);
+			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			tiles[x][y] = std::make_unique<Tile>(ground->tileId);
 		}
 	}
@@ -87,46 +88,47 @@ TileId::value Map::getTileId(pair position) {
 void Map::updateStyle(pair position, bool propagate) {
 	std::vector<std::pair<TileId::value, Sprite>>& sprites = tiles[position.x][position.y]->sprites;
 	sprites.clear();
+
 	TileId::value tileId = getTileId(position);
 	pair baseVariant = rand_choice<pair>(seed++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
-	Sprite baseSprite = Sprite(Tile::spriteSheets[int(tileId)], baseVariant);
+	Sprite baseSprite = Sprite(Tile::spriteSheets[tileId], baseVariant);
 	sprites.emplace_back(tileId, baseSprite);
 
 	for (int d = 0; d < 8; d += 2) {
-		TileId::value id = getTileId(position + taxiSteps[d]);
+		TileId::value id = getTileId(position + taxiSteps[d + 1]);
 		if (id == TileId::NONE || id >= tileId) continue;
-		TileId::value left = getTileId(position + taxiSteps[(d + 2) % 8]);
-		TileId::value right = getTileId(position + taxiSteps[(d + 6) % 8]);
-		TileId::value opposite = getTileId(position + taxiSteps[(d + 4) % 8]);
+		TileId::value left = getTileId(position + taxiSteps[(d + 2) % 8 + 1]);
+		TileId::value right = getTileId(position + taxiSteps[(d + 6) % 8 + 1]);
+		TileId::value opposite = getTileId(position + taxiSteps[(d + 4) % 8 + 1]);
 
 		// Straights
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-			Sprite sprite = Sprite(Tile::spriteSheets[int(id)], rand_choice<pair>(seed++, variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[id], rand_choice<pair>(seed++, variants[d / 2]));
 			sprites.emplace_back(id, sprite);
 		}
 
 		// Us
 		if (left == id && right == id && opposite != id) {
 			pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
-			Sprite sprite = Sprite(Tile::spriteSheets[int(id)], variants[d / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[d / 2]);
 			sprites.emplace_back(id, sprite);
 		}
 	}
 
 	for (int d = 1; d < 8; d += 2) {
-		TileId::value id = getTileId(position + taxiSteps[d]);
+		TileId::value id = getTileId(position + taxiSteps[d + 1]);
 		if (id == TileId::NONE) continue;
-		TileId::value left = getTileId(position + taxiSteps[(d + 1) % 8]);
-		TileId::value left2 = getTileId(position + taxiSteps[(d + 3) % 8]);
-		TileId::value right = getTileId(position + taxiSteps[(d + 7) % 8]);
-		TileId::value right2 = getTileId(position + taxiSteps[(d + 5) % 8]);
+		TileId::value left = getTileId(position + taxiSteps[(d + 1) % 8 + 1]);
+		TileId::value left2 = getTileId(position + taxiSteps[(d + 3) % 8 + 1]);
+		TileId::value right = getTileId(position + taxiSteps[(d + 7) % 8 + 1]);
+		TileId::value right2 = getTileId(position + taxiSteps[(d + 5) % 8 + 1]);
 
 		// Curves
 		TileId::value curve = TileId::MAX;
 		if (left < tileId && left == right && left2 != left && right2 != right) {
 			pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
-			Sprite sprite = Sprite(Tile::spriteSheets[int(left)], variants[d / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[left], variants[d / 2]);
 			sprites.emplace_back(left, sprite);
 			curve = left;
 		}
@@ -134,45 +136,38 @@ void Map::updateStyle(pair position, bool propagate) {
 		// Corners
 		if (id < tileId && left != id && right != id && id < curve) {
 			pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
-			Sprite sprite = Sprite(Tile::spriteSheets[int(id)], variants[d / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[d / 2]);
 			sprites.emplace_back(id, sprite);
 		}
 	}
 
 	// Os
-	TileId::value id1 = getTileId(position + taxiSteps[0]);
-	TileId::value id2 = getTileId(position + taxiSteps[2]);
-	TileId::value id3 = getTileId(position + taxiSteps[4]);
-	TileId::value id4 = getTileId(position + taxiSteps[6]);
+	TileId::value id1 = getTileId(position + taxiSteps[1]);
+	TileId::value id2 = getTileId(position + taxiSteps[3]);
+	TileId::value id3 = getTileId(position + taxiSteps[5]);
+	TileId::value id4 = getTileId(position + taxiSteps[7]);
 	if (id1 < tileId && id1 != TileId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
-		Sprite sprite = Sprite(Tile::spriteSheets[int(id1)], {4, 4});
+		Sprite sprite = Sprite(Tile::spriteSheets[id1], {4, 4});
 		sprites.emplace_back(id1, sprite);
 	}
 
-	auto lambda = [](const std::pair<TileId::value, Sprite> left, const std::pair<TileId::value, Sprite> right) {
-		return left.first > right.first;
-	};
-
-	std::sort(sprites.begin(), sprites.end(), lambda);
+	std::sort(sprites.begin(), sprites.end(), [](const auto left, const auto right) { return left.first > right.first; });
 
 	if (propagate) {
-		for (pair step : taxiSteps) {
-			updateStyle(position + step);
-		}
+		for (pair step : taxiSteps) updateStyle(position + step);
 	}
 }
 
 void Map::analyse(int samples) {
 	uint count[Biome::count] = {};
-	uint total = 0;
 	for (int i = 0; i < samples; i++) {
 		int x = rand_int(seed++, -10000, 10000);
 		int y = rand_int(seed++, -10000, 10000);
-		count[getBiome({x, y})] += 1;
-		total += 1;
+		pair position(x, y);
+		count[getBiome(position)] += 1;
 	}
 	for (int b = 1; b < Biome::count; b++) {
-		int percent = round((100.0f * count[b]) / total);
+		int percent = round((100.0f * count[b]) / samples);
 		LOG(Biome::strings[b], std::to_string(percent) + "%");
 	}
 }

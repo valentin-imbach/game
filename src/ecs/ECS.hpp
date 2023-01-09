@@ -17,7 +17,6 @@ public:
 		for (Entity entity = 1; entity <= MAX_ENTITIES; entity++) {
 			for (int comp = 1; comp < ComponentId::count; comp++) {
 				if (componentManager.has(entity, ComponentId::from_int(comp))) {
-					//LOG("Comp:", entity, comp);
 					entityManager.signatures[entity].set(comp, true);
 				}
 			}
@@ -25,7 +24,9 @@ public:
 		}
 	}
 
-	Entity createEntity() { return entityManager.createEntity(); }
+	Entity createEntity() {
+		return entityManager.createEntity();
+	}
 
 	int entityCount() {
 		return entityManager.entityCount();
@@ -86,28 +87,18 @@ public:
 
 	static Signature makeSiganture(std::vector<ComponentId::value>&& ids) {
 		Signature signature;
-		for (ComponentId::value id : ids) { signature.set(size_t(id), true); }
+		for (ComponentId::value id : ids) signature.set(size_t(id), true);
 		return signature;
 	}
 
 	void update() {
-		for (Entity entity : dead) {
-			destroyEntity(entity);
-		}
+		for (Entity entity : dead) destroyEntity(entity);
 		dead.clear();
 	}
 
 	std::vector<Entity> dead;
 
 private:
-
-	// template <typename T>
-	// T* rosterSystem(SystemId::value id, Signature signature) {
-	// 	T* system = systemManager.roster<T>(id, signature);
-	// 	system->ecs = this;
-	// 	return system;
-	// }
-
 	EntityManager entityManager;
 	ComponentManager componentManager;
 	SystemManager systemManager;
