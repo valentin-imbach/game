@@ -51,11 +51,12 @@ private:
 	LootSystem* lootSystem;
 	DamageSystem* damageSystem;
 	PlayerSystem* playerSystem;
-	ColliderDrawSystem* colldierDrawSystem;
+	ColliderDrawSystem* colliderDrawSystem;
 	GridSystem* gridSystem;
 	InteractionSystem* interactionSystem;
 	MonsterAiSystem* monsterAiSystem;
 	GatherSystem* gatherSystem;
+	DeathSystem* deathSystem;
 
 	GuiManager guiManager;
 

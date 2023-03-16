@@ -91,12 +91,8 @@ public:
 		return signature;
 	}
 
-	void update() {
-		for (Entity entity : dead) destroyEntity(entity);
-		dead.clear();
-	}
+	void update() {}
 
-	std::vector<Entity> dead;
 
 private:
 	EntityManager entityManager;

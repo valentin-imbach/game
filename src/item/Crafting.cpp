@@ -24,7 +24,7 @@ Entity CraftingIngredient::take(Entity item) {
 	ItemComponent &itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
 	itemComponent.count -= count;
 	if (itemComponent.count <= 0) {
-		EntityFactory::ecs->dead.push_back(item);
+		EntityFactory::ecs->addComponent(DeathComponent(), item);
 		return 0;
 	}
 	return item;

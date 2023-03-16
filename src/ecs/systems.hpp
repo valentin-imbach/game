@@ -19,3 +19,4 @@
 #include "InteractionSystem.hpp"
 #include "MonsterAiSystem.hpp"
 #include "GatherSystem.hpp"
+#include "DeathSystem.hpp"

@@ -169,6 +169,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
 	ecs.rosterComponent<GatherComponent>(ComponentId::GATHER);
+	ecs.rosterComponent<DeathComponent>(ComponentId::DEATH);
 
 	LOG("Components rostered");
 }
@@ -197,12 +198,12 @@ void World::rosterSystems() {
 	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH,
 		{ComponentId::HEALTH});
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,
-		{ComponentId::LOOT, ComponentId::HEALTH, ComponentId::POSITION});
+		{ComponentId::LOOT, ComponentId::DEATH, ComponentId::POSITION});
 	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE,
 		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
 	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER,
 		{ComponentId::PLAYER});
-	colldierDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
+	colliderDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID,
 		{ComponentId::GRID});
@@ -212,6 +213,8 @@ void World::rosterSystems() {
 		{ComponentId::CREATURE_STATE, ComponentId::MONSTER_AI, ComponentId::DIRECTION});
 	gatherSystem = ecs.rosterSystem<GatherSystem>(SystemId::GATHER,
 		{ComponentId::GATHER, ComponentId::POSITION, ComponentId::LOOT});
+	deathSystem = ecs.rosterSystem<DeathSystem>(SystemId::DEATH,
+		{ComponentId::DEATH});
 
 	LOG("Systems rostered")
 }
@@ -234,30 +237,22 @@ void World::update(uint dt) {
 	collisionSystem->update(collisions);
 
 	itemPickupSystem->update(collisions);
-	lootSystem->update();
 
 	cameraSystem->update(player);
 	healthSystem->update();
+
+	lootSystem->update();
 
 	creatureAnimationSystem->update();
 
 	tileDrawSystem->update(map.get());
 	entityDrawSystem->update(camera);
-	colldierDrawSystem->update(camera);
+	colliderDrawSystem->update(camera);
 
 	guiManager.draw();
 
-	for (Entity entity : ecs.dead) {
-		if (ecs.hasComponent<ResourceComponent>(entity)) {
-			pair pos = round(ecs.getComponent<PositionComponent>(entity).position);
-			if (gridMap.find(pos) == gridMap.end()) {
-				ERROR("Resource was not in gridMap");
-				continue;
-			}
-			gridMap.erase(gridMap.find(pos));
-		}
-	}
-	ecs.update();
+	gridSystem->update(&gridMap);
+	deathSystem->update();
 
 	player = playerSystem->getPlayer();
 	camera = cameraSystem->getCamera();

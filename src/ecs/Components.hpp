@@ -135,3 +135,5 @@ struct NameComponent {
 };
 
 struct GatherComponent {};
+
+struct DeathComponent {};

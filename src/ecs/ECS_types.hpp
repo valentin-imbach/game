@@ -25,7 +25,8 @@ GRID,
 INTERACTION,
 NAME,
 MONSTER_AI,
-GATHER)
+GATHER,
+DEATH)
 
 ENUM(SystemId,
 ENTITY_DRAW,
@@ -46,7 +47,8 @@ COLLIDER_DRAW,
 GRID,
 INTERACTION,
 MONSTER_AI,
-GATHER)
+GATHER,
+DEATH)
 
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;
