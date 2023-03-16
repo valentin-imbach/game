@@ -1,8 +1,6 @@
 
 #pragma once
-#include "ECS_types.hpp"
 #include "System.hpp"
-#include "Components.hpp"
 #include "ECS.hpp"
 
 class DeathSystem : public System {

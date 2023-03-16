@@ -57,6 +57,7 @@ private:
 	MonsterAiSystem* monsterAiSystem;
 	GatherSystem* gatherSystem;
 	DeathSystem* deathSystem;
+	InventoryDeathSystem* inventoryDeathSystem;
 
 	GuiManager guiManager;
 

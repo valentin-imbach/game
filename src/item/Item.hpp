@@ -28,5 +28,6 @@ public:
 
 	[[nodiscard]] Entity add(Entity item);
 
+	int count();
 	void clear(bool destroy = false);
 };

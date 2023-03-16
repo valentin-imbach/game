@@ -215,6 +215,8 @@ void World::rosterSystems() {
 		{ComponentId::GATHER, ComponentId::POSITION, ComponentId::LOOT});
 	deathSystem = ecs.rosterSystem<DeathSystem>(SystemId::DEATH,
 		{ComponentId::DEATH});
+	inventoryDeathSystem = ecs.rosterSystem<InventoryDeathSystem>(SystemId::INVENTORY_DEATH,
+		{ComponentId::DEATH, ComponentId::INVENTORY});
 
 	LOG("Systems rostered")
 }
@@ -252,6 +254,7 @@ void World::update(uint dt) {
 	guiManager.draw();
 
 	gridSystem->update(&gridMap);
+	inventoryDeathSystem->update();
 	deathSystem->update();
 
 	player = playerSystem->getPlayer();

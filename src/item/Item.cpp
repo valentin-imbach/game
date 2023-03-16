@@ -161,6 +161,16 @@ Entity Inventory::add(Entity item) {
 	return item;
 }
 
+int Inventory::count() {
+	int counter = 0;
+	for (int y = 0; y < size.y; y++) {
+		for (int x = 0; x < size.x; x++) {
+			if (itemContainers[x][y].item) counter += 1;
+		}
+	}
+	return counter;
+}
+
 void Inventory::clear(bool destroy) {
 	for (int y = 0; y < size.y; y++) {
 		for (int x = 0; x < size.x; x++) {

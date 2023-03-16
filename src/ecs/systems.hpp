@@ -20,3 +20,4 @@
 #include "MonsterAiSystem.hpp"
 #include "GatherSystem.hpp"
 #include "DeathSystem.hpp"
+#include "InventoryDeathSystem.hpp"

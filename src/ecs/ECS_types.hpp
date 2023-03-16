@@ -48,7 +48,8 @@ GRID,
 INTERACTION,
 MONSTER_AI,
 GATHER,
-DEATH)
+DEATH,
+INVENTORY_DEATH)
 
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;
