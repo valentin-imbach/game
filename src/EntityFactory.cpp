@@ -48,7 +48,7 @@ bool EntityFactory::free(pair position, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair offset(x,y);
-			if ((*gridMap)[position + offset]) return false;
+			if (gridMap -> find(position + offset) != gridMap -> end()) return false;
 		}
 	}
 	return true;
@@ -63,7 +63,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	if (!resource) return 0;
 
 	ecs->addComponent<PositionComponent>({position}, resource);
-	ecs->addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid}, resource);
+	ecs->addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid, false}, resource);
 
 	SpriteStack spriteStack;
 	uint variation = rand_uint(seed++, resourceTemplate->variations);
@@ -75,13 +75,6 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	ecs->addComponent<ResourceComponent>({resourceTemplate->toolId}, resource);
 	ecs->addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	ecs->addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
-
-	for (int x = 0; x < resourceTemplate->size.x; x++) {
-		for (int y = 0; y < resourceTemplate->size.y; y++) {
-			pair offset(x,y);
-			(*gridMap)[position + offset] = resource;
-		}
-	}
 	
 	return resource;
 }

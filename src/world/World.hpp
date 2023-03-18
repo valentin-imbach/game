@@ -65,6 +65,7 @@ private:
 
 	std::unique_ptr<Map> map;
 	GridMap gridMap;
+	std::unordered_set<pair> solidMap;
 
 	friend class Game;
 	friend class Console;

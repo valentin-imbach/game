@@ -106,6 +106,7 @@ struct GridComponent {
 	pair anker;
 	pair size;
 	bool solid;
+	bool linked;
 };
 
 ENUM(InteractionId,

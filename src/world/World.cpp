@@ -121,7 +121,7 @@ World::World(std::fstream& stream)
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	gridSystem->rebuild(&gridMap);
+	gridSystem->rebuild(gridMap);
 }
 
 void World::generate() {
@@ -233,9 +233,9 @@ void World::update(uint dt) {
 	controllerSystem->update(inputState, !guiManager.active());
 
 	animalAiSystem->update();
-	monsterAiSystem->update(player);
+	monsterAiSystem->update(player, solidMap);
 
-	creatureMovementSystem->update(dt, gridMap, map.get());
+	creatureMovementSystem->update(dt, solidMap, map.get());
 	collisionSystem->update(collisions);
 
 	itemPickupSystem->update(collisions);
@@ -253,7 +253,7 @@ void World::update(uint dt) {
 
 	guiManager.draw();
 
-	gridSystem->update(&gridMap);
+	gridSystem->update(gridMap, solidMap);
 	inventoryDeathSystem->update();
 	deathSystem->update();
 

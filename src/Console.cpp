@@ -1,6 +1,7 @@
 
 #include "Console.hpp"
 #include "Game.hpp"
+#include "pathfinding.hpp"
 
 Console::Console(Game* game)
 	: game(game) {}
@@ -158,6 +159,10 @@ bool Console::execute(std::string input) {
 		game->world = std::make_unique<World>(file);
 		file.close();
 		LOG("World loaded");
+	} else if (inputs[0] == "test") {
+		for (Direction::value dir : PathFinder::bfs({5,8}, {8,8}, game->world->solidMap)) {
+			LOG(Direction::to_string(dir));
+		}
 	} else {
 		return false;
 	}

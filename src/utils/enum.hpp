@@ -1,8 +1,9 @@
 #pragma once
+#include "strings.hpp"
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <vector>
-#include "strings.hpp"
 
 #define ENUM(name, items...)                                                         \
 	namespace name {                                                                 \
@@ -23,4 +24,7 @@
 	inline std::string to_string(value val) {                                        \
 		return strings[val];                                                         \
 	}                                                                                \
-	};
+	};                                                                               \
+	inline std::ostream& operator<<(std::ostream& s, name::value val) {              \
+		return s << '(' << to_string(val) << ')';                                    \
+	}

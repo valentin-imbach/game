@@ -7,7 +7,7 @@
 
 class CreatureMovementSystem : public System {
 public:
-	void update(uint dt, GridMap& gridMap, Map* map) {
+	void update(uint dt, std::unordered_set<pair>& solidMap, Map* map) {
 		for (Entity entity : entities) {
 			Direction::value direction = ecs->getComponent<DirectionComponent>(entity).direction;
 			float speed = ecs->getComponent<MovementComponent>(entity).speed;
@@ -27,33 +27,30 @@ public:
 				forceComponent.force *= 0.9f;
 			}
 
-			if (!isColliding(collider, newPosition, gridMap, map) || isColliding(collider, position, gridMap, map)) {
+			if (!isColliding(collider, newPosition, solidMap, map) || isColliding(collider, position, solidMap, map)) {
 				position = newPosition;
-			} else if (!isColliding(collider, {newPosition.x, position.y}, gridMap, map)) {
+			} else if (!isColliding(collider, {newPosition.x, position.y}, solidMap, map)) {
 				position.x = newPosition.x;
-			} else if (!isColliding(collider, {position.x, newPosition.y}, gridMap, map)) {
+			} else if (!isColliding(collider, {position.x, newPosition.y}, solidMap, map)) {
 				position.y = newPosition.y;
 			}
 		}
 	}
 
 private:
-	bool isColliding(Collider collider, vec position, GridMap& gridMap, Map* map) {
+	bool isColliding(Collider collider, vec position, std::unordered_set<pair>& solidMap, Map* map) {
 		pair topLeft = round(position - collider.size / 2);
 		pair bottomRight = round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {
 			for (int y = topLeft.y; y <= bottomRight.y; y++) {
-				if (!isFree(gridMap, map, {x, y})) return true;
+				if (!isFree(solidMap, map, {x, y})) return true;
 			}
 		}
 		return false;
 	}
 
-	bool isFree(GridMap& gridMap, Map* map, pair position) {
-		if (gridMap[position]) {
-			GridComponent& gridComponent = ecs->getComponent<GridComponent>(gridMap[position]);
-			if (gridComponent.solid) return false;
-		}
+	bool isFree(std::unordered_set<pair>& solidMap, Map* map, pair position) {
+		if (solidMap.find(position) != solidMap.end()) return false;
 		if (map->getTileId(position) == TileId::WATER) return false;
 		return true;
 	}
