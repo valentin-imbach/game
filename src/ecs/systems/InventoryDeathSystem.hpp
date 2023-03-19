@@ -13,7 +13,6 @@ public:
 			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
 			if (ecs->hasComponent<PositionComponent>(entity)) {
 				PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-
 				for (int y = 0; y < inventoryComponent.inventory.size.y; y++) {
 					for (int x = 0; x < inventoryComponent.inventory.size.x; x++) {
 						Entity item = inventoryComponent.inventory.itemContainers[x][y].item;

@@ -12,6 +12,7 @@ public:
 		if (!ecs->hasComponent<DamageComponent>(item)) return;
 		vec actorPosition = ecs->getComponent<PositionComponent>(actor).position;
 		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item);
+		
 		for (Entity entity : entities) {
 			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
