@@ -8,20 +8,16 @@
 class AnimalAiSystem : public System {
 public:
 	void update() {
+		uint ticks = SDL_GetTicks();
+		uint seed = ticks;
 		for (Entity entity : entities) {
-			CreatureState::value& state = ecs->getComponent<CreatureStateComponent>(entity).state;
-			Direction::value& facing = ecs->getComponent<CreatureStateComponent>(entity).facing;
-			Direction::value& direction = ecs->getComponent<DirectionComponent>(entity).direction;
+			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			AnimalAiComponent& animalAiComponent = ecs->getComponent<AnimalAiComponent>(entity);
-			bool& stateChanged = ecs->getComponent<CreatureStateComponent>(entity).stateChanged;
-
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 
-			uint ticks = SDL_GetTicks();
-			CreatureState::value oldState = state;
-			Direction::value oldFacing = facing;
-
-			uint seed = ticks + entity;
+			CreatureState::value oldState = creatureStateComponent.state;
+			Direction::value oldFacing = creatureStateComponent.facing;
 
 			if (healthComponent.damaged) {
 				animalAiComponent.panic = 20;
@@ -29,26 +25,26 @@ public:
 			}
 
 			if (ticks >= animalAiComponent.nextChange) {
-				state = CreatureState::IDLE;
-				if (bernoulli(ticks, 0.3f) || animalAiComponent.panic) state = CreatureState::WALKING;
+				creatureStateComponent.state = CreatureState::IDLE;
+				if (bernoulli(ticks, 0.3f) || animalAiComponent.panic) creatureStateComponent.state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
-					direction = Direction::from_int(rand_int(seed, 1, 9));
-					if (taxiSteps[direction].x == 1) {
-						facing = Direction::EAST;
-					} else if (taxiSteps[direction].x == -1) {
-						facing = Direction::WEST;
+					directionComponent.direction = Direction::from_int(rand_int(seed++, 1, 9));
+					if (taxiSteps[directionComponent.direction].x == 1) {
+						creatureStateComponent.facing = Direction::EAST;
+					} else if (taxiSteps[directionComponent.direction].x == -1) {
+						creatureStateComponent.facing = Direction::WEST;
 					}
 				}
 
-				animalAiComponent.nextChange = ticks + 2000 + rand_int(seed, 0, 1000);
+				animalAiComponent.nextChange = ticks + 2000 + rand_int(seed++, 0, 1000);
 				if (animalAiComponent.panic > 0) {
-					animalAiComponent.nextChange = ticks + 100 + rand_int(seed, 0, 100);
+					animalAiComponent.nextChange = ticks + 100 + rand_int(seed++, 0, 100);
 					animalAiComponent.panic -= 1;
 				}
 			}
 
-			stateChanged = (facing != oldFacing || state != oldState);
+			creatureStateComponent.stateChanged = (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState);
 		}
 	}
 };

@@ -7,12 +7,12 @@
 
 class CameraSystem : public System {
 public:
-	void update(Entity player) {
-		if (!player) return;
-		vec targetPosition = ecs -> getComponent<PositionComponent>(player).position;
+	void update(Entity target) {
+		if (!target) return;
+		vec targetPosition = ecs -> getComponent<PositionComponent>(target).position;
 		for (Entity entity : entities) {
-			vec& position = ecs -> getComponent<PositionComponent>(entity).position;
-			position = targetPosition;
+			PositionComponent& positionComponent = ecs -> getComponent<PositionComponent>(entity);
+			positionComponent.position = targetPosition;
 		}
 	}
 

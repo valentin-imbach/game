@@ -13,17 +13,16 @@ public:
 			if (ecs->hasComponent<DeathComponent>(entity)) { //TODO: Move to own system
 				for (int x = 0; x < gridComponent.size.x; x++) {
 					for (int y = 0; y < gridComponent.size.y; y++) {
-						pair offset(x, y);
-						gridMap.erase(gridComponent.anker + offset);
+						gridMap.erase(gridComponent.anker + pair(x, y));
+						solidMap.erase(gridComponent.anker + pair(x, y));
 					}
 				}
 			}
 			if (!gridComponent.linked) {
 				for (int x = 0; x < gridComponent.size.x; x++) {
 					for (int y = 0; y < gridComponent.size.y; y++) {
-						pair offset(x, y);
-						gridMap[gridComponent.anker + offset] = entity;
-						if (gridComponent.solid) solidMap.insert(gridComponent.anker + offset);
+						gridMap[gridComponent.anker + pair(x, y)] = entity;
+						if (gridComponent.solid) solidMap.insert(gridComponent.anker + pair(x, y));
 					}
 				}
 				gridComponent.linked = true;
@@ -33,12 +32,11 @@ public:
 	void rebuild(GridMap& gridMap) {
 		gridMap.clear();
 		for (Entity entity : entities) {
-			pair anker = ecs->getComponent<GridComponent>(entity).anker;
-			pair size = ecs->getComponent<GridComponent>(entity).size;
-			for (int x = 0; x < size.x; x++) {
-				for (int y = 0; y < size.y; y++) {
+			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
+			for (int x = 0; x < gridComponent.size.x; x++) {
+				for (int y = 0; y < gridComponent.size.y; y++) {
 					pair offset(x, y);
-					gridMap[anker + offset] = entity;
+					gridMap[gridComponent.anker + offset] = entity;
 				}
 			}
 		}

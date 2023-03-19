@@ -9,26 +9,23 @@ class MonsterAiSystem : public System {
 public:
 	void update(Entity player, std::unordered_set<pair>& solidMap) {
 		for (Entity entity : entities) {
-			CreatureState::value& state = ecs->getComponent<CreatureStateComponent>(entity).state;
-			Direction::value& facing = ecs->getComponent<CreatureStateComponent>(entity).facing;
-			Direction::value& direction = ecs->getComponent<DirectionComponent>(entity).direction;
+			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-
-			bool& stateChanged = ecs->getComponent<CreatureStateComponent>(entity).stateChanged;
-
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 
-			CreatureState::value oldState = state;
-			Direction::value oldFacing = facing;
+			CreatureState::value oldState = creatureStateComponent.state;
+			Direction::value oldFacing = creatureStateComponent.facing;
 
 			if (!player) {
-				state = CreatureState::IDLE;
+				creatureStateComponent.state = CreatureState::IDLE;
 				continue;
 			}
 
 			vec targetPosition = ecs->getComponent<PositionComponent>(player).position;
-			if (dist(targetPosition, positionComponent.position) < 1) state = CreatureState::IDLE;
-			else {
+			if (dist(targetPosition, positionComponent.position) < 1) {
+				creatureStateComponent.state = CreatureState::IDLE;
+			} else {
 				pair start = round(positionComponent.position);
 				pair end = round(targetPosition);
 				vec offset = positionComponent.position - start;
@@ -39,23 +36,23 @@ public:
 					pair left = start + taxiSteps[rotate_dir(dir, 1)];
 					pair right = start + taxiSteps[rotate_dir(dir, 7)];
 					if (solidMap.find(left) != solidMap.end() && (left-step)*offset > 0.1) {
-						direction = rotate_dir(dir, 7);
+						directionComponent.direction = rotate_dir(dir, 7);
 					} else if (solidMap.find(right) != solidMap.end() && (right-step)*offset > 0.1) {
-						direction = rotate_dir(dir, 1);
+						directionComponent.direction = rotate_dir(dir, 1);
 					} else {
-						direction = dir;
+						directionComponent.direction = dir;
 					}
 				}
 
-				if (taxiSteps[direction].x == 1) {
-					facing = Direction::EAST;
-				} else if (taxiSteps[direction].x == -1) {
-					facing = Direction::WEST;
+				if (taxiSteps[directionComponent.direction].x == 1) {
+					creatureStateComponent.facing = Direction::EAST;
+				} else if (taxiSteps[directionComponent.direction].x == -1) {
+					creatureStateComponent.facing = Direction::WEST;
 				}
-				state = dir ? CreatureState::WALKING : CreatureState::IDLE;
+				creatureStateComponent.state = dir ? CreatureState::WALKING : CreatureState::IDLE;
 			}
 
-			stateChanged = (facing != oldFacing || state != oldState);
+			creatureStateComponent.stateChanged = (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState);
 		}
 	}
 };

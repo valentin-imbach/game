@@ -12,16 +12,17 @@ public:
 	void update(Entity camera) {
 		if (!camera) return;
 		vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
-		float zoom = ecs -> getComponent<CameraComponent>(camera).zoom;
+		float cameraZoom = ecs -> getComponent<CameraComponent>(camera).zoom;
 		pair screenSize = Window::instance->size;
-		int border = 5 * BIT * zoom;
+		int border = 5 * BIT * cameraZoom;
 
 		for (Entity entity : entities) {
-			Collider collider = ecs -> getComponent<ColliderComponent>(entity).collider;
-			vec position = ecs -> getComponent<PositionComponent>(entity).position + collider.offset;
+			ColliderComponent& colliderComponent = ecs -> getComponent<ColliderComponent>(entity);
+			PositionComponent& positionComponent = ecs -> getComponent<PositionComponent>(entity);
 
-			pair screenPosition = round(BIT * zoom * (position  - cameraPosition)) + (Window::instance->size) / 2;
-			pair size = round(BIT * zoom * collider.size);
+			vec position = positionComponent.position + colliderComponent.collider.offset;
+			pair screenPosition = round(BIT * cameraZoom * (position  - cameraPosition)) + (Window::instance->size) / 2;
+			pair size = round(BIT * cameraZoom * colliderComponent.collider.size);
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;

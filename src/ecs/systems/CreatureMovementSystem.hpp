@@ -9,16 +9,15 @@ class CreatureMovementSystem : public System {
 public:
 	void update(uint dt, std::unordered_set<pair>& solidMap, Map* map) {
 		for (Entity entity : entities) {
-			Direction::value direction = ecs->getComponent<DirectionComponent>(entity).direction;
-			float speed = ecs->getComponent<MovementComponent>(entity).speed;
-			vec& position = ecs->getComponent<PositionComponent>(entity).position;
-			CreatureState::value state = ecs->getComponent<CreatureStateComponent>(entity).state;
+			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
+			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
+			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 
-			Collider collider = ecs->getComponent<ColliderComponent>(entity).collider;
-
-			vec newPosition = position;
-			if (state == CreatureState::WALKING) {
-				newPosition += dt * speed * unitVectors[direction] / 1000;
+			vec newPosition = positionComponent.position;
+			if (creatureStateComponent.state == CreatureState::WALKING) {
+				newPosition += dt * movementComponent.speed * unitVectors[directionComponent.direction] / 1000;
 			}
 
 			if (ecs->hasComponent<ForceComponent>(entity)) {
@@ -27,12 +26,12 @@ public:
 				forceComponent.force *= 0.9f;
 			}
 
-			if (!isColliding(collider, newPosition, solidMap, map) || isColliding(collider, position, solidMap, map)) {
-				position = newPosition;
-			} else if (!isColliding(collider, {newPosition.x, position.y}, solidMap, map)) {
-				position.x = newPosition.x;
-			} else if (!isColliding(collider, {position.x, newPosition.y}, solidMap, map)) {
-				position.y = newPosition.y;
+			if (!isColliding(colliderComponent.collider, newPosition, solidMap, map) || isColliding(colliderComponent.collider, positionComponent.position, solidMap, map)) {
+				positionComponent.position = newPosition;
+			} else if (!isColliding(colliderComponent.collider, {newPosition.x, positionComponent.position.y}, solidMap, map)) {
+				positionComponent.position.x = newPosition.x;
+			} else if (!isColliding(colliderComponent.collider, {positionComponent.position.x, newPosition.y}, solidMap, map)) {
+				positionComponent.position.y = newPosition.y;
 			}
 		}
 	}

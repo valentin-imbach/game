@@ -8,26 +8,21 @@ class CreatureAnimationSystem : public System {
 public:
 	void update() {
 		for (Entity entity : entities) {
-			SpriteStack& spriteStack = ecs -> getComponent<SpriteComponent>(entity).spriteStack;
-			CreatureState::value state = ecs -> getComponent<CreatureStateComponent>(entity).state;
-			bool stateChanged = ecs -> getComponent<CreatureStateComponent>(entity).stateChanged;
-			Direction::value facing = ecs -> getComponent<CreatureStateComponent>(entity).facing;
+			CreatureStateComponent& creatureStateComponent = ecs -> getComponent<CreatureStateComponent>(entity);
+			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
 
-			for (auto& layer : spriteStack.stack) {
+			for (auto& layer : spriteComponent.spriteStack.stack) {
 				Sprite& sprite = layer.first;
-				if (state == CreatureState::IDLE) {
+				if (creatureStateComponent.state == CreatureState::IDLE) {
 					sprite.frameCount = 1;
 					sprite.source.x = 7;
-				} else if (state == CreatureState::WALKING) {
+				} else if (creatureStateComponent.state == CreatureState::WALKING) {
 					sprite.frameCount = 8;
 					sprite.source.x = 0;
 				}
 
-				sprite.source.y = facing == Direction::EAST ? 0 : 2;
-
-				if (stateChanged) {
-					sprite.animationReset();
-				}
+				sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
+				if (creatureStateComponent.stateChanged) sprite.animationReset();
 			}
 		}
 	}

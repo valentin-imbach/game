@@ -23,6 +23,7 @@ public:
 		int border = 5 * BIT * zoom;
 
 		std::vector<std::pair<float, DrawCall>> drawQueue;
+		uint ticks = SDL_GetTicks();
 
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
@@ -30,14 +31,14 @@ public:
 
 			vec entityPosition = positionComponent.position;
 			if (spriteComponent.shader.shaderId == ShaderId::SHAKE) {
-				uint past = SDL_GetTicks() - spriteComponent.shader.start;
+				uint past = ticks - spriteComponent.shader.start;
 				if (past > 500) {
 					spriteComponent.shader = {ShaderId::NONE, 0};
 				} else {
 					entityPosition += vec(3 * sinf(float(past) / 30) / (past + 1), 0);
 				}
 			} else if (spriteComponent.shader.shaderId == ShaderId::BOUNCE) {
-				entityPosition += vec(0, sinf(float(SDL_GetTicks()) / 200) / 30);
+				entityPosition += vec(0, sinf(float(ticks) / 200) / 30);
 			}
 
 			vec offset(0.5f, spriteComponent.height + 0.5f);
