@@ -26,10 +26,9 @@ void World::init() {
 	CraftingRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
 
-	guiManager.ecs = &ecs;
 	guiManager.world = this;
-	EntityFactory::ecs = &ecs;
-	EntityFactory::gridMap = &gridMap;
+	EntityFactory::world = this;
+	ticks = 0;
 }
 
 World::World(std::string name)
@@ -54,7 +53,7 @@ World::World(std::string name)
 	Entity axe = ecs.createEntity();
 	SpriteStack axeSprites;
 	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, {2, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, axe);
+	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f, {ShaderId::BOUNCE, ticks}}, axe);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
 	Collider axeCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -65,7 +64,7 @@ World::World(std::string name)
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
 	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, {1, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, pick);
+	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f, {ShaderId::BOUNCE, ticks}}, pick);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
 	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
 	Collider pickCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -76,7 +75,7 @@ World::World(std::string name)
 	Entity sword = ecs.createEntity();
 	SpriteStack swordSprites;
 	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, {0, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f, {ShaderId::BOUNCE, SDL_GetTicks()}}, sword);
+	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f, {ShaderId::BOUNCE, ticks}}, sword);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
 	Collider swordCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -110,8 +109,7 @@ World::World(std::string name)
 	generate();
 }
 
-World::World(std::fstream& stream)
-	: ecs(stream) {
+World::World(std::fstream& stream) : ecs(stream) {
 	init();
 	ecs.deserialiseComponents(stream);
 	map = std::make_unique<Map>(1729);
@@ -232,7 +230,7 @@ void World::update(uint dt) {
 
 	controllerSystem->update(inputState, !guiManager.active());
 
-	animalAiSystem->update();
+	animalAiSystem->update(ticks);
 	monsterAiSystem->update(player, solidMap);
 
 	creatureMovementSystem->update(dt, solidMap, map.get());
@@ -243,22 +241,26 @@ void World::update(uint dt) {
 	cameraSystem->update(player);
 	healthSystem->update();
 
-	lootSystem->update();
+	lootSystem->update(ticks);
 
-	creatureAnimationSystem->update();
-
-	tileDrawSystem->update(map.get());
-	entityDrawSystem->update(camera);
-	colliderDrawSystem->update(camera);
-
-	guiManager.draw();
+	creatureAnimationSystem->update(ticks);
 
 	gridSystem->update(gridMap, solidMap);
-	inventoryDeathSystem->update();
+	inventoryDeathSystem->update(ticks);
 	deathSystem->update();
 
 	player = playerSystem->getPlayer();
 	camera = cameraSystem->getCamera();
+
+	ticks += dt;
+}
+
+void World::draw() {
+	tileDrawSystem->update(map.get(), ticks);
+	entityDrawSystem->update(camera, ticks);
+	colliderDrawSystem->update(camera, ticks);
+
+	guiManager.draw();
 }
 
 std::unique_ptr<GuiElement> World::makeInventory() {
@@ -320,8 +322,8 @@ void World::handleEvents() {
 		vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
 
 		if (event.id == InputEventId::PRIMARY) {
-			forageSystem->update(position, activeItemContainer.item);
-			gatherSystem->update(player, position);
+			forageSystem->update(position, activeItemContainer.item, ticks);
+			gatherSystem->update(player, position, ticks);
 			damageSystem->update(player, position, activeItemContainer.item);
 		} else if (event.id == InputEventId::SECONDARY) {
 			std::unique_ptr<GuiElement> gui = interactionSystem->update(position);

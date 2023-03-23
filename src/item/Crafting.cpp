@@ -16,15 +16,15 @@ void CraftingRecipe::setRecipes() {
 
 bool CraftingIngredient::check(Entity item) {
 	if (!item) return false;
-	ItemComponent &itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
+	ItemComponent &itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 	return itemComponent.itemId == itemId && itemComponent.count >= count;
 }
 
 Entity CraftingIngredient::take(Entity item) {
-	ItemComponent &itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
+	ItemComponent &itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 	itemComponent.count -= count;
 	if (itemComponent.count <= 0) {
-		EntityFactory::ecs->addComponent(DeathComponent(), item);
+		EntityFactory::world->ecs.addComponent(DeathComponent(), item);
 		return 0;
 	}
 	return item;

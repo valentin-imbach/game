@@ -32,11 +32,11 @@ MUD)
 
 class Sprite {
 public:
-	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uint8_t frameCount = 1, uint frameDuration = 0);
-	void draw(pair position, int scale = 1, bool centered = true);
+	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uint8_t frameCount = 1, uint frameDuration = 0, uint animationStart = 0);
+	void draw(pair position, int scale = 1, bool centered = true, uint ticks = 0);
 	static void loadSpriteSheets();
 private:
-	void animationReset();
+	void animationReset(uint ticks);
 	SpriteSheet::value spriteSheet;
 	pair source;
 	pair size;
@@ -51,7 +51,7 @@ private:
 class SpriteStack {
 public:
 	void addSprite(Sprite sprite, pair offset = {0, 0});
-	void draw(pair position, int scale = 1, bool centered = true);
+	void draw(pair position, int scale = 1, bool centered = true, uint ticks = 0);
 	void clear();
 
 private:

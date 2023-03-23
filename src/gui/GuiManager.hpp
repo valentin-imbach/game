@@ -78,7 +78,6 @@ public:
 		guiElements.push_back(std::move(guiElement));
 	}
 
-	ECS* ecs;
 	World* world;
 	pair mousePosition;
 	ItemContainer mouseItemContainer;

@@ -8,9 +8,9 @@
 
 class GatherSystem : public System {
 public:
-	void update(Entity player, vec position) {
+	void update(Entity player, vec position, uint ticks) {
 		InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(player);
-		uint seed = SDL_GetTicks();
+		uint seed = ticks;
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			if (!isInside(position, positionComponent.position, {1.0f, 1.0f})) continue;

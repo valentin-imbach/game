@@ -8,8 +8,7 @@
 
 class ForageSystem : public System {
 public:
-	void update(vec position, Entity item) {
-		uint ticks = SDL_GetTicks();
+	void update(vec position, Entity item, uint ticks) {
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			if (!isInside(position, positionComponent.position, {1.0f, 1.0f})) continue;

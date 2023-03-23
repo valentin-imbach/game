@@ -30,7 +30,7 @@ public:
 				pair end = round(targetPosition);
 				vec offset = positionComponent.position - start;
 
-				Direction::value dir = PathFinder::find_direction(start, end, solidMap);
+				Direction::value dir = PathFinder::find_direction(start, end, solidMap, true);
 				if (dir) {
 					pair step = start + taxiSteps[dir];
 					pair left = start + taxiSteps[rotate_dir(dir, 1)];

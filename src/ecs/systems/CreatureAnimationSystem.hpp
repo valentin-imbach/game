@@ -6,7 +6,7 @@
 
 class CreatureAnimationSystem : public System {
 public:
-	void update() {
+	void update(uint ticks) {
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs -> getComponent<CreatureStateComponent>(entity);
 			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
@@ -22,7 +22,7 @@ public:
 				}
 
 				sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
-				if (creatureStateComponent.stateChanged) sprite.animationReset();
+				if (creatureStateComponent.stateChanged) sprite.animationReset(ticks);
 			}
 		}
 	}

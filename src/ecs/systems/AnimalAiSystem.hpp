@@ -7,8 +7,7 @@
 
 class AnimalAiSystem : public System {
 public:
-	void update() {
-		uint ticks = SDL_GetTicks();
+	void update(uint ticks) {
 		uint seed = ticks;
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);

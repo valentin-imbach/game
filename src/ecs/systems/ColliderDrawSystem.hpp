@@ -9,7 +9,7 @@
 
 class ColliderDrawSystem : public System {
 public:
-	void update(Entity camera) {
+	void update(Entity camera, uint ticks) {
 		if (!camera) return;
 		vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
 		float cameraZoom = ecs -> getComponent<CameraComponent>(camera).zoom;

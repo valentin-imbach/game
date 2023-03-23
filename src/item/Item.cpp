@@ -9,10 +9,10 @@
 
 [[nodiscard]] Entity ItemContainer::add(Entity other, ItemAmount::value amount) {
 	if (!other) return other;
-	ItemComponent& otherComponent = EntityFactory::ecs->getComponent<ItemComponent>(other);
+	ItemComponent& otherComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(other);
 
 	if (item) {
-		ItemComponent& itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
+		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 		if (itemComponent.itemId == ItemId::NONE) return other;
 		if (itemComponent.itemId != otherComponent.itemId) return other;
 		uint addCount = MAX_STACK - itemComponent.count;
@@ -22,7 +22,7 @@
 		otherComponent.count -= addCount;
 		itemComponent.count += addCount;
 		if (!otherComponent.count) {
-			EntityFactory::ecs->addComponent(DeathComponent(), other);
+			EntityFactory::world->ecs.addComponent(DeathComponent(), other);
 			return 0;
 		}
 	} else {
@@ -43,7 +43,7 @@
 }
 
 void ItemContainer::clear(bool destroy) {
-	if (destroy) EntityFactory::ecs->addComponent(DeathComponent(), item);
+	if (destroy) EntityFactory::world->ecs.addComponent(DeathComponent(), item);
 	item = 0;
 }
 
@@ -56,8 +56,8 @@ void ItemContainer::draw(pair position, uint scale) {
 		}
 		return;
 	}
-	ItemComponent& itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
-	SpriteStack& spriteStack = EntityFactory::ecs->getComponent<SpriteComponent>(item).spriteStack;
+	ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
+	SpriteStack& spriteStack = EntityFactory::world->ecs.getComponent<SpriteComponent>(item).spriteStack;
 	spriteStack.draw(position, scale);
 	if (itemComponent.count == 1) return;
 	std::string text = std::to_string(itemComponent.count);
@@ -66,7 +66,7 @@ void ItemContainer::draw(pair position, uint scale) {
 
 void ItemContainer::drawInfo(pair position, bool elaborate) {
 	if (!item) return;
-	ItemComponent& itemComponent = EntityFactory::ecs->getComponent<ItemComponent>(item);
+	ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 
 	int spacing = 30;
 	int width = 0;
@@ -77,23 +77,23 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 
 	if (!itemComponent.itemId) {
 		std::string name = "No Name";
-		if (EntityFactory::ecs->hasComponent<NameComponent>(item)) {
-			name = EntityFactory::ecs->getComponent<NameComponent>(item).name.get();	
+		if (EntityFactory::world->ecs.hasComponent<NameComponent>(item)) {
+			name = EntityFactory::world->ecs.getComponent<NameComponent>(item).name.get();	
 		}
 		if (elaborate) {
 			texts.emplace_back(Text(name, TTF_STYLE_UNDERLINE), pos);
 			pos.y += spacing;
 
-			if (EntityFactory::ecs->hasComponent<DamageComponent>(item)) {
-				DamageComponent& damageComponent = EntityFactory::ecs->getComponent<DamageComponent>(item);
+			if (EntityFactory::world->ecs.hasComponent<DamageComponent>(item)) {
+				DamageComponent& damageComponent = EntityFactory::world->ecs.getComponent<DamageComponent>(item);
 				texts.emplace_back(Text("  Weapon", TTF_STYLE_BOLD), pos);
 				pos.y += spacing;
 				std::string text = "Damage: " + std::to_string(damageComponent.damage);
 				texts.emplace_back(Text(text), pos);
 				pos.y += spacing;
 			}
-			if (EntityFactory::ecs->hasComponent<ToolComponent>(item)) {
-				ToolComponent& toolComponent = EntityFactory::ecs->getComponent<ToolComponent>(item);
+			if (EntityFactory::world->ecs.hasComponent<ToolComponent>(item)) {
+				ToolComponent& toolComponent = EntityFactory::world->ecs.getComponent<ToolComponent>(item);
 				texts.emplace_back(Text("  Tool", TTF_STYLE_BOLD), pos);
 				pos.y += spacing;
 				std::string text = "Type: " + ToolId::to_string(toolComponent.toolId);

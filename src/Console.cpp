@@ -163,6 +163,9 @@ bool Console::execute(std::string input) {
 		for (Direction::value dir : PathFinder::bfs({5,8}, {8,8}, game->world->solidMap)) {
 			LOG(Direction::to_string(dir));
 		}
+	} else if (inputs[0] == "pause") {
+		if (game->gameState == GameState::PAUSED) game->gameState = GameState::RUNNING;
+		else if (game->gameState == GameState::RUNNING) game->gameState = GameState::PAUSED;
 	} else {
 		return false;
 	}

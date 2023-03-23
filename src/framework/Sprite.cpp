@@ -3,20 +3,19 @@
 
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::spriteSheets = {};
 
-Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uint8_t frameCount, uint frameDuration) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration) {
-	animationStart = SDL_GetTicks();
-}
+Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uint8_t frameCount, uint frameDuration, uint animationStart) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration), animationStart(animationStart) {}
 
-void Sprite::draw(pair position, int scale, bool centered) {
+void Sprite::draw(pair position, int scale, bool centered, uint ticks) {
 	if (!spriteSheet) return;
-	int frame = frameCount > 1 ? (((SDL_GetTicks() - animationStart) / frameDuration) % frameCount) : 0;
+	uint past = ticks - animationStart;
+	int frame = frameCount > 1 ? ((past / frameDuration) % frameCount) : 0;
 	pair offset(frame, 0);
 	SDL_Texture* texture = spriteSheets[spriteSheet];
 	TextureManager::drawTexture(texture, BIT * (source + offset), BIT * size, position, scale, centered);
 }
 
-void Sprite::animationReset() {
-	animationStart = SDL_GetTicks();
+void Sprite::animationReset(uint ticks) {
+	animationStart = ticks;
 }
 
 void Sprite::loadSpriteSheets() {
@@ -34,9 +33,9 @@ void SpriteStack::addSprite(Sprite sprite, pair offset) {
 	depth += 1;
 }
 
-void SpriteStack::draw(pair position, int scale, bool centered) {
+void SpriteStack::draw(pair position, int scale, bool centered, uint ticks) {
 	for (int layer = 0; layer < depth; layer++) {
-		stack[layer].first.draw(position + BIT * stack[layer].second, scale, centered);
+		stack[layer].first.draw(position + BIT * stack[layer].second, scale, centered, ticks);
 	}
 }
 

@@ -9,7 +9,7 @@
 #include "Window.hpp"
 
 Game::Game() : console(this) {
-	running = true;
+	gameState = GameState::LOADING;
 
 	lastFrameTicks = SDL_GetTicks();
 	sample = std::queue<uint>();
@@ -19,13 +19,18 @@ Game::Game() : console(this) {
 	Sprite::loadSpriteSheets();
 	TextManager::Init();
 	world = std::make_unique<World>("World");
+	gameState = GameState::RUNNING;
 }
 
 void Game::update() {
-	Window::instance->clear();
 	Window::instance->update();
 	debugScreen.update(world.get(), framesPerSecond);
-	world->update(dt);
+	world->update(dt);	
+}
+
+void Game::draw() {
+	Window::instance->clear();
+	world->draw();
 	debugScreen.draw();
 	console.draw();
 	Window::instance->draw();
@@ -53,7 +58,7 @@ void Game::handleEvents() {
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT) {
 			LOG("Window closed");
-			running = false;
+			gameState = GameState::NONE;
 			continue;
 		}
 		if (console.handleEvent(event)) continue;

@@ -7,8 +7,8 @@
 
 class InventoryDeathSystem : public System {
 public:
-	void update() {
-		uint seed = SDL_GetTicks();
+	void update(uint ticks) {
+		uint seed = ticks;
 		for (Entity entity : entities) {
 			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
 			if (ecs->hasComponent<PositionComponent>(entity)) {

@@ -15,6 +15,7 @@ public:
 	World(std::string name);
 	World(std::fstream& stream);
 	void update(uint dt);
+	void draw();
 	void handleEvents();
 
 	void serialise(std::fstream& stream);
@@ -26,6 +27,8 @@ public:
 	Entity player = 0;
 	Entity camera = 0;
 
+	ECS ecs;
+
 private:
 	void rosterComponents();
 	void rosterSystems();
@@ -36,7 +39,6 @@ private:
 	std::unique_ptr<GuiElement> makeInventory();
 	std::unique_ptr<GuiElement> makeMenu();
 
-	ECS ecs;
 	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;
 	ControllerSystem* controllerSystem;
@@ -67,7 +69,10 @@ private:
 	GridMap gridMap;
 	std::unordered_set<pair> solidMap;
 
+	uint ticks;
+
 	friend class Game;
 	friend class Console;
 	friend class DebugScreen;
+	friend class EntityFactory;
 };

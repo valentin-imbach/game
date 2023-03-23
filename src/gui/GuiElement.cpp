@@ -166,8 +166,8 @@ bool ItemSlot::handleEvent(InputEvent event) {
 			std::swap(mouseItemContainer.item, itemContainer.item);
 			return true;
 		}
-		ItemComponent& itemComponent = guiManager->ecs->getComponent<ItemComponent>(itemContainer.item);
-		ItemComponent& mouseItemComponent = guiManager->ecs->getComponent<ItemComponent>(mouseItemContainer.item);
+		ItemComponent& itemComponent = guiManager->world->ecs.getComponent<ItemComponent>(itemContainer.item);
+		ItemComponent& mouseItemComponent = guiManager->world->ecs.getComponent<ItemComponent>(mouseItemContainer.item);
 
 		if (itemComponent.itemId != ItemId::NONE && itemComponent.itemId == mouseItemComponent.itemId) {
 			mouseItemContainer.item = itemContainer.add(mouseItemContainer.item);
@@ -203,8 +203,8 @@ void HotbarGui::draw() {
 	if (guiManager->active() || !player) return;
 	sprite.draw(screenPosition, GuiManager::scale, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-	Inventory& inventory = guiManager->ecs->getComponent<PlayerComponent>(player).hotbar;
-	uint activeSlot = guiManager->ecs->getComponent<PlayerComponent>(player).activeSlot;
+	Inventory& inventory = guiManager->world->ecs.getComponent<PlayerComponent>(player).hotbar;
+	uint activeSlot = guiManager->world->ecs.getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GuiManager::scale;
 	for (int x = 0; x < inventory.size.x; x++) {
 		pair offset(spacing * x - spacing * (inventory.size.x - 1) / 2, 0);
@@ -231,15 +231,15 @@ void HealthBarGui::update(GuiManager* manager) {
 
 void HealthBarGui::draw() {
 	if (!player) return;
-	HealthComponent& healthComponent = guiManager->ecs->getComponent<HealthComponent>(player);
+	HealthComponent& healthComponent = guiManager->world->ecs.getComponent<HealthComponent>(player);
 	int spacing = 9 * GuiManager::scale;
 	for (int x = 0; x < healthComponent.health / 2; x++) {
 		pair offset(x * spacing, 0);
-		heartSprite.draw(screenPosition + offset, GuiManager::scale, guiManager->ecs);
+		heartSprite.draw(screenPosition + offset, GuiManager::scale, true);
 	}
 	if (healthComponent.health % 2) {
 		pair offset(healthComponent.health / 2 * spacing, 0);
-		halfHeartSprite.draw(screenPosition + offset, GuiManager::scale, guiManager->ecs);
+		halfHeartSprite.draw(screenPosition + offset, GuiManager::scale, true);
 	}
 }
 
@@ -269,10 +269,10 @@ CraftingGui::~CraftingGui() {
 		inputB.item = link->add(inputB.item);
 		output.item = link->add(output.item);
 	}
-	vec pos = EntityFactory::ecs->getComponent<PositionComponent>(guiManager->world->player).position;
-	EntityFactory::ecs->addComponent<PositionComponent>({pos}, inputA.item);
-	EntityFactory::ecs->addComponent<PositionComponent>({pos}, inputB.item);
-	EntityFactory::ecs->addComponent<PositionComponent>({pos}, output.item);
+	vec pos = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player).position;
+	guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputA.item);
+	guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputB.item);
+	guiManager->world->ecs.addComponent<PositionComponent>({pos}, output.item);
 }
 
 void CraftingGui::craft() {

@@ -15,7 +15,7 @@ struct DrawCall {
 
 class EntityDrawSystem : public System {
 public:
-	void update(Entity camera) {
+	void update(Entity camera, uint ticks) {
 		if (!camera) return;
 		vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
 		float zoom = ecs->getComponent<CameraComponent>(camera).zoom;
@@ -23,7 +23,6 @@ public:
 		int border = 5 * BIT * zoom;
 
 		std::vector<std::pair<float, DrawCall>> drawQueue;
-		uint ticks = SDL_GetTicks();
 
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
@@ -53,6 +52,6 @@ public:
 
 		auto lambda = [](auto& l, auto& r) { return l.first < r.first; };
 		std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-		for (auto& p : drawQueue) p.second.spriteStack.draw(p.second.position, p.second.scale, p.second.centered);
+		for (auto& p : drawQueue) p.second.spriteStack.draw(p.second.position, p.second.scale, p.second.centered, ticks);
 	}
 };

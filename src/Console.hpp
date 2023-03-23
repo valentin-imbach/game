@@ -17,9 +17,9 @@ class Console {
 public:
 	Console(Game* game);
 
-	bool active = false;
 	void draw();
 	bool handleEvent(SDL_Event event);
+	bool active = false;
 
 private:
 	Game* game;

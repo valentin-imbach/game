@@ -8,7 +8,7 @@
 
 class TileDrawSystem : public System {
 public:
-	void update(Map* map) {
+	void update(Map* map, uint ticks) {
 		for (Entity camera : entities) {
 			vec cameraPosition = ecs -> getComponent<PositionComponent>(camera).position;
 			int zoom = ecs -> getComponent<CameraComponent>(camera).zoom;
