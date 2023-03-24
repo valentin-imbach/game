@@ -4,6 +4,7 @@
 #include "ECS_types.hpp"
 #include "Item.hpp"
 #include "Components.hpp"
+#include "World.hpp"
 
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;

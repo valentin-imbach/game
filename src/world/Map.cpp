@@ -6,7 +6,7 @@
 Map::Map(uint seed)
 	: mapSeed(seed) {
 	generate();
-	analyse(100000);
+	//analyse(100000);
 }
 
 int Map::getTemperature(pair position) {

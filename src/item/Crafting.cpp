@@ -3,6 +3,7 @@
 #include "Components.hpp"
 #include "ECS.hpp"
 #include "EntityFactory.hpp"
+#include "World.hpp"
 
 std::vector<std::unique_ptr<CraftingRecipe>> CraftingRecipe::recipes = {};
 

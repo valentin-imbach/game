@@ -4,9 +4,8 @@
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
 #include "ResourceTemplates.hpp"
-#include "World.hpp"
 
-class ECS;
+class World;
 
 ENUM(AnimalId,
 COW,
@@ -16,8 +15,6 @@ HORSE)
 class EntityFactory {
 public:
 	EntityFactory() = delete;
-	static World* world;
-
 	static Entity createPlayer(vec position);
 	static Entity createCamera(vec position, uint8_t zoom);
 	static Entity createAnimal(AnimalId::value animalId, vec position);
@@ -25,6 +22,8 @@ public:
 	
 	static Entity createItem(ItemId::value itemId, uint8_t count);
 	static Entity createItem(ItemId::value itemId, uint8_t count, vec position);
+
+	static World* world;
 
 private:
 	static bool free(pair position, pair size);

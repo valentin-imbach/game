@@ -19,6 +19,7 @@ src/world/Map.cpp
 src/world/Tile.cpp
 src/world/Generation.cpp
 src/Gui/GuiElement.cpp
+src/Gui/GuiManager.cpp
 src/item/Item.cpp
 src/item/ItemTemplates.cpp
 src/item/Loot.cpp

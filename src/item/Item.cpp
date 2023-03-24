@@ -6,6 +6,7 @@
 #include "Sprite.hpp"
 #include "TextManager.hpp"
 #include "EntityFactory.hpp"
+#include "World.hpp"
 
 [[nodiscard]] Entity ItemContainer::add(Entity other, ItemAmount::value amount) {
 	if (!other) return other;

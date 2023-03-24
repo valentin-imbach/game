@@ -8,8 +8,8 @@ int main() {
 
 	while (game.gameState) {
 		game.handleEvents();
-		if (game.gameState == GameState::RUNNING) game.update();
-		if (game.gameState == GameState::PAUSED || game.gameState == GameState::RUNNING) game.draw();
+		game.update();
+		game.draw();
 		game.limitFrameRate(60);
 	}
 

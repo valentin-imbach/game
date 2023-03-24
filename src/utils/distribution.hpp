@@ -24,6 +24,8 @@ inline float smoothstep(float x) {
 
 [[nodiscard]] inline float perlin(uint seed, vec position) {
 	pair steps[4] = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
+	position.x += rand_float(seed + 1);
+	position.y += rand_float(seed + 2);
 	pair cell = floor(position);
 	vec offset = position - cell;
 	float dots[4] = {

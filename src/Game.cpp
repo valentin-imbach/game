@@ -24,15 +24,31 @@ Game::Game() : console(this) {
 
 void Game::update() {
 	Window::instance->update();
-	debugScreen.update(world.get(), framesPerSecond);
-	world->update(dt);	
+	if (gameState == GameState::PAUSED) {
+		debugScreen.update(world.get(), framesPerSecond);
+	} else if (gameState == GameState::RUNNING) {
+		world->update(dt);
+		debugScreen.update(world.get(), framesPerSecond);
+	}
 }
 
 void Game::draw() {
 	Window::instance->clear();
-	world->draw();
-	debugScreen.draw();
-	console.draw();
+	if (gameState == GameState::MENU) {
+		Text menuText("Main Menu");
+		TextManager::drawText(menuText, Window::instance->size/2, true);
+		console.draw();
+	} else if (gameState == GameState::RUNNING) {
+		world->draw();
+		debugScreen.draw();
+		console.draw();
+	} else if (gameState == GameState::PAUSED) {
+		world->draw();
+		Text pauseText("Paused");
+		TextManager::drawText(pauseText, Window::instance->size/2, true);
+		debugScreen.draw();
+		console.draw();
+	}
 	Window::instance->draw();
 }
 
