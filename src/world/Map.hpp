@@ -13,11 +13,11 @@ public:
 	Map(uint seed);
 
 	Biome::value getBiome(pair position);
-	int getTemperature(pair position);
-	int getPrecipitation(pair position);
-	int getElevation(pair position);
-	int getVegetation(pair position);
-	int getVariation(pair position);
+	std::unique_ptr<Distribution> temparatureMap;
+	std::unique_ptr<Distribution>  precipitationMap;
+	std::unique_ptr<Distribution>  elevationMap;
+	std::unique_ptr<Distribution>  vegetationMap;
+	std::unique_ptr<Distribution>  variationMap;
 
 	void generate();
 

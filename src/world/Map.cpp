@@ -5,35 +5,20 @@
 
 Map::Map(uint seed)
 	: mapSeed(seed) {
+	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
+	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
+	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
+	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
+	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
 	generate();
 	//analyse(100000);
 }
 
-int Map::getTemperature(pair position) {
-	return 10 + perlin(mapSeed + 234667, vec(position) / 200) * 120;
-}
-
-int Map::getPrecipitation(pair position) {
-	return std::max(0, 130 + int(perlin(mapSeed + 372342, vec(position) / 100) * 800));
-}
-
-int Map::getElevation(pair position) {
-	return 500 + perlin(mapSeed + 267443, vec(position) / 50) * 3000;
-}
-
-int Map::getVegetation(pair position) {
-	return std::min(std::max(0, 50 + int(perlin(mapSeed + 934328, vec(position) / 30) * 200)), 100);
-}
-
-int Map::getVariation(pair position) {
-	return std::min(std::max(0, 50 + int(perlin(mapSeed + 825934, vec(position) / 10) * 200)), 100);
-}
-
 Biome::value Map::getBiome(pair position) {
-	int temperature = getTemperature(position);
-	int precipitation = getPrecipitation(position);
-	int elevation = getElevation(position);
-	int vegetation = getVegetation(position);
+	int temperature = temparatureMap->get(position);
+	int precipitation = precipitationMap->get(position);
+	int elevation = elevationMap->get(position);
+	int vegetation = vegetationMap->get(position);
 
 	if (elevation <= 0) return Biome::OCEAN;
 	if (elevation >= 1000) return Biome::MOUNTAIN;
@@ -65,7 +50,7 @@ void Map::generate() {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position(x, y);
 			Biome::value biome = getBiome(position);
-			int variation = getVariation(position);
+			int variation = variationMap->get(position);
 			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			tiles[x][y] = std::make_unique<Tile>(ground->tileId);
 		}

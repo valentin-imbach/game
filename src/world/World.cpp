@@ -128,8 +128,8 @@ void World::generate() {
 		for (int y = 0; y < MAP_HEIGHT; y++) {
 			pair position(x, y);
 			Biome::value biome = map->getBiome(position);
-			int variation = map->getVariation(position);
-			int vegetation = map->getVegetation(position);
+			int variation = map->variationMap->get(position);
+			int vegetation = map->vegetationMap->get(position);
 			int choice = rand_int(seed++, 50 + vegetation);
 			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			for (auto& p : ground->resources) {

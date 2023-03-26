@@ -45,23 +45,23 @@ public:
 		std::string biomeText = "Biome: " + Biome::to_string(biome);
 		TextManager::drawText(biomeText, {30, 120});
 
-		int temperature = world->map->getTemperature(playerPosition);
+		int temperature = world->map->temparatureMap->get(playerPosition);
 		std::string temperatureText = "Temperateure: " + std::to_string(temperature);
 		TextManager::drawText(temperatureText, {30, 140});
 
-		int elevation = world->map->getElevation(playerPosition);
+		int elevation = world->map->elevationMap->get(playerPosition);
 		std::string elevationText = "Elevation: " + std::to_string(elevation);
 		TextManager::drawText(elevationText, {30, 160});
 
-		int precipitation = world->map->getPrecipitation(playerPosition);
+		int precipitation = world->map->precipitationMap->get(playerPosition);
 		std::string precipitationText = "Precipitation: " + std::to_string(precipitation);
 		TextManager::drawText(precipitationText, {30, 180});
 
-		int vegetation = world->map->getVegetation(playerPosition);
+		int vegetation = world->map->vegetationMap->get(playerPosition);
 		std::string vegetationText = "Vegetation: " + std::to_string(vegetation);
 		TextManager::drawText(vegetationText, {30, 200});
 
-		int variation = world->map->getVariation(playerPosition);
+		int variation = world->map->variationMap->get(playerPosition);
 		std::string variationText = "Variation: " + std::to_string(variation);
 		TextManager::drawText(variationText, {30, 230});
 
