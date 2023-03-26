@@ -17,8 +17,8 @@ Entity EntityFactory::createPlayer(vec position) {
 	world->ecs.addComponent<MovementComponent>({2}, player);
 	world->ecs.addComponent<ControllerComponent>({}, player);
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100});
-	world->ecs.addComponent<SpriteComponent>({spriteStack, 1}, player);
+	spriteStack.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, player);
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	world->ecs.addComponent<ColliderComponent>({collider}, player);
 	world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, player);
@@ -69,9 +69,9 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	uint variation = rand_uint(seed++, resourceTemplate->variations);
 	pair spritePosition(resourceTemplate->anker.x + variation * resourceTemplate->size.x, resourceTemplate->anker.y - resourceTemplate->height);
 	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
-	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize});
+	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize}, pair(0, -resourceTemplate->height));
 
-	world->ecs.addComponent<SpriteComponent>({spriteStack, resourceTemplate->height}, resource);
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, resource);
 	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId}, resource);
 	world->ecs.addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	world->ecs.addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
@@ -86,8 +86,8 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<MovementComponent>({0.5f}, animal);
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100});
-	world->ecs.addComponent<SpriteComponent>({spriteStack, 1}, animal);
+	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	world->ecs.addComponent<ColliderComponent>({collider}, animal);
 	world->ecs.addComponent<AnimalAiComponent>({0, 0}, animal);
@@ -103,7 +103,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	world->ecs.addComponent<ColliderComponent>({collider}, item);
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
-	world->ecs.addComponent<SpriteComponent>({spriteStack, 0, 0.5f, {ShaderId::BOUNCE, 0}}, item);
+	world->ecs.addComponent<SpriteComponent>({spriteStack, 0.5f, {ShaderId::BOUNCE, 0}}, item);
 	ItemComponent itemComponent = {itemId, count};
 	// if (itemId && ItemTemplate::templates[itemId]) {
 	// 	ItemTemplate* temp = ItemTemplate::templates[itemId].get();

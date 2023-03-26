@@ -22,7 +22,7 @@ public:
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * zoom;
 
-		std::vector<std::pair<float, DrawCall>> drawQueue;
+		std::vector<DrawCall> drawQueue;
 
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
@@ -40,18 +40,17 @@ public:
 				entityPosition += vec(0, sinf(float(ticks) / 200) / 30);
 			}
 
-			vec offset(0.5f, spriteComponent.height + 0.5f);
+			vec offset(0.5f, 0.5f);
 			pair screenPosition = round(BIT * zoom * (entityPosition - spriteComponent.scale * offset - cameraPosition)) + (Window::instance->size) / 2;
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
-			DrawCall drawCall = {spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom), false};
-			drawQueue.emplace_back(positionComponent.position.y, drawCall);
+			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom), false});
 		}
 
-		auto lambda = [](auto& l, auto& r) { return l.first < r.first; };
+		auto lambda = [](auto& l, auto& r) { return l.position.y < r.position.y || (l.position.y == r.position.y && l.position.x < r.position.x); };
 		std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-		for (auto& p : drawQueue) p.second.spriteStack.draw(p.second.position, p.second.scale, p.second.centered, ticks);
+		for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.centered, ticks);
 	}
 };

@@ -35,7 +35,7 @@ void SpriteStack::addSprite(Sprite sprite, pair offset) {
 
 void SpriteStack::draw(pair position, int scale, bool centered, uint ticks) {
 	for (int layer = 0; layer < depth; layer++) {
-		stack[layer].first.draw(position + BIT * stack[layer].second, scale, centered, ticks);
+		stack[layer].first.draw(position + scale * BIT * stack[layer].second, scale, centered, ticks);
 	}
 }
 

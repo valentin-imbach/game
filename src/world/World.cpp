@@ -53,7 +53,7 @@ World::World(std::string name)
 	Entity axe = ecs.createEntity();
 	SpriteStack axeSprites;
 	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, {2, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({axeSprites, 0, 0.5f, {ShaderId::BOUNCE, ticks}}, axe);
+	ecs.addComponent<SpriteComponent>({axeSprites, 0.5f, {ShaderId::BOUNCE, ticks}}, axe);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
 	Collider axeCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -64,7 +64,7 @@ World::World(std::string name)
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
 	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, {1, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({pickSprites, 0, 0.5f, {ShaderId::BOUNCE, ticks}}, pick);
+	ecs.addComponent<SpriteComponent>({pickSprites, 0.5f, {ShaderId::BOUNCE, ticks}}, pick);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
 	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
 	Collider pickCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -75,7 +75,7 @@ World::World(std::string name)
 	Entity sword = ecs.createEntity();
 	SpriteStack swordSprites;
 	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, {0, 0}, {1, 1}));
-	ecs.addComponent<SpriteComponent>({swordSprites, 0, 0.5f, {ShaderId::BOUNCE, ticks}}, sword);
+	ecs.addComponent<SpriteComponent>({swordSprites, 0.5f, {ShaderId::BOUNCE, ticks}}, sword);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
 	Collider swordCollider = {{0, 0}, {0.4f, 0.4f}};
@@ -85,8 +85,8 @@ World::World(std::string name)
 
 	Entity chest = ecs.createEntity();
 	SpriteStack chestSprites;
-	chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}));
-	ecs.addComponent<SpriteComponent>({chestSprites, 1}, chest);
+	chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}), pair(0, -1));
+	ecs.addComponent<SpriteComponent>({chestSprites}, chest);
 	ecs.addComponent<PositionComponent>({{9, 9}}, chest);
 	ecs.addComponent<GridComponent>({{9, 9}, {1, 1}, true}, chest);
 	ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
@@ -99,13 +99,33 @@ World::World(std::string name)
 	ecs.addComponent<DirectionComponent>({Direction::EAST}, monster);
 	ecs.addComponent<MovementComponent>({1}, monster);
 	SpriteStack monsterSprites;
-	monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100});
-	ecs.addComponent<SpriteComponent>({monsterSprites, 1}, monster);
+	monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
+	ecs.addComponent<SpriteComponent>({monsterSprites}, monster);
 	Collider collider = {{0, 0}, {0.6f, 0.6f}};
 	ecs.addComponent<ColliderComponent>({collider}, monster);
 	ecs.addComponent<HealthComponent>({20, 20}, monster);
 	ecs.addComponent<MonsterAiComponent>({}, monster);
 
+	Entity tree = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({pair(8, 3)}, tree);
+	ecs.addComponent<GridComponent>({pair(8, 3), pair(1, 1), true, false}, tree);
+	SpriteStack treeSprites;
+	treeSprites.addSprite({SpriteSheet::RESOURCES, pair(5, 7), pair(1, 2)}, pair(0, -1));
+	treeSprites.addSprite({SpriteSheet::RESOURCES, pair(6, 6), pair(3, 2)}, pair(-1, -2));
+	ecs.addComponent<SpriteComponent>({treeSprites}, tree);
+	ecs.addComponent<ResourceComponent>({ToolId::AXE}, tree);
+	ecs.addComponent<HealthComponent>({5, 5}, tree);
+
+	Entity tree2 = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({pair(9, 3)}, tree2);
+	ecs.addComponent<GridComponent>({pair(9, 3), pair(1, 1), true, false}, tree2);
+	SpriteStack treeSprites2;
+	treeSprites2.addSprite({SpriteSheet::RESOURCES, pair(5, 7), pair(1, 2)}, pair(0, -1));
+	treeSprites2.addSprite({SpriteSheet::RESOURCES, pair(6, 6), pair(3, 2)}, pair(-1, -2));
+	ecs.addComponent<SpriteComponent>({treeSprites2}, tree2);
+	ecs.addComponent<ResourceComponent>({ToolId::AXE}, tree2);
+	ecs.addComponent<HealthComponent>({5, 5}, tree2);
+	
 	generate();
 }
 
