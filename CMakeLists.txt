@@ -27,6 +27,7 @@ src/item/Crafting.cpp
 src/ResourceTemplates.cpp
 src/EntityFactory.cpp
 src/Console.cpp
+src/ParticleSystem.cpp
 src/main.cpp)
 
 # add libraries

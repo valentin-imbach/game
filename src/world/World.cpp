@@ -105,6 +105,7 @@ World::World(std::string name)
 	ecs.addComponent<ColliderComponent>({collider}, monster);
 	ecs.addComponent<HealthComponent>({20, 20}, monster);
 	ecs.addComponent<MonsterAiComponent>({}, monster);
+	ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, monster);
 
 	Entity tree = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({pair(8, 3)}, tree);
@@ -125,6 +126,14 @@ World::World(std::string name)
 	ecs.addComponent<SpriteComponent>({treeSprites2}, tree2);
 	ecs.addComponent<ResourceComponent>({ToolId::AXE}, tree2);
 	ecs.addComponent<HealthComponent>({5, 5}, tree2);
+
+	Entity fire = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({pair(11, 3)}, fire);
+	ecs.addComponent<GridComponent>({pair(11, 3), pair(1, 1), true, false}, fire);
+	SpriteStack fireSprites;
+	fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
+	ecs.addComponent<SpriteComponent>({fireSprites}, fire);
+	ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, fire);
 	
 	generate();
 }
@@ -188,6 +197,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
 	ecs.rosterComponent<GatherComponent>(ComponentId::GATHER);
 	ecs.rosterComponent<DeathComponent>(ComponentId::DEATH);
+	ecs.rosterComponent<ParticleComponent>(ComponentId::PARTICLE);
 
 	LOG("Components rostered");
 }
@@ -235,11 +245,16 @@ void World::rosterSystems() {
 		{ComponentId::DEATH});
 	inventoryDeathSystem = ecs.rosterSystem<InventoryDeathSystem>(SystemId::INVENTORY_DEATH,
 		{ComponentId::DEATH, ComponentId::INVENTORY});
+	particleEmitSystem = ecs.rosterSystem<ParticleEmitSystem>(SystemId::PARTICLE_EMIT,
+		{ComponentId::PARTICLE, ComponentId::POSITION});
+	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
+		{ComponentId::PARTICLE, ComponentId::CREATURE_STATE});
 
 	LOG("Systems rostered")
 }
 
 void World::update(uint dt) {
+	ticks += dt;
 	player = playerSystem->getPlayer();
 	camera = cameraSystem->getCamera();
 
@@ -269,16 +284,19 @@ void World::update(uint dt) {
 	inventoryDeathSystem->update(ticks);
 	deathSystem->update();
 
-	player = playerSystem->getPlayer();
-	camera = cameraSystem->getCamera();
-
-	ticks += dt;
+	creatureParticleSystem->update();
+	particleEmitSystem->update(particleSystem, ticks);
+	particleSystem.update(dt);
 }
 
 void World::draw() {
 	tileDrawSystem->update(map.get(), ticks);
 	entityDrawSystem->update(camera, ticks);
 	colliderDrawSystem->update(camera, ticks);
+
+	vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
+	float cameraZoom = ecs.getComponent<CameraComponent>(camera).zoom;
+	particleSystem.draw(cameraPosition, cameraZoom);
 
 	guiManager.draw();
 }

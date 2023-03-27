@@ -68,6 +68,10 @@ public:
 		TileId::value tileId = world->map->getTileId(playerPosition);
 		std::string tileText = "Tile: " + TileId::to_string(tileId);
 		TextManager::drawText(tileText, {30, 250});
+
+		int particleCount = world->particleSystem.activeCount;
+		std::string particleText = "Particles: " + std::to_string(particleCount);
+		TextManager::drawText(particleText, {30, 280});
 	}
 
 private:

@@ -7,6 +7,7 @@
 #include "PlayerSystem.hpp"
 #include "systems.hpp"
 #include "utils.hpp"
+#include "ParticleSystem.hpp"
 
 using DrawQueue = std::vector<std::pair<float, DrawCall>>;
 
@@ -28,6 +29,7 @@ public:
 	Entity camera = 0;
 
 	ECS ecs;
+	ParticleSystem particleSystem = ParticleSystem(1000);
 
 private:
 	void rosterComponents();
@@ -60,6 +62,8 @@ private:
 	GatherSystem* gatherSystem;
 	DeathSystem* deathSystem;
 	InventoryDeathSystem* inventoryDeathSystem;
+	ParticleEmitSystem* particleEmitSystem;
+	CreatureParticleSystem* creatureParticleSystem;
 
 	GuiManager guiManager;
 

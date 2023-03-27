@@ -142,7 +142,9 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 
 	for (auto& icon : icons) {
 		Sprite sprite = Sprite(SpriteSheet::ICONS_WHITE, icon.first);
-		sprite.draw(icon.second, 2, false);
+		TextureStyle style;
+		style.centered = false;
+		sprite.draw(icon.second, 2, style);
 	}
 }
 

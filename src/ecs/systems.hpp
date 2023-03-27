@@ -21,3 +21,5 @@
 #include "GatherSystem.hpp"
 #include "DeathSystem.hpp"
 #include "InventoryDeathSystem.hpp"
+#include "ParticleEmitSystem.hpp"
+#include "CreatureParticleSystem.hpp"

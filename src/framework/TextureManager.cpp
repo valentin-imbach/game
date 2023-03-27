@@ -15,12 +15,13 @@ SDL_Texture* TextureManager::loadTexture(std::string path) {
 	return tex;
 }
 
-void TextureManager::drawTexture(SDL_Texture* texture, pair source, pair size, pair destination, int scale, bool centered) {
+void TextureManager::drawTexture(SDL_Texture* texture, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style) {
 	if (!texture) return;
-	if (centered) destination -= (scale * size / 2);
-	SDL_Rect source_rect = {source.x, source.y, size.x, size.y};
-	SDL_Rect destination_rect = {destination.x, destination.y, scale * size.x, scale * size.y};
-	SDL_RenderCopyEx(Window::instance->renderer, texture, &source_rect, &destination_rect, 0, NULL, SDL_FLIP_NONE);
+	if (style.centered) dpos -= dsize / 2;
+	SDL_Rect srect = {spos.x, spos.y, ssize.x, ssize.y};
+	SDL_Rect drect = {dpos.x, dpos.y, dsize.x, dsize.y};
+	SDL_SetTextureAlphaMod(texture, style.alpha * 255);
+	SDL_RenderCopyEx(Window::instance->renderer, texture, &srect, &drect, 0, NULL, style.flip);
 }
 
 void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool centered, bool filled) {

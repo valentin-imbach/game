@@ -7,10 +7,16 @@
 
 constexpr int BIT = 16;
 
+struct TextureStyle {
+	bool centered = true;
+	float alpha = 1;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+};
+
 class TextureManager {
 public:
 	TextureManager() = delete;
 	static SDL_Texture* loadTexture(std::string path);
-	static void drawTexture(SDL_Texture* texture, pair source, pair size, pair position, int scale = 1, bool centered = false);
+	static void drawTexture(SDL_Texture* texture, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style = TextureStyle());
 	static void drawRect(pair position, pair size, SDL_Colour colour = {255, 0, 0, 255}, bool centered = true, bool filled = false);
 };

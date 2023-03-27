@@ -146,7 +146,7 @@ ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link)
 }
 
 void ItemSlot::draw() {
-	sprite.draw(screenPosition, GuiManager::scale, true);
+	sprite.draw(screenPosition, GuiManager::scale);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	itemContainer.draw(screenPosition, GuiManager::scale);
 	if (inside(guiManager->mousePosition)) {
@@ -201,7 +201,7 @@ void HotbarGui::update(GuiManager* manager) {
 
 void HotbarGui::draw() {
 	if (guiManager->active() || !player) return;
-	sprite.draw(screenPosition, GuiManager::scale, true);
+	sprite.draw(screenPosition, GuiManager::scale);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	Inventory& inventory = guiManager->world->ecs.getComponent<PlayerComponent>(player).hotbar;
 	uint activeSlot = guiManager->world->ecs.getComponent<PlayerComponent>(player).activeSlot;
@@ -209,9 +209,9 @@ void HotbarGui::draw() {
 	for (int x = 0; x < inventory.size.x; x++) {
 		pair offset(spacing * x - spacing * (inventory.size.x - 1) / 2, 0);
 		if (x == activeSlot) {
-			activeSlotSprite.draw(screenPosition + offset, GuiManager::scale, true);
+			activeSlotSprite.draw(screenPosition + offset, GuiManager::scale);
 		} else {
-			slotSprite.draw(screenPosition + offset, GuiManager::scale, true);
+			slotSprite.draw(screenPosition + offset, GuiManager::scale);
 		}
 		inventory.itemContainers[x][0].draw(screenPosition + offset, GuiManager::scale);
 	}
@@ -235,11 +235,11 @@ void HealthBarGui::draw() {
 	int spacing = 9 * GuiManager::scale;
 	for (int x = 0; x < healthComponent.health / 2; x++) {
 		pair offset(x * spacing, 0);
-		heartSprite.draw(screenPosition + offset, GuiManager::scale, true);
+		heartSprite.draw(screenPosition + offset, GuiManager::scale);
 	}
 	if (healthComponent.health % 2) {
 		pair offset(healthComponent.health / 2 * spacing, 0);
-		halfHeartSprite.draw(screenPosition + offset, GuiManager::scale, true);
+		halfHeartSprite.draw(screenPosition + offset, GuiManager::scale);
 	}
 }
 

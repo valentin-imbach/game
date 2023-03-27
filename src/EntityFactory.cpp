@@ -34,10 +34,11 @@ Entity EntityFactory::createPlayer(vec position) {
 	equipment.itemContainers[1][3].itemKind = ItemKind::ARMOR_FEET;
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	world->ecs.addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
+	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, player);
 	return player;
 }
 
-Entity EntityFactory::createCamera(vec position, uint8_t zoom) {
+Entity EntityFactory::createCamera(vec position, float zoom) {
 	Entity camera = world->ecs.createEntity();
 	world->ecs.addComponent<CameraComponent>({zoom}, camera);
 	world->ecs.addComponent<PositionComponent>({position}, camera);
@@ -94,6 +95,8 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
+	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
+
 	return animal;
 }
 

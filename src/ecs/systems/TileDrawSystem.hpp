@@ -28,7 +28,7 @@ public:
 					for (auto& layer : map->tiles[x][y]->sprites) {
 						vec tilePosition(x, y);
 						pair screenPosition = round(BIT * zoom * (tilePosition - cameraPosition)) + screenSize / 2;
-						layer.second.draw(screenPosition, zoom, true);
+						layer.second.draw(screenPosition, zoom);
 					}
 				}
 			}

@@ -160,9 +160,9 @@ bool Console::execute(std::string input) {
 		file.close();
 		LOG("World loaded");
 	} else if (inputs[0] == "test") {
-		for (Direction::value dir : PathFinder::bfs({5,8}, {8,8}, game->world->solidMap)) {
-			LOG(Direction::to_string(dir));
-		}
+		if (!player) return false;
+		vec position = ecs.getComponent<PositionComponent>(player).position;
+		for (int i = 0; i < 10; i++) game->world->particleSystem.emit(ParticleSystem::DIRT, position);
 	} else if (inputs[0] == "state") {
 		game->gameState = GameState::from_string(inputs[1]);
 	} else {

@@ -10,7 +10,6 @@ struct DrawCall {
 	SpriteStack spriteStack;
 	pair position;
 	int scale;
-	bool centered;
 };
 
 class EntityDrawSystem : public System {
@@ -46,11 +45,13 @@ public:
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
-			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom), false});
+			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom)});
 		}
 
 		auto lambda = [](auto& l, auto& r) { return l.position.y < r.position.y || (l.position.y == r.position.y && l.position.x < r.position.x); };
 		std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-		for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.centered, ticks);
+		TextureStyle style;
+		style.centered = false;
+		for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, style, ticks);
 	}
 };

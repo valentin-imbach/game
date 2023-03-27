@@ -6,6 +6,7 @@
 #include "Item.hpp"
 #include "ItemTemplates.hpp"
 #include "Loot.hpp"
+#include "ParticleSystem.hpp"
 
 struct PositionComponent {
 	vec position;
@@ -18,7 +19,7 @@ struct SpriteComponent {
 };
 
 struct CameraComponent {
-	uint8_t zoom;
+	float zoom;
 };
 
 ENUM(CreatureState,
@@ -32,7 +33,7 @@ JUMPING)
 struct CreatureStateComponent {
 	CreatureState::value state;
 	Direction::value facing;
-	bool stateChanged;
+	bool stateChanged = true;
 };
 
 struct MovementComponent {
@@ -137,3 +138,10 @@ struct NameComponent {
 struct GatherComponent {};
 
 struct DeathComponent {};
+
+struct ParticleComponent {
+	ParticleStyle style;
+	uint lastEmit = 0;
+	uint cooldown = 300;
+	bool active = true;
+};
