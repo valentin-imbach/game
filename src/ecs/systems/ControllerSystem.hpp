@@ -8,7 +8,7 @@
 
 class ControllerSystem : public System {
 public:
-	void update(InputState& inputState, bool active) {
+	void update(InputState& inputState, bool active, uint ticks) {
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs -> getComponent<CreatureStateComponent>(entity);
 			DirectionComponent& directionComponent = ecs -> getComponent<DirectionComponent>(entity);
@@ -42,7 +42,9 @@ public:
 				creatureStateComponent.state = CreatureState::WALKING;
 			}
 
-			creatureStateComponent.stateChanged = (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState);
+			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {
+				creatureStateComponent.lastChange = ticks;
+			}
 		}
 	}
 };

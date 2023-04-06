@@ -33,7 +33,7 @@ JUMPING)
 struct CreatureStateComponent {
 	CreatureState::value state;
 	Direction::value facing;
-	bool stateChanged = true;
+	uint lastChange;
 };
 
 struct MovementComponent {

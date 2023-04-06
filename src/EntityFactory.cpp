@@ -49,7 +49,7 @@ bool EntityFactory::free(pair position, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair offset(x,y);
-			if (world->gridMap.find(position + offset) != world->gridMap.end()) return false;
+			if (world->realm->gridMap.find(position + offset) != world->realm->gridMap.end()) return false;
 		}
 	}
 	return true;

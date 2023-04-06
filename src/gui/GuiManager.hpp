@@ -6,10 +6,10 @@
 #include "Item.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
-#include "GuiElement.hpp"
 #include "ECS.hpp"
 
 class World;
+class GuiElement;
 
 class GuiManager {
 public:

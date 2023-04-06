@@ -124,8 +124,8 @@ bool Console::execute(std::string input) {
 		TileId::value tileId = TileId::from_string(inputs[1]);
 		if (!tileId) return false;
 		pair position = round(ecs.getComponent<PositionComponent>(player).position);
-		game->world->map->tiles[position.x][position.y]->tileId = tileId;
-		game->world->map->updateStyle(position, true);
+		game->world->realm->map->tiles[position.x][position.y]->tileId = tileId;
+		game->world->realm->map->updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
 		// if (split.size() != 2) return false;
 		// WeatherType w = WeatherTypeFromString(split[1]);

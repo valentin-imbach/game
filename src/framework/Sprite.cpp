@@ -34,9 +34,10 @@ void SpriteStack::addSprite(Sprite sprite, pair offset) {
 	depth += 1;
 }
 
-void SpriteStack::draw(pair position, int scale, TextureStyle style, uint ticks) {
+void SpriteStack::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	for (int layer = 0; layer < depth; layer++) {
-		stack[layer].first.draw(position + scale * BIT * stack[layer].second, scale, style, ticks);
+		pair offset = round(scale * BIT * vec(stack[layer].second));
+		stack[layer].first.draw(position + offset, scale, style, ticks);
 	}
 }
 

@@ -52,7 +52,8 @@ GATHER,
 DEATH,
 INVENTORY_DEATH,
 PARTICLE_EMIT,
-CREATURE_PARTICLE)
+CREATURE_PARTICLE,
+HAND_RENDER)
 
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;

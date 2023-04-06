@@ -1,5 +1,6 @@
 
 #include "GuiManager.hpp"
+#include "GuiElement.hpp"
 
 void GuiManager::update() {
 	for (auto& guiElement : guiElements) guiElement->reposition();

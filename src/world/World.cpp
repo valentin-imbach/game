@@ -34,14 +34,12 @@ void World::init() {
 World::World(std::string name)
 	: name(name) {
 	init();
-	map = std::make_unique<Map>(1729);
+	realm = std::make_unique<Realm>(pair(100,100), 1729);
 
-	Entity playerEntity = EntityFactory::createPlayer({8, 8});
+	Entity player = EntityFactory::createPlayer({8, 8});
 
 	Entity item = EntityFactory::createItem(ItemId::APPLE, 20);
-	Entity rest = ecs.getComponent<InventoryComponent>(playerEntity).inventory.add(item);
-
-	player = playerSystem->getPlayer();
+	Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -87,11 +85,10 @@ World::World(std::string name)
 	SpriteStack chestSprites;
 	chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}), pair(0, -1));
 	ecs.addComponent<SpriteComponent>({chestSprites}, chest);
-	ecs.addComponent<PositionComponent>({{9, 9}}, chest);
-	ecs.addComponent<GridComponent>({{9, 9}, {1, 1}, true}, chest);
+	ecs.addComponent<PositionComponent>({{10, 9}}, chest);
+	ecs.addComponent<GridComponent>({{10, 9}, {1, 1}, true}, chest);
 	ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
 	ecs.addComponent<InteractionComponent>({InteractionId::CHEST}, chest);
-	gridMap[{9, 9}] = chest;
 
 	Entity monster = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{5, 8}}, monster);
@@ -135,41 +132,20 @@ World::World(std::string name)
 	ecs.addComponent<SpriteComponent>({fireSprites}, fire);
 	ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, fire);
 	
-	generate();
+	realm->generate();
 }
 
 World::World(std::fstream& stream) : ecs(stream) {
 	init();
+	realm = std::make_unique<Realm>(pair(100,100), 1729);
 	ecs.deserialiseComponents(stream);
-	map = std::make_unique<Map>(1729);
 
 	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	gridSystem->rebuild(gridMap);
-}
-
-void World::generate() {
-	uint seed = 456;
-	for (int x = 0; x < MAP_WIDTH; x++) {
-		for (int y = 0; y < MAP_HEIGHT; y++) {
-			pair position(x, y);
-			Biome::value biome = map->getBiome(position);
-			int variation = map->variationMap->get(position);
-			int vegetation = map->vegetationMap->get(position);
-			int choice = rand_int(seed++, 50 + vegetation);
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
-			for (auto& p : ground->resources) {
-				choice -= p.second;
-				if (choice < 0) {
-					EntityFactory::createResource(p.first, position);
-					break;
-				}
-			}
-		}
-	}
+	gridSystem->rebuild(realm->gridMap);
 }
 
 void World::rosterComponents() {
@@ -249,6 +225,8 @@ void World::rosterSystems() {
 		{ComponentId::PARTICLE, ComponentId::POSITION});
 	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
 		{ComponentId::PARTICLE, ComponentId::CREATURE_STATE});
+	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
+		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::CREATURE_STATE});
 
 	LOG("Systems rostered")
 }
@@ -263,12 +241,12 @@ void World::update(uint dt) {
 	handleEvents();
 	guiManager.update();
 
-	controllerSystem->update(inputState, !guiManager.active());
+	controllerSystem->update(inputState, !guiManager.active(), ticks);
 
 	animalAiSystem->update(ticks);
-	monsterAiSystem->update(player, solidMap);
+	monsterAiSystem->update(player, realm->solidMap, ticks);
 
-	creatureMovementSystem->update(dt, solidMap, map.get());
+	creatureMovementSystem->update(dt, realm->solidMap, realm->map.get());
 	collisionSystem->update(collisions);
 
 	itemPickupSystem->update(collisions);
@@ -280,7 +258,7 @@ void World::update(uint dt) {
 
 	creatureAnimationSystem->update(ticks);
 
-	gridSystem->update(gridMap, solidMap);
+	gridSystem->update(realm->gridMap, realm->solidMap);
 	inventoryDeathSystem->update(ticks);
 	deathSystem->update();
 
@@ -290,8 +268,9 @@ void World::update(uint dt) {
 }
 
 void World::draw() {
-	tileDrawSystem->update(map.get(), ticks);
+	tileDrawSystem->update(realm->map.get(), ticks);
 	entityDrawSystem->update(camera, ticks);
+	//handRenderSystem->update(camera, ticks);
 	colliderDrawSystem->update(camera, ticks);
 
 	vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
@@ -321,11 +300,14 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 	std::unique_ptr<TabWidget> gui = std::make_unique<TabWidget>(pair(0, 0), pair(150, 150));
 	std::unique_ptr<Widget> tab1 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	std::unique_ptr<Widget> tab2 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+	std::unique_ptr<Widget> tab3 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	tab1->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 10), &playerComponent.equipment, 20, &inventoryComponent.inventory));
 	tab2->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10), &inventoryComponent.inventory));
+	tab3->addGuiElement(std::make_unique<BuildGui>(pair(0, 0)));
 
 	gui->addTab(std::move(tab1));
 	gui->addTab(std::move(tab2));
+	gui->addTab(std::move(tab3));
 	return gui;
 }
 

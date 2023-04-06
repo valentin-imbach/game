@@ -7,7 +7,7 @@
 
 class MonsterAiSystem : public System {
 public:
-	void update(Entity player, std::unordered_set<pair>& solidMap) {
+	void update(Entity player, std::unordered_set<pair>& solidMap, uint ticks) {
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
@@ -51,8 +51,9 @@ public:
 				}
 				creatureStateComponent.state = dir ? CreatureState::WALKING : CreatureState::IDLE;
 			}
-
-			creatureStateComponent.stateChanged = (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState);
+			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {
+				creatureStateComponent.lastChange = ticks;
+			}	
 		}
 	}
 };

@@ -8,6 +8,7 @@
 #include "systems.hpp"
 #include "utils.hpp"
 #include "ParticleSystem.hpp"
+#include "Realm.hpp"
 
 using DrawQueue = std::vector<std::pair<float, DrawCall>>;
 
@@ -36,7 +37,6 @@ private:
 	void rosterSystems();
 
 	void init();
-	void generate();
 
 	std::unique_ptr<GuiElement> makeInventory();
 	std::unique_ptr<GuiElement> makeMenu();
@@ -64,16 +64,13 @@ private:
 	InventoryDeathSystem* inventoryDeathSystem;
 	ParticleEmitSystem* particleEmitSystem;
 	CreatureParticleSystem* creatureParticleSystem;
+	HandRenderSystem* handRenderSystem;
 
 	GuiManager guiManager;
-
 	std::string name;
-
-	std::unique_ptr<Map> map;
-	GridMap gridMap;
-	std::unordered_set<pair> solidMap;
-
 	uint ticks;
+
+	std::unique_ptr<Realm> realm;
 
 	friend class Game;
 	friend class Console;

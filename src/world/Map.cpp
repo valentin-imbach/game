@@ -3,15 +3,16 @@
 
 #include "utils.hpp"
 
-Map::Map(uint seed)
-	: mapSeed(seed) {
+Map::Map(pair size, uint seed)
+	: size(size), mapSeed(seed) {
+	for (int y = 0; y < size.y; y++) tiles.emplace_back(size.x);
 	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
 	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
 	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
 	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
 	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
 	generate();
-	//analyse(100000);
+	// analyse(100000);
 }
 
 Biome::value Map::getBiome(pair position) {
@@ -46,8 +47,8 @@ Biome::value Map::getBiome(pair position) {
 }
 
 void Map::generate() {
-	for (int x = 0; x < MAP_WIDTH; x++) {
-		for (int y = 0; y < MAP_HEIGHT; y++) {
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
 			pair position(x, y);
 			Biome::value biome = getBiome(position);
 			int variation = variationMap->get(position);
@@ -56,8 +57,8 @@ void Map::generate() {
 		}
 	}
 
-	for (int x = 0; x < MAP_WIDTH; x++) {
-		for (int y = 0; y < MAP_HEIGHT; y++) {
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
 			pair position(x, y);
 			updateStyle(position);
 		}
@@ -66,7 +67,7 @@ void Map::generate() {
 
 TileId::value Map::getTileId(pair position) {
 	if (position.x < 0 || position.y < 0) return TileId::NONE;
-	if (position.x >= MAP_WIDTH || position.y >= MAP_HEIGHT) return TileId::NONE;
+	if (position.x >= size.x || position.y >= size.y) return TileId::NONE;
 	return tiles[position.x][position.y]->tileId;
 }
 

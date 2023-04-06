@@ -41,31 +41,31 @@ public:
 		std::string playerStateText = "Player State: " + CreatureState::to_string(playerState);
 		TextManager::drawText(playerStateText, {30, 90});
 
-		Biome::value biome = world->map->getBiome(playerPosition);
+		Biome::value biome = world->realm->map->getBiome(playerPosition);
 		std::string biomeText = "Biome: " + Biome::to_string(biome);
 		TextManager::drawText(biomeText, {30, 120});
 
-		int temperature = world->map->temparatureMap->get(playerPosition);
+		int temperature = world->realm->map->temparatureMap->get(playerPosition);
 		std::string temperatureText = "Temperateure: " + std::to_string(temperature);
 		TextManager::drawText(temperatureText, {30, 140});
 
-		int elevation = world->map->elevationMap->get(playerPosition);
+		int elevation = world->realm->map->elevationMap->get(playerPosition);
 		std::string elevationText = "Elevation: " + std::to_string(elevation);
 		TextManager::drawText(elevationText, {30, 160});
 
-		int precipitation = world->map->precipitationMap->get(playerPosition);
+		int precipitation = world->realm->map->precipitationMap->get(playerPosition);
 		std::string precipitationText = "Precipitation: " + std::to_string(precipitation);
 		TextManager::drawText(precipitationText, {30, 180});
 
-		int vegetation = world->map->vegetationMap->get(playerPosition);
+		int vegetation = world->realm->map->vegetationMap->get(playerPosition);
 		std::string vegetationText = "Vegetation: " + std::to_string(vegetation);
 		TextManager::drawText(vegetationText, {30, 200});
 
-		int variation = world->map->variationMap->get(playerPosition);
+		int variation = world->realm->map->variationMap->get(playerPosition);
 		std::string variationText = "Variation: " + std::to_string(variation);
 		TextManager::drawText(variationText, {30, 230});
 
-		TileId::value tileId = world->map->getTileId(playerPosition);
+		TileId::value tileId = world->realm->map->getTileId(playerPosition);
 		std::string tileText = "Tile: " + TileId::to_string(tileId);
 		TextManager::drawText(tileText, {30, 250});
 

@@ -22,7 +22,7 @@ public:
 				}
 
 				sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
-				if (creatureStateComponent.stateChanged) sprite.animationReset(ticks);
+				if (creatureStateComponent.lastChange == ticks) sprite.animationReset(ticks);
 			}
 		}
 	}

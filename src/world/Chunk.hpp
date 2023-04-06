@@ -10,9 +10,6 @@ public:
 	void serialise(std::fstream& stream);
 	void deserialise(std::fstream& stream);
 
-	void update(uint dt);
-	void draw();
-
-	ECS ecs;
 	Map map;
+	pair position;
 };

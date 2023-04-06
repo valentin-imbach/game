@@ -4,14 +4,21 @@
 
 class Realm {
 public:
-	Realm();
+	Realm(pair size, uint seed);
 
-	void update(uint dt);
-	void draw();
+	void generate();
 
-	void serialise(std::fstream& stream);
-	void deserialise(std::fstream& stream);
+	// void serialise(std::fstream& stream);
+	// void deserialise(std::fstream& stream);
 
-	std::unordered_map<pair, Chunk> chunks;
+	// std::unordered_map<pair, Chunk> chunks;
+
+	pair size;
+	std::unique_ptr<Map> map;
+	GridMap gridMap;
+	std::unordered_set<pair> solidMap;
+
+private:
+	uint seed;
 
 };

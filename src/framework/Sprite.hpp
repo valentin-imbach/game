@@ -53,7 +53,7 @@ private:
 class SpriteStack {
 public:
 	void addSprite(Sprite sprite, pair offset = {0, 0});
-	void draw(pair position, int scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
+	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	void clear();
 
 private:

@@ -23,3 +23,4 @@
 #include "InventoryDeathSystem.hpp"
 #include "ParticleEmitSystem.hpp"
 #include "CreatureParticleSystem.hpp"
+#include "HandRenderSystem.hpp"

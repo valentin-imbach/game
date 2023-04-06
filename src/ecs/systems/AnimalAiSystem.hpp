@@ -43,7 +43,9 @@ public:
 				}
 			}
 
-			creatureStateComponent.stateChanged = (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState);
+			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {
+				creatureStateComponent.lastChange = ticks;
+			}
 		}
 	}
 };

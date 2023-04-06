@@ -19,9 +19,9 @@ public:
 			pair start = round(cameraPosition);
 
 			int x1 = std::max(0, start.x - range.x);
-			int x2 = std::min(MAP_WIDTH - 1, start.x + range.x);
+			int x2 = std::min(map->size.x - 1, start.x + range.x);
 			int y1 = std::max(0, start.y - range.y);
-			int y2 = std::min(MAP_HEIGHT - 1, start.y + range.y);
+			int y2 = std::min(map->size.y - 1, start.y + range.y);
 
 			for (int x = x1; x <= x2; x++) {
 				for (int y = y1; y <= y2; y++) {
