@@ -5,7 +5,8 @@
 #include "Item.hpp"
 #include "Sprite.hpp"
 #include "utils.hpp"
-#include "GuiManager.hpp"
+
+class GuiManager;
 
 #define GUI_BOX true
 
@@ -27,7 +28,6 @@ protected:
 	GuiManager* guiManager;
 	bool inside(pair position);
 
-	friend class Widget;
 	friend class GuiManager;
 };
 
@@ -43,20 +43,6 @@ public:
 protected:
 	Sprite sprite;
 	std::vector<std::unique_ptr<GuiElement>> children;
-};
-
-class TabWidget;
-
-class Tab : public GuiElement {
-public:
-	Tab(TabWidget* parent, uint index);
-	~Tab() override = default;
-	void draw() override;
-	bool handleEvent(InputEvent event) override;
-
-private:
-	TabWidget* parent;
-	uint index;
 };
 
 class TabWidget : public Widget {
@@ -75,12 +61,21 @@ private:
 	friend class Tab;
 };
 
-class ECS;
+class Tab : public GuiElement {
+public:
+	Tab(TabWidget* parent, uint index);
+	~Tab() override = default;
+	void draw() override;
+	bool handleEvent(InputEvent event) override;
+
+private:
+	TabWidget* parent;
+	uint index;
+};
 
 class ItemSlot : public GuiElement {
 public:
-	ItemSlot(pair position, ItemContainer& itemContainer,
-		Inventory* link = nullptr);
+	ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link = nullptr);
 	~ItemSlot() override = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
@@ -129,28 +124,16 @@ private:
 	int spacing;
 };
 
-template <typename T>
 class Button : public GuiElement {
 public:
-	Button(pair position, pair size, void (T::*callback)(), T* object, Sprite sprite)
-		: GuiElement(position, size), sprite(sprite), callback(callback), object(object) {}
+	Button(pair position, pair size, std::function<void()> callback, Sprite sprite);
 	~Button() override = default;
-	bool handleEvent(InputEvent event) override {
-		if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
-			(object->*callback)();
-			return true;
-		}
-		return false;
-	}
-
-	void draw() override {
-		if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-	}
+	bool handleEvent(InputEvent event) override;
+	void draw() override;
 
 private:
 	Sprite sprite;
-	void (T::*callback)();
-	T* object;
+	std::function<void()> callback;
 };
 
 class CraftingGui : public Widget {
@@ -161,70 +144,29 @@ public:
 
 private:
 	Inventory* link;
-	ItemContainer inputA;
-	ItemContainer inputB;
-	ItemContainer output;
+	ItemContainer inputA, inputB, output;
 };
 
-template <typename T>
 class Selector : public GuiElement {
 public:
-	Selector(pair position, pair size, void (T::*callback)(int n), T* object, int columns = 1)
-		: GuiElement(position, size), callback(callback), object(object), columns(columns) {}
+	Selector(pair position, pair size, std::function<void(int)> callback, int columns = 1);
 	~Selector() = default;
 
-	void addSelection(SpriteStack sprite) {
-		sprites.push_back(sprite);
-	}
-
-	bool handleEvent(InputEvent event) override {
-		if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
-			int offset = screenSize.x / columns;
-			pair index = (event.mousePosition - screenPosition + screenSize/2) / offset;
-			int n = index.x + columns * index.y;
-			if (n < sprites.size()) {
-				(object->*callback)(n);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	void draw() override {
-		int offset = screenSize.x / columns;
-		if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-		for (int i = 0; i < sprites.size(); i++) {
-			pair index = pair(i % columns, i / columns);
-			pair pos = screenPosition - screenSize/2 + offset * index + pair(offset/2, offset/2);
-			sprites[i].draw(pos, GuiManager::scale);
-			if (GUI_BOX) TextureManager::drawRect(pos, {offset, offset});
-		}
-	}
+	void addSelection(SpriteStack sprite);
+	bool handleEvent(InputEvent event) override;
+	void draw() override;
 
 private:
 	int columns;
-	void (T::*callback)(int n);
-	T* object;
+	std::function<void(int)> callback;
 	std::vector<SpriteStack> sprites;
 };
 
 class BuildGui : public Widget {
 public:
-	BuildGui(pair position) : Widget(position, {80, 80}, Sprite()) {
-		std::unique_ptr<Selector<BuildGui>> selector = std::make_unique<Selector<BuildGui>>(pair(0, 0), pair(48, 48), &BuildGui::select, this, 3);
-		SpriteStack sprites;
-		sprites.addSprite(Sprite(SpriteSheet::STATIONS, {0,1}));
-		selector->addSelection(sprites);
-		selector->addSelection(sprites);
-		selector->addSelection(sprites);
-		selector->addSelection(sprites);
-		addGuiElement(std::move(selector));
-	}
+	BuildGui(pair position);
 	~BuildGui() = default;
-	void select(int n) {
-		LOG("Selected", n);
-	}
+	void select(int n);
 
 private:
-
 };

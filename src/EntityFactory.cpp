@@ -58,7 +58,7 @@ bool EntityFactory::free(pair position, pair size) {
 Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
 	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
 	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
-	if (!free(position, resourceTemplate->size)) return 0;
+	//if (!free(position, resourceTemplate->size)) return 0;
 
 	Entity resource = world->ecs.createEntity();
 	if (!resource) return 0;
@@ -67,7 +67,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	world->ecs.addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid, false}, resource);
 
 	SpriteStack spriteStack;
-	uint variation = rand_uint(seed++, resourceTemplate->variations);
+	uint variation = rand_int(seed++, 0, resourceTemplate->variations);
 	pair spritePosition(resourceTemplate->anker.x + variation * resourceTemplate->size.x, resourceTemplate->anker.y - resourceTemplate->height);
 	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
 	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize}, pair(0, -resourceTemplate->height));

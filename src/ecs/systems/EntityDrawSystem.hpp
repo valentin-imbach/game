@@ -10,6 +10,7 @@ struct DrawCall {
 	SpriteStack spriteStack;
 	pair position;
 	int scale;
+	TextureStyle style;
 };
 
 class EntityDrawSystem : public System {
@@ -27,6 +28,8 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 
+			TextureStyle style;
+			style.centered = false;
 			vec entityPosition = positionComponent.position;
 			if (spriteComponent.shader.shaderId == ShaderId::SHAKE) {
 				uint past = ticks - spriteComponent.shader.start;
@@ -37,6 +40,8 @@ public:
 				}
 			} else if (spriteComponent.shader.shaderId == ShaderId::BOUNCE) {
 				entityPosition += vec(0, sinf(float(ticks) / 200) / 30);
+			} else if (spriteComponent.shader.shaderId == ShaderId::RED) {
+				style.tint = {255, 100, 100};
 			}
 
 			vec offset(0.5f, 0.5f);
@@ -44,14 +49,13 @@ public:
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
+			if (spriteComponent.priority) screenPosition.y += 1;
 
-			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom)});
+			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom), style});
 		}
 
 		auto lambda = [](auto& l, auto& r) { return l.position.y < r.position.y || (l.position.y == r.position.y && l.position.x < r.position.x); };
 		std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-		TextureStyle style;
-		style.centered = false;
-		for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, style, ticks);
+		for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 	}
 };

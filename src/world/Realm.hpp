@@ -18,6 +18,8 @@ public:
 	GridMap gridMap;
 	std::unordered_set<pair> solidMap;
 
+	bool free(pair anker, pair size);
+
 private:
 	uint seed;
 

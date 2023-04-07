@@ -21,6 +21,7 @@ void TextureManager::drawTexture(SDL_Texture* texture, pair spos, pair ssize, pa
 	SDL_Rect srect = {spos.x, spos.y, ssize.x, ssize.y};
 	SDL_Rect drect = {dpos.x, dpos.y, dsize.x, dsize.y};
 	SDL_SetTextureAlphaMod(texture, style.alpha * 255);
+	SDL_SetTextureColorMod(texture, style.tint.r, style.tint.g, style.tint.b);
 	SDL_RenderCopyEx(Window::instance->renderer, texture, &srect, &drect, 0, NULL, style.flip);
 }
 

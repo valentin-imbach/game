@@ -11,6 +11,7 @@ struct TextureStyle {
 	bool centered = true;
 	float alpha = 1;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	SDL_Color tint = {255, 255, 255};
 };
 
 class TextureManager {

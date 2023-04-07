@@ -11,6 +11,7 @@
 #include <string>
 #include <variant>
 #include <fstream>
+#include <functional>
 
 #include <cstdint>
 #include <cassert>

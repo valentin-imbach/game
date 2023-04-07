@@ -64,7 +64,8 @@ private:
 
 ENUM(ShaderId,
 SHAKE,
-BOUNCE)
+BOUNCE,
+RED)
 
 struct Shader {
 	ShaderId::value shaderId;

@@ -33,12 +33,12 @@ public:
 				Direction::value dir = PathFinder::find_direction(start, end, solidMap, true);
 				if (dir) {
 					pair step = start + taxiSteps[dir];
-					pair left = start + taxiSteps[rotate_dir(dir, 1)];
-					pair right = start + taxiSteps[rotate_dir(dir, 7)];
+					pair left = start + taxiSteps[Direction::rotate(dir, 1)];
+					pair right = start + taxiSteps[Direction::rotate(dir, 7)];
 					if (solidMap.find(left) != solidMap.end() && (left-step)*offset > 0.1) {
-						directionComponent.direction = rotate_dir(dir, 7);
+						directionComponent.direction = Direction::rotate(dir, 7);
 					} else if (solidMap.find(right) != solidMap.end() && (right-step)*offset > 0.1) {
-						directionComponent.direction = rotate_dir(dir, 1);
+						directionComponent.direction = Direction::rotate(dir, 1);
 					} else {
 						directionComponent.direction = dir;
 					}

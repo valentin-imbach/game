@@ -10,11 +10,11 @@
 #define WARNING(args...) log(std::cerr, "WARNING", __FILE__, __LINE__, args);
 
 inline std::ostream& operator<<(std::ostream& s, vec v) {
-	return s << '(' << v.x << ", " << v.y << ')';
+	return s << "vec(" << v.x << ", " << v.y << ')';
 }
 
 inline std::ostream& operator<<(std::ostream& s, pair p) {
-	return s << '(' << p.x << ", " << p.y << ')';
+	return s << "pair(" << p.x << ", " << p.y << ')';
 }
 
 template <typename T>
@@ -37,7 +37,6 @@ void debug_log(std::ostream& stream, T x, TT... y) {
 
 template <typename... T>
 void log(std::ostream& stream, const char* title, const char* file, int line, T... args) {
-
 	debug_log(stream, title, '@', string_split(file, "/").back(), line);
 	debug_log(stream, ":", args..., '\n');
 }

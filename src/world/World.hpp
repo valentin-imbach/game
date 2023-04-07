@@ -32,6 +32,8 @@ public:
 	ECS ecs;
 	ParticleSystem particleSystem = ParticleSystem(1000);
 
+	std::unique_ptr<Realm> realm;
+
 private:
 	void rosterComponents();
 	void rosterSystems();
@@ -69,8 +71,6 @@ private:
 	GuiManager guiManager;
 	std::string name;
 	uint ticks;
-
-	std::unique_ptr<Realm> realm;
 
 	friend class Game;
 	friend class Console;

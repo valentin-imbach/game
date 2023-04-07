@@ -4,6 +4,8 @@
 
 TTF_Font* TextManager::font = nullptr;
 
+Text::Text(std::string text, int style, SDL_Color colour) : text(text), style(style), colour(colour) {}
+
 void TextManager::Init() {
 	if (TTF_Init() != 0) {
 		ERROR("Failed to initialize TTF");

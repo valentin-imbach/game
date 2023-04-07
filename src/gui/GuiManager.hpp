@@ -26,6 +26,8 @@ public:
 	pair mousePosition;
 	ItemContainer mouseItemContainer;
 
+	Entity buildMode;
+
 	static uint scale;
 
 private:

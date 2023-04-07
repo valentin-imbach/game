@@ -7,13 +7,11 @@ typedef unsigned int uint;
 //* uint
 
 [[nodiscard]] inline uint rand_uint(uint seed) {
-	uint x = seed + 1;
+	uint x = seed + 23782755;
 	x = ((x >> 16) ^ x) * 0x45d9f3b;
 	x = ((x >> 16) ^ x) * 0x45d9f3b;
 	return (x >> 16) ^ x;
 }
-
-[[nodiscard]] inline uint rand_uint(uint seed, uint max) { return rand_uint(seed) % max; }
 
 //* float
 
@@ -22,16 +20,16 @@ typedef unsigned int uint;
 }
 
 [[nodiscard]] inline float rand_float(uint seed, float min, float max) {
+	assert(min <= max);
 	return min + rand_float(seed) * (max - min);
 }
 
 // * int
 
 [[nodiscard]] inline int rand_int(uint seed, int min, int max) {
-	return min + int(rand_float(seed) * float(max - min));
+	assert(min < max);
+	return min + rand_uint(seed) % (max - min);
 }
-
-[[nodiscard]] inline int rand_int(uint seed, int max) { return rand_int(seed, 0, max); }
 
 //* bool
 
@@ -42,14 +40,12 @@ typedef unsigned int uint;
 
 template <typename T>
 [[nodiscard]] inline T rand_choice(uint seed, std::vector<T> &vec) {
-	assert(!vec.empty());
-	uint index = rand_uint(seed, vec.size());
+	uint index = rand_int(seed, 0, vec.size());
 	return vec[index];
 }
 
 template <typename T>
 [[nodiscard]] inline T rand_choice(uint seed, std::vector<T> &&vec) {
-	assert(!vec.empty());
-	uint index = rand_uint(seed, vec.size());
+	uint index = rand_int(seed, 0, vec.size());
 	return vec[index];
 }

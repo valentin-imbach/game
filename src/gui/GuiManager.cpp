@@ -1,10 +1,26 @@
 
 #include "GuiManager.hpp"
 #include "GuiElement.hpp"
+#include "World.hpp"
 
 void GuiManager::update() {
 	for (auto& guiElement : guiElements) guiElement->reposition();
 	for (auto& guiElement : guiElements) guiElement->update(this);
+
+	if (buildMode && world->camera) {
+		vec cameraPosition = world->ecs.getComponent<PositionComponent>(world->camera).position;
+		uint zoom = world->ecs.getComponent<CameraComponent>(world->camera).zoom;
+		pair position = round(cameraPosition + vec(Window::instance->mousePosition - Window::instance->size / 2) / (zoom * BIT));
+		world->ecs.getComponent<PositionComponent>(buildMode).position = position;
+		world->ecs.getComponent<GridComponent>(buildMode).anker = position;
+		SpriteComponent& spriteComponent = world->ecs.getComponent<SpriteComponent>(buildMode);
+		if (world->realm->gridMap.find(position) != world->realm->gridMap.end()) {
+			spriteComponent.shader = {ShaderId::RED, 0};
+		} else {
+			spriteComponent.shader = {ShaderId::NONE, 0};
+		}
+	}
+
 	if (!primary) return;
 	primary->reposition();
 	primary->update(this);
@@ -22,6 +38,16 @@ void GuiManager::draw() {
 }
 
 bool GuiManager::handleEvent(InputEvent event) {
+	if (buildMode && event.id == InputEventId::PRIMARY) {
+		GridComponent& gridComponent = world->ecs.getComponent<GridComponent>(buildMode);
+		if (world->realm->free(gridComponent.anker, gridComponent.size)) {
+			gridComponent.linked = false;
+			world->ecs.getComponent<SpriteComponent>(buildMode).priority = false;
+			buildMode = 0;
+		}
+		return true;
+	}
+
 	if (event.id == InputEventId::INVENTORY) {
 		if (primary) {
 			close();
@@ -41,6 +67,10 @@ void GuiManager::open(std::unique_ptr<GuiElement> a, std::unique_ptr<GuiElement>
 	primary = std::move(a);
 	secondary = std::move(b);
 	if (!primary) return;
+	if (buildMode) {
+		world->ecs.destroyEntity(buildMode);
+		buildMode = 0;
+	}
 	primary->position.y = 0;
 	primary->alignment = Direction::NONE;
 	if (secondary) {

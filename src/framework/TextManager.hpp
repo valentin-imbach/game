@@ -6,21 +6,19 @@
 #define FONT_PATH "../assets/fonts/"
 
 struct Text {
+	Text(std::string text, int style = TTF_STYLE_NORMAL, SDL_Color colour = {255, 255, 255, 255});
 	std::string text;
 	int style;
-	SDL_Color colour;
-
-    Text(std::string text,  int style = TTF_STYLE_NORMAL, SDL_Color colour = {255, 255, 255, 255}) : text(text), style(style), colour(colour) {}
+	SDL_Color colour;	
 };
 
 class TextManager {
 public:
-	TextManager();
+	TextManager() = delete;
 	static TTF_Font* font;
 	static SDL_Color color;
 
 	static void Init();
-
 	static pair textSize(std::string& text);
 
 	static void drawText(std::string& text, pair position, bool centred = false, SDL_Color colour = {255, 255, 255, 255});

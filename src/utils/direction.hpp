@@ -37,10 +37,12 @@ const pair taxiSteps[9] = {
 	{0, 1},
 	{1, 1}};
 
-inline Direction::value dir_from_vec(vec v) {
-	return Direction::from_int(1 + int((angle(v) + M_PI + M_PI/8)/M_PI_4) % 8);
-}
+namespace Direction {
+	inline Direction::value from_vec(vec v) {
+		return Direction::from_int(1 + int((angle(v) + M_PI + M_PI/8)/M_PI_4) % 8);
+	}
 
-inline Direction::value rotate_dir(Direction::value d, int n) {
-	return Direction::from_int((d + n - 1) % 8 + 1);
+	inline Direction::value rotate(Direction::value d, int n) {
+		return Direction::from_int((d + n - 1) % 8 + 1);
+	}
 }

@@ -269,13 +269,21 @@ void World::update(uint dt) {
 
 void World::draw() {
 	tileDrawSystem->update(realm->map.get(), ticks);
-	entityDrawSystem->update(camera, ticks);
-	//handRenderSystem->update(camera, ticks);
-	colliderDrawSystem->update(camera, ticks);
 
-	vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
-	float cameraZoom = ecs.getComponent<CameraComponent>(camera).zoom;
-	particleSystem.draw(cameraPosition, cameraZoom);
+	if (camera) {
+		vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
+		float cameraZoom = ecs.getComponent<CameraComponent>(camera).zoom;
+		pair position = round(cameraPosition + vec(Window::instance->mousePosition - Window::instance->size / 2) / (cameraZoom * BIT));
+		pair screenPosition = round(BIT * cameraZoom * (position - cameraPosition)) + (Window::instance->size) / 2;
+
+		TextureManager::drawRect(screenPosition, {cameraZoom * BIT, cameraZoom * BIT}, {0,0,255,255});
+
+		entityDrawSystem->update(camera, ticks);
+		//handRenderSystem->update(camera, ticks);
+		colliderDrawSystem->update(camera, ticks);
+		particleSystem.draw(cameraPosition, cameraZoom);
+	
+	}
 
 	guiManager.draw();
 }

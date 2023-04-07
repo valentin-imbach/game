@@ -16,6 +16,7 @@ struct SpriteComponent {
 	SpriteStack spriteStack;
 	float scale = 1;
 	Shader shader = {ShaderId::NONE, 0};
+	bool priority = false;
 };
 
 struct CameraComponent {
