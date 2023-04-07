@@ -54,7 +54,7 @@ World::World(std::string name)
 	ecs.addComponent<SpriteComponent>({axeSprites, 0.5f, {ShaderId::BOUNCE, ticks}}, axe);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
 	ecs.addComponent<ToolComponent>({ToolId::AXE}, axe);
-	Collider axeCollider = {{0, 0}, {0.4f, 0.4f}};
+	Collider axeCollider({0, 0}, {0.4f, 0.4f});
 	ecs.addComponent<ColliderComponent>({axeCollider}, axe);
 	ecs.addComponent<PositionComponent>({{6, 5}}, axe);
 	ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
@@ -65,7 +65,7 @@ World::World(std::string name)
 	ecs.addComponent<SpriteComponent>({pickSprites, 0.5f, {ShaderId::BOUNCE, ticks}}, pick);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
 	ecs.addComponent<ToolComponent>({ToolId::PICK_AXE}, pick);
-	Collider pickCollider = {{0, 0}, {0.4f, 0.4f}};
+	Collider pickCollider({0, 0}, {0.4f, 0.4f});
 	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
 	ecs.addComponent<PositionComponent>({{7, 5}}, pick);
 	ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, pick);
@@ -76,7 +76,7 @@ World::World(std::string name)
 	ecs.addComponent<SpriteComponent>({swordSprites, 0.5f, {ShaderId::BOUNCE, ticks}}, sword);
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
-	Collider swordCollider = {{0, 0}, {0.4f, 0.4f}};
+	Collider swordCollider({0, 0}, {0.4f, 0.4f});
 	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
 	ecs.addComponent<PositionComponent>({{8, 5}}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
@@ -98,7 +98,7 @@ World::World(std::string name)
 	SpriteStack monsterSprites;
 	monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 	ecs.addComponent<SpriteComponent>({monsterSprites}, monster);
-	Collider collider = {{0, 0}, {0.6f, 0.6f}};
+	Collider collider({0, 0}, {0.6f, 0.6f});
 	ecs.addComponent<ColliderComponent>({collider}, monster);
 	ecs.addComponent<HealthComponent>({20, 20}, monster);
 	ecs.addComponent<MonsterAiComponent>({}, monster);
@@ -131,6 +131,11 @@ World::World(std::string name)
 	fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
 	ecs.addComponent<SpriteComponent>({fireSprites}, fire);
 	ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, fire);
+
+	Entity circle = ecs.createEntity();
+	ecs.addComponent<PositionComponent>({{10,10}}, circle);
+	Collider circleCollider({0,0}, 0.5f);
+	ecs.addComponent<ColliderComponent>({circleCollider}, circle);
 	
 	realm->generate();
 }

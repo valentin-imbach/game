@@ -19,7 +19,7 @@ public:
 				if (entityB == entityA) continue;
 				vec positionB = ecs -> getComponent<PositionComponent>(entityB).position;
 				Collider colliderB = ecs -> getComponent<ColliderComponent>(entityB).collider;
-				if (Collider::AABB(colliderA, positionA, colliderB, positionB)) {
+				if (Collider::colide(colliderA, positionA, colliderB, positionB)) {
 					collisions[entityA].push_back(entityB);
 				}
 			}

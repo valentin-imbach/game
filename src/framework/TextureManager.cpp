@@ -1,7 +1,7 @@
 
 #include "TextureManager.hpp"
-#include <SDL2_image/SDL_image.h>
 #include "Window.hpp"
+#include <SDL2_image/SDL_image.h>
 
 SDL_Texture* TextureManager::loadTexture(std::string path) {
 	SDL_Surface* tmpSurface = IMG_Load((SPRITE_PATH + path).c_str());
@@ -31,4 +31,38 @@ void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool 
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
 	filled ? SDL_RenderFillRect(Window::instance->renderer, &rect) : SDL_RenderDrawRect(Window::instance->renderer, &rect);
+}
+
+void TextureManager::drawCirc(pair position, int radius, SDL_Colour colour) {
+	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
+	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
+
+	int x = (radius - 1);
+	int y = 0;
+	int tx = 1;
+	int ty = 1;
+	int error = (tx - 2 * radius);
+
+	while (x >= y) {
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x + x, position.y - y);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x + x, position.y + y);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x - x, position.y - y);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x - x, position.y + y);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x + y, position.y - x);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x + y, position.y + x);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x - y, position.y - x);
+		SDL_RenderDrawPoint(Window::instance->renderer, position.x - y, position.y + x);
+
+		if (error <= 0) {
+			++y;
+			error += ty;
+			ty += 2;
+		}
+
+		if (error > 0) {
+			--x;
+			tx += 2;
+			error += (tx - 2 * radius);
+		}
+	}
 }

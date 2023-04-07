@@ -19,7 +19,7 @@ Entity EntityFactory::createPlayer(vec position) {
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, player);
-	Collider collider = {{0, 0}, {0.6f, 0.6f}};
+	Collider collider({0, 0}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, player);
 	world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, player);
 	world->ecs.addComponent<HealthComponent>({20, 20}, player);
@@ -89,7 +89,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
-	Collider collider = {{0, 0}, {0.6f, 0.6f}};
+	Collider collider({0, 0}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, animal);
 	world->ecs.addComponent<AnimalAiComponent>({0, 0}, animal);
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
@@ -102,7 +102,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 
 Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	Entity item = world->ecs.createEntity();
-	Collider collider = {{0, 0}, {0.4f, 0.4f}};
+	Collider collider({0, 0}, {0.4f, 0.4f});
 	world->ecs.addComponent<ColliderComponent>({collider}, item);
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});

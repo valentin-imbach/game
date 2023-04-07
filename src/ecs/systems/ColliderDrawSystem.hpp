@@ -22,12 +22,18 @@ public:
 
 			vec position = positionComponent.position + colliderComponent.collider.offset;
 			pair screenPosition = round(BIT * cameraZoom * (position  - cameraPosition)) + (Window::instance->size) / 2;
-			pair size = round(BIT * cameraZoom * colliderComponent.collider.size);
+			
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
-			TextureManager::drawRect(screenPosition, size, {255, 0, 0, 255});
+			if (colliderComponent.collider.type == Shape::RECTANGLE) {
+				pair size = round(BIT * cameraZoom * colliderComponent.collider.size);
+				TextureManager::drawRect(screenPosition, size, {255, 0, 0, 255});
+			} else if (colliderComponent.collider.type == Shape::CIRCLE) {
+				int radius = BIT * cameraZoom * colliderComponent.collider.radius;
+				TextureManager::drawCirc(screenPosition, radius);
+			}
 		}
 	}
 };
