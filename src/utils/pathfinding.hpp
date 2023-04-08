@@ -24,11 +24,11 @@ struct PathFinder {
 		while (!queue.empty() && counter < 1000 && !found) {
 			Node node = queue.top();
 			queue.pop();
-			for (int d = 1; d < 9; d += (2-diagonal)) {
+			for (int d = 1; d < 9; d += (2 - diagonal)) {
 				pair next = node.second + taxiSteps[d];
 				if (d % 2 == 0) {
 					pair left = node.second + taxiSteps[d % 8 + 1];
-					pair right = node.second + taxiSteps[(d+6) % 8 + 1];
+					pair right = node.second + taxiSteps[(d + 6) % 8 + 1];
 					if (map.find(left) != map.end() || map.find(right) != map.end()) continue;
 				}
 				if (visited.find(next) == visited.end() && map.find(next) == map.end()) {

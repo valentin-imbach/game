@@ -81,14 +81,16 @@ World::World(std::string name)
 	ecs.addComponent<PositionComponent>({{8, 5}}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 
-	Entity chest = ecs.createEntity();
-	SpriteStack chestSprites;
-	chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}), pair(0, -1));
-	ecs.addComponent<SpriteComponent>({chestSprites}, chest);
-	ecs.addComponent<PositionComponent>({{10, 9}}, chest);
-	ecs.addComponent<GridComponent>({{10, 9}, {1, 1}, true}, chest);
-	ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
-	ecs.addComponent<InteractionComponent>({InteractionId::CHEST}, chest);
+	// Entity chest = ecs.createEntity();
+	// SpriteStack chestSprites;
+	// chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}), pair(0, -1));
+	// ecs.addComponent<SpriteComponent>({chestSprites}, chest);
+	// ecs.addComponent<PositionComponent>({{10, 9}}, chest);
+	// ecs.addComponent<GridComponent>({{10, 9}, {1, 1}, true}, chest);
+	// ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
+	// ecs.addComponent<StationComponent>({StationId::CHEST}, chest);
+
+	EntityFactory::createStation(StationId::CHEST, {10, 9});
 
 	Entity monster = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{5, 8}}, monster);
@@ -173,7 +175,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
 	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
-	ecs.rosterComponent<InteractionComponent>(ComponentId::INTERACTION);
+	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
 	ecs.rosterComponent<GatherComponent>(ComponentId::GATHER);
@@ -316,7 +318,7 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 	std::unique_ptr<Widget> tab3 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	tab1->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 10), &playerComponent.equipment, 20, &inventoryComponent.inventory));
 	tab2->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10), &inventoryComponent.inventory));
-	tab3->addGuiElement(std::make_unique<BuildGui>(pair(0, 0)));
+	tab3->addGuiElement(std::make_unique<BuildGui>(pair(0, 10)));
 
 	gui->addTab(std::move(tab1));
 	gui->addTab(std::move(tab2));

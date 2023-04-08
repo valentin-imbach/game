@@ -110,11 +110,16 @@ struct GridComponent {
 	bool linked;
 };
 
-ENUM(InteractionId,
+ENUM(StationId,
+ANVIL,
+FURNACE,
+TOOL_STATION,
+WORK_STATION,
+SAWMILL,
 CHEST)
 
-struct InteractionComponent {
-	InteractionId::value interactionId;
+struct StationComponent {
+	StationId::value stationId;
 };
 
 struct Textblock {

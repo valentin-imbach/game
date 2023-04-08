@@ -282,24 +282,25 @@ void CraftingGui::craft() {
 //* BuildGui
 
 BuildGui::BuildGui(pair position)
-	: Widget(position, {128, 128}, Sprite()) {
-	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(0, 20), pair(128, 128), std::bind(&BuildGui::select, this, std::placeholders::_1), 4);
+	: Widget(position, {144, 128}, Sprite()) {
+	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
+	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20,20), std::bind(&BuildGui::build, this), Sprite(), Direction::SOUTH_EAST));
 
-	for (int n = 1; n < ResourceId::count; n++) {
+	for (int n = 1; n < StationId::count; n++) {
 		SpriteStack sprites;
-		ResourceTemplate* resourceTemplate = ResourceTemplate::templates[n].get();
-		pair spritePosition(resourceTemplate->anker.x, resourceTemplate->anker.y - resourceTemplate->height);
-		pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
-		sprites.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize});
+		sprites.addSprite({SpriteSheet::STATIONS, {n - 1, 0}, {1, 2}}, {0, -1});
 		selector->addSelection(sprites);
 	}
 	addGuiElement(std::move(selector));
 }
 
 void BuildGui::select(int n) {
-	LOG("Selected", n);
+	selected = n;
+}
+
+void BuildGui::build() {
 	ECS& ecs = guiManager->world->ecs;
-	guiManager->buildMode = EntityFactory::createResource(ResourceId::from_int(n + 1), {0, 0});
+	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), {0, 0});
 	ecs.getComponent<GridComponent>(guiManager->buildMode).linked = true;
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).priority = true;
 	guiManager->close();
@@ -307,8 +308,8 @@ void BuildGui::select(int n) {
 
 //* Button
 
-Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite)
-	: GuiElement(position, size), sprite(sprite), callback(callback) {}
+Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite, Direction::value alignment)
+	: GuiElement(position, size, alignment), sprite(sprite), callback(callback) {}
 
 bool Button::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
@@ -324,8 +325,8 @@ void Button::draw() {
 
 //* Selector
 
-Selector::Selector(pair position, pair size, std::function<void(int)> callback, int columns)
-	: GuiElement(position, size), callback(callback), columns(columns) {}
+Selector::Selector(pair position, pair size, std::function<void(int)> callback, int columns, Direction::value alignment)
+	: GuiElement(position, size, alignment), callback(callback), columns(columns) {}
 
 void Selector::addSelection(SpriteStack sprite) {
 	sprites.push_back(sprite);
@@ -338,6 +339,7 @@ bool Selector::handleEvent(InputEvent event) {
 		int n = index.x + columns * index.y;
 		if (n < sprites.size()) {
 			callback(n);
+			selected = n;
 			return true;
 		}
 	}
@@ -347,9 +349,16 @@ bool Selector::handleEvent(InputEvent event) {
 void Selector::draw() {
 	int offset = screenSize.x / columns;
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	Sprite slot(SpriteSheet::SLOT, {0, 2}, {2,2});
+	Sprite slot2(SpriteSheet::SLOT, {2, 2}, {2,2});
 	for (int i = 0; i < sprites.size(); i++) {
 		pair index = pair(i % columns, i / columns);
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);
+		if (selected == i) {
+			slot2.draw(pos, GuiManager::scale);
+		} else {
+			slot.draw(pos, GuiManager::scale);
+		}
 		sprites[i].draw(pos, GuiManager::scale);
 		if (GUI_BOX) TextureManager::drawRect(pos, {offset, offset});
 	}

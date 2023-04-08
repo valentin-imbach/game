@@ -126,7 +126,7 @@ private:
 
 class Button : public GuiElement {
 public:
-	Button(pair position, pair size, std::function<void()> callback, Sprite sprite);
+	Button(pair position, pair size, std::function<void()> callback, Sprite sprite,  Direction::value alignment = Direction::NONE);
 	~Button() override = default;
 	bool handleEvent(InputEvent event) override;
 	void draw() override;
@@ -149,7 +149,7 @@ private:
 
 class Selector : public GuiElement {
 public:
-	Selector(pair position, pair size, std::function<void(int)> callback, int columns = 1);
+	Selector(pair position, pair size, std::function<void(int)> callback, int columns = 1, Direction::value alignment = Direction::NONE);
 	~Selector() = default;
 
 	void addSelection(SpriteStack sprite);
@@ -158,6 +158,7 @@ public:
 
 private:
 	int columns;
+	int selected = 0;
 	std::function<void(int)> callback;
 	std::vector<SpriteStack> sprites;
 };
@@ -167,6 +168,8 @@ public:
 	BuildGui(pair position);
 	~BuildGui() = default;
 	void select(int n);
+	void build();
 
 private:
+	int selected = 0;
 };

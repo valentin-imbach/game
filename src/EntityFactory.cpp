@@ -120,3 +120,23 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count, vec positi
 	world->ecs.addComponent<PositionComponent>({position}, item);
 	return item;
 }
+
+Entity EntityFactory::createStation(StationId::value stationId, pair position) {
+	if (!stationId) return 0;
+	Entity station = world->ecs.createEntity();
+	if (!station) return 0;
+
+	world->ecs.addComponent<PositionComponent>({position}, station);
+	world->ecs.addComponent<GridComponent>({position, {1,1}, true, false}, station);
+
+	SpriteStack spriteStack;
+	spriteStack.addSprite({SpriteSheet::STATIONS, {int(stationId) - 1, 0}, {1,2}}, {0, -1});
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, station);
+	world->ecs.addComponent<StationComponent>({stationId}, station);
+
+	if (stationId == StationId::CHEST) {
+		 world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, station);
+	}
+
+	return station;
+}
