@@ -48,6 +48,18 @@ public:
 		LOG("Entity Manager serialised");
 	}
 
+	void deserialise(std::fstream& stream) {
+		size_t count;
+		deserialise_object(stream, count);
+		availableEntities.clear();
+		for (int i = 0; i < count; i++) {
+			Entity entity;
+			deserialise_object(stream, entity);
+			availableEntities.push_back(entity);
+		}
+		LOG("Entity Manager deserialised");
+	}
+
 	int entityCount() {
 		return MAX_ENTITIES - availableEntities.size();
 	}

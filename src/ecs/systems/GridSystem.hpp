@@ -29,14 +29,14 @@ public:
 			}
 		}
 	}
-	void rebuild(GridMap& gridMap) {
+	void rebuild(GridMap& gridMap, std::unordered_set<pair>& solidMap) {
 		gridMap.clear();
 		for (Entity entity : entities) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 			for (int x = 0; x < gridComponent.size.x; x++) {
 				for (int y = 0; y < gridComponent.size.y; y++) {
-					pair offset(x, y);
-					gridMap[gridComponent.anker + offset] = entity;
+					gridMap[gridComponent.anker + pair(x, y)] = entity;
+					if (gridComponent.solid) solidMap.insert(gridComponent.anker + pair(x, y));
 				}
 			}
 		}

@@ -12,6 +12,7 @@
 #include "direction.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
+#include "TextManager.hpp"
 
 #include "Crafting.hpp"
 
@@ -284,7 +285,7 @@ void CraftingGui::craft() {
 BuildGui::BuildGui(pair position)
 	: Widget(position, {144, 128}, Sprite()) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
-	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20,20), std::bind(&BuildGui::build, this), Sprite(), Direction::SOUTH_EAST));
+	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20,20), std::bind(&BuildGui::build, this), Sprite(), "", Direction::SOUTH_EAST));
 
 	for (int n = 1; n < StationId::count; n++) {
 		SpriteStack sprites;
@@ -308,8 +309,8 @@ void BuildGui::build() {
 
 //* Button
 
-Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite, Direction::value alignment)
-	: GuiElement(position, size, alignment), sprite(sprite), callback(callback) {}
+Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite, std::string text, Direction::value alignment)
+	: GuiElement(position, size, alignment), sprite(sprite), callback(callback), text(text) {}
 
 bool Button::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
@@ -320,6 +321,7 @@ bool Button::handleEvent(InputEvent event) {
 }
 
 void Button::draw() {
+	TextManager::drawText(text, screenPosition, true);
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 }
 

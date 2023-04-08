@@ -2,19 +2,21 @@
 #pragma once
 #include "ComponentArray.hpp"
 #include "utils.hpp"
+#include <typeinfo>
 
 class ComponentManager {
 public:
 	template <typename T>
 	ComponentId::value roster(ComponentId::value type = ComponentId::NONE) {
+		bool rostered = (rosteredSet.find(&typeid(T)) != rosteredSet.end());
 		static ComponentId::value s_type = ComponentId::NONE;
 		if (type == ComponentId::NONE) {
-			if (s_type == ComponentId::NONE) ERROR("Using non-registered component");
-			return s_type;
+			if (!rostered) ERROR("Using non-registered component");
+			return rosteredSet[&typeid(T)];
 		}
-		if (s_type != ComponentId::NONE) WARNING("Component registered twice");
+		if (rostered) WARNING("Component registered twice");
 		componentArrays[type] = std::make_unique<ComponentArray<T>>();
-		return s_type = type;
+		return rosteredSet[&typeid(T)] = type;
 	}
 
 	template <typename T>
@@ -50,16 +52,17 @@ public:
 
 	void serialise(std::fstream& stream) {
 		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->serialise(stream);
-		LOG("Component manager serialised")
+		LOG("Component Manager serialised")
 	}
 
 	void deserialise(std::fstream& stream) {
 		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->deserialise(stream);
-		LOG("Components manager deserialised")
+		LOG("Component Manager deserialised")
 	}
 
 private:
 	std::array<std::unique_ptr<IComponentArray>, ComponentId::count> componentArrays = {};
+	std::unordered_map<const std::type_info*, ComponentId::value> rosteredSet;
 
 	template <typename T>
 	ComponentArray<T>* getComponentArray() {

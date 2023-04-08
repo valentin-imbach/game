@@ -126,12 +126,13 @@ private:
 
 class Button : public GuiElement {
 public:
-	Button(pair position, pair size, std::function<void()> callback, Sprite sprite,  Direction::value alignment = Direction::NONE);
+	Button(pair position, pair size, std::function<void()> callback, Sprite sprite, std::string text = "", Direction::value alignment = Direction::NONE);
 	~Button() override = default;
 	bool handleEvent(InputEvent event) override;
 	void draw() override;
 
 private:
+	std::string text;
 	Sprite sprite;
 	std::function<void()> callback;
 };

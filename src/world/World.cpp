@@ -28,13 +28,12 @@ void World::init() {
 
 	guiManager.world = this;
 	EntityFactory::world = this;
-	ticks = 0;
 }
 
 World::World(std::string name)
-	: name(name) {
+	: name(name), ticks(0) {
 	init();
-	realm = std::make_unique<Realm>(pair(100,100), 1729);
+	realm = std::make_unique<Realm>(pair(100, 100), 1729);
 
 	Entity player = EntityFactory::createPlayer({8, 8});
 
@@ -81,15 +80,6 @@ World::World(std::string name)
 	ecs.addComponent<PositionComponent>({{8, 5}}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 
-	// Entity chest = ecs.createEntity();
-	// SpriteStack chestSprites;
-	// chestSprites.addSprite(Sprite(SpriteSheet::STATIONS, {5, 0}, {1, 2}), pair(0, -1));
-	// ecs.addComponent<SpriteComponent>({chestSprites}, chest);
-	// ecs.addComponent<PositionComponent>({{10, 9}}, chest);
-	// ecs.addComponent<GridComponent>({{10, 9}, {1, 1}, true}, chest);
-	// ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, chest);
-	// ecs.addComponent<StationComponent>({StationId::CHEST}, chest);
-
 	EntityFactory::createStation(StationId::CHEST, {10, 9});
 
 	Entity monster = ecs.createEntity();
@@ -135,24 +125,26 @@ World::World(std::string name)
 	ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, fire);
 
 	Entity circle = ecs.createEntity();
-	ecs.addComponent<PositionComponent>({{10,10}}, circle);
-	Collider circleCollider({0,0}, 0.5f);
+	ecs.addComponent<PositionComponent>({{10, 10}}, circle);
+	Collider circleCollider({0, 0}, 0.5f);
 	ecs.addComponent<ColliderComponent>({circleCollider}, circle);
-	
+
 	realm->generate();
 }
 
-World::World(std::fstream& stream) : ecs(stream) {
-	init();
-	realm = std::make_unique<Realm>(pair(100,100), 1729);
-	ecs.deserialiseComponents(stream);
+World::World(std::fstream& stream) {
+	deserialise_object(stream, ticks);
 
+	init();
+	ecs.deserialise(stream);
+
+	realm = std::make_unique<Realm>(pair(100, 100), 1729);
 	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	gridSystem->rebuild(realm->gridMap);
+	gridSystem->rebuild(realm->gridMap, realm->solidMap);
 }
 
 void World::rosterComponents() {
@@ -245,7 +237,6 @@ void World::update(uint dt) {
 
 	std::unordered_map<Entity, std::vector<Entity>> collisions;
 
-	handleEvents();
 	guiManager.update();
 
 	controllerSystem->update(inputState, !guiManager.active(), ticks);
@@ -283,13 +274,12 @@ void World::draw() {
 		pair position = round(cameraPosition + vec(Window::instance->mousePosition - Window::instance->size / 2) / (cameraZoom * BIT));
 		pair screenPosition = round(BIT * cameraZoom * (position - cameraPosition)) + (Window::instance->size) / 2;
 
-		TextureManager::drawRect(screenPosition, {cameraZoom * BIT, cameraZoom * BIT}, {0,0,255,255});
+		TextureManager::drawRect(screenPosition, {cameraZoom * BIT, cameraZoom * BIT}, {0, 0, 255, 255});
 
 		entityDrawSystem->update(camera, ticks);
-		//handRenderSystem->update(camera, ticks);
+		// handRenderSystem->update(camera, ticks);
 		colliderDrawSystem->update(camera, ticks);
 		particleSystem.draw(cameraPosition, cameraZoom);
-	
 	}
 
 	guiManager.draw();
@@ -326,47 +316,49 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 	return gui;
 }
 
-void World::handleEvents() {
-	if (!player) return;
+bool World::handleEvent(InputEvent event) {
+	if (!player) return false;
+	if (guiManager.handleEvent(event)) return true;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
 	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
 
-	for (InputEvent event : inputEvents) {
-		if (guiManager.handleEvent(event)) continue;
-		if (event.id == InputEventId::INVENTORY) {
-			guiManager.open(makeInventory(), makeMenu());
-		} else if (event.id == InputEventId::THROW) {
-			vec position = positionComponent.position + unitVectors[creatureStateComponent.facing];
-			ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);
-			activeItemContainer.clear();
-		}
-
-		if (event.id == InputEventId::SELECT_1) playerComponent.activeSlot = 0;
-		if (event.id == InputEventId::SELECT_2) playerComponent.activeSlot = 1;
-		if (event.id == InputEventId::SELECT_3) playerComponent.activeSlot = 2;
-		if (event.id == InputEventId::SELECT_4) playerComponent.activeSlot = 3;
-		if (event.id == InputEventId::SELECT_5) playerComponent.activeSlot = 4;
-		if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
-		if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
-
-		if (!camera) continue;
-		vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
-		uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
-		vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
-
-		if (event.id == InputEventId::PRIMARY) {
-			forageSystem->update(position, activeItemContainer.item, ticks);
-			gatherSystem->update(player, position, ticks);
-			damageSystem->update(player, position, activeItemContainer.item);
-		} else if (event.id == InputEventId::SECONDARY) {
-			std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
-			if (gui) guiManager.open(makeInventory(), std::move(gui));
-		}
+	
+	if (event.id == InputEventId::INVENTORY) {
+		guiManager.open(makeInventory(), makeMenu());
+	} else if (event.id == InputEventId::THROW) {
+		vec position = positionComponent.position + unitVectors[creatureStateComponent.facing];
+		ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);
+		activeItemContainer.clear();
 	}
+
+	if (event.id == InputEventId::SELECT_1) playerComponent.activeSlot = 0;
+	if (event.id == InputEventId::SELECT_2) playerComponent.activeSlot = 1;
+	if (event.id == InputEventId::SELECT_3) playerComponent.activeSlot = 2;
+	if (event.id == InputEventId::SELECT_4) playerComponent.activeSlot = 3;
+	if (event.id == InputEventId::SELECT_5) playerComponent.activeSlot = 4;
+	if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
+	if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
+
+	if (!camera) return false;
+	vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
+	uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
+	vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
+
+	if (event.id == InputEventId::PRIMARY) {
+		forageSystem->update(position, activeItemContainer.item, ticks);
+		gatherSystem->update(player, position, ticks);
+		damageSystem->update(player, position, activeItemContainer.item);
+	} else if (event.id == InputEventId::SECONDARY) {
+		std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
+		if (gui) guiManager.open(makeInventory(), std::move(gui));
+	}
+
+	return false;
 }
 
 void World::serialise(std::fstream& stream) {
+	serialise_object(stream, ticks);
 	ecs.serialise(stream);
 }

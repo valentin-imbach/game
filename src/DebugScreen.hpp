@@ -28,6 +28,9 @@ public:
 		std::string fpsText = "FPS: " + std::to_string(framesPerSecond);
 		TextManager::drawText(fpsText, {30, 30});
 
+		std::string ticksText = "Ticks: " + std::to_string(world->ticks);
+		TextManager::drawText(ticksText, {150, 30});
+
 		if (!world) return;
 		std::string entityCountText = "Entity Count: " + std::to_string(world->ecs.entityCount());
 		TextManager::drawText(entityCountText, {30, 50});

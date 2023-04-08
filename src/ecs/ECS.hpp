@@ -7,23 +7,6 @@
 
 class ECS {
 public:
-
-	ECS() {};
-
-	ECS(std::fstream& stream) : entityManager(stream) {}
-
-	void deserialiseComponents(std::fstream& stream) {
-		componentManager.deserialise(stream);
-		for (Entity entity = 1; entity <= MAX_ENTITIES; entity++) {
-			for (int comp = 1; comp < ComponentId::count; comp++) {
-				if (componentManager.has(entity, ComponentId::from_int(comp))) {
-					entityManager.signatures[entity].set(comp, true);
-				}
-			}
-			systemManager.signatureChange(entity, entityManager.signatures[entity]);
-		}
-	}
-
 	Entity createEntity() {
 		return entityManager.createEntity();
 	}
@@ -41,6 +24,21 @@ public:
 	void serialise(std::fstream& stream) {
 		entityManager.serialise(stream);
 		componentManager.serialise(stream);
+		LOG("ECS serialized");
+	}
+
+	void deserialise(std::fstream& stream) {
+		entityManager.deserialise(stream);
+		componentManager.deserialise(stream);
+		for (Entity entity = 1; entity <= MAX_ENTITIES; entity++) {
+			for (int comp = 1; comp < ComponentId::count; comp++) {
+				if (componentManager.has(entity, ComponentId::from_int(comp))) {
+					entityManager.signatures[entity].set(comp, true);
+				}
+			}
+			systemManager.signatureChange(entity, entityManager.signatures[entity]);
+		}
+		LOG("ECS deserialized");
 	}
 
 	template <typename T>

@@ -16,14 +16,14 @@ class World {
 public:
 	World(std::string name);
 	World(std::fstream& stream);
+	
 	void update(uint dt);
+	bool handleEvent(InputEvent event);
 	void draw();
-	void handleEvents();
-
+	
 	void serialise(std::fstream& stream);
 	void deserialise(std::fstream& stream);
 
-	std::vector<InputEvent> inputEvents;
 	std::bitset<size_t(InputStateId::MAX)> inputState;
 
 	Entity player = 0;

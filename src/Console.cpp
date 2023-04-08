@@ -142,7 +142,8 @@ bool Console::execute(std::string input) {
 		// vup(Item) tools = LootTable::tools();
 		// for (unsigned int i = 0; i < tools.size(); i++) MessageManager::notify(GiveMessage(std::move(tools[i])));
 	} else if (inputs[0] == "save") {
-		std::fstream file = std::fstream("../saves/save.binary", std::ios::out | std::ios::binary);
+		std::string path = "../saves/" + inputs[1] + ".binary";
+		std::fstream file = std::fstream(path, std::ios::out | std::ios::binary);
 		if (!file) {
 			ERROR("No file");
 			return true;
@@ -151,7 +152,8 @@ bool Console::execute(std::string input) {
 		file.close();
 		LOG("World saved");
 	} else if (inputs[0] == "load") {
-		std::fstream file = std::fstream("../saves/save.binary", std::ios::in | std::ios::binary);
+		std::string path = "../saves/" + inputs[1] + ".binary";
+		std::fstream file = std::fstream(path, std::ios::in | std::ios::binary);
 		if (!file) {
 			ERROR("No file");
 			return true;

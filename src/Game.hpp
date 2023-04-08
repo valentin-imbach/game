@@ -2,6 +2,7 @@
 #pragma once
 #include "Console.hpp"
 #include "DebugScreen.hpp"
+#include "GuiElement.hpp"
 
 #define SAMPLE_SIZE 50
 
@@ -31,4 +32,15 @@ private:
 	std::queue<uint> sample;
 	uint sampleSum;
 	int framesPerSecond;
+
+	void buildMenu();
+
+	std::vector<std::string> worldNames;
+	std::unique_ptr<Widget> mainMenu;
+	std::unique_ptr<Widget> pauseMenu;
+
+	void create();
+	void load(int n);
+	void save();
+
 };
