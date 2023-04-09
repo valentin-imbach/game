@@ -98,7 +98,7 @@ World::World(std::string name)
 
 	Entity tree = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({pair(8, 3)}, tree);
-	ecs.addComponent<GridComponent>({pair(8, 3), pair(1, 1), true, false}, tree);
+	ecs.addComponent<GridComponent>({pair(8, 3), pair(1, 1), true}, tree);
 	SpriteStack treeSprites;
 	treeSprites.addSprite({SpriteSheet::RESOURCES, pair(5, 7), pair(1, 2)}, pair(0, -1));
 	treeSprites.addSprite({SpriteSheet::RESOURCES, pair(6, 6), pair(3, 2)}, pair(-1, -2));
@@ -108,7 +108,7 @@ World::World(std::string name)
 
 	Entity tree2 = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({pair(9, 3)}, tree2);
-	ecs.addComponent<GridComponent>({pair(9, 3), pair(1, 1), true, false}, tree2);
+	ecs.addComponent<GridComponent>({pair(9, 3), pair(1, 1), true}, tree2);
 	SpriteStack treeSprites2;
 	treeSprites2.addSprite({SpriteSheet::RESOURCES, pair(5, 7), pair(1, 2)}, pair(0, -1));
 	treeSprites2.addSprite({SpriteSheet::RESOURCES, pair(6, 6), pair(3, 2)}, pair(-1, -2));
@@ -118,7 +118,7 @@ World::World(std::string name)
 
 	Entity fire = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({pair(11, 3)}, fire);
-	ecs.addComponent<GridComponent>({pair(11, 3), pair(1, 1), true, false}, fire);
+	ecs.addComponent<GridComponent>({pair(11, 3), pair(1, 1), true}, fire);
 	SpriteStack fireSprites;
 	fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
 	ecs.addComponent<SpriteComponent>({fireSprites}, fire);
@@ -130,6 +130,8 @@ World::World(std::string name)
 	ecs.addComponent<ColliderComponent>({circleCollider}, circle);
 
 	realm->generate();
+
+	gridSystem->rebuild(realm->gridMap, realm->solidMap);
 }
 
 World::World(std::fstream& stream) {
@@ -226,6 +228,10 @@ void World::rosterSystems() {
 		{ComponentId::PARTICLE, ComponentId::CREATURE_STATE});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
 		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::CREATURE_STATE});
+	gridDeathSystem = ecs.rosterSystem<GridDeathSystem>(SystemId::GRID_DEATH,
+		{ComponentId::GRID, ComponentId::DEATH});
+	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
+		{ComponentId::POSITION, ComponentId::MOVEMENT});
 
 	LOG("Systems rostered")
 }
@@ -247,16 +253,18 @@ void World::update(uint dt) {
 	creatureMovementSystem->update(dt, realm->solidMap, realm->map.get());
 	collisionSystem->update(collisions);
 
+	chunkSystem->update(chunks);
+
 	itemPickupSystem->update(collisions);
 
 	cameraSystem->update(player);
-	healthSystem->update();
+	healthSystem->update(); //TODO SLOW
 
 	lootSystem->update(ticks);
 
 	creatureAnimationSystem->update(ticks);
 
-	gridSystem->update(realm->gridMap, realm->solidMap);
+	gridDeathSystem->update(realm->gridMap, realm->solidMap);
 	inventoryDeathSystem->update(ticks);
 	deathSystem->update();
 
@@ -266,6 +274,7 @@ void World::update(uint dt) {
 }
 
 void World::draw() {
+	
 	tileDrawSystem->update(realm->map.get(), ticks);
 
 	if (camera) {
@@ -276,13 +285,18 @@ void World::draw() {
 
 		TextureManager::drawRect(screenPosition, {cameraZoom * BIT, cameraZoom * BIT}, {0, 0, 255, 255});
 
-		entityDrawSystem->update(camera, ticks);
+		entityDrawSystem->update(camera, ticks, chunks[pair(0,0)]);  //TODO SLOW
 		// handRenderSystem->update(camera, ticks);
 		colliderDrawSystem->update(camera, ticks);
 		particleSystem.draw(cameraPosition, cameraZoom);
 	}
 
 	guiManager.draw();
+}
+
+void World::link(Entity entity) {
+	if (ecs.hasComponent<GridComponent>(entity)) gridSystem->link(realm->gridMap, realm->solidMap, entity);
+	if (ecs.hasComponent<PositionComponent>(entity)) chunkSystem->assign(entity, chunks);
 }
 
 std::unique_ptr<GuiElement> World::makeInventory() {

@@ -64,7 +64,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	if (!resource) return 0;
 
 	world->ecs.addComponent<PositionComponent>({position}, resource);
-	world->ecs.addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid, false}, resource);
+	world->ecs.addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid}, resource);
 
 	SpriteStack spriteStack;
 	uint variation = rand_int(seed++, 0, resourceTemplate->variations);
@@ -127,7 +127,7 @@ Entity EntityFactory::createStation(StationId::value stationId, pair position) {
 	if (!station) return 0;
 
 	world->ecs.addComponent<PositionComponent>({position}, station);
-	world->ecs.addComponent<GridComponent>({position, {1,1}, true, false}, station);
+	world->ecs.addComponent<GridComponent>({position, {1,1}, true}, station);
 
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::STATIONS, {int(stationId) - 1, 0}, {1,2}}, {0, -1});

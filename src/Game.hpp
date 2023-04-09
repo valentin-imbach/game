@@ -34,13 +34,15 @@ private:
 	int framesPerSecond;
 
 	void buildMenu();
-
-	std::vector<std::string> worldNames;
+	
 	std::unique_ptr<Widget> mainMenu;
 	std::unique_ptr<Widget> pauseMenu;
 
+	int number = 1;
+
 	void create();
-	void load(int n);
+	void remove(std::string name);
+	void load(std::string name);
 	void save();
 
 };

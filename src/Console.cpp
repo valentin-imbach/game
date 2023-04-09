@@ -80,7 +80,7 @@ bool Console::execute(std::string input) {
 		ResourceTemplate::setTemplates();
 	} else if (inputs[0] == "kill") {
 		if (!player) return false;
-		ecs.getComponent<HealthComponent>(player).health = 0;
+		ecs.addComponent<DeathComponent>({}, player);
 	} else if (inputs[0] == "god") {
 		// MessageManager::notify(ToggleGodMessage());
 	} else if (inputs[0] == "tp") {
@@ -94,7 +94,8 @@ bool Console::execute(std::string input) {
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
 		if (!player || !resourceId) return false;
 		pair position = round(ecs.getComponent<PositionComponent>(player).position);
-		EntityFactory::createResource(resourceId, position);
+		Entity resource = EntityFactory::createResource(resourceId, position);
+		game->world->link(resource);
 	} else if (inputs[0] == "cows") {
 		if (inputs.size() < 2 || !player) return false;
 		int n = std::stoi(inputs[1]);

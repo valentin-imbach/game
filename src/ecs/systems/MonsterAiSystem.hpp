@@ -12,8 +12,7 @@ public:
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
-
+		
 			CreatureState::value oldState = creatureStateComponent.state;
 			Direction::value oldFacing = creatureStateComponent.facing;
 

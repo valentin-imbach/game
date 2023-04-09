@@ -33,6 +33,7 @@ public:
 	ParticleSystem particleSystem = ParticleSystem(1000);
 
 	std::unique_ptr<Realm> realm;
+	void link(Entity entity);
 
 private:
 	void rosterComponents();
@@ -42,6 +43,8 @@ private:
 
 	std::unique_ptr<GuiElement> makeInventory();
 	std::unique_ptr<GuiElement> makeMenu();
+
+	std::unordered_map<pair, std::set<Entity>> chunks;
 
 	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;
@@ -67,6 +70,8 @@ private:
 	ParticleEmitSystem* particleEmitSystem;
 	CreatureParticleSystem* creatureParticleSystem;
 	HandRenderSystem* handRenderSystem;
+	GridDeathSystem* gridDeathSystem;
+	ChunkSystem* chunkSystem;
 
 	GuiManager guiManager;
 	std::string name;

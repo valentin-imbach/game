@@ -15,7 +15,7 @@ struct DrawCall {
 
 class EntityDrawSystem : public System {
 public:
-	void update(Entity camera, uint ticks) {
+	void update(Entity camera, uint ticks, std::set<Entity>& chunk) {
 		if (!camera) return;
 		vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
 		float zoom = ecs->getComponent<CameraComponent>(camera).zoom;
@@ -25,6 +25,7 @@ public:
 		std::vector<DrawCall> drawQueue;
 
 		for (Entity entity : entities) {
+			//if (chunk.find(entity) == chunk.end()) continue;
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 

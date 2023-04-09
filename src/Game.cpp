@@ -3,12 +3,14 @@
 #include "Events.hpp"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_scancode.h"
-#include "utils.hpp"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
+#include "utils.hpp"
+#include <filesystem>
 
-Game::Game() : console(this) {
+Game::Game()
+	: console(this) {
 	lastFrameTicks = SDL_GetTicks();
 	sample = std::queue<uint>();
 	sampleSum = 0;
@@ -18,59 +20,63 @@ Game::Game() : console(this) {
 	TextManager::Init();
 
 	gameState = GameState::MENU;
-
-	std::ifstream file("../saves/worlds.txt");
-	if (!file) ERROR("Error opening worlds file");
-	std::string line;
-    while (std::getline(file, line)) worldNames.push_back(line);
-	file.close();
-
 	buildMenu();
 }
 
 void Game::buildMenu() {
-	mainMenu = std::make_unique<Widget>(pair(0,0), pair(160, 160), Sprite(SpriteSheet::MENU, {0,0}, {10,10}));
-	mainMenu->addGuiElement(std::make_unique<Button>(pair(0,-70), pair(50,20), std::bind(&Game::create, this), Sprite(), "New World"));
 
-	pair position(0, -40);
-	for (int i = 0; i < worldNames.size(); i++) {
-        mainMenu->addGuiElement(std::make_unique<Button>(position, pair(50, 20), std::bind(&Game::load, this, i), Sprite(), worldNames[i]));
-		position.y += 25;
+	std::vector<std::string> worldNames;
+	for (const auto& dir : std::filesystem::directory_iterator("../saves")) {
+		if (dir.is_directory()) worldNames.push_back(dir.path().filename().string());
 	}
 
-	pauseMenu = std::make_unique<Widget>(pair(0,0), pair(160, 160), Sprite(SpriteSheet::MENU, {0,0}, {10,10}));
-	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0,0), pair(50,20), std::bind(&Game::save, this), Sprite(), "Save and Quit"));
+	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
+	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::create, this), Sprite(), "New World"));
+
+	int offset = -40;
+	for (auto& name : worldNames) {
+		mainMenu->addGuiElement(std::make_unique<Button>(pair(0, offset), pair(50, 20), std::bind(&Game::load, this, name), Sprite(), name));
+		mainMenu->addGuiElement(std::make_unique<Button>(pair(50, offset), pair(20, 20), std::bind(&Game::remove, this, name), Sprite(), "del"));
+		offset += 25;
+	}
+
+	pauseMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
+	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::save, this), Sprite(), "Save and Quit"));
 }
 
 void Game::create() {
-	std::string name = "world";
-	if (std::find(worldNames.begin(), worldNames.end(), name) != worldNames.end()) return;
-
-    // std::ofstream file("../saves/worlds.txt", std::ios::app);
-    // if (!file) ERROR("No worlds file");
-	// file << std::endl << name;
-	// file.close();
-	worldNames.push_back(name);
+	std::string name = "world" + std::to_string(number);
+	for (const auto& dir : std::filesystem::directory_iterator("../saves")) {
+		if (dir.path().filename().string() == name) return;
+	}
+	number += 1;
 
 	world = std::make_unique<World>(name);
 	gameState = GameState::RUNNING;
 }
 
-void Game::load(int n) {
-	std::string path = "../saves/" + worldNames[n] + ".binary";
+void Game::remove(std::string name) {
+	std::string path = "../saves/" + name;
+	std::filesystem::remove_all(path);
+	buildMenu();
+}
+
+void Game::load(std::string name) {
+	std::string path = "../saves/" + name + "/save.binary";
 	std::fstream file = std::fstream(path, std::ios::in | std::ios::binary);
-	if (!file) ERROR("No world file named", worldNames[n] + ".binary");
+	if (!file) ERROR("No save for world", name);
 	world = std::make_unique<World>(file);
-	world->name = worldNames[n];
+	world->name = name;
 	file.close();
 	gameState = GameState::RUNNING;
 }
 
 void Game::save() {
 	if (!world) return;
-	std::string path = "../saves/" + world->name + ".binary";
-	std::fstream file = std::fstream(path, std::ios::out | std::ios::binary);
-	if (!file) ERROR("No world file");
+	std::string path = "../saves/" + world->name;
+	std::filesystem::create_directory(path);
+	std::fstream file = std::fstream(path + "/save.binary", std::ios::out | std::ios::binary);
+	if (!file) ERROR("No save for world");
 	world->serialise(file);
 	file.close();
 	buildMenu();

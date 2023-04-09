@@ -302,7 +302,6 @@ void BuildGui::select(int n) {
 void BuildGui::build() {
 	ECS& ecs = guiManager->world->ecs;
 	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), {0, 0});
-	ecs.getComponent<GridComponent>(guiManager->buildMode).linked = true;
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).priority = true;
 	guiManager->close();
 }

@@ -10,6 +10,7 @@
 
 struct PositionComponent {
 	vec position;
+	pair chunk = {0,0};
 };
 
 struct SpriteComponent {
@@ -107,7 +108,6 @@ struct GridComponent {
 	pair anker;
 	pair size;
 	bool solid;
-	bool linked;
 };
 
 ENUM(StationId,
