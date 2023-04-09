@@ -29,9 +29,9 @@ public:
 
 				if (bernoulli(ticks + 1, 0.3)) {
 					directionComponent.direction = Direction::from_int(rand_int(seed++, 1, 9));
-					if (taxiSteps[directionComponent.direction].x == 1) {
+					if (Direction::taxi[directionComponent.direction].x == 1) {
 						creatureStateComponent.facing = Direction::EAST;
-					} else if (taxiSteps[directionComponent.direction].x == -1) {
+					} else if (Direction::taxi[directionComponent.direction].x == -1) {
 						creatureStateComponent.facing = Direction::WEST;
 					}
 				}

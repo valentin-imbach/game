@@ -132,7 +132,7 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 		}
 	}
 
-	pair size = {0, texts.size() * spacing};
+	pair size(0, texts.size() * spacing);
 	for (auto& text : texts) size.x = std::max(size.x, TextManager::textSize(text.first.text).x);
 	TextureManager::drawRect({position.x - 10, position.y}, {size.x + 20, size.y}, {0, 0, 0, 150}, false, true);
 

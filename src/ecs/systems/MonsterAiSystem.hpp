@@ -31,9 +31,9 @@ public:
 
 				Direction::value dir = PathFinder::find_direction(start, end, solidMap, true);
 				if (dir) {
-					pair step = start + taxiSteps[dir];
-					pair left = start + taxiSteps[Direction::rotate(dir, 1)];
-					pair right = start + taxiSteps[Direction::rotate(dir, 7)];
+					pair step = start + Direction::taxi[dir];
+					pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
+					pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
 					if (solidMap.find(left) != solidMap.end() && (left-step)*offset > 0.1) {
 						directionComponent.direction = Direction::rotate(dir, 7);
 					} else if (solidMap.find(right) != solidMap.end() && (right-step)*offset > 0.1) {
@@ -43,9 +43,9 @@ public:
 					}
 				}
 
-				if (taxiSteps[directionComponent.direction].x == 1) {
+				if (Direction::taxi[directionComponent.direction].x == 1) {
 					creatureStateComponent.facing = Direction::EAST;
-				} else if (taxiSteps[directionComponent.direction].x == -1) {
+				} else if (Direction::taxi[directionComponent.direction].x == -1) {
 					creatureStateComponent.facing = Direction::WEST;
 				}
 				creatureStateComponent.state = dir ? CreatureState::WALKING : CreatureState::IDLE;

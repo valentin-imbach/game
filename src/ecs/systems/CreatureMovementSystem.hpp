@@ -17,7 +17,7 @@ public:
 
 			vec newPosition = positionComponent.position;
 			if (creatureStateComponent.state == CreatureState::WALKING) {
-				newPosition += dt * movementComponent.speed * unitVectors[directionComponent.direction] / 1000;
+				newPosition += dt * movementComponent.speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
 			if (ecs->hasComponent<ForceComponent>(entity)) {

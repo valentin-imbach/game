@@ -25,10 +25,10 @@ struct PathFinder {
 			Node node = queue.top();
 			queue.pop();
 			for (int d = 1; d < 9; d += (2 - diagonal)) {
-				pair next = node.second + taxiSteps[d];
+				pair next = node.second + Direction::taxi[d];
 				if (d % 2 == 0) {
-					pair left = node.second + taxiSteps[d % 8 + 1];
-					pair right = node.second + taxiSteps[(d + 6) % 8 + 1];
+					pair left = node.second + Direction::taxi[d % 8 + 1];
+					pair right = node.second + Direction::taxi[(d + 6) % 8 + 1];
 					if (map.find(left) != map.end() || map.find(right) != map.end()) continue;
 				}
 				if (visited.find(next) == visited.end() && map.find(next) == map.end()) {
@@ -48,7 +48,7 @@ struct PathFinder {
 		pair pos = end;
 		while (pos != start) {
 			res.push_back(visited[pos]);
-			pos += taxiSteps[(visited[pos] + 3) % 8 + 1];
+			pos += Direction::taxi[(visited[pos] + 3) % 8 + 1];
 		}
 		std::reverse(res.begin(), res.end());
 		return res;

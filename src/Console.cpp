@@ -11,10 +11,12 @@ void Console::draw() {
 	pair windowSize = Window::instance->size;
 	TextureManager::drawRect({20, windowSize.y / 2 + 10}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
 	for (int i = 0; i < history.size(); i++) {
-		TextManager::drawText(history[i], {40, windowSize.y - 60 - (history.size() - i) * 30});
+		pair position(40, windowSize.y - 60 - (history.size() - i) * 30);
+		TextManager::drawText(history[i], position);
 	}
 	std::string indexText = "-";
-	TextManager::drawText(indexText, {25, windowSize.y - 60 - (history.size() - index) * 30});
+	pair position(25, windowSize.y - 60 - (history.size() - index) * 30);
+	TextManager::drawText(indexText, position);
 	TextManager::drawText(input, {40, windowSize.y - 60});
 }
 
@@ -88,7 +90,7 @@ bool Console::execute(std::string input) {
 		if (!player) return false;
 		int x = std::stoi(inputs[1]);
 		int y = std::stoi(inputs[2]);
-		ecs.getComponent<PositionComponent>(player).position = {x, y};
+		ecs.getComponent<PositionComponent>(player).position = vec(x, y);
 	} else if (inputs[0] == "place") {
 		if (inputs.size() < 2) return false;
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);

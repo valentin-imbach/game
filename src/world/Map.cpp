@@ -81,11 +81,11 @@ void Map::updateStyle(pair position, bool propagate) {
 	sprites.emplace_back(tileId, baseSprite);
 
 	for (int d = 0; d < 8; d += 2) {
-		TileId::value id = getTileId(position + taxiSteps[d + 1]);
+		TileId::value id = getTileId(position + Direction::taxi[d + 1]);
 		if (id == TileId::NONE || id >= tileId) continue;
-		TileId::value left = getTileId(position + taxiSteps[(d + 2) % 8 + 1]);
-		TileId::value right = getTileId(position + taxiSteps[(d + 6) % 8 + 1]);
-		TileId::value opposite = getTileId(position + taxiSteps[(d + 4) % 8 + 1]);
+		TileId::value left = getTileId(position + Direction::taxi[(d + 2) % 8 + 1]);
+		TileId::value right = getTileId(position + Direction::taxi[(d + 6) % 8 + 1]);
+		TileId::value opposite = getTileId(position + Direction::taxi[(d + 4) % 8 + 1]);
 
 		// Straights
 		if (left != id && right != id) {
@@ -103,12 +103,12 @@ void Map::updateStyle(pair position, bool propagate) {
 	}
 
 	for (int d = 1; d < 8; d += 2) {
-		TileId::value id = getTileId(position + taxiSteps[d + 1]);
+		TileId::value id = getTileId(position + Direction::taxi[d + 1]);
 		if (id == TileId::NONE) continue;
-		TileId::value left = getTileId(position + taxiSteps[(d + 1) % 8 + 1]);
-		TileId::value left2 = getTileId(position + taxiSteps[(d + 3) % 8 + 1]);
-		TileId::value right = getTileId(position + taxiSteps[(d + 7) % 8 + 1]);
-		TileId::value right2 = getTileId(position + taxiSteps[(d + 5) % 8 + 1]);
+		TileId::value left = getTileId(position + Direction::taxi[(d + 1) % 8 + 1]);
+		TileId::value left2 = getTileId(position + Direction::taxi[(d + 3) % 8 + 1]);
+		TileId::value right = getTileId(position + Direction::taxi[(d + 7) % 8 + 1]);
+		TileId::value right2 = getTileId(position + Direction::taxi[(d + 5) % 8 + 1]);
 
 		// Curves
 		TileId::value curve = TileId::MAX;
@@ -128,10 +128,10 @@ void Map::updateStyle(pair position, bool propagate) {
 	}
 
 	// Os
-	TileId::value id1 = getTileId(position + taxiSteps[1]);
-	TileId::value id2 = getTileId(position + taxiSteps[3]);
-	TileId::value id3 = getTileId(position + taxiSteps[5]);
-	TileId::value id4 = getTileId(position + taxiSteps[7]);
+	TileId::value id1 = getTileId(position + Direction::taxi[1]);
+	TileId::value id2 = getTileId(position + Direction::taxi[3]);
+	TileId::value id3 = getTileId(position + Direction::taxi[5]);
+	TileId::value id4 = getTileId(position + Direction::taxi[7]);
 	if (id1 < tileId && id1 != TileId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
 		Sprite sprite = Sprite(Tile::spriteSheets[id1], {4, 4});
 		sprites.emplace_back(id1, sprite);
@@ -140,7 +140,7 @@ void Map::updateStyle(pair position, bool propagate) {
 	std::sort(sprites.begin(), sprites.end(), [](const auto left, const auto right) { return left.first > right.first; });
 
 	if (propagate) {
-		for (pair step : taxiSteps) updateStyle(position + step);
+		for (pair step : Direction::taxi) updateStyle(position + step);
 	}
 }
 

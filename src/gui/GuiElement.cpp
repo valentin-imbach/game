@@ -27,7 +27,7 @@ void GuiElement::reposition(GuiElement* parent) {
 	pair parentPosition = parent ? parent->screenPosition : Window::instance->size / 2;
 	pair parentSize = parent ? parent->screenSize : Window::instance->size;
 	screenPosition = parentPosition + GuiManager::scale * position;
-	pair step = taxiSteps[alignment];
+	pair step = Direction::taxi[alignment];
 	screenPosition.x += parentSize.x * step.x / 2;
 	screenPosition.y += parentSize.y * step.y / 2;
 }
@@ -75,7 +75,7 @@ bool Widget::handleEvent(InputEvent event) {
 //* Tab
 
 Tab::Tab(TabWidget* parent, uint index)
-	: GuiElement({25 + 40 * index, 11}, {24, 24}, Direction::NORTH_WEST), parent(parent), index(index) {}
+	: GuiElement(pair(25 + 40 * index, 11), {24, 24}, Direction::NORTH_WEST), parent(parent), index(index) {}
 
 bool Tab::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) parent->selectTab(index);

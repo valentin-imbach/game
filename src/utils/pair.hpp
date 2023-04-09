@@ -5,12 +5,13 @@
 
 struct pair {
 	int x, y;
-	pair() : x(0), y(0) {}
 
-	template <typename T1, typename T2>
-	pair(T1 x, T2 y) : x(x), y(y) {}
+	pair() :  x(0), y(0) {};
+	pair(int x, int y) : x(x), y(y) {}
 
-	explicit operator bool() { return x != 0 || y != 0; }
+	[[nodiscard]] explicit operator bool() {
+		return x != 0 || y != 0;
+	}
 };
 
 template <>

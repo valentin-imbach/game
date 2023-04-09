@@ -283,7 +283,7 @@ void World::draw() {
 		pair position = round(cameraPosition + vec(Window::instance->mousePosition - Window::instance->size / 2) / (cameraZoom * BIT));
 		pair screenPosition = round(BIT * cameraZoom * (position - cameraPosition)) + (Window::instance->size) / 2;
 
-		TextureManager::drawRect(screenPosition, {cameraZoom * BIT, cameraZoom * BIT}, {0, 0, 255, 255});
+		TextureManager::drawRect(screenPosition, pair(cameraZoom * BIT, cameraZoom * BIT), {0, 0, 255, 255});
 
 		entityDrawSystem->update(camera, ticks, chunks[pair(0,0)]);  //TODO SLOW
 		// handRenderSystem->update(camera, ticks);
@@ -342,7 +342,7 @@ bool World::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::INVENTORY) {
 		guiManager.open(makeInventory(), makeMenu());
 	} else if (event.id == InputEventId::THROW) {
-		vec position = positionComponent.position + unitVectors[creatureStateComponent.facing];
+		vec position = positionComponent.position + Direction::unit[creatureStateComponent.facing];
 		ecs.addComponent<PositionComponent>({position}, activeItemContainer.item);
 		activeItemContainer.clear();
 	}

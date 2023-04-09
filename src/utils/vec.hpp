@@ -7,9 +7,8 @@ struct vec {
 	float x, y;
 
 	vec() : x(0), y(0) {}
-	vec(pair p) : x(float(p.x)), y(float(p.y)) {}
-	template <typename T1, typename T2>
-	vec(T1 x, T2 y) : x(x), y(y) {}
+	vec(pair p) : x(p.x), y(p.y) {}
+	vec(float x, float y) : x(x), y(y) {}
 };
 
 //* addition
@@ -39,7 +38,6 @@ inline vec operator-=(vec v1, vec v2) { return v1 += (-v2); }
 	assert(t != 0);
 	return {v.x / t, v.y / t};
 }
-
 inline vec operator/=(vec &v, float t) { return v = v / t; }
 
 //* scalar functions
@@ -61,7 +59,7 @@ inline vec operator/=(vec &v, float t) { return v = v / t; }
 }
 
 [[nodiscard]] inline pair round(vec v) {
-	return {std::lround(v.x), std::lround(v.y)};
+	return pair(std::lround(v.x), std::lround(v.y));
 }
 
 [[nodiscard]] inline vec rotate(vec v, float ang) {
@@ -69,11 +67,11 @@ inline vec operator/=(vec &v, float t) { return v = v / t; }
 }
 
 [[nodiscard]] inline pair ceil(vec v) {
-	return {ceil(v.x), ceil(v.y)};
+	return pair(ceil(v.x), ceil(v.y));
 }
 
 [[nodiscard]] inline pair floor(vec v) {
-	return {floor(v.x), floor(v.y)};
+	return pair(floor(v.x), floor(v.y));
 }
 
 //* bounds checking

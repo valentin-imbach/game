@@ -17,6 +17,13 @@ struct Collider {
 	Collider(vec offset, vec size) : offset(offset), type(Shape::RECTANGLE), size(size) {}
 	Collider(vec offset, float radius) : offset(offset), type(Shape::CIRCLE), radius(radius) {}
 
+	vec topBottom(vec position) {
+		if (type == Shape::CIRCLE) {
+			return {position.y + offset.y - radius, position.y + offset.y + radius};
+		}
+		return {position.y + offset.y, position.y + offset.y + size.y};
+	}
+
 	static bool RR(Collider A, vec a, Collider B, vec b) {
 		bool xBA = (a.x + A.offset.x > b.x + B.offset.x + B.size.x);
 		bool xAB = (b.x + B.offset.x > a.x + A.offset.x + A.size.x);
