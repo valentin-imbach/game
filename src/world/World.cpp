@@ -80,7 +80,7 @@ World::World(std::string name)
 	ecs.addComponent<PositionComponent>({{8, 5}}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 
-	EntityFactory::createStation(StationId::CHEST, {10, 9});
+	Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
 	Entity monster = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{5, 8}}, monster);
@@ -123,6 +123,7 @@ World::World(std::string name)
 	fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
 	ecs.addComponent<SpriteComponent>({fireSprites}, fire);
 	ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, fire);
+	ecs.addComponent<LightComponent>({true, 3, {255, 0,0, 255}, 3, 0.2f}, fire);
 
 	Entity circle = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{10, 10}}, circle);
@@ -175,6 +176,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<GatherComponent>(ComponentId::GATHER);
 	ecs.rosterComponent<DeathComponent>(ComponentId::DEATH);
 	ecs.rosterComponent<ParticleComponent>(ComponentId::PARTICLE);
+	ecs.rosterComponent<LightComponent>(ComponentId::LIGHT);
 
 	LOG("Components rostered");
 }
@@ -232,12 +234,15 @@ void World::rosterSystems() {
 		{ComponentId::GRID, ComponentId::DEATH});
 	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
 		{ComponentId::POSITION, ComponentId::MOVEMENT});
+	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
+		{ComponentId::POSITION, ComponentId::LIGHT});
 
 	LOG("Systems rostered")
 }
 
 void World::update(uint dt) {
 	ticks += dt;
+	time.update(dt);
 	player = playerSystem->getPlayer();
 	camera = cameraSystem->getCamera();
 
@@ -289,6 +294,7 @@ void World::draw() {
 		// handRenderSystem->update(camera, ticks);
 		colliderDrawSystem->update(camera, ticks);
 		particleSystem.draw(cameraPosition, cameraZoom);
+		lightSystem->update(camera, time, ticks);
 	}
 
 	guiManager.draw();

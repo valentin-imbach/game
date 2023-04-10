@@ -3,6 +3,8 @@
 #include "Window.hpp"
 #include <SDL2_image/SDL_image.h>
 
+SDL_Texture* TextureManager::lightTexture = nullptr;
+
 SDL_Texture* TextureManager::loadTexture(std::string path) {
 	SDL_Surface* tmpSurface = IMG_Load((SPRITE_PATH + path).c_str());
 	if (!tmpSurface) {
@@ -20,6 +22,7 @@ void TextureManager::drawTexture(SDL_Texture* texture, pair spos, pair ssize, pa
 	if (style.centered) dpos -= dsize / 2;
 	SDL_Rect srect = {spos.x, spos.y, ssize.x, ssize.y};
 	SDL_Rect drect = {dpos.x, dpos.y, dsize.x, dsize.y};
+	SDL_SetRenderTarget(Window::instance->renderer, NULL);
 	SDL_SetTextureAlphaMod(texture, style.alpha * 255);
 	SDL_SetTextureColorMod(texture, style.tint.r, style.tint.g, style.tint.b);
 	SDL_RenderCopyEx(Window::instance->renderer, texture, &srect, &drect, 0, NULL, style.flip);
@@ -28,12 +31,14 @@ void TextureManager::drawTexture(SDL_Texture* texture, pair spos, pair ssize, pa
 void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool centered, bool filled) {
 	if (centered) position -= size / 2;
 	SDL_Rect rect = {position.x, position.y, size.x, size.y};
+	SDL_SetRenderTarget(Window::instance->renderer, NULL);
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
 	filled ? SDL_RenderFillRect(Window::instance->renderer, &rect) : SDL_RenderDrawRect(Window::instance->renderer, &rect);
 }
 
 void TextureManager::drawCirc(pair position, int radius, SDL_Colour colour) {
+	SDL_SetRenderTarget(Window::instance->renderer, NULL);
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
 

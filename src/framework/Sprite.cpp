@@ -24,6 +24,7 @@ void Sprite::loadSpriteSheets() {
 		std::string fileName = SpriteSheet::strings[i] + ".png";
 		spriteSheets[i] = TextureManager::loadTexture(fileName);
 	}
+	TextureManager::lightTexture = TextureManager::loadTexture("light.png");
 }
 
 //* SpriteStack

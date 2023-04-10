@@ -19,7 +19,7 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
 	LOG("Window created");
 
 	SDL_SetWindowMinimumSize(sdl_window, 1024, 640);
-	renderer = SDL_CreateRenderer(sdl_window, -1, 0);
+	renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_TARGETTEXTURE);
 	if (!renderer) {
 		ERROR("Failed to create Renderer");
 		exit(EXIT_FAILURE);

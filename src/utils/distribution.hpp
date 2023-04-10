@@ -2,6 +2,7 @@
 #pragma once
 #include "random.hpp"
 #include "vec.hpp"
+#include "lerp.hpp"
 
 template <typename T>
 [[nodiscard]] inline uint hash(T x) {
@@ -18,22 +19,18 @@ template <>
 	return hash(x.x, x.y);
 }
 
-inline float smoothstep(float x) {
-	return 6 * pow(x, 5) - 15 * pow(x, 4) + 10 * pow(x, 3);
-}
-
 [[nodiscard]] inline float perlin_octave(uint seed, vec position) {
 	pair steps[4] = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
 	pair cell = floor(position);
 	vec offset = position - cell;
-	float dots[4] = {
-		polar(2*M_PI*rand_float(hash(seed, cell + steps[0]))) * (offset - steps[0]),
-		polar(2*M_PI*rand_float(hash(seed, cell + steps[1]))) * (offset - steps[1]),
-		polar(2*M_PI*rand_float(hash(seed, cell + steps[2]))) * (offset - steps[2]),
-		polar(2*M_PI*rand_float(hash(seed, cell + steps[3]))) * (offset - steps[3])};
-	float left = dots[0] + smoothstep(offset.y) * (dots[2] - dots[0]);
-	float right = dots[1] + smoothstep(offset.y) * (dots[3] - dots[1]);
-	return left + smoothstep(offset.x) * (right - left);
+	float dots[4];
+	for (int i = 0; i < 4; i++) {
+		uint s = hash(seed, cell + steps[i]);
+		dots[i] = polar(rand_float(s, -M_PI, M_PI)) * (offset - steps[i]);
+	}
+	float left = Lerp::smooth(offset.y, dots[0], dots[2]);
+	float right = Lerp::smooth(offset.y, dots[1], dots[3]);
+	return Lerp::smooth(offset.x, left, right);
 }
 
 struct Distribution {

@@ -40,10 +40,6 @@ public:
 		std::string playerPositionText = "Player Position: " + std::to_string(playerPosition.x) + ", " + std::to_string(playerPosition.y);
 		TextManager::drawText(playerPositionText, {30, 70});
 
-		pair playerChunk = round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
-		std::string playerChunkText = "Player Chunk: " + std::to_string(playerChunk.x) + ", " + std::to_string(playerChunk.y);
-		TextManager::drawText(playerChunkText, {30, 300});
-
 		CreatureState::value playerState = world->ecs.getComponent<CreatureStateComponent>(world->player).state;
 		std::string playerStateText = "Player State: " + CreatureState::to_string(playerState);
 		TextManager::drawText(playerStateText, {30, 90});
@@ -79,6 +75,13 @@ public:
 		int particleCount = world->particleSystem.activeCount;
 		std::string particleText = "Particles: " + std::to_string(particleCount);
 		TextManager::drawText(particleText, {30, 280});
+
+		pair playerChunk = round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
+		std::string playerChunkText = "Player Chunk: " + std::to_string(playerChunk.x) + ", " + std::to_string(playerChunk.y);
+		TextManager::drawText(playerChunkText, {30, 310});
+
+		std::string timeText = world->time.string();
+		TextManager::drawText(timeText, {30, 340});
 	}
 
 private:

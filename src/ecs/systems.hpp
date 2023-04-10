@@ -26,3 +26,4 @@
 #include "HandRenderSystem.hpp"
 #include "GridDeathSystem.hpp"
 #include "ChunkSystem.hpp"
+#include "LightSystem.hpp"

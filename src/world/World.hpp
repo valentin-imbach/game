@@ -35,6 +35,8 @@ public:
 	std::unique_ptr<Realm> realm;
 	void link(Entity entity);
 
+	Time time;
+
 private:
 	void rosterComponents();
 	void rosterSystems();
@@ -72,6 +74,7 @@ private:
 	HandRenderSystem* handRenderSystem;
 	GridDeathSystem* gridDeathSystem;
 	ChunkSystem* chunkSystem;
+	LightSystem* lightSystem;
 
 	GuiManager guiManager;
 	std::string name;

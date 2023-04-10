@@ -151,3 +151,11 @@ struct ParticleComponent {
 	uint cooldown = 300;
 	bool active = true;
 };
+
+struct LightComponent {
+	bool active = true;
+	float intensity = 3;
+	SDL_Color tint = {255, 255, 255, 255};
+	float flickerSpeed = 1;
+	float flickerAmplitude = 0;
+};
