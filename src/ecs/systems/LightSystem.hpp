@@ -5,14 +5,14 @@
 #include "System.hpp"
 #include "Window.hpp"
 
-#define MINUTE 30
+#define MINUTE 1000
 
 struct Time {
 	int day, hour, minute;
 	uint rest;
 
 	Time()
-		: day(0), hour(0), minute(0), rest(0) {}
+		: day(0), hour(6), minute(0), rest(0) {}
 
 	void update(uint dt) {
 		rest += dt;
@@ -38,51 +38,31 @@ struct Time {
 class LightSystem : public System {
 public:
 	void update(Entity camera, Time time, uint ticks) {
-
-		Uint8 maxLight = 0;
-		Uint8 minLight = 200;
-
 		vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
 		float cameraZoom = ecs->getComponent<CameraComponent>(camera).zoom;
 
-		Uint8 ambient = Lerp::smooth(abs(time.mins() - 720.0f) / 720, maxLight, minLight);
+		Uint8 ambient = Lerp::smooth(abs(time.mins() - 720.0f) / 720, 0, 200);
 
-		SDL_Texture* texture = SDL_CreateTexture(Window::instance->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, Window::instance->size.x, Window::instance->size.y);
-		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-
-		SDL_SetRenderTarget(Window::instance->renderer, texture);
-		SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
-		SDL_SetRenderDrawColor(Window::instance->renderer, 0, 0, 0, ambient);
-		SDL_RenderClear(Window::instance->renderer);
-
-		SDL_BlendMode blendMode = SDL_ComposeCustomBlendMode(
-			SDL_BLENDFACTOR_SRC_ALPHA, // dstColorFactor
-			SDL_BLENDFACTOR_ONE,			 // srcColorFactor
-			SDL_BLENDOPERATION_ADD,				 // colorOperation
-			SDL_BLENDFACTOR_ZERO,			 // dstAlphaFactor
-			SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR, // srcAlphaFactor
-			SDL_BLENDOPERATION_ADD);
-		// SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_ADD);
-		// SDL_SetTextureBlendMode(texture, blendMode);
+		SDL_Texture* texture = TextureManager::createTexture(Window::instance->size, {0,0,0,ambient});
+		SDL_BlendMode blendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_SRC_ALPHA, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR, SDL_BLENDOPERATION_ADD);
 		SDL_SetTextureBlendMode(TextureManager::lightTexture, blendMode);
+
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			LightComponent& lightComponent = ecs->getComponent<LightComponent>(entity);
 
-			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * Lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
-
 			pair position = round(BIT * cameraZoom * (positionComponent.position - cameraPosition)) + (Window::instance->size) / 2;
-			int size = BIT * cameraZoom * radius;
-			SDL_Rect dst = {position.x - size, position.y - size, 2 * size, 2 * size};
+			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * Lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
+			int size  = 2* BIT * cameraZoom * radius;
 
-			SDL_SetTextureColorMod(TextureManager::lightTexture, lightComponent.tint.r, lightComponent.tint.g, lightComponent.tint.b);
-			SDL_RenderCopyEx(Window::instance->renderer, TextureManager::lightTexture, NULL, &dst, 0, NULL, SDL_FLIP_NONE);
-
+			TextureStyle style;
+			style.tint = lightComponent.tint;
+			TextureManager::drawTexture(TextureManager::lightTexture, texture, {0,0}, {255, 255}, position, {size, size}, style);
 		}
 
-		SDL_SetRenderTarget(Window::instance->renderer, NULL);
-		SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
-		SDL_RenderCopy(Window::instance->renderer, texture, NULL, NULL);
+		TextureStyle style;
+		style.centered = false;
+		TextureManager::drawTexture(texture, nullptr, {0,0}, Window::instance->size, {0,0}, Window::instance->size, style);
 
 		SDL_DestroyTexture(texture);
 	}

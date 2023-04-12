@@ -18,8 +18,10 @@ class TextureManager {
 public:
 	TextureManager() = delete;
 	static SDL_Texture* loadTexture(std::string path);
-	static void drawTexture(SDL_Texture* texture, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style = TextureStyle());
+	static void drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style = TextureStyle());
 	static void drawRect(pair position, pair size, SDL_Colour colour = {255, 0, 0, 255}, bool centered = true, bool filled = false);
 	static void drawCirc(pair position, int radius, SDL_Colour colour = {255, 0, 0, 255});
+
+	static SDL_Texture* createTexture(pair size, SDL_Colour colour = {0, 0, 0, 0});
 	static SDL_Texture* lightTexture;
 };

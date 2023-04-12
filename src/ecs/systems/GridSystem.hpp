@@ -7,20 +7,6 @@
 
 class GridSystem : public System {
 public:
-	// void update(GridMap& gridMap, std::unordered_set<pair>& solidMap) {
-	// 	for (Entity entity : entities) {
-	// 		GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
-	// 		if (!gridComponent.linked) {
-	// 			for (int x = 0; x < gridComponent.size.x; x++) {
-	// 				for (int y = 0; y < gridComponent.size.y; y++) {
-	// 					gridMap[gridComponent.anker + pair(x, y)] = entity;
-	// 					if (gridComponent.solid) solidMap.insert(gridComponent.anker + pair(x, y));
-	// 				}
-	// 			}
-	// 			gridComponent.linked = true;
-	// 		}
-	// 	}
-	// }
 
 	void link(GridMap& gridMap, std::unordered_set<pair>& solidMap, Entity entity) {
 		if (!entity) return;

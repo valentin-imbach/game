@@ -123,7 +123,7 @@ World::World(std::string name)
 	fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
 	ecs.addComponent<SpriteComponent>({fireSprites}, fire);
 	ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, fire);
-	ecs.addComponent<LightComponent>({true, 3, {255, 0,0, 255}, 3, 0.2f}, fire);
+	ecs.addComponent<LightComponent>({true, 3, {255, 0, 0, 255}, 3, 0.2f}, fire);
 
 	Entity circle = ecs.createEntity();
 	ecs.addComponent<PositionComponent>({{10, 10}}, circle);
