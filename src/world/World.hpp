@@ -75,6 +75,7 @@ private:
 	GridDeathSystem* gridDeathSystem;
 	ChunkSystem* chunkSystem;
 	LightSystem* lightSystem;
+	SensorSystem* sensorSystem;
 
 	GuiManager guiManager;
 	std::string name;

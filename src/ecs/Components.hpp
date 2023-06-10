@@ -16,8 +16,8 @@ struct PositionComponent {
 struct SpriteComponent {
 	SpriteStack spriteStack;
 	float scale = 1;
-	Shader shader = {ShaderId::NONE, 0};
 	bool priority = false;
+	std::array<std::pair<bool, uint32_t>, SpriteEffectId::count> effects;
 };
 
 struct CameraComponent {
@@ -61,7 +61,6 @@ struct ItemComponent {
 
 struct AnimalAiComponent {
 	uint nextChange;
-	uint panic;
 };
 
 struct MonsterAiComponent {
@@ -75,7 +74,7 @@ struct InventoryComponent {
 struct HealthComponent {
 	uint8_t health;
 	uint8_t maxHealth;
-	bool damaged;
+	uint32_t lastDamage;
 };
 
 struct PlayerComponent {
@@ -108,6 +107,7 @@ struct GridComponent {
 	pair anker;
 	pair size;
 	bool solid;
+	bool opaque;
 };
 
 ENUM(StationId,
@@ -158,4 +158,11 @@ struct LightComponent {
 	SDL_Color tint = {255, 255, 255, 255};
 	float flickerSpeed = 1;
 	float flickerAmplitude = 0;
+};
+
+struct SensorComponent {
+	int radius;
+	bool engaged = false;
+	vec position = {0, 0};
+	uint32_t lastSeen = 0;
 };

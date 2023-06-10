@@ -18,14 +18,9 @@ public:
 			CreatureState::value oldState = creatureStateComponent.state;
 			Direction::value oldFacing = creatureStateComponent.facing;
 
-			if (healthComponent.damaged) {
-				animalAiComponent.panic = 20;
-				animalAiComponent.nextChange = ticks;
-			}
-
 			if (ticks >= animalAiComponent.nextChange) {
 				creatureStateComponent.state = CreatureState::IDLE;
-				if (bernoulli(ticks, 0.3f) || animalAiComponent.panic) creatureStateComponent.state = CreatureState::WALKING;
+				if (bernoulli(ticks, 0.3f)) creatureStateComponent.state = CreatureState::WALKING;
 
 				if (bernoulli(ticks + 1, 0.3)) {
 					directionComponent.direction = Direction::from_int(rand_int(seed++, 1, 9));
@@ -37,10 +32,6 @@ public:
 				}
 
 				animalAiComponent.nextChange = ticks + 2000 + rand_int(seed++, 0, 1000);
-				if (animalAiComponent.panic > 0) {
-					animalAiComponent.nextChange = ticks + 100 + rand_int(seed++, 0, 100);
-					animalAiComponent.panic -= 1;
-				}
 			}
 
 			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {

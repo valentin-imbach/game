@@ -7,13 +7,14 @@
 
 class GridDeathSystem : public System {
 public:
-	void update(GridMap& gridMap, std::unordered_set<pair>& solidMap) {
+	void update(GridMap& gridMap, std::unordered_set<pair>& solidMap, std::unordered_set<pair>& opaqueMap) {
 		for (Entity entity : entities) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 			for (int x = 0; x < gridComponent.size.x; x++) {
 				for (int y = 0; y < gridComponent.size.y; y++) {
 					gridMap.erase(gridComponent.anker + pair(x, y));
 					solidMap.erase(gridComponent.anker + pair(x, y));
+					opaqueMap.erase(gridComponent.anker + pair(x, y));
 				}
 			}
 		}

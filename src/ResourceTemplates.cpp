@@ -30,6 +30,7 @@ void ResourceTemplate::setTemplates() {
 
 		if (value.contains("variations")) templates[resourceId]->variations = value["variations"];
 		if (value.contains("solid")) templates[resourceId]->solid = value["solid"];
+		if (value.contains("opaque")) templates[resourceId]->opaque = value["opaque"];
 		if (value.contains("tool")) templates[resourceId]->toolId = ToolId::from_string(value["tool"]);
 		if (value.contains("level")) templates[resourceId]->level = value["level"];
 		if (value.contains("health")) templates[resourceId]->health = value["health"];

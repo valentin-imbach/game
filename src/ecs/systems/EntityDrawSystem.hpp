@@ -32,18 +32,20 @@ public:
 			TextureStyle style;
 			style.centered = false;
 			vec entityPosition = positionComponent.position;
-			if (spriteComponent.shader.shaderId == ShaderId::SHAKE) {
-				uint past = ticks - spriteComponent.shader.start;
+			
+			if (spriteComponent.effects[SpriteEffectId::SHAKE].first) {
+				uint past = ticks - spriteComponent.effects[SpriteEffectId::SHAKE].second;
 				if (past > 500) {
-					spriteComponent.shader = {ShaderId::NONE, 0};
+					spriteComponent.effects[SpriteEffectId::SHAKE] = {false, 0};
 				} else {
 					entityPosition += vec(3 * sinf(float(past) / 30) / (past + 1), 0);
 				}
-			} else if (spriteComponent.shader.shaderId == ShaderId::BOUNCE) {
-				entityPosition += vec(0, sinf(float(ticks) / 200) / 30);
-			} else if (spriteComponent.shader.shaderId == ShaderId::RED) {
-				style.tint = {255, 100, 100};
 			}
+			
+			if (spriteComponent.effects[SpriteEffectId::BOUNCE].first) entityPosition += vec(0, sinf(float(ticks) / 200) / 30);
+			if (spriteComponent.effects[SpriteEffectId::RED].first) style.tint = {255, 100, 100};
+			if (spriteComponent.effects[SpriteEffectId::HIGHLIGHT].first) style.tint = {100, 100, 255};
+			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
 
 			vec offset(0.5f, 0.5f);
 			pair screenPosition = round(BIT * zoom * (entityPosition - spriteComponent.scale * offset - cameraPosition)) + (Window::instance->size) / 2;

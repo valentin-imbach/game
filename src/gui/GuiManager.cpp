@@ -15,9 +15,9 @@ void GuiManager::update() {
 		world->ecs.getComponent<GridComponent>(buildMode).anker = position;
 		SpriteComponent& spriteComponent = world->ecs.getComponent<SpriteComponent>(buildMode);
 		if (world->realm->gridMap.find(position) != world->realm->gridMap.end()) {
-			spriteComponent.shader = {ShaderId::RED, 0};
+			spriteComponent.effects[SpriteEffectId::RED] = {true, 0};
 		} else {
-			spriteComponent.shader = {ShaderId::NONE, 0};
+			spriteComponent.effects[SpriteEffectId::RED] = {false, 0};
 		}
 	}
 

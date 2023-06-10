@@ -8,7 +8,7 @@
 
 class DamageSystem : public System {
 public:
-	void update(Entity actor, vec position, Entity item) {
+	void update(Entity actor, vec position, Entity item, uint32_t ticks) {
 		if (!ecs->hasComponent<DamageComponent>(item)) return;
 		vec actorPosition = ecs->getComponent<PositionComponent>(actor).position;
 		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item);
@@ -20,7 +20,7 @@ public:
 
 			if (isInside(position, positionComponent.position + colliderComponent.collider.offset, colliderComponent.collider.size)) {
 				healthComponent.health -= damageComponent.damage;
-				healthComponent.damaged = true;
+				healthComponent.lastDamage = ticks;
 				if (ecs->hasComponent<ForceComponent>(entity)) {
 					vec force = normalise(positionComponent.position - actorPosition) / 10;
 					ecs->getComponent<ForceComponent>(entity).force = force;

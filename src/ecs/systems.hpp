@@ -27,3 +27,4 @@
 #include "GridDeathSystem.hpp"
 #include "ChunkSystem.hpp"
 #include "LightSystem.hpp"
+#include "SensorSystem.hpp"

@@ -31,6 +31,7 @@ struct ResourceTemplate {
 
 	uint8_t variations = 1;
 	bool solid = true;
+	bool opaque = true;
 
 	ToolId::value toolId = ToolId::NONE;
 	uint8_t level = 1;

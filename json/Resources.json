@@ -3,6 +3,7 @@
 	"basalt_rock": {
 		"anker": [0, 4],
 		"height": 1,
+		"opaque": false,
 		"tool": "pick_axe",
 		"level": 2,
 		"health": 5,
@@ -15,6 +16,7 @@
 	"obsidian_rock": {
 		"anker": [1, 4],
 		"height": 1,
+		"opaque": false,
 		"tool": "pick_axe",
 		"level": 2,
 		"health": 5,
@@ -27,6 +29,7 @@
 	"granite_rock": {
 		"anker": [2, 4],
 		"height": 1,
+		"opaque": false,
 		"tool": "pick_axe",
 		"level": 2,
 		"health": 5,
@@ -39,6 +42,7 @@
 	"sandstone_rock": {
 		"anker": [3, 4],
 		"height": 1,
+		"opaque": false,
 		"tool": "pick_axe",
 		"level": 2,
 		"health": 5,
@@ -51,6 +55,7 @@
 	"chalk_rock": {
 		"anker": [4, 4],
 		"height": 1,
+		"opaque": false,
 		"tool": "pick_axe",
 		"level": 2,
 		"health": 5,
@@ -117,6 +122,7 @@
 	},
 	"bush": {
 		"anker": [0, 5],
+		"opaque": false,
 		"tool": "shovel",
 		"level": 2,
 		"health": 3,
@@ -127,6 +133,7 @@
 	},
 	"branch": {
 		"anker": [0, 6],
+		"opaque": false,
 		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
@@ -136,6 +143,7 @@
 	},
 	"pebble": {
 		"anker": [0, 7],
+		"opaque": false,
 		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
@@ -145,6 +153,7 @@
 	},
 	"grass": {
 		"anker": [0, 8],
+		"opaque": false,
 		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",
@@ -154,6 +163,7 @@
 	},
 	"mushroom": {
 		"anker": [0, 9],
+		"opaque": false,
 		"variations" : 3,
 		"solid" : false,
 		"sound": "rock",

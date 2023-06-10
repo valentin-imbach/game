@@ -25,7 +25,7 @@ public:
 			ToolComponent& toolComponent = ecs->getComponent<ToolComponent>(item);
 			if (resourceComponent.toolId == toolComponent.toolId) {
 				healthComponent.health -= 1;
-				spriteComponent.shader = {ShaderId::SHAKE, ticks};
+				spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
 			}
 		}
 	}

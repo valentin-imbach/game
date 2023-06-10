@@ -62,12 +62,9 @@ private:
 	friend class CreatureAnimationSystem;
 };
 
-ENUM(ShaderId,
+ENUM(SpriteEffectId,
 SHAKE,
 BOUNCE,
-RED)
-
-struct Shader {
-	ShaderId::value shaderId;
-	uint start;
-};
+RED,
+HIGHLIGHT,
+HURT)

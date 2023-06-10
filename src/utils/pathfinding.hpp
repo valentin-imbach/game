@@ -54,3 +54,43 @@ struct PathFinder {
 		return res;
 	}
 };
+
+inline std::pair<bool, pair> visible(vec start, vec end, std::unordered_set<pair>& map) {
+	float d = dist(start, end);
+	int steps = std::max(int(std::ceil(10 * d)), 2);
+	vec offset = (end - start)/steps;
+	vec pos = start;
+	for (int i = 0; i <= steps; i++) {
+		pair p = round(pos);
+		if (map.find(p) != map.end()) return {false, p};
+		pos += offset;
+	}
+	return {true, {}};
+}
+
+inline bool old_visible(vec start, vec end, std::unordered_set<pair>& map) { //TODO floating point problem
+	int sx = round(start.x);
+	int xrange = abs(round(end.x) - sx);
+	float dy = (end.y-start.y)/abs(end.x-start.x);
+	int dir = (end.x > start.x) ? 1 : -1;
+
+	float h = start.y;
+	for (int i = 0; i <= xrange; i++) {
+		float y1 = round(h);
+		if (i == 0) {
+			h = start.y + (sx + 0.5f - start.x) * dy;
+		} else if (i == xrange) {
+			h = end.y;
+		} else {
+			h += dy;
+		}
+		float y2 = round(h);
+
+		for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {
+			pair pos(sx + dir * i, y);
+			//LOG(pos);
+			if (map.find(pos) != map.end()) return false;
+		}
+	}
+	return true;
+}

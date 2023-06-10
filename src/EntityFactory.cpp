@@ -64,7 +64,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	if (!resource) return 0;
 
 	world->ecs.addComponent<PositionComponent>({position}, resource);
-	world->ecs.addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid}, resource);
+	world->ecs.addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid, resourceTemplate->opaque}, resource);
 
 	SpriteStack spriteStack;
 	uint variation = rand_int(seed++, 0, resourceTemplate->variations);
@@ -91,7 +91,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
 	Collider collider({0, 0}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, animal);
-	world->ecs.addComponent<AnimalAiComponent>({0, 0}, animal);
+	world->ecs.addComponent<AnimalAiComponent>({0}, animal);
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
@@ -106,7 +106,8 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	world->ecs.addComponent<ColliderComponent>({collider}, item);
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
-	world->ecs.addComponent<SpriteComponent>({spriteStack, 0.5f, {ShaderId::BOUNCE, 0}}, item);
+	world->ecs.addComponent<SpriteComponent>({spriteStack, 0.5f}, item);
+	world->ecs.getComponent<SpriteComponent>(item).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ItemComponent itemComponent = {itemId, count};
 	// if (itemId && ItemTemplate::templates[itemId]) {
 	// 	ItemTemplate* temp = ItemTemplate::templates[itemId].get();

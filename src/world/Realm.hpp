@@ -17,6 +17,7 @@ public:
 	std::unique_ptr<Map> map;
 	GridMap gridMap;
 	std::unordered_set<pair> solidMap;
+	std::unordered_set<pair> opaqueMap;
 
 	bool free(pair anker, pair size);
 

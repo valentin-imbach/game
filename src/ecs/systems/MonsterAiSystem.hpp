@@ -7,21 +7,22 @@
 
 class MonsterAiSystem : public System {
 public:
-	void update(Entity player, std::unordered_set<pair>& solidMap, uint ticks) {
+	void update(std::unordered_set<pair>& solidMap, std::unordered_set<pair>& opaqueMap, uint ticks) {
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
 		
 			CreatureState::value oldState = creatureStateComponent.state;
 			Direction::value oldFacing = creatureStateComponent.facing;
 
-			if (!player) {
+			if (!sensorComponent.engaged || ticks > sensorComponent.lastSeen + 5000) {
 				creatureStateComponent.state = CreatureState::IDLE;
 				continue;
 			}
 
-			vec targetPosition = ecs->getComponent<PositionComponent>(player).position;
+			vec targetPosition = sensorComponent.position;
 			if (dist(targetPosition, positionComponent.position) < 1) {
 				creatureStateComponent.state = CreatureState::IDLE;
 			} else {

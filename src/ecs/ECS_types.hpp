@@ -28,7 +28,8 @@ MONSTER_AI,
 GATHER,
 DEATH,
 PARTICLE,
-LIGHT)
+LIGHT,
+SENSOR)
 
 ENUM(SystemId,
 ENTITY_DRAW,
@@ -57,7 +58,8 @@ CREATURE_PARTICLE,
 HAND_RENDER,
 GRID_DEATH,
 CHUNK,
-LIGHT)
+LIGHT,
+SENSOR)
 
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;

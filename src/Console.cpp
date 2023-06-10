@@ -165,9 +165,7 @@ bool Console::execute(std::string input) {
 		file.close();
 		LOG("World loaded");
 	} else if (inputs[0] == "test") {
-		if (!player) return false;
-		vec position = ecs.getComponent<PositionComponent>(player).position;
-		for (int i = 0; i < 10; i++) game->world->particleSystem.emit(ParticleSystem::DIRT, position);
+		visible({4.5,3.7}, {0.2,1.9}, game->world->realm->solidMap);
 	} else if (inputs[0] == "state") {
 		game->gameState = GameState::from_string(inputs[1]);
 	} else {
