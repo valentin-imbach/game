@@ -20,6 +20,7 @@ public:
 	std::unordered_set<pair> opaqueMap;
 
 	bool free(pair anker, pair size);
+	pair findFree(pair pos);
 
 private:
 	uint seed;

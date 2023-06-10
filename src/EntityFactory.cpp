@@ -11,7 +11,7 @@ uint EntityFactory::seed = 1729;
 
 Entity EntityFactory::createPlayer(vec position) {
 	Entity player = world->ecs.createEntity();
-	world->ecs.addComponent<PositionComponent>({{8, 8}}, player);
+	world->ecs.addComponent<PositionComponent>({position}, player);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	world->ecs.addComponent<MovementComponent>({2}, player);
@@ -128,15 +128,25 @@ Entity EntityFactory::createStation(StationId::value stationId, pair position) {
 	if (!station) return 0;
 
 	world->ecs.addComponent<PositionComponent>({position}, station);
-	world->ecs.addComponent<GridComponent>({position, {1,1}, true}, station);
+	world->ecs.addComponent<GridComponent>({position, {1,1}, true, false}, station);
+	world->ecs.addComponent<StationComponent>({stationId}, station);
+
+	if (stationId == StationId::CAMP_FIRE) {
+		SpriteStack fireSprites;
+		fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
+		world->ecs.addComponent<SpriteComponent>({fireSprites}, station);
+		world->ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, station);
+		world->ecs.addComponent<LightComponent>({true, 3, {255, 0, 0, 255}, 3, 0.2f}, station);
+		return station;
+	}
 
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::STATIONS, {int(stationId) - 1, 0}, {1,2}}, {0, -1});
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, station);
-	world->ecs.addComponent<StationComponent>({stationId}, station);
 
 	if (stationId == StationId::CHEST) {
 		 world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, station);
+		 return station;
 	}
 
 	return station;

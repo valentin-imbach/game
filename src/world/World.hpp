@@ -14,7 +14,7 @@ using DrawQueue = std::vector<std::pair<float, DrawCall>>;
 
 class World {
 public:
-	World(std::string name);
+	World(std::string name, uint seed);
 	World(std::fstream& stream);
 	
 	void update(uint dt);

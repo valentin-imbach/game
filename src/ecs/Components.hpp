@@ -116,7 +116,8 @@ FURNACE,
 TOOL_STATION,
 WORK_STATION,
 SAWMILL,
-CHEST)
+CHEST,
+CAMP_FIRE)
 
 struct StationComponent {
 	StationId::value stationId;

@@ -51,7 +51,8 @@ void Game::create() {
 	}
 	number += 1;
 
-	world = std::make_unique<World>(name);
+	uint seed = rand();
+	world = std::make_unique<World>(name, seed);
 	gameState = GameState::RUNNING;
 }
 
