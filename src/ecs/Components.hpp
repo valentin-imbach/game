@@ -16,8 +16,8 @@ struct PositionComponent {
 struct SpriteComponent {
 	SpriteStack spriteStack;
 	float scale = 1;
-	bool priority = false;
-	std::array<std::pair<bool, uint32_t>, SpriteEffectId::count> effects;
+	float z = 0;
+	std::array<std::pair<bool, uint32_t>, SpriteEffectId::count> effects = {};
 };
 
 struct CameraComponent {

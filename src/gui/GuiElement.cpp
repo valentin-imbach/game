@@ -289,7 +289,7 @@ BuildGui::BuildGui(pair position)
 
 	for (int n = 1; n < StationId::count; n++) {
 		SpriteStack sprites;
-		sprites.addSprite({SpriteSheet::STATIONS, {n - 1, 0}, {1, 2}}, {0, -1});
+		sprites.addSprite({SpriteSheet::STATION_ICONS, {n - 1, 0}, {1, 1}}, {0, 0});
 		selector->addSelection(sprites);
 	}
 	addGuiElement(std::move(selector));
@@ -302,7 +302,7 @@ void BuildGui::select(int n) {
 void BuildGui::build() {
 	ECS& ecs = guiManager->world->ecs;
 	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), {0, 0});
-	ecs.getComponent<SpriteComponent>(guiManager->buildMode).priority = true;
+	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();
 }
 

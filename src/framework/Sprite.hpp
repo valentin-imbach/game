@@ -30,7 +30,8 @@ MENU,
 GRAVEL,
 MUD,
 PARTICLES,
-FIRE)
+FIRE,
+STATION_ICONS)
 
 class Sprite {
 public:

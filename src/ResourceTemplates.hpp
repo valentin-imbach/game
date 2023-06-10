@@ -22,14 +22,25 @@ ENUM(ResourceId,
 	BRANCH,
 	PEBBLE,
 	GRASS,
-	MUSHROOM)
+	MUSHROOM
+)
+
+struct SpriteTemplate {
+	pair anker;
+	pair size = {1, 1};
+	pair offset = {0, 0};
+	uint8_t variations = 1;
+};
 
 struct ResourceTemplate {
-	pair anker;
-	pair size;
-	uint8_t height;
 
-	uint8_t variations = 1;
+	ResourceTemplate() {
+		spriteTemplates = std::vector<SpriteTemplate>();
+	}
+
+	pair size = {1, 1};
+	std::vector<SpriteTemplate> spriteTemplates;
+
 	bool solid = true;
 	bool opaque = true;
 
@@ -42,9 +53,7 @@ struct ResourceTemplate {
 
 	LootTable lootTable;
 
-	ResourceTemplate(pair anker, pair size = {1, 1}, uint8_t height = 0)
-		: anker(anker), size(size), height(height) {}
-
 	static std::array<std::unique_ptr<ResourceTemplate>, ResourceId::count> templates;
 	static void setTemplates();
 };
+

@@ -42,7 +42,7 @@ bool GuiManager::handleEvent(InputEvent event) {
 		GridComponent& gridComponent = world->ecs.getComponent<GridComponent>(buildMode);
 		if (world->realm->free(gridComponent.anker, gridComponent.size)) {
 			world->link(buildMode);
-			world->ecs.getComponent<SpriteComponent>(buildMode).priority = false;
+			world->ecs.getComponent<SpriteComponent>(buildMode).z = 0;
 			buildMode = 0;
 		}
 		return true;

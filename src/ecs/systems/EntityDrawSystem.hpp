@@ -9,6 +9,7 @@
 struct DrawCall {
 	SpriteStack spriteStack;
 	pair position;
+	float z;
 	int scale;
 	TextureStyle style;
 };
@@ -52,13 +53,19 @@ public:
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
-			if (spriteComponent.priority) screenPosition.y += 1;
 
-			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, int(spriteComponent.scale * zoom), style});
+			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * zoom * spriteComponent.z, int(spriteComponent.scale * zoom), style});
 		}
 
-		auto lambda = [](auto& l, auto& r) { return l.position.y < r.position.y || (l.position.y == r.position.y && l.position.x < r.position.x); };
+		auto lambda = [](auto& l, auto& r) {
+			float ly = l.position.y + l.z;
+			float ry = r.position.y + r.z;
+			return ly < ry || (ly == ry && l.position.x < r.position.x);
+		};
+
 		std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-		for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
+		for (auto& p : drawQueue) {
+			p.spriteStack.draw(p.position, p.scale, p.style, ticks);
+		}
 	}
 };

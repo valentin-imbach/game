@@ -67,10 +67,11 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	world->ecs.addComponent<GridComponent>({position, resourceTemplate->size, resourceTemplate->solid, resourceTemplate->opaque}, resource);
 
 	SpriteStack spriteStack;
-	uint variation = rand_int(seed++, 0, resourceTemplate->variations);
-	pair spritePosition(resourceTemplate->anker.x + variation * resourceTemplate->size.x, resourceTemplate->anker.y - resourceTemplate->height);
-	pair spriteSize(resourceTemplate->size.x, resourceTemplate->size.y + resourceTemplate->height);
-	spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, spriteSize}, pair(0, -resourceTemplate->height));
+	for (SpriteTemplate& sprite : resourceTemplate->spriteTemplates) {
+		uint var = rand_int(seed++, 0, sprite.variations);
+		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
+		spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, sprite.size}, sprite.offset);
+	}
 
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, resource);
 	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId}, resource);

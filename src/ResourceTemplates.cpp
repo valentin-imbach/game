@@ -18,17 +18,17 @@ void ResourceTemplate::setTemplates() {
 			continue;
 		}
 
-		pair anker(value["anker"][0], value["anker"][1]);
+		templates[resourceId] = std::make_unique<ResourceTemplate>();
 
-		pair size(1, 1);
-		if (value.contains("size")) size = pair(value["size"][0], value["size"][1]);
-        
-		int height = 0;
-		if (value.contains("height")) height = value["height"];
+		for (auto& sprite : value["sprites"]) {
+			pair anker(sprite["anker"][0], sprite["anker"][1]);
+			pair size(sprite["size"][0], sprite["size"][1]);
+			pair offset(sprite["offset"][0], sprite["offset"][1]);
+			uint8_t variations = sprite["variations"];
+			templates[resourceId]->spriteTemplates.push_back({anker, size, offset, variations});
+		}
 
-		templates[resourceId] = std::make_unique<ResourceTemplate>(anker, size, height);
-
-		if (value.contains("variations")) templates[resourceId]->variations = value["variations"];
+		if (value.contains("size")) templates[resourceId]->size = pair(value["size"][0], value["size"][1]);
 		if (value.contains("solid")) templates[resourceId]->solid = value["solid"];
 		if (value.contains("opaque")) templates[resourceId]->opaque = value["opaque"];
 		if (value.contains("tool")) templates[resourceId]->toolId = ToolId::from_string(value["tool"]);
