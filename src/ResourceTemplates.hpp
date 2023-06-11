@@ -3,6 +3,7 @@
 #include "Item_types.hpp"
 #include "Loot.hpp"
 #include "utils.hpp"
+#include "Sprite.hpp"
 
 ENUM(ResourceId,
 	BASALT_ROCK,
@@ -25,13 +26,6 @@ ENUM(ResourceId,
 	MUSHROOM
 )
 
-struct SpriteTemplate {
-	pair anker;
-	pair size = {1, 1};
-	pair offset = {0, 0};
-	uint8_t variations = 1;
-};
-
 struct ResourceTemplate {
 
 	ResourceTemplate() {
@@ -44,7 +38,7 @@ struct ResourceTemplate {
 	bool solid = true;
 	bool opaque = true;
 
-	ToolId::value toolId = ToolId::NONE;
+	ItemKind::value toolId;
 	uint8_t level = 1;
 
 	uint8_t health = 1;

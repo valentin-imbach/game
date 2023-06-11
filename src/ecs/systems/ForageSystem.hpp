@@ -21,9 +21,9 @@ public:
 				return;
 			}
 
-			if (!ecs->hasComponent<ToolComponent>(item)) return;
-			ToolComponent& toolComponent = ecs->getComponent<ToolComponent>(item);
-			if (resourceComponent.toolId == toolComponent.toolId) {
+			if (!ecs->hasComponent<ItemKindComponent>(item)) return;
+			ItemKindComponent& itemKindComponent = ecs->getComponent<ItemKindComponent>(item);
+			if (itemKindComponent.itemKinds[resourceComponent.toolId]) {
 				healthComponent.health -= 1;
 				spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
 			}

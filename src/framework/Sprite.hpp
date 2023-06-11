@@ -69,3 +69,10 @@ BOUNCE,
 RED,
 HIGHLIGHT,
 HURT)
+
+struct SpriteTemplate {
+	pair anker;
+	pair size = {1, 1};
+	pair offset = {0, 0};
+	uint8_t variations = 1;
+};

@@ -3,6 +3,7 @@
 #include "Window.hpp"
 
 int main() {
+	std::srand(time(NULL));
 	Window window("Title", {1024, 640});
 	Game game;
 

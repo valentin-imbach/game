@@ -84,15 +84,16 @@ struct PlayerComponent {
 };
 
 struct ResourceComponent {
-	ToolId::value toolId;
+	ItemKind::value toolId;
 };
 
 struct LootComponent {
 	LootTable lootTable;
 };
 
-struct ToolComponent {
-	ToolId::value toolId;
+struct ItemKindComponent {
+	std::bitset<ItemKind::count> itemKinds;
+	std::array<uint8_t, ItemProperty::count> itemProperties;
 };
 
 struct DamageComponent {

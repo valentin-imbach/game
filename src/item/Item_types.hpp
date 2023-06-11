@@ -5,25 +5,7 @@
 #define MAX_STACK 99u
 
 ENUM(ItemKind,
-//Materials
-COBBLE,
-PEBBLE,
-LOG,
-ORE,
-GEM,
-LEATHER,
-ORGANIC,
-DUST,
 
-//Crafting
-METAL_BAR,
-GLASS,
-PAPER,
-FABRIC,
-PLATE,
-ROD,
-GEAR,
-ROPE,
 
 //Tools
 PICK_AXE,
@@ -33,7 +15,7 @@ HAMMER,
 SCYTHE,
 HOE,
 KNIFE,
-PLANK,
+ACCESSORY,
 
 //Weapons
 SWORD,
@@ -41,11 +23,33 @@ BOW,
 ARROW,
 SHIELD,
 
-//Misc
+
+
+
+
+//Materials
+COBBLE,
+ORE,
+PEBBLE,
+GEM,
+LOG,
+PLANK,
+ROD,
+LEATHER,
 FOOD,
+ORGANIC,
+DUST,
+ROPE,
+
+//Crafting
+METAL_BAR,
+PLATE,
+GLASS,
+PAPER,
+GEAR,
+FABRIC,
 FUEL,
 POTION,
-ACCESSORY,
 
 //Clothing
 CLOTHING_HEAD,
@@ -146,12 +150,6 @@ CHALK_PEBBLE,
 Y_PEBBLE,
 
 GRASS_FIBER)
-
-ENUM(ToolId,
-PICK_AXE,
-AXE,
-SHOVEL,
-KNIVE)
 
 ENUM(ItemAmount,
 ALL,

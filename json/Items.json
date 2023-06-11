@@ -300,7 +300,7 @@
     "potion": {
         "name": "Potion",
         "kinds": [
-            "food"
+            "potion"
         ],
         "properties": {
             "nutrition": 3

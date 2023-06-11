@@ -6,6 +6,7 @@
 #include "World.hpp"
 
 std::vector<std::unique_ptr<CraftingRecipe>> CraftingRecipe::recipes = {};
+std::vector<std::unique_ptr<CraftingKindRecipe>> CraftingKindRecipe::recipes = {};
 
 void CraftingRecipe::setRecipes() {
 	std::unique_ptr<CraftingRecipe> recipe = std::make_unique<CraftingRecipe>();
@@ -30,3 +31,27 @@ Entity CraftingIngredient::take(Entity item) {
 	}
 	return item;
 }
+
+// void CraftingKindRecipe::setRecipes() {
+// 	std::unique_ptr<CraftingRecipe> recipe = std::make_unique<CraftingRecipe>();
+// 	recipe->product = {ItemId::OAK_PLANK, 4};
+// 	recipe->ingredients.push_back({ItemId::OAK_LOG, 1});
+// 	recipe->ingredients.push_back({ItemId::OAK_LOG, 1});
+// 	recipes.push_back(std::move(recipe));
+// }
+
+// bool CraftingKindIngredient::check(Entity item) {
+// 	if (!item) return false;
+// 	ItemComponent &itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
+// 	return itemComponent.itemId == itemKind && itemComponent.count >= count;
+// }
+
+// Entity CraftingKindIngredient::take(Entity item) {
+// 	ItemComponent &itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
+// 	itemComponent.count -= count;
+// 	if (itemComponent.count <= 0) {
+// 		EntityFactory::world->ecs.addComponent(DeathComponent(), item);
+// 		return 0;
+// 	}
+// 	return item;
+// }

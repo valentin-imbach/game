@@ -93,13 +93,24 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 				texts.emplace_back(Text(text), pos);
 				pos.y += spacing;
 			}
-			if (EntityFactory::world->ecs.hasComponent<ToolComponent>(item)) {
-				ToolComponent& toolComponent = EntityFactory::world->ecs.getComponent<ToolComponent>(item);
-				texts.emplace_back(Text("  Tool", TTF_STYLE_BOLD), pos);
-				pos.y += spacing;
-				std::string text = "Type: " + ToolId::to_string(toolComponent.toolId);
-				texts.emplace_back(Text(text), pos);
-				pos.y += spacing;
+			if (EntityFactory::world->ecs.hasComponent<ItemKindComponent>(item)) {
+				ItemKindComponent& itemKindComponent = EntityFactory::world->ecs.getComponent<ItemKindComponent>(item);
+				for (int kind = 1; kind <= ItemKind::count; kind++) {
+					if (!itemKindComponent.itemKinds[kind]) continue;
+					icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
+					ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
+					std::string kindText = "   " + itemKindTemplate->name;
+					texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
+					pos.y += spacing;
+					for (int property = 1; property <= ItemProperty::count; property++) {
+						if (!itemKindTemplate->properties[property]) continue;
+						ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
+						int value = itemKindComponent.itemProperties[property];
+						std::string propertyText = itempPropertyTemplate->name + ": " + std::to_string(value);
+						texts.emplace_back(Text(propertyText, TTF_STYLE_NORMAL), pos);
+						pos.y += spacing;
+					}
+				}
 			}
 		} else {
 			texts.emplace_back(Text(name), pos);
@@ -180,4 +191,14 @@ void Inventory::clear(bool destroy) {
 			itemContainers[x][y].clear(destroy);
 		}
 	}
+}
+
+inline bool hasItemKind(Entity item, ItemKind::value itemKind) {
+	if (EntityFactory::world->ecs.hasComponent<ItemKindComponent>(item)) {
+		return EntityFactory::world->ecs.getComponent<ItemKindComponent>(item).itemKinds[itemKind];
+	} else if (EntityFactory::world->ecs.hasComponent<ItemComponent>(item)) {
+		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
+		return ItemTemplate::templates[itemComponent.itemId]->kinds[itemKind];
+	}
+	return false;
 }

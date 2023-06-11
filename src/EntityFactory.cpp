@@ -86,6 +86,21 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	world->ecs.addComponent<PositionComponent>({position}, animal);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
+
+	if (animalId == AnimalId::MONSTER) {
+		world->ecs.addComponent<MovementComponent>({1}, animal);
+		SpriteStack monsterSprites;
+		monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
+		world->ecs.addComponent<SpriteComponent>({monsterSprites}, animal);
+		Collider collider({0, 0}, {0.6f, 0.6f});
+		world->ecs.addComponent<ColliderComponent>({collider}, animal);
+		world->ecs.addComponent<HealthComponent>({20, 20}, animal);
+		world->ecs.addComponent<MonsterAiComponent>({}, animal);
+		world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
+		world->ecs.addComponent<SensorComponent>({10}, animal);
+		return animal;
+	}
+
 	world->ecs.addComponent<MovementComponent>({0.5f}, animal);
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));

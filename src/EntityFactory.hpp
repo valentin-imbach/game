@@ -11,7 +11,8 @@ class World;
 ENUM(AnimalId,
 COW,
 PIG,
-HORSE)
+HORSE,
+MONSTER)
 
 class EntityFactory {
 public:

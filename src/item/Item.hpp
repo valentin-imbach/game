@@ -18,7 +18,6 @@ struct ItemContainer {
 	void clear(bool destroy = false);
 };
 
-
 class Inventory {
 public:
 	pair size;
@@ -31,3 +30,5 @@ public:
 	int count();
 	void clear(bool destroy = false);
 };
+
+inline bool hasItemKind(Entity item, ItemKind::value itemKind);
