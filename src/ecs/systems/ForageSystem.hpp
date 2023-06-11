@@ -21,11 +21,12 @@ public:
 				return;
 			}
 
-			if (!ecs->hasComponent<ItemKindComponent>(item)) return;
-			ItemKindComponent& itemKindComponent = ecs->getComponent<ItemKindComponent>(item);
-			if (itemKindComponent.itemKinds[resourceComponent.toolId]) {
-				healthComponent.health -= 1;
-				spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
+			if (hasItemKind(item, resourceComponent.toolId)) {
+				if (getItemProperty(item, ItemProperty::LEVEL) >= resourceComponent.level) {
+					int damage = std::min(getItemProperty(item, ItemProperty::EFFICIENCY), int(healthComponent.health));
+					healthComponent.health -= damage;
+					spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
+				}
 			}
 		}
 	}

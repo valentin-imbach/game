@@ -31,4 +31,5 @@ public:
 	void clear(bool destroy = false);
 };
 
-inline bool hasItemKind(Entity item, ItemKind::value itemKind);
+bool hasItemKind(Entity item, ItemKind::value itemKind);
+int getItemProperty(Entity item, ItemProperty::value itemProperty);

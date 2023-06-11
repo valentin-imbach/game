@@ -85,6 +85,7 @@ struct PlayerComponent {
 
 struct ResourceComponent {
 	ItemKind::value toolId;
+	int level;
 };
 
 struct LootComponent {

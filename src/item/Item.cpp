@@ -193,12 +193,24 @@ void Inventory::clear(bool destroy) {
 	}
 }
 
-inline bool hasItemKind(Entity item, ItemKind::value itemKind) {
+bool hasItemKind(Entity item, ItemKind::value itemKind) {
 	if (EntityFactory::world->ecs.hasComponent<ItemKindComponent>(item)) {
 		return EntityFactory::world->ecs.getComponent<ItemKindComponent>(item).itemKinds[itemKind];
 	} else if (EntityFactory::world->ecs.hasComponent<ItemComponent>(item)) {
 		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
+		if (!itemComponent.itemId) return false;
 		return ItemTemplate::templates[itemComponent.itemId]->kinds[itemKind];
 	}
 	return false;
+}
+
+int getItemProperty(Entity item, ItemProperty::value itemProperty) {
+	if (EntityFactory::world->ecs.hasComponent<ItemKindComponent>(item)) {
+		return EntityFactory::world->ecs.getComponent<ItemKindComponent>(item).itemProperties[itemProperty];
+	} else if (EntityFactory::world->ecs.hasComponent<ItemComponent>(item)) {
+		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
+		if (!itemComponent.itemId) return 0;
+		return ItemTemplate::templates[itemComponent.itemId]->properties[itemProperty];
+	}
+	return 0;
 }

@@ -145,7 +145,7 @@ public:
 
 private:
 	Inventory* link;
-	ItemContainer inputA, inputB, output;
+	ItemContainer inputA, inputB, inputC, output;
 };
 
 class Selector : public GuiElement {

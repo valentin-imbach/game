@@ -40,6 +40,7 @@ struct CraftingProductProperty {
 struct CraftingKindProduct {
 	std::string name;
 	std::vector<SpriteTemplate> spriteTemplates;
+	std::vector<ItemKind::value> productKinds;
 	std::vector<CraftingProductProperty> productProperties;
 };
 

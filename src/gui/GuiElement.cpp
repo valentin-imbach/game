@@ -252,8 +252,9 @@ InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inv
 
 CraftingGui::CraftingGui(pair position, Inventory* link)
 	: Widget(position, {80, 20}, Sprite()), link(link) {
-	addGuiElement(std::make_unique<ItemSlot>(pair(-30, 0), inputA, link));
-	addGuiElement(std::make_unique<ItemSlot>(pair(-10, 0), inputB, link));
+	addGuiElement(std::make_unique<ItemSlot>(pair(-50, 0), inputA, link));
+	addGuiElement(std::make_unique<ItemSlot>(pair(-30, 0), inputB, link));
+	addGuiElement(std::make_unique<ItemSlot>(pair(-10, 0), inputC, link));
 	addGuiElement(std::make_unique<ItemSlot>(pair(30, 0), output, link));
 	addGuiElement(std::make_unique<Button>(pair(10, 0), pair(20, 20), std::bind(&CraftingGui::craft, this), Sprite()));
 }
@@ -262,11 +263,13 @@ CraftingGui::~CraftingGui() {
 	if (link) {
 		inputA.item = link->add(inputA.item);
 		inputB.item = link->add(inputB.item);
+		inputC.item = link->add(inputC.item);
 		output.item = link->add(output.item);
 	}
 	vec pos = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player).position;
 	guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputA.item);
 	guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputB.item);
+	guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputC.item);
 	guiManager->world->ecs.addComponent<PositionComponent>({pos}, output.item);
 }
 
@@ -276,6 +279,47 @@ void CraftingGui::craft() {
 			inputA.item = recipe->ingredients[0].take(inputA.item);
 			inputB.item = recipe->ingredients[0].take(inputB.item);
 			output.item = EntityFactory::createItem(recipe->product.itemId, recipe->product.count);
+			return;
+		}
+	}
+
+	for (auto& recipe : CraftingKindRecipe::recipes) {
+		if (recipe->ingredients[0].check(inputA.item) && recipe->ingredients[1].check(inputB.item) && recipe->ingredients[2].check(inputC.item)) {
+			inputA.item = recipe->ingredients[0].take(inputA.item);
+			inputB.item = recipe->ingredients[1].take(inputB.item);
+			inputC.item = recipe->ingredients[2].take(inputC.item);
+
+			Entity item = EntityFactory::world->ecs.createEntity();
+			SpriteStack spriteStack;
+			uint seed = 123;
+			for (SpriteTemplate& sprite : recipe->product.spriteTemplates) {
+				uint var = rand_int(seed++, 0, sprite.variations);
+				pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
+				spriteStack.addSprite({SpriteSheet::ITEMS, spritePosition, sprite.size}, sprite.offset);
+			}
+			EntityFactory::world->ecs.addComponent<SpriteComponent>({spriteStack, 0.5f}, item);
+			EntityFactory::world->ecs.getComponent<SpriteComponent>(item).effects[SpriteEffectId::BOUNCE] = {true, 0};
+			EntityFactory::world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, item);
+			ItemKindComponent itemKindComponent = {};
+			
+			for (auto& productKind : recipe->product.productKinds) itemKindComponent.itemKinds[productKind] = true;
+			for (auto& productProperty : recipe->product.productProperties) {
+				int total = 0;
+				int weight = productProperty.factors[0].second + productProperty.factors[1].second + productProperty.factors[2].second;
+				total += getItemProperty(inputA.item, productProperty.factors[0].first) * productProperty.factors[0].second;
+				total += getItemProperty(inputB.item, productProperty.factors[1].first) * productProperty.factors[1].second;
+				total += getItemProperty(inputC.item, productProperty.factors[2].first) * productProperty.factors[2].second;
+				if (weight == 0) continue;
+				itemKindComponent.itemProperties[productProperty.property] = total/weight;
+			}
+
+			EntityFactory::world->ecs.addComponent<ItemKindComponent>(itemKindComponent, item);
+			Collider itemCollider({0, 0}, {0.4f, 0.4f});
+			EntityFactory::world->ecs.addComponent<ColliderComponent>({itemCollider}, item);
+			EntityFactory::world->ecs.addComponent<NameComponent>({Textblock(recipe->product.name)}, item);
+		
+			output.item = item;
+			return;
 		}
 	}
 }

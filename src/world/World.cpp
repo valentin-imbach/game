@@ -24,6 +24,7 @@ void World::init() {
 	ItemTemplate::setTemplates();
 	ResourceTemplate::setTemplates();
 	CraftingRecipe::setRecipes();
+	CraftingKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
 
 	guiManager.world = this;
@@ -59,6 +60,7 @@ World::World(std::string name, uint seed)
 	ItemKindComponent axeKindComponent = {};
 	axeKindComponent.itemKinds[ItemKind::AXE] = true;
 	axeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
+	axeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
 	ecs.addComponent<ItemKindComponent>(axeKindComponent, axe);
 	Collider axeCollider({0, 0}, {0.4f, 0.4f});
 	ecs.addComponent<ColliderComponent>({axeCollider}, axe);
@@ -74,6 +76,7 @@ World::World(std::string name, uint seed)
 	ItemKindComponent pickKindComponent = {};
 	pickKindComponent.itemKinds[ItemKind::PICK_AXE] = true;
 	pickKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 4;
+	pickKindComponent.itemProperties[ItemProperty::LEVEL] = 3;
 	ecs.addComponent<ItemKindComponent>(pickKindComponent, pick);
 	Collider pickCollider({0, 0}, {0.4f, 0.4f});
 	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
