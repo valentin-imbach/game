@@ -5,6 +5,7 @@
 #include "ECS.hpp"
 #include "Item.hpp"
 #include "utils.hpp"
+#include "SoundManager.hpp"
 
 class ForageSystem : public System {
 public:
@@ -17,6 +18,7 @@ public:
 			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 
 			if (!resourceComponent.toolId) {
+				SoundManager::playSound(resourceComponent.soundId);
 				healthComponent.health -= 1;
 				return;
 			}
@@ -26,6 +28,7 @@ public:
 					int damage = std::min(getItemProperty(item, ItemProperty::EFFICIENCY), int(healthComponent.health));
 					healthComponent.health -= damage;
 					spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
+					SoundManager::playSound(resourceComponent.soundId);
 				}
 			}
 		}

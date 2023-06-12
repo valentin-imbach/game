@@ -4,6 +4,7 @@
 #include "Loot.hpp"
 #include "utils.hpp"
 #include "Sprite.hpp"
+#include "SoundManager.hpp"
 
 ENUM(ResourceId,
 	BASALT_ROCK,
@@ -40,6 +41,8 @@ struct ResourceTemplate {
 
 	ItemKind::value toolId;
 	uint8_t level = 1;
+
+	SoundID::value sound = SoundID::NONE;
 
 	uint8_t health = 1;
 

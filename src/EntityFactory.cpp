@@ -74,7 +74,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	}
 
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, resource);
-	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId, resourceTemplate->level}, resource);
+	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId, resourceTemplate->sound, resourceTemplate->level}, resource);
 	world->ecs.addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	world->ecs.addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
 	

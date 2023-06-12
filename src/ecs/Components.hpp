@@ -7,6 +7,7 @@
 #include "ItemTemplates.hpp"
 #include "Loot.hpp"
 #include "ParticleSystem.hpp"
+#include "SoundManager.hpp"
 
 struct PositionComponent {
 	vec position;
@@ -85,6 +86,7 @@ struct PlayerComponent {
 
 struct ResourceComponent {
 	ItemKind::value toolId;
+	SoundID::value soundId;
 	int level;
 };
 

@@ -5,6 +5,7 @@
 #include "SDL2/SDL_scancode.h"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
+#include "SoundManager.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
 #include <filesystem>
@@ -18,6 +19,7 @@ Game::Game()
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();
 	TextManager::Init();
+	SoundManager::Init();
 
 	gameState = GameState::MENU;
 	buildMenu();

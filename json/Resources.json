@@ -77,7 +77,7 @@
 		"tool": "axe",
 		"level": 1,
 		"health": 5,
-		"sound": "rock",
+		"sound": "tree",
 		"loot": {
 			"pine_log": [3, 6]
 		}
@@ -90,7 +90,7 @@
 		"tool": "axe",
 		"level": 2,
 		"health": 5,
-		"sound": "rock",
+		"sound": "tree",
 		"loot": {
 			"oak_log": [3, 6]
 		}
@@ -102,7 +102,7 @@
 		"tool": "axe",
 		"level": 3,
 		"health": 5,
-		"sound": "rock",
+		"sound": "tree",
 		"loot": {
 			"rosewood_log": [3, 6]
 		}
@@ -114,7 +114,7 @@
 		"tool": "axe",
 		"level": 4,
 		"health": 5,
-		"sound": "rock",
+		"sound": "tree",
 		"loot": {
 			"ashwood_log": [3, 6]
 		}
@@ -126,7 +126,7 @@
 		"tool": "axe",
 		"level": 5,
 		"health": 5,
-		"sound": "rock",
+		"sound": "tree",
 		"loot": {
 			"spruce_log": [3, 6]
 		}
@@ -139,7 +139,7 @@
 		"tool": "shovel",
 		"level": 2,
 		"health": 3,
-		"sound": "rock",
+		"sound": "bush",
 		"loot": {
 			"apple": [3, 6]
 		}
@@ -150,7 +150,7 @@
 		],
 		"opaque": false,
 		"solid" : false,
-		"sound": "rock",
+		"sound": "bush",
 		"loot": {
 			"oak_stick": [1, 2]
 		}
@@ -161,7 +161,7 @@
 		],
 		"opaque": false,
 		"solid" : false,
-		"sound": "rock",
+		"sound": "pickup",
 		"loot": {
 			"granite_pebble": [1, 2]
 		}
@@ -172,7 +172,7 @@
 		],
 		"opaque": false,
 		"solid" : false,
-		"sound": "rock",
+		"sound": "bush",
 		"loot": {
 			"grass_fiber": [1, 2]
 		}
@@ -183,7 +183,7 @@
 		],
 		"opaque": false,
 		"solid" : false,
-		"sound": "rock",
+		"sound": "bush",
 		"loot": {
 			"potion": [1, 2]
 		}
