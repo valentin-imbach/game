@@ -47,6 +47,7 @@ private:
 	uint8_t frameDuration;
 	uint animationStart;
 	static std::array<SDL_Texture*, SpriteSheet::count> spriteSheets;
+	static std::array<SDL_Texture*, SpriteSheet::count> outlineSpriteSheets;
 
 	friend class CreatureAnimationSystem;
 };
@@ -68,7 +69,8 @@ SHAKE,
 BOUNCE,
 RED,
 HIGHLIGHT,
-HURT)
+HURT,
+OUTLINE)
 
 struct SpriteTemplate {
 	pair anker;

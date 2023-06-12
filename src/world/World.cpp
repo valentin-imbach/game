@@ -41,6 +41,8 @@ World::World(std::string name, uint seed)
 	pair spawn = realm->findFree({50,50});
 	Entity player = EntityFactory::createPlayer(spawn);
 
+	ecs.getComponent<SpriteComponent>(player).effects[SpriteEffectId::OUTLINE] = {true, 0};
+
 	// Entity item = EntityFactory::createItem(ItemId::APPLE, 20);
 	// Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
 

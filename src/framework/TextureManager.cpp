@@ -5,12 +5,13 @@
 
 SDL_Texture* TextureManager::lightTexture = nullptr;
 
-SDL_Texture* TextureManager::loadTexture(std::string path) {
+SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
 	SDL_Surface* tmpSurface = IMG_Load((SPRITE_PATH + path).c_str());
 	if (!tmpSurface) {
 		ERROR("Failed to load SDL_Texture from", path)
 		return nullptr;
 	}
+	if (outline) outlineSurface(tmpSurface);
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::instance->renderer, tmpSurface);
 	SDL_FreeSurface(tmpSurface);
 	LOG("Texture loaded from", path);
@@ -80,4 +81,29 @@ SDL_Texture* TextureManager::createTexture(pair size, SDL_Colour colour) {
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_RenderClear(Window::instance->renderer);
 	return texture;
+}
+
+void TextureManager::outlineSurface(SDL_Surface* surface) {
+	if (SDL_LockSurface(surface)) ERROR("Failed to lock surface");
+	Uint32* pixels = (Uint32*)surface->pixels;
+	int pitch = surface->pitch;
+
+	for (int y = 0; y < surface->h; ++y) {
+		for (int x = 0; x < surface->w; ++x) {
+			Uint32 pixel = pixels[y * (surface->w) + x];
+			Uint8 alpha = (pixel >> 24) & 0xFF;
+			if (alpha > 0) continue;
+
+			bool outline = false;
+			for (int nx = x-1; nx <= x+1; nx++) {
+				for (int ny = y-1; ny <= y+1; ny++) {
+					if (nx < 0 || nx >= surface->w || ny < 0 || ny >= surface->h) continue;
+					Uint32 pix = pixels[ny * (surface->w) + nx];
+					Uint8 a = (pix >> 24) & 0xFF;
+					if (a > 0 && pix != 0xFFFFFFFF) outline = true;
+				}
+			}
+			if (outline) pixels[y * (surface->w) + x] = 0xFFFFFFFF;
+		}
+	}
 }

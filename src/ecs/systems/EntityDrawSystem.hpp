@@ -30,9 +30,10 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 
+			vec entityPosition = positionComponent.position;
+
 			TextureStyle style;
 			style.centered = false;
-			vec entityPosition = positionComponent.position;
 			
 			if (spriteComponent.effects[SpriteEffectId::SHAKE].first) {
 				uint past = ticks - spriteComponent.effects[SpriteEffectId::SHAKE].second;
@@ -47,6 +48,7 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::RED].first) style.tint = {255, 100, 100};
 			if (spriteComponent.effects[SpriteEffectId::HIGHLIGHT].first) style.tint = {100, 100, 255};
 			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
+			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
 
 			vec offset(0.5f, 0.5f);
 			pair screenPosition = round(BIT * zoom * (entityPosition - spriteComponent.scale * offset - cameraPosition)) + (Window::instance->size) / 2;
