@@ -86,7 +86,7 @@ struct PlayerComponent {
 
 struct ResourceComponent {
 	ItemKind::value toolId;
-	SoundID::value soundId;
+	SoundId::value soundId;
 	int level;
 };
 

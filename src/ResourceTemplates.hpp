@@ -42,11 +42,11 @@ struct ResourceTemplate {
 	ItemKind::value toolId;
 	uint8_t level = 1;
 
-	SoundID::value sound = SoundID::NONE;
+	SoundId::value sound = SoundId::NONE;
 
 	uint8_t health = 1;
 
-	// SoundID sound;
+	// SoundId sound;
 
 	LootTable lootTable;
 

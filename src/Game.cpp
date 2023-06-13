@@ -5,13 +5,12 @@
 #include "SDL2/SDL_scancode.h"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
-#include "SoundManager.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
 #include <filesystem>
 
 Game::Game()
-	: console(this) {
+	: console(this), trackMix(1) {
 	lastFrameTicks = SDL_GetTicks();
 	sample = std::queue<uint>();
 	sampleSum = 0;
@@ -89,6 +88,7 @@ void Game::save() {
 
 void Game::update() {
 	Window::instance->update();
+	//trackMix.update();
 	if (gameState == GameState::MENU) {
 		mainMenu->reposition();
 		mainMenu->update(nullptr);

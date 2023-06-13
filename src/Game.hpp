@@ -3,6 +3,7 @@
 #include "Console.hpp"
 #include "DebugScreen.hpp"
 #include "GuiElement.hpp"
+#include "SoundManager.hpp"
 
 #define SAMPLE_SIZE 50
 
@@ -15,6 +16,8 @@ PAUSED)
 class Game {
 public:
 	Game();
+
+	TrackMix trackMix;
 
 	void update();
 	void draw();

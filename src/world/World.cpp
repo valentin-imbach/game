@@ -41,10 +41,7 @@ World::World(std::string name, uint seed)
 	pair spawn = realm->findFree({50,50});
 	Entity player = EntityFactory::createPlayer(spawn);
 
-	ecs.getComponent<SpriteComponent>(player).effects[SpriteEffectId::OUTLINE] = {true, 0};
-
-	// Entity item = EntityFactory::createItem(ItemId::APPLE, 20);
-	// Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
+	//ecs.getComponent<SpriteComponent>(player).effects[SpriteEffectId::OUTLINE] = {true, 0};
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -313,7 +310,7 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 	std::unique_ptr<Widget> tab2 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	std::unique_ptr<Widget> tab3 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	tab1->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 10), &playerComponent.equipment, 20, &inventoryComponent.inventory));
-	tab2->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10), &inventoryComponent.inventory));
+	tab2->addGuiElement(std::make_unique<CraftingGrid>(pair(0, 0), CraftingRecipeId::AXE, &inventoryComponent.inventory));
 	tab3->addGuiElement(std::make_unique<BuildGui>(pair(0, 10)));
 
 	gui->addTab(std::move(tab1));

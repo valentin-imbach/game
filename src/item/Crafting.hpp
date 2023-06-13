@@ -5,6 +5,10 @@
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
 
+ENUM(CraftingRecipeId,
+AXE
+)
+
 struct CraftingIngredient {
 	ItemId::value itemId;
 	uint count;
@@ -48,6 +52,6 @@ struct CraftingKindRecipe {
 	std::vector<CraftingKindIngredient> ingredients;
 	CraftingKindProduct product;
 
-	static std::vector<std::unique_ptr<CraftingKindRecipe>> recipes;
+	static std::array<CraftingKindRecipe, CraftingRecipeId::count> recipes;
 	static void setRecipes();
 };

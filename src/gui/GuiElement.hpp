@@ -5,6 +5,7 @@
 #include "Item.hpp"
 #include "Sprite.hpp"
 #include "utils.hpp"
+#include "Crafting.hpp"
 
 class GuiManager;
 
@@ -146,6 +147,19 @@ public:
 private:
 	Inventory* link;
 	ItemContainer inputA, inputB, inputC, output;
+};
+
+class CraftingGrid : public Widget {
+public:
+	CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inventory* link = nullptr);
+	~CraftingGrid() override;
+	void craft();
+
+private:
+	int arity;
+	Inventory* link;
+	std::vector<ItemContainer> inputs;
+	ItemContainer output;
 };
 
 class Selector : public GuiElement {

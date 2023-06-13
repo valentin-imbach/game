@@ -34,7 +34,7 @@ void ResourceTemplate::setTemplates() {
 		if (value.contains("tool")) templates[resourceId]->toolId = ItemKind::from_string(value["tool"]);
 		if (value.contains("level")) templates[resourceId]->level = value["level"];
 		if (value.contains("health")) templates[resourceId]->health = value["health"];
-		if (value.contains("sound")) templates[resourceId]->sound = SoundID::from_string(value["sound"]);
+		if (value.contains("sound")) templates[resourceId]->sound = SoundId::from_string(value["sound"]);
 
 		for (auto &[key, value] : value["loot"].items()) {
 			ItemId::value itemId = ItemId::from_string(key);

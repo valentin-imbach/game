@@ -6,13 +6,13 @@
 #include "Item.hpp"
 #include "ResourceTemplates.hpp"
 #include "Sprite.hpp"
+#include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
 #include "World.hpp"
 #include "direction.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
-#include "TextManager.hpp"
 
 #include "Crafting.hpp"
 
@@ -284,15 +284,15 @@ void CraftingGui::craft() {
 	}
 
 	for (auto& recipe : CraftingKindRecipe::recipes) {
-		if (recipe->ingredients[0].check(inputA.item) && recipe->ingredients[1].check(inputB.item) && recipe->ingredients[2].check(inputC.item)) {
-			inputA.item = recipe->ingredients[0].take(inputA.item);
-			inputB.item = recipe->ingredients[1].take(inputB.item);
-			inputC.item = recipe->ingredients[2].take(inputC.item);
+		if (recipe.ingredients[0].check(inputA.item) && recipe.ingredients[1].check(inputB.item) && recipe.ingredients[2].check(inputC.item)) {
+			inputA.item = recipe.ingredients[0].take(inputA.item);
+			inputB.item = recipe.ingredients[1].take(inputB.item);
+			inputC.item = recipe.ingredients[2].take(inputC.item);
 
 			Entity item = EntityFactory::world->ecs.createEntity();
 			SpriteStack spriteStack;
 			uint seed = 123;
-			for (SpriteTemplate& sprite : recipe->product.spriteTemplates) {
+			for (SpriteTemplate& sprite : recipe.product.spriteTemplates) {
 				uint var = rand_int(seed++, 0, sprite.variations);
 				pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
 				spriteStack.addSprite({SpriteSheet::ITEMS, spritePosition, sprite.size}, sprite.offset);
@@ -301,26 +301,106 @@ void CraftingGui::craft() {
 			EntityFactory::world->ecs.getComponent<SpriteComponent>(item).effects[SpriteEffectId::BOUNCE] = {true, 0};
 			EntityFactory::world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, item);
 			ItemKindComponent itemKindComponent = {};
-			
-			for (auto& productKind : recipe->product.productKinds) itemKindComponent.itemKinds[productKind] = true;
-			for (auto& productProperty : recipe->product.productProperties) {
+
+			for (auto& productKind : recipe.product.productKinds) itemKindComponent.itemKinds[productKind] = true;
+			for (auto& productProperty : recipe.product.productProperties) {
 				int total = 0;
 				int weight = productProperty.factors[0].second + productProperty.factors[1].second + productProperty.factors[2].second;
 				total += getItemProperty(inputA.item, productProperty.factors[0].first) * productProperty.factors[0].second;
 				total += getItemProperty(inputB.item, productProperty.factors[1].first) * productProperty.factors[1].second;
 				total += getItemProperty(inputC.item, productProperty.factors[2].first) * productProperty.factors[2].second;
 				if (weight == 0) continue;
-				itemKindComponent.itemProperties[productProperty.property] = total/weight;
+				itemKindComponent.itemProperties[productProperty.property] = total / weight;
 			}
 
 			EntityFactory::world->ecs.addComponent<ItemKindComponent>(itemKindComponent, item);
 			Collider itemCollider({0, 0}, {0.4f, 0.4f});
 			EntityFactory::world->ecs.addComponent<ColliderComponent>({itemCollider}, item);
-			EntityFactory::world->ecs.addComponent<NameComponent>({Textblock(recipe->product.name)}, item);
-		
+			EntityFactory::world->ecs.addComponent<NameComponent>({Textblock(recipe.product.name)}, item);
+
 			output.item = item;
 			return;
 		}
+	}
+}
+
+//* CraftingGrid
+
+CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inventory* link)
+	: Widget(position, {20, 0}, Sprite()), link(link) {
+
+	CraftingKindRecipe& recipe = CraftingKindRecipe::recipes[recipeId];
+	arity = recipe.ingredients.size();
+	size = {20, 20 * (2 + arity)};
+	inputs = std::vector<ItemContainer>(arity);
+
+	for (int i = 0; i < arity; i++) {
+		inputs[i].itemKind = recipe.ingredients[i].itemKind;
+		addGuiElement(std::make_unique<ItemSlot>(pair(0, i * 20 - 10 * (1 + arity)), inputs[i], link));
+	}
+
+	addGuiElement(std::make_unique<ItemSlot>(pair(0, 10 * (arity + 1)), output, link));
+	addGuiElement(std::make_unique<Button>(pair(0, 10 * (arity - 1)), pair(20, 20), std::bind(&CraftingGrid::craft, this), Sprite()));
+}
+
+CraftingGrid::~CraftingGrid() {
+	if (link) {
+		for (int i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
+		output.item = link->add(output.item);
+	}
+	vec pos = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player).position;
+	for (int i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputs[i].item);
+	guiManager->world->ecs.addComponent<PositionComponent>({pos}, output.item);
+}
+
+void CraftingGrid::craft() {
+	for (int j = 1; j < CraftingRecipeId::count; j++) {
+		CraftingKindRecipe& recipe = CraftingKindRecipe::recipes[j];
+		bool check = true;
+		for (int i = 0; i < arity; i++) {
+			if (!recipe.ingredients[i].check(inputs[i].item)) check = false;
+		}
+		if (!check) continue;
+
+		for (int i = 0; i < arity; i++) inputs[i].item = recipe.ingredients[i].take(inputs[i].item);
+		
+		Entity item = EntityFactory::world->ecs.createEntity();
+		SpriteStack spriteStack;
+		uint seed = 123;
+		for (SpriteTemplate& sprite : recipe.product.spriteTemplates) {
+			uint var = rand_int(seed++, 0, sprite.variations);
+			pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
+			spriteStack.addSprite({SpriteSheet::ITEMS, spritePosition, sprite.size}, sprite.offset);
+		}
+		EntityFactory::world->ecs.addComponent<SpriteComponent>({spriteStack, 0.5f}, item);
+		EntityFactory::world->ecs.getComponent<SpriteComponent>(item).effects[SpriteEffectId::BOUNCE] = {true, 0};
+		EntityFactory::world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, item);
+		ItemKindComponent itemKindComponent = {};
+
+		for (auto& productKind : recipe.product.productKinds) itemKindComponent.itemKinds[productKind] = true;
+		for (auto& productProperty : recipe.product.productProperties) {
+			
+			assert(productProperty.factors.size() == arity);
+
+			int total = 0;
+			int weight = 0;
+
+			for (int i = 0; i < arity; i++) {
+				weight += productProperty.factors[i].second;
+				total += getItemProperty(inputs[i].item, productProperty.factors[i].first) * productProperty.factors[i].second;
+			}
+
+			assert(weight != 0);
+			itemKindComponent.itemProperties[productProperty.property] = total / weight;
+		}
+
+		EntityFactory::world->ecs.addComponent<ItemKindComponent>(itemKindComponent, item);
+		Collider itemCollider({0, 0}, {0.4f, 0.4f});
+		EntityFactory::world->ecs.addComponent<ColliderComponent>({itemCollider}, item);
+		EntityFactory::world->ecs.addComponent<NameComponent>({Textblock(recipe.product.name)}, item);
+
+		output.item = item;
+		return;
 	}
 }
 
@@ -329,7 +409,7 @@ void CraftingGui::craft() {
 BuildGui::BuildGui(pair position)
 	: Widget(position, {144, 128}, Sprite()) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
-	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20,20), std::bind(&BuildGui::build, this), Sprite(), "", Direction::SOUTH_EAST));
+	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20, 20), std::bind(&BuildGui::build, this), Sprite(), "", Direction::SOUTH_EAST));
 
 	for (int n = 1; n < StationId::count; n++) {
 		SpriteStack sprites;
@@ -394,8 +474,8 @@ bool Selector::handleEvent(InputEvent event) {
 void Selector::draw() {
 	int offset = screenSize.x / columns;
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
-	Sprite slot(SpriteSheet::SLOT, {0, 2}, {2,2});
-	Sprite slot2(SpriteSheet::SLOT, {2, 2}, {2,2});
+	Sprite slot(SpriteSheet::SLOT, {0, 2}, {2, 2});
+	Sprite slot2(SpriteSheet::SLOT, {2, 2}, {2, 2});
 	for (int i = 0; i < sprites.size(); i++) {
 		pair index = pair(i % columns, i / columns);
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);

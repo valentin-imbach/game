@@ -6,7 +6,7 @@
 #include "World.hpp"
 
 std::vector<std::unique_ptr<CraftingRecipe>> CraftingRecipe::recipes = {};
-std::vector<std::unique_ptr<CraftingKindRecipe>> CraftingKindRecipe::recipes = {};
+std::array<CraftingKindRecipe, CraftingRecipeId::count> CraftingKindRecipe::recipes = {};
 
 void CraftingRecipe::setRecipes() {
 	std::unique_ptr<CraftingRecipe> recipe = std::make_unique<CraftingRecipe>();
@@ -33,17 +33,15 @@ Entity CraftingIngredient::take(Entity item) {
 }
 
 void CraftingKindRecipe::setRecipes() {
-	std::unique_ptr<CraftingKindRecipe> recipe = std::make_unique<CraftingKindRecipe>();
-	recipe->ingredients.push_back({ItemKind::ROD, 1});
-	recipe->ingredients.push_back({ItemKind::PLATE, 2});
-	recipe->ingredients.push_back({ItemKind::ROPE, 4});
-	recipe->product.name = "Axe";
-	recipe->product.spriteTemplates = {{{2, 0}, {1, 1}, {0, 0}, 1}};
-	recipe->product.productKinds = {ItemKind::AXE};
-	recipe->product.productProperties.push_back({ItemProperty::EFFICIENCY, {{ItemProperty::FLEXIBILITY, 1},{},{}}});
-	recipe->product.productProperties.push_back({ItemProperty::LEVEL, {{},{ItemProperty::STRENGTH, 1},{}}});
-	recipe->product.productProperties.push_back({ItemProperty::DURABILITY, {{},{},{ItemProperty::STRENGTH, 1}}});
-	recipes.push_back(std::move(recipe));
+	recipes[1].ingredients.push_back({ItemKind::ROD, 1});
+	recipes[1].ingredients.push_back({ItemKind::PLATE, 2});
+	recipes[1].ingredients.push_back({ItemKind::ROPE, 4});
+	recipes[1].product.name = "Axe";
+	recipes[1].product.spriteTemplates = {{{2, 0}, {1, 1}, {0, 0}, 1}};
+	recipes[1].product.productKinds = {ItemKind::AXE};
+	recipes[1].product.productProperties.push_back({ItemProperty::EFFICIENCY, {{ItemProperty::FLEXIBILITY, 1},{},{}}});
+	recipes[1].product.productProperties.push_back({ItemProperty::LEVEL, {{},{ItemProperty::STRENGTH, 1},{}}});
+	recipes[1].product.productProperties.push_back({ItemProperty::DURABILITY, {{},{},{ItemProperty::STRENGTH, 1}}});
 }
 
 bool CraftingKindIngredient::check(Entity item) {
