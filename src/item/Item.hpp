@@ -11,6 +11,7 @@
 struct ItemContainer {
 	Entity item = 0;
 	ItemKind::value itemKind = ItemKind::NONE;
+	bool output = false;
 
 	[[nodiscard]] Entity add(Entity other, ItemAmount::value amount = ItemAmount::ALL);
 	void draw(pair position, uint scale);

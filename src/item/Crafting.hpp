@@ -6,7 +6,8 @@
 #include "Sprite.hpp"
 
 ENUM(CraftingRecipeId,
-AXE
+AXE,
+PICK_AXE
 )
 
 struct CraftingIngredient {

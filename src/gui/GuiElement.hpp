@@ -1,11 +1,11 @@
 
 #pragma once
+#include "Crafting.hpp"
 #include "ECS_types.hpp"
 #include "Events.hpp"
 #include "Item.hpp"
 #include "Sprite.hpp"
 #include "utils.hpp"
-#include "Crafting.hpp"
 
 class GuiManager;
 
@@ -39,6 +39,7 @@ public:
 	void update(GuiManager* manager) override;
 	void draw() override;
 	void addGuiElement(std::unique_ptr<GuiElement> guiElement);
+	void removeGuiElement();
 	bool handleEvent(InputEvent event) override;
 
 protected:
@@ -138,17 +139,6 @@ private:
 	std::function<void()> callback;
 };
 
-class CraftingGui : public Widget {
-public:
-	CraftingGui(pair position, Inventory* link = nullptr);
-	~CraftingGui() override;
-	void craft();
-
-private:
-	Inventory* link;
-	ItemContainer inputA, inputB, inputC, output;
-};
-
 class CraftingGrid : public Widget {
 public:
 	CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inventory* link = nullptr);
@@ -156,10 +146,22 @@ public:
 	void craft();
 
 private:
+	CraftingRecipeId::value recipeId;
 	int arity;
 	Inventory* link;
 	std::vector<ItemContainer> inputs;
 	ItemContainer output;
+};
+
+class CraftingGui : public Widget {
+public:
+	CraftingGui(pair position, Inventory* link = nullptr);
+	~CraftingGui() = default;
+	void select(int n);
+
+private:
+	CraftingGrid* craftingGrid = nullptr;
+	Inventory* link;
 };
 
 class Selector : public GuiElement {
@@ -187,4 +189,13 @@ public:
 
 private:
 	int selected = 0;
+};
+
+class TextGui : public GuiElement {
+public:
+	TextGui(pair position, std::string text, Direction::value alignment = Direction::NONE);
+	~TextGui() = default;
+	void draw() override;
+private:
+	std::string text;
 };

@@ -10,8 +10,10 @@
 
 [[nodiscard]] Entity ItemContainer::add(Entity other, ItemAmount::value amount) {
 	if (!other) return other;
-	ItemComponent& otherComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(other);
+	if (itemKind && !hasItemKind(other, itemKind)) return other;
+	if (output) return other;
 
+	ItemComponent& otherComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(other);
 	if (item) {
 		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 		if (itemComponent.itemId == ItemId::NONE) return other;
@@ -53,6 +55,9 @@ void ItemContainer::draw(pair position, uint scale) {
 		if (itemKind) {
 			pair source((itemKind - 1) % 8, (itemKind - 1) / 8);
 			Sprite sprite = Sprite(SpriteSheet::ICONS_BLACK, source);
+			sprite.draw(position, scale);
+		} else if (output) {
+			Sprite sprite = Sprite(SpriteSheet::OUTPUT);
 			sprite.draw(position, scale);
 		}
 		return;

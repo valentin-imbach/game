@@ -19,5 +19,48 @@
 				}
 			}
 		}
+	},
+
+	"pick_axe": {
+		"ingredients": {
+			"rod": 1,
+			"plate": 2,
+			"rope": 4
+		},
+
+		"product": {
+			"name": "Pick Axe",
+			"sprites": [
+				{"anker": [2, 0], "size": [1, 1], "offset": [0, 0], "variations" : 1}
+			],
+			"kinds": {
+				"pick_axe":{
+					"efficiency": [["flexibility", 1], ["weight", -1], []],
+					"durability": [["streangth", 1], ["strength", 1], ["strength", 1]],
+					"level": [[], ["strength", 1], []]
+				}
+			}
+		}
+	},
+	
+	"sword": {
+		"ingredients": {
+			"rod": 1,
+			"plate": 2,
+			"rope": 4
+		},
+
+		"product": {
+			"name": "Sword",
+			"sprites": [
+				{"anker": [2, 0], "size": [1, 1], "offset": [0, 0], "variations" : 1}
+			],
+			"kinds": {
+				"sword":{
+					"parry": [["flexibility", 1], ["weight", -1], []],
+					"damage": [["streangth", 1], ["strength", 1], ["strength", 1]]
+				}
+			}
+		}
 	}
 }
