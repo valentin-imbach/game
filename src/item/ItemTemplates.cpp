@@ -30,6 +30,7 @@ void ItemKindTemplate::setTemplates() {
 	std::ifstream file("../json/ItemKinds.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
+    file.close();
 
 	for (auto& [key, value] : data.items()) {
         ItemKind::value kind = ItemKind::from_string(key);
@@ -57,6 +58,7 @@ void ItemTemplate::setTemplates() {
 	std::ifstream file("../json/Items.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
+    file.close();
 
 	for (auto& [key, value] : data.items()) {
         ItemId::value id = ItemId::from_string(key);

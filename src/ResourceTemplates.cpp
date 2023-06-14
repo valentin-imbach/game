@@ -10,6 +10,7 @@ void ResourceTemplate::setTemplates() {
 	std::ifstream file("../json/Resources.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
+	file.close();
 
 	for (auto &[key, value] : data.items()) {
 		ResourceId::value resourceId = ResourceId::from_string(key);

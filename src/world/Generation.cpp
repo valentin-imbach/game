@@ -18,6 +18,7 @@ void BiomeTemplate::setTemplates() {
 	std::ifstream file("../json/Generation.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
+	file.close();
 
 	for (auto& [biome_key, biome_value] : data.items()) {
         Biome::value biome = Biome::from_string(biome_key);

@@ -7,7 +7,8 @@
 
 ENUM(CraftingRecipeId,
 AXE,
-PICK_AXE
+PICK_AXE,
+SWORD
 )
 
 struct CraftingIngredient {
@@ -31,6 +32,7 @@ struct CraftingRecipe {
 };
 
 struct CraftingKindIngredient {
+	CraftingKindIngredient(ItemKind::value itemKind, uint count) : itemKind(itemKind), count(count) {}
 	ItemKind::value itemKind;
 	uint count;
 	bool check(Entity item);

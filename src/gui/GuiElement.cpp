@@ -341,8 +341,11 @@ void CraftingGrid::craft() {
 		int weight = 0;
 
 		for (int i = 0; i < arity; i++) {
-			weight += productProperty.factors[i].second;
-			total += getItemProperty(inputs[i].item, productProperty.factors[i].first) * productProperty.factors[i].second;
+			int w = productProperty.factors[i].second;
+			int stat = getItemProperty(inputs[i].item, productProperty.factors[i].first);
+			if (w < 0) stat = 10 - stat;
+			total += stat * std::abs(w);
+			weight += std::abs(w);
 		}
 
 		assert(weight != 0);
