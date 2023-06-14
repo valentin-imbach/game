@@ -34,6 +34,7 @@ public:
 
 			TextureStyle style;
 			style.centered = false;
+			style.angle = spriteComponent.angle;
 			
 			if (spriteComponent.effects[SpriteEffectId::SHAKE].first) {
 				uint past = ticks - spriteComponent.effects[SpriteEffectId::SHAKE].second;

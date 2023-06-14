@@ -76,6 +76,7 @@ private:
 	ChunkSystem* chunkSystem;
 	LightSystem* lightSystem;
 	SensorSystem* sensorSystem;
+	ProjectileSystem* projectileSystem;
 
 	GuiManager guiManager;
 	std::string name;

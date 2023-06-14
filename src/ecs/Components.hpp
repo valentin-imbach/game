@@ -18,6 +18,7 @@ struct SpriteComponent {
 	SpriteStack spriteStack;
 	float scale = 1;
 	float z = 0;
+	float angle = 0;
 	std::array<std::pair<bool, uint32_t>, SpriteEffectId::count> effects = {};
 };
 
@@ -170,4 +171,16 @@ struct SensorComponent {
 	bool engaged = false;
 	vec position = {0, 0};
 	uint32_t lastSeen = 0;
+};
+
+struct ProjectileComponent {
+	vec speed;
+	bool grounded = false;
+};
+
+struct LauncherComponent {
+	float maxForce = 10;
+	float minForce = 1;
+	float chargeTime = 1000;
+	float charge = 0;
 };

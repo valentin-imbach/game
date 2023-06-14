@@ -26,6 +26,8 @@ public:
 	static Entity createItem(ItemId::value itemId, uint8_t count);
 	static Entity createItem(ItemId::value itemId, uint8_t count, vec position);
 
+	static Entity createProjectile(vec position, vec direction);
+
 	static World* world;
 
 private:

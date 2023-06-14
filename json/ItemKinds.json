@@ -63,6 +63,11 @@
     "sword": {
         "name": "Sword",
         "properties": ["damage", "parry", "durability"]
+    },
+
+    "bow": {
+        "name": "Bow",
+        "properties": ["damage"]
     }
 }
 

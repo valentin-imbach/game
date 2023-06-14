@@ -86,6 +86,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	world->ecs.addComponent<PositionComponent>({position}, animal);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
+	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
 
 	if (animalId == AnimalId::MONSTER) {
 		world->ecs.addComponent<MovementComponent>({1}, animal);
@@ -110,7 +111,6 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	world->ecs.addComponent<AnimalAiComponent>({0}, animal);
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
-	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
 
 	return animal;
@@ -166,4 +166,21 @@ Entity EntityFactory::createStation(StationId::value stationId, pair position) {
 	}
 
 	return station;
+}
+
+Entity EntityFactory::createProjectile(vec position, vec direction) {
+	Entity projectile = world->ecs.createEntity();
+	if (!projectile) return 0;
+
+	world->ecs.addComponent<PositionComponent>({position}, projectile);
+
+	SpriteStack spriteStack;
+	spriteStack.addSprite({SpriteSheet::ITEMS, {5, 0}, {1, 1}});
+	SpriteComponent spriteComponent = {spriteStack};
+	
+	spriteComponent.angle = 45 - angle(direction) * 180/M_PI;
+	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
+	world->ecs.addComponent<ProjectileComponent>({direction * 0.75f}, projectile);
+
+	return projectile;
 }

@@ -28,3 +28,4 @@
 #include "ChunkSystem.hpp"
 #include "LightSystem.hpp"
 #include "SensorSystem.hpp"
+#include "ProjectileSystem.hpp"

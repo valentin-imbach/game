@@ -13,6 +13,7 @@ struct TextureStyle {
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	SDL_Color tint = {255, 255, 255};
 	bool outline = false;
+	float angle = 0;
 };
 
 class TextureManager {

@@ -94,6 +94,22 @@ World::World(std::string name, uint seed)
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 	Entity rest3 = ecs.getComponent<InventoryComponent>(player).inventory.add(sword);
 
+	Entity bow = ecs.createEntity();
+	SpriteStack bowSprites;
+	bowSprites.addSprite(Sprite(SpriteSheet::ITEMS, {4, 0}, {1, 1}));
+	ecs.addComponent<SpriteComponent>({bowSprites, 0.5f}, bow);
+	ecs.getComponent<SpriteComponent>(bow).effects[SpriteEffectId::BOUNCE] = {true, 0};
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, bow);
+	ItemKindComponent bowKindComponent = {};
+	bowKindComponent.itemKinds[ItemKind::BOW] = true;
+	bowKindComponent.itemProperties[ItemProperty::DAMAGE] = 3;
+	ecs.addComponent<ItemKindComponent>(bowKindComponent, bow);
+	Collider bowCollider({0, 0}, {0.4f, 0.4f});
+	ecs.addComponent<ColliderComponent>({bowCollider}, bow);
+	ecs.addComponent<NameComponent>({Textblock("Bow")}, bow);
+	ecs.addComponent<LauncherComponent>({}, bow);
+	Entity rest4 = ecs.getComponent<InventoryComponent>(player).inventory.add(bow);
+
 	// Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
 	EntityFactory::createAnimal(AnimalId::MONSTER, realm->findFree({55,55}));
@@ -157,6 +173,8 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ParticleComponent>(ComponentId::PARTICLE);
 	ecs.rosterComponent<LightComponent>(ComponentId::LIGHT);
 	ecs.rosterComponent<SensorComponent>(ComponentId::SENSOR);
+	ecs.rosterComponent<ProjectileComponent>(ComponentId::PROJECTILE);
+	ecs.rosterComponent<LauncherComponent>(ComponentId::LAUNCHER);
 
 	LOG("Components rostered");
 }
@@ -218,6 +236,8 @@ void World::rosterSystems() {
 		{ComponentId::POSITION, ComponentId::LIGHT});
 	sensorSystem = ecs.rosterSystem<SensorSystem>(SystemId::SENSOR,
 		{ComponentId::POSITION, ComponentId::SENSOR});
+	projectileSystem = ecs.rosterSystem<ProjectileSystem>(SystemId::PROJECTILE,
+		{ComponentId::POSITION, ComponentId::PROJECTILE});
 
 	LOG("Systems rostered")
 }
@@ -238,6 +258,7 @@ void World::update(uint dt) {
 	animalAiSystem->update(ticks);
 	monsterAiSystem->update(realm->solidMap, realm->opaqueMap, ticks);
 
+	projectileSystem->update(ticks);
 	creatureMovementSystem->update(dt, realm->solidMap, realm->map.get());
 	collisionSystem->update(collisions);
 
@@ -356,6 +377,11 @@ bool World::handleEvent(InputEvent event) {
 	} else if (event.id == InputEventId::SECONDARY) {
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
+		if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
+			vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
+			vec direction = normalise(position - playerPosition);
+			EntityFactory::createProjectile(playerPosition, direction / 2);
+		}
 	}
 
 	return false;

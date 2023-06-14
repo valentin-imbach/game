@@ -29,7 +29,9 @@ GATHER,
 DEATH,
 PARTICLE,
 LIGHT,
-SENSOR)
+SENSOR,
+PROJECTILE,
+LAUNCHER)
 
 ENUM(SystemId,
 ENTITY_DRAW,
@@ -59,7 +61,8 @@ HAND_RENDER,
 GRID_DEATH,
 CHUNK,
 LIGHT,
-SENSOR)
+SENSOR,
+PROJECTILE)
 
 using Entity = std::uint32_t;
 using Signature = std::bitset<ComponentId::count>;
