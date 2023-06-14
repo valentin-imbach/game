@@ -2,3 +2,4 @@
 .clang-format
 .cache/
 build/
+assets/.DS_Store
