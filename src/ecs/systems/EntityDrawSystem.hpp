@@ -6,6 +6,8 @@
 #include "Window.hpp"
 #include "ECS.hpp"
 
+#define PIXEL_PERFECT false
+
 struct DrawCall {
 	SpriteStack spriteStack;
 	pair position;
@@ -50,6 +52,13 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::HIGHLIGHT].first) style.tint = {100, 100, 255};
 			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
 			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
+
+			if (PIXEL_PERFECT) {
+				entityPosition = vec(round(BIT * entityPosition)) / BIT;
+				cameraPosition = vec(round(BIT * cameraPosition)) / BIT;
+			} else {
+				cameraPosition = vec(round(BIT * zoom * cameraPosition)) / (BIT * zoom);
+			}
 
 			vec offset(0.5f, 0.5f);
 			pair screenPosition = round(BIT * zoom * (entityPosition - spriteComponent.scale * offset - cameraPosition)) + (Window::instance->size) / 2;

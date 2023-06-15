@@ -2,7 +2,7 @@
 {
 	"basalt_rock": {
 		"sprites": [
-			{"anker": [0, 3], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+			{"anker": [0, 7], "size": [1, 2], "offset": [0, -1], "variations" : 3}
 		],
 		"opaque": false,
 		"tool": "pick_axe",
@@ -16,7 +16,7 @@
 	},
 	"obsidian_rock": {
 		"sprites": [
-			{"anker": [1, 3], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+			{"anker": [3, 7], "size": [1, 2], "offset": [0, -1], "variations" : 3}
 		],
 		"opaque": false,
 		"tool": "pick_axe",
@@ -30,7 +30,7 @@
 	},
 	"granite_rock": {
 		"sprites": [
-			{"anker": [2, 3], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+			{"anker": [6, 7], "size": [1, 2], "offset": [0, -1], "variations" : 3}
 		],
 		"opaque": false,
 		"tool": "pick_axe",
@@ -44,7 +44,7 @@
 	},
 	"sandstone_rock": {
 		"sprites": [
-			{"anker": [3, 3], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+			{"anker": [9, 7], "size": [1, 2], "offset": [0, -1], "variations" : 3}
 		],
 		"opaque": false,
 		"tool": "pick_axe",
@@ -58,7 +58,7 @@
 	},
 	"chalk_rock": {
 		"sprites": [
-			{"anker": [4, 3], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+			{"anker": [12, 7], "size": [1, 2], "offset": [0, -1], "variations" : 3}
 		],
 		"opaque": false,
 		"tool": "pick_axe",
@@ -72,7 +72,8 @@
 	},
 	"pine_tree": {
 		"sprites": [
-			{"anker": [0, 0], "size": [1, 3], "offset": [0, -2], "variations" : 1}
+			{"anker": [0, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [0, 2], "size": [3, 3], "offset": [-1, -3], "variations" : 5}
 		],
 		"tool": "axe",
 		"level": 1,
@@ -84,8 +85,8 @@
 	},
 	"oak_tree": {
 		"sprites": [
-			{"anker": [5, 7], "size": [1, 2], "offset": [0, -1], "variations" : 1},
-			{"anker": [6, 6], "size": [3, 2], "offset": [-1, -2], "variations" : 1}
+			{"anker": [0, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [0, 2], "size": [3, 3], "offset": [-1, -3], "variations" : 5}
 		],
 		"tool": "axe",
 		"level": 2,
@@ -97,7 +98,8 @@
 	},
 	"rosewood_tree": {
 		"sprites": [
-			{"anker": [2, 0], "size": [1, 3], "offset": [0, -2], "variations" : 1}
+			{"anker": [0, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [0, 2], "size": [3, 3], "offset": [-1, -3], "variations" : 5}
 		],
 		"tool": "axe",
 		"level": 3,
@@ -109,7 +111,8 @@
 	},
 	"ashwood_tree": {
 		"sprites": [
-			{"anker": [3, 0], "size": [1, 3], "offset": [0, -2], "variations" : 1}
+			{"anker": [0, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [0, 2], "size": [3, 3], "offset": [-1, -3], "variations" : 5}
 		],
 		"tool": "axe",
 		"level": 4,
@@ -121,7 +124,8 @@
 	},
 	"spruce_tree": {
 		"sprites": [
-			{"anker": [4, 0], "size": [1, 3], "offset": [0, -2], "variations" : 1}
+			{"anker": [0, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [0, 2], "size": [3, 3], "offset": [-1, -3], "variations" : 5}
 		],
 		"tool": "axe",
 		"level": 5,
@@ -133,7 +137,7 @@
 	},
 	"bush": {
 		"sprites": [
-			{"anker": [0, 5], "size": [1, 1], "offset": [0, 0], "variations" : 1}
+			{"anker": [1, 15], "size": [1, 1], "offset": [0, 0], "variations" : 1}
 		],
 		"opaque": false,
 		"tool": "shovel",
@@ -146,7 +150,7 @@
 	},
 	"branch": {
 		"sprites": [
-			{"anker": [0, 6], "size": [1, 1], "offset": [0, 0], "variations" : 3}
+			{"anker": [0, 11], "size": [1, 1], "offset": [0, 0], "variations" : 6}
 		],
 		"opaque": false,
 		"solid" : false,
@@ -157,7 +161,7 @@
 	},
 	"pebble": {
 		"sprites": [
-			{"anker": [0, 7], "size": [1, 1], "offset": [0, 0], "variations" : 3}
+			{"anker": [0, 9], "size": [1, 1], "offset": [0, 0], "variations" : 15}
 		],
 		"opaque": false,
 		"solid" : false,
@@ -168,7 +172,7 @@
 	},
 	"grass": {
 		"sprites": [
-			{"anker": [0, 8], "size": [1, 1], "offset": [0, 0], "variations" : 3}
+			{"anker": [0, 13], "size": [1, 1], "offset": [0, 0], "variations" : 3}
 		],
 		"opaque": false,
 		"solid" : false,
@@ -179,7 +183,7 @@
 	},
 	"mushroom": {
 		"sprites": [
-			{"anker": [0, 9], "size": [1, 1], "offset": [0, 0], "variations" : 3}
+			{"anker": [0, 14], "size": [1, 1], "offset": [0, 0], "variations" : 10}
 		],
 		"opaque": false,
 		"solid" : false,
