@@ -340,7 +340,7 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 	return gui;
 }
 
-bool World::handleEvent(InputEvent event) {
+bool World::handleEvent(InputEvent event, uint dt) {
 	if (!player) return false;
 	if (guiManager.handleEvent(event)) return true;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
@@ -377,10 +377,20 @@ bool World::handleEvent(InputEvent event) {
 	} else if (event.id == InputEventId::SECONDARY) {
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
+	} else if (event.id == InputEventId::STATE) {
 		if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
-			vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
-			vec direction = normalise(position - playerPosition);
-			EntityFactory::createProjectile(playerPosition, direction / 2);
+			LauncherComponent& launcherComponent = ecs.getComponent<LauncherComponent>(activeItemContainer.item);
+			if (inputState[InputStateId::SECONDARY]) {
+				launcherComponent.charge +=  dt * launcherComponent.maxForce / launcherComponent.chargeTime;
+				launcherComponent.charge = std::min(launcherComponent.charge, launcherComponent.maxForce);
+			} else {
+				if (launcherComponent.charge > launcherComponent.minForce) {
+					vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
+					vec direction = normalise(position - playerPosition);
+					EntityFactory::createProjectile(playerPosition, launcherComponent.charge * direction);
+				}
+				launcherComponent.charge = 0;
+			}
 		}
 	}
 

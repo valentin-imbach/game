@@ -179,8 +179,8 @@ struct ProjectileComponent {
 };
 
 struct LauncherComponent {
-	float maxForce = 10;
-	float minForce = 1;
-	float chargeTime = 1000;
+	float maxForce = 0.75f;
+	float minForce = 0.3f;
+	float chargeTime = 2000;
 	float charge = 0;
 };

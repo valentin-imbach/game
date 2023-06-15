@@ -68,8 +68,8 @@ void Game::load(std::string name) {
 	std::fstream file = std::fstream(path, std::ios::in | std::ios::binary);
 	if (!file) ERROR("No save for world", name);
 	world = std::make_unique<World>(file);
-	world->name = name;
 	file.close();
+	world->name = name;
 	gameState = GameState::RUNNING;
 }
 
@@ -138,6 +138,11 @@ void Game::handleEvents() {
 		world->inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
 	}
 
+	InputEvent stateEvent;
+	stateEvent.mousePosition = mousePosition;
+	stateEvent.id = InputEventId::STATE;
+	if (gameState == GameState::RUNNING) world->handleEvent(stateEvent, dt);
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT) {
@@ -197,7 +202,7 @@ void Game::handleEvents() {
 		} else if (gameState == GameState::RUNNING) {
 			if (debugScreen.handleEvent(event)) continue;
 			if (inputEvent.id == InputEventId::ESCAPE) gameState = GameState::PAUSED;
-			world->handleEvent(inputEvent);
+			world->handleEvent(inputEvent, dt);
 		}
 	}
 

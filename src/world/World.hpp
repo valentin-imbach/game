@@ -18,7 +18,7 @@ public:
 	World(std::fstream& stream);
 	
 	void update(uint dt);
-	bool handleEvent(InputEvent event);
+	bool handleEvent(InputEvent event, uint dt);
 	void draw();
 	
 	void serialise(std::fstream& stream);

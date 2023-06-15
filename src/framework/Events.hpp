@@ -17,7 +17,8 @@ SELECT_4,
 SELECT_5,
 SELECT_6,
 SELECT_7,
-CONSOLE)
+CONSOLE,
+STATE)
 
 struct InputEvent {
 	InputEventId::value id;
