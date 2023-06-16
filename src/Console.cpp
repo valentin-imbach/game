@@ -69,7 +69,7 @@ bool Console::execute(std::string input) {
 	if (!game->world) return false;
 	ECS& ecs = game->world->ecs;
 	Entity player = game->world->player;
-	Entity camera = game->world->camera;
+	Camera& camera = game->world->camera;
 	std::vector<std::string> inputs = string_split(input);
 
 	if (inputs[0] == "clear") {
@@ -134,9 +134,9 @@ bool Console::execute(std::string input) {
 		// WeatherType w = WeatherTypeFromString(split[1]);
 		// MessageManager::notify(SetWeatherMessage(w));
 	} else if (inputs[0] == "zoom") {
-		if (inputs.size() != 2 || !camera) return false;
+		if (inputs.size() != 2) return false;
 		int zoom = std::stoi(inputs[1]);
-		ecs.getComponent<CameraComponent>(camera).zoom = zoom;
+		camera.zoom = zoom;
 	} else if (inputs[0] == "gui") {
 		if (inputs.size() != 2) return false;
 		uint scale = std::stoi(inputs[1]);

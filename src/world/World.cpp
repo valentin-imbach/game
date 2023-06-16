@@ -35,18 +35,21 @@ World::World(std::string name, uint seed)
 	: name(name), ticks(0) {
 	init();
 	realm = std::make_unique<Realm>(pair(100, 100), seed);
+
 	realm->generate();
 	gridSystem->rebuild(realm->gridMap, realm->solidMap, realm->opaqueMap);
 
 	pair spawn = realm->findFree({50,50});
 	Entity player = EntityFactory::createPlayer(spawn);
 
+	// camera = {};
+
 	//ecs.getComponent<SpriteComponent>(player).effects[SpriteEffectId::OUTLINE] = {true, 0};
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	EntityFactory::createCamera({0, 0}, 4);
+	//EntityFactory::createCamera({0, 0}, 4);
 
 	EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
@@ -148,7 +151,6 @@ World::World(std::fstream& stream) {
 void World::rosterComponents() {
 	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
-	ecs.rosterComponent<CameraComponent>(ComponentId::CAMERA);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
 	ecs.rosterComponent<DirectionComponent>(ComponentId::DIRECTION);
@@ -186,16 +188,12 @@ void World::rosterSystems() {
 		{ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION, ComponentId::COLLIDER});
 	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER,
 		{ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
-	cameraSystem = ecs.rosterSystem<CameraSystem>(SystemId::CAMERA,
-		{ComponentId::CAMERA, ComponentId::POSITION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION,
 		{ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION,
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,
 		{ComponentId::PLAYER, ComponentId::INVENTORY});
-	tileDrawSystem = ecs.rosterSystem<TileDrawSystem>(SystemId::TILE,
-		{ComponentId::CAMERA, ComponentId::POSITION});
 	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI,
 		{ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
 	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE,
@@ -246,7 +244,6 @@ void World::update(uint dt) {
 	ticks += dt;
 	time.update(dt);
 	player = playerSystem->getPlayer();
-	camera = cameraSystem->getCamera();
 
 	std::unordered_map<Entity, std::vector<Entity>> collisions;
 
@@ -266,7 +263,7 @@ void World::update(uint dt) {
 
 	itemPickupSystem->update(collisions);
 
-	cameraSystem->update(player);
+	updateCamera(player);
 	healthSystem->update(ticks); //TODO SLOW
 
 	lootSystem->update(ticks);
@@ -282,26 +279,45 @@ void World::update(uint dt) {
 	particleSystem.update(dt);
 }
 
+void World::updateCamera(Entity target) {
+	if (!target || !ecs.hasComponent<PositionComponent>(target)) return;
+	camera.position = ecs.getComponent<PositionComponent>(target).position;
+}
+
 void World::draw() {
-	
-	tileDrawSystem->update(realm->map.get(), ticks);
+	drawTiles();
 
-	if (camera) {
-		vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
-		float cameraZoom = ecs.getComponent<CameraComponent>(camera).zoom;
-		pair position = round(cameraPosition + vec(Window::instance->mousePosition - Window::instance->size / 2) / (cameraZoom * BIT));
-		pair screenPosition = round(BIT * cameraZoom * (position - cameraPosition)) + (Window::instance->size) / 2;
+	pair gridPosition = camera.screenPosition(round(camera.worldPosition(Window::instance->mousePosition)));
+	TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 
-		TextureManager::drawRect(screenPosition, pair(cameraZoom * BIT, cameraZoom * BIT), {0, 0, 255, 255});
-
-		entityDrawSystem->update(camera, ticks, chunks[pair(0,0)]);  //TODO SLOW
-		// handRenderSystem->update(camera, ticks);
-		colliderDrawSystem->update(camera, ticks);
-		particleSystem.draw(cameraPosition, cameraZoom);
-		lightSystem->update(camera, time, ticks);
-	}
+	entityDrawSystem->update(camera, ticks, chunks[pair(0,0)]);  //TODO SLOW
+	//handRenderSystem->update(camera, ticks);
+	colliderDrawSystem->update(camera, ticks);
+	particleSystem.draw(camera);
+	lightSystem->update(camera, time, ticks);
 
 	guiManager.draw();
+}
+
+void World::drawTiles() {
+	pair screenSize = Window::instance->size;
+	int border = BIT * camera.zoom / 2;
+
+	pair range = ceil(vec(screenSize) / (2 * BIT * camera.zoom));
+	pair start = round(camera.position);
+
+	int x1 = std::max(0, start.x - range.x);
+	int x2 = std::min(realm->map->size.x - 1, start.x + range.x);
+	int y1 = std::max(0, start.y - range.y);
+	int y2 = std::min(realm->map->size.y - 1, start.y + range.y);
+
+	for (int x = x1; x <= x2; x++) {
+		for (int y = y1; y <= y2; y++) {
+			for (auto& layer : realm->map->tiles[x][y]->sprites) {
+				layer.second.draw(camera.screenPosition(vec(x, y)), camera.zoom);
+			}
+		}
+	}
 }
 
 void World::link(Entity entity) {
@@ -365,10 +381,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
 	if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
 
-	if (!camera) return false;
-	vec cameraPosition = ecs.getComponent<PositionComponent>(camera).position;
-	uint zoom = ecs.getComponent<CameraComponent>(camera).zoom;
-	vec position = cameraPosition + vec(event.mousePosition - Window::instance->size / 2) / (zoom * BIT);
+	vec position = camera.worldPosition(event.mousePosition);
 
 	if (event.id == InputEventId::PRIMARY) {
 		forageSystem->update(position, activeItemContainer.item, ticks);

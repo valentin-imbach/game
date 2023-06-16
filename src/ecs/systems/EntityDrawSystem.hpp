@@ -5,6 +5,7 @@
 #include "TextureManager.hpp"
 #include "Window.hpp"
 #include "ECS.hpp"
+#include "Camera.hpp"
 
 #define PIXEL_PERFECT false
 
@@ -18,12 +19,9 @@ struct DrawCall {
 
 class EntityDrawSystem : public System {
 public:
-	void update(Entity camera, uint ticks, std::set<Entity>& chunk) {
-		if (!camera) return;
-		vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
-		float zoom = ecs->getComponent<CameraComponent>(camera).zoom;
+	void update(Camera camera, uint ticks, std::set<Entity>& chunk) {
 		pair screenSize = Window::instance->size;
-		int border = 5 * BIT * zoom;
+		int border = 5 * BIT * camera.zoom;
 
 		std::vector<DrawCall> drawQueue;
 
@@ -53,20 +51,20 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
 			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
 
-			if (PIXEL_PERFECT) {
-				entityPosition = vec(round(BIT * entityPosition)) / BIT;
-				cameraPosition = vec(round(BIT * cameraPosition)) / BIT;
-			} else {
-				cameraPosition = vec(round(BIT * zoom * cameraPosition)) / (BIT * zoom);
-			}
+			// if (PIXEL_PERFECT) {
+			// 	entityPosition = vec(round(BIT * entityPosition)) / BIT;
+			// 	cameraPosition = vec(round(BIT * cameraPosition)) / BIT;
+			// } else {
+			// 	cameraPosition = vec(round(BIT * zoom * cameraPosition)) / (BIT * zoom);
+			// }
 
 			vec offset(0.5f, 0.5f);
-			pair screenPosition = round(BIT * zoom * (entityPosition - spriteComponent.scale * offset - cameraPosition)) + (Window::instance->size) / 2;
-
+			pair screenPosition = camera.screenPosition(entityPosition - spriteComponent.scale * offset);
+			
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
-			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * zoom * spriteComponent.z, int(spriteComponent.scale * zoom), style});
+			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * camera.zoom * spriteComponent.z, int(spriteComponent.scale * camera.zoom), style});
 		}
 
 		auto lambda = [](auto& l, auto& r) {

@@ -9,6 +9,7 @@
 #include "utils.hpp"
 #include "ParticleSystem.hpp"
 #include "Realm.hpp"
+#include "Camera.hpp"
 
 using DrawQueue = std::vector<std::pair<float, DrawCall>>;
 
@@ -18,8 +19,10 @@ public:
 	World(std::fstream& stream);
 	
 	void update(uint dt);
+	void updateCamera(Entity target);
 	bool handleEvent(InputEvent event, uint dt);
 	void draw();
+	void drawTiles();
 	
 	void serialise(std::fstream& stream);
 	void deserialise(std::fstream& stream);
@@ -27,7 +30,7 @@ public:
 	std::bitset<size_t(InputStateId::MAX)> inputState;
 
 	Entity player = 0;
-	Entity camera = 0;
+	Camera camera;
 
 	ECS ecs;
 	ParticleSystem particleSystem = ParticleSystem(1000);
@@ -51,11 +54,9 @@ private:
 	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;
 	ControllerSystem* controllerSystem;
-	CameraSystem* cameraSystem;
 	CreatureAnimationSystem* creatureAnimationSystem;
 	CollisionSystem* collisionSystem;
 	ItemPickupSystem* itemPickupSystem;
-	TileDrawSystem* tileDrawSystem;
 	AnimalAiSystem* animalAiSystem;
 	ForageSystem* forageSystem;
 	HealthSystem* healthSystem;

@@ -16,14 +16,12 @@ void Particle::update(uint dt) {
 	position += dt * (velocity / 1000);
 }
 
-void Particle::draw(vec cameraPosition, float cameraZoom) {
+void Particle::draw(Camera camera) {
 	float t = float(age) / lifeSpan;
 	float alpha = (1-t) * alphaStart + t * alphaEnd;
-
-	pair screenPosition = round(BIT * cameraZoom * (position - cameraPosition)) + (Window::instance->size) / 2;
 	TextureStyle style;
 	style.alpha = alpha;
-	sprite.draw(screenPosition, cameraZoom * scale, style);
+	sprite.draw(camera.screenPosition(position), camera.zoom * scale, style);
 }
 
 ParticleSystem::ParticleSystem(int number) : number(number) {
@@ -61,9 +59,9 @@ void ParticleSystem::update(uint dt) {
 	}
 }
 
-void ParticleSystem::draw(vec cameraPosition, float cameraZoom) {
+void ParticleSystem::draw(Camera camera) {
 	for (Particle& particle : pool) {
-		if (particle.active) particle.draw(cameraPosition, cameraZoom);
+		if (particle.active) particle.draw(camera);
 	}
 }
 

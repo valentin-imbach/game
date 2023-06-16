@@ -2,6 +2,7 @@
 #pragma once
 #include "utils.hpp"
 #include "Sprite.hpp"
+#include "Camera.hpp"
 
 struct ParticleStyle {
 	Sprite sprite;
@@ -24,7 +25,7 @@ struct Particle {
 	float alphaStart, alphaEnd;
 
 	void update(uint dt);
-	void draw(vec cameraPosition, float cameraZoom);
+	void draw(Camera camera);
 };
 
 class ParticleSystem {
@@ -32,7 +33,7 @@ public:
 	ParticleSystem(int number);
 
 	void update(uint dt);
-	void draw(vec cameraPosition, float cameraZoom);
+	void draw(Camera camera);
 	void emit(ParticleStyle& style, vec position);
 
 	static ParticleStyle DIRT;

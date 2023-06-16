@@ -20,13 +20,14 @@ public:
 
 			if (ticks >= animalAiComponent.nextChange) {
 				creatureStateComponent.state = CreatureState::IDLE;
-				if (bernoulli(ticks, 0.3f)) creatureStateComponent.state = CreatureState::WALKING;
+				if (bernoulli(seed++, 0.3f)) creatureStateComponent.state = CreatureState::WALKING;
 
-				if (bernoulli(ticks + 1, 0.3)) {
-					directionComponent.direction = Direction::from_int(rand_int(seed++, 1, 9));
-					if (Direction::taxi[directionComponent.direction].x == 1) {
+				if (bernoulli(seed++, 0.3f)) {
+					directionComponent.direction = Direction::random(seed++);
+					pair taxi = Direction::taxi[directionComponent.direction];
+					if (taxi.x == 1) {
 						creatureStateComponent.facing = Direction::EAST;
-					} else if (Direction::taxi[directionComponent.direction].x == -1) {
+					} else if (taxi.x == -1) {
 						creatureStateComponent.facing = Direction::WEST;
 					}
 				}

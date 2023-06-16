@@ -7,14 +7,12 @@ void GuiManager::update() {
 	for (auto& guiElement : guiElements) guiElement->reposition();
 	for (auto& guiElement : guiElements) guiElement->update(this);
 
-	if (buildMode && world->camera) {
-		vec cameraPosition = world->ecs.getComponent<PositionComponent>(world->camera).position;
-		uint zoom = world->ecs.getComponent<CameraComponent>(world->camera).zoom;
-		pair position = round(cameraPosition + vec(Window::instance->mousePosition - Window::instance->size / 2) / (zoom * BIT));
-		world->ecs.getComponent<PositionComponent>(buildMode).position = position;
-		world->ecs.getComponent<GridComponent>(buildMode).anker = position;
+	if (buildMode) {
+		pair gridPosition = round(world->camera.worldPosition(Window::instance->mousePosition));
+		world->ecs.getComponent<PositionComponent>(buildMode).position = gridPosition;
+		world->ecs.getComponent<GridComponent>(buildMode).anker = gridPosition;
 		SpriteComponent& spriteComponent = world->ecs.getComponent<SpriteComponent>(buildMode);
-		if (world->realm->gridMap.find(position) != world->realm->gridMap.end()) {
+		if (world->realm->gridMap.find(gridPosition) != world->realm->gridMap.end()) {
 			spriteComponent.effects[SpriteEffectId::RED] = {true, 0};
 		} else {
 			spriteComponent.effects[SpriteEffectId::RED] = {false, 0};

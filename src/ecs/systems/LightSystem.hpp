@@ -4,6 +4,7 @@
 #include "ECS.hpp"
 #include "System.hpp"
 #include "Window.hpp"
+#include "Camera.hpp"
 
 #define MINUTE 1000
 
@@ -37,9 +38,9 @@ struct Time {
 
 class LightSystem : public System {
 public:
-	void update(Entity camera, Time time, uint ticks) {
-		vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
-		float cameraZoom = ecs->getComponent<CameraComponent>(camera).zoom;
+	void update(Camera camera, Time time, uint ticks) {
+		// vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
+		// float cameraZoom = ecs->getComponent<CameraComponent>(camera).zoom;
 
 		Uint8 ambient = Lerp::smooth(abs(time.mins() - 720.0f) / 720, 0, 200);
 
@@ -51,13 +52,13 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			LightComponent& lightComponent = ecs->getComponent<LightComponent>(entity);
 
-			pair position = round(BIT * cameraZoom * (positionComponent.position - cameraPosition)) + (Window::instance->size) / 2;
+			pair screenPosition = camera.screenPosition(positionComponent.position);
 			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * Lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
-			int size  = 2* BIT * cameraZoom * radius;
+			int size  = 2* BIT * camera.zoom * radius;
 
 			TextureStyle style;
 			style.tint = lightComponent.tint;
-			TextureManager::drawTexture(TextureManager::lightTexture, texture, {0,0}, {255, 255}, position, {size, size}, style);
+			TextureManager::drawTexture(TextureManager::lightTexture, texture, {0,0}, {255, 255}, screenPosition, {size, size}, style);
 		}
 
 		TextureStyle style;
