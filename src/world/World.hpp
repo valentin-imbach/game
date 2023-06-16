@@ -10,8 +10,7 @@
 #include "ParticleSystem.hpp"
 #include "Realm.hpp"
 #include "Camera.hpp"
-
-using DrawQueue = std::vector<std::pair<float, DrawCall>>;
+#include "Sprite.hpp"
 
 class World {
 public:
@@ -50,6 +49,7 @@ private:
 	std::unique_ptr<GuiElement> makeMenu();
 
 	std::unordered_map<pair, std::set<Entity>> chunks;
+	std::vector<DrawCall> drawQueue;
 
 	EntityDrawSystem* entityDrawSystem;
 	CreatureMovementSystem* creatureMovementSystem;

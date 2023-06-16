@@ -24,7 +24,7 @@ public:
 			} else if (stationComponent.stationId == StationId::TOOL_STATION) {
 				Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
 				std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-				//gui->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10)));
+				gui->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10)));
 				return gui;
 			}
 		}

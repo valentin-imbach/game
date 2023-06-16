@@ -25,6 +25,7 @@ public:
 					vec force = normalise(positionComponent.position - actorPosition) / 10;
 					ecs->getComponent<ForceComponent>(entity).force = force;
 				}
+				return;
 			}
 		}
 	}

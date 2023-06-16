@@ -285,13 +285,26 @@ void World::updateCamera(Entity target) {
 }
 
 void World::draw() {
+	drawQueue.clear();
 	drawTiles();
 
 	pair gridPosition = camera.screenPosition(round(camera.worldPosition(Window::instance->mousePosition)));
 	TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 
-	entityDrawSystem->update(camera, ticks, chunks[pair(0,0)]);  //TODO SLOW
-	//handRenderSystem->update(camera, ticks);
+	entityDrawSystem->update(camera, drawQueue, ticks, chunks[pair(0,0)]);  //TODO SLOW
+	handRenderSystem->update(camera, drawQueue, ticks);
+
+	auto lambda = [](auto& l, auto& r) {
+		float ly = l.position.y + l.z;
+		float ry = r.position.y + r.z;
+		return ly < ry || (ly == ry && l.position.x < r.position.x);
+	};
+
+	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
+	for (auto& p : drawQueue) {
+		p.spriteStack.draw(p.position, p.scale, p.style, ticks);
+	}
+
 	colliderDrawSystem->update(camera, ticks);
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks);
@@ -385,7 +398,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 
 	if (event.id == InputEventId::PRIMARY) {
 		forageSystem->update(position, activeItemContainer.item, ticks);
-		gatherSystem->update(player, position, ticks);
+		//gatherSystem->update(player, position, ticks);
 		damageSystem->update(player, position, activeItemContainer.item, ticks);
 	} else if (event.id == InputEventId::SECONDARY) {
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position);

@@ -81,3 +81,11 @@ struct SpriteTemplate {
 	pair offset = {0, 0};
 	uint8_t variations = 1;
 };
+
+struct DrawCall {
+	SpriteStack spriteStack;
+	pair position;
+	float z;
+	int scale;
+	TextureStyle style;
+};

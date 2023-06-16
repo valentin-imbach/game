@@ -15,10 +15,10 @@ public:
 
 			pair sum(1, 1);
 			if (active) {
-				if (inputState[size_t(InputStateId::MOVE_EAST)]) sum.x += 1;
-				if (inputState[size_t(InputStateId::MOVE_NORTH)]) sum.y -= 1;
-				if (inputState[size_t(InputStateId::MOVE_WEST)]) sum.x -= 1;
-				if (inputState[size_t(InputStateId::MOVE_SOUTH)]) sum.y += 1;
+				if (inputState[InputStateId::MOVE_EAST]) sum.x += 1;
+				if (inputState[InputStateId::MOVE_NORTH]) sum.y -= 1;
+				if (inputState[InputStateId::MOVE_WEST]) sum.x -= 1;
+				if (inputState[InputStateId::MOVE_SOUTH]) sum.y += 1;
 			}
 
 			Direction::value oldDirection = directionComponent.direction;

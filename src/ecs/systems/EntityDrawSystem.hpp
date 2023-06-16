@@ -6,24 +6,15 @@
 #include "Window.hpp"
 #include "ECS.hpp"
 #include "Camera.hpp"
+#include "Sprite.hpp"
 
 #define PIXEL_PERFECT false
 
-struct DrawCall {
-	SpriteStack spriteStack;
-	pair position;
-	float z;
-	int scale;
-	TextureStyle style;
-};
-
 class EntityDrawSystem : public System {
 public:
-	void update(Camera camera, uint ticks, std::set<Entity>& chunk) {
+	void update(Camera camera, std::vector<DrawCall>& drawQueue, uint ticks, std::set<Entity>& chunk) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;
-
-		std::vector<DrawCall> drawQueue;
 
 		for (Entity entity : entities) {
 			//if (chunk.find(entity) == chunk.end()) continue;
@@ -65,17 +56,6 @@ public:
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
 			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * camera.zoom * spriteComponent.z, int(spriteComponent.scale * camera.zoom), style});
-		}
-
-		auto lambda = [](auto& l, auto& r) {
-			float ly = l.position.y + l.z;
-			float ry = r.position.y + r.z;
-			return ly < ry || (ly == ry && l.position.x < r.position.x);
-		};
-
-		std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-		for (auto& p : drawQueue) {
-			p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 		}
 	}
 };

@@ -12,9 +12,10 @@ public:
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 			for (int x = 0; x < gridComponent.size.x; x++) {
 				for (int y = 0; y < gridComponent.size.y; y++) {
-					gridMap.erase(gridComponent.anker + pair(x, y));
-					solidMap.erase(gridComponent.anker + pair(x, y));
-					opaqueMap.erase(gridComponent.anker + pair(x, y));
+					pair pos = gridComponent.anker + pair(x, y);
+					gridMap.erase(pos);
+					solidMap.erase(pos);
+					opaqueMap.erase(pos);
 				}
 			}
 		}
