@@ -70,7 +70,7 @@ bool Console::execute(std::string input) {
 	ECS& ecs = game->world->ecs;
 	Entity player = game->world->player;
 	Camera& camera = game->world->camera;
-	std::vector<std::string> inputs = string_split(input);
+	std::vector<std::string> inputs = string::split(input);
 
 	if (inputs[0] == "clear") {
 		history.clear();

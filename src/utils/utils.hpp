@@ -13,7 +13,6 @@
 #include <fstream>
 #include <functional>
 
-#include <cstdint>
 #include <cassert>
 #include <cmath>
 

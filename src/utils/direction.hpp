@@ -28,13 +28,13 @@ inline Direction::value rotate(Direction::value d, int n) {
 const vec unit[9] = {
 	vec(0, 0),
 	vec(1, 0),
-	vec(1 / sqrt(2), -1 / sqrt(2)),
+	vec(1 / std::sqrt(2), -1 / std::sqrt(2)),
 	vec(0, -1),
-	vec(-1 / sqrt(2), -1 / sqrt(2)),
+	vec(-1 / std::sqrt(2), -1 / std::sqrt(2)),
 	vec(-1, 0),
-	vec(-1 / sqrt(2), 1 / sqrt(2)),
+	vec(-1 / std::sqrt(2), 1 / std::sqrt(2)),
 	vec(0, 1),
-	vec(1 / sqrt(2), 1 / sqrt(2))};
+	vec(1 / std::sqrt(2), 1 / std::sqrt(2))};
 
 const pair taxi[9] = {
 	{0, 0},

@@ -13,7 +13,7 @@ struct Lerp {
 	}
 
 	[[nodiscard]] static float smooth(float t) {
-		return 6 * pow(t, 5) - 15 * pow(t, 4) + 10 * pow(t, 3);
+		return 6 * std::pow(t, 5) - 15 * std::pow(t, 4) + 10 * std::pow(t, 3);
 	}
 	[[nodiscard]] static float smooth(float t, float a, float b) {
 		return a + smooth(t) * (b-a);

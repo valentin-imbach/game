@@ -37,6 +37,6 @@ void debug_log(std::ostream& stream, T x, TT... y) {
 
 template <typename... T>
 void log(std::ostream& stream, const char* title, const char* file, int line, T... args) {
-	debug_log(stream, title, '@', string_split(file, "/").back(), line);
+	debug_log(stream, title, '@', string::split(file, "/").back(), line);
 	debug_log(stream, ":", args..., '\n');
 }

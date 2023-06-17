@@ -16,7 +16,7 @@
 		assert(0 <= n && n < value::MAX);                                            \
 		return value(n);                                                             \
 	}                                                                                \
-	const std::vector<std::string> strings = string_split_and_lower("NONE," #items); \
+	const std::vector<std::string> strings = string::split_and_lower("NONE," #items); \
 	inline value from_string(std::string str) {                                      \
 		auto it = std::find(strings.begin(), strings.end(), str);                    \
 		if (it == strings.end()) return value::NONE;                                 \
