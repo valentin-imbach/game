@@ -2,19 +2,16 @@
 #pragma once
 #include "utils.hpp"
 
-using Node = std::pair<int, pair>;
+namespace ai {
+	using Node = std::pair<int, pair>;
 
-struct PathFinder {
-	static Direction::value find_direction(pair start, pair end, std::unordered_set<pair>& map, bool diagonal = false) {
-		std::vector<Direction::value> path = bfs(start, end, map, diagonal);
-		return path.empty() ? Direction::NONE : path[0];
-	}
-
-	static std::vector<Direction::value> bfs(pair start, pair end, std::unordered_set<pair>& map, bool diagonal = false) {
+	inline std::vector<Direction::value> bfs(pair start, pair end, std::unordered_set<pair>& map, bool diagonal = false) {
 		std::unordered_map<pair, Direction::value> visited;
+
 		auto comp = [&](Node& left, Node& right) {
 			return left.first + vec::dist(left.second, end) > right.first + vec::dist(right.second, end);
 		};
+		
 		std::priority_queue<Node, std::vector<Node>, decltype(comp)> queue(comp);
 		visited[start] = Direction::NONE;
 		queue.emplace(0, start);
@@ -53,44 +50,48 @@ struct PathFinder {
 		std::reverse(res.begin(), res.end());
 		return res;
 	}
-};
 
-inline std::pair<bool, pair> visible(vec start, vec end, std::unordered_set<pair>& map) {
-	float d = vec::dist(start, end);
-	int steps = std::max(int(std::ceil(10 * d)), 2);
-	vec offset = (end - start)/steps;
-	vec pos = start;
-	for (int i = 0; i <= steps; i++) {
-		pair p = vec::round(pos);
-		if (map.find(p) != map.end()) return {false, p};
-		pos += offset;
+	inline Direction::value find_direction(pair start, pair end, std::unordered_set<pair>& map, bool diagonal = false) {
+		std::vector<Direction::value> path = bfs(start, end, map, diagonal);
+		return path.empty() ? Direction::NONE : path[0];
 	}
-	return {true, {}};
-}
 
-inline bool old_visible(vec start, vec end, std::unordered_set<pair>& map) { //TODO floating point problem
-	int sx = std::round(start.x);
-	int xrange = abs(std::round(end.x) - sx);
-	float dy = (end.y-start.y)/abs(end.x-start.x);
-	int dir = (end.x > start.x) ? 1 : -1;
-
-	float h = start.y;
-	for (int i = 0; i <= xrange; i++) {
-		float y1 = std::round(h);
-		if (i == 0) {
-			h = start.y + (sx + 0.5f - start.x) * dy;
-		} else if (i == xrange) {
-			h = end.y;
-		} else {
-			h += dy;
+	inline std::pair<bool, pair> visible(vec start, vec end, std::unordered_set<pair>& map) {
+		float d = vec::dist(start, end);
+		int steps = std::max(int(std::ceil(10 * d)), 2);
+		vec offset = (end - start)/steps;
+		vec pos = start;
+		for (int i = 0; i <= steps; i++) {
+			pair p = vec::round(pos);
+			if (map.find(p) != map.end()) return {false, p};
+			pos += offset;
 		}
-		float y2 = std::round(h);
-
-		for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {
-			pair pos(sx + dir * i, y);
-			//LOG(pos);
-			if (map.find(pos) != map.end()) return false;
-		}
+		return {true, {}};
 	}
-	return true;
+
+	inline bool old_visible(vec start, vec end, std::unordered_set<pair>& map) { //TODO floating point problem
+		int sx = std::round(start.x);
+		int xrange = std::abs(std::round(end.x) - sx);
+		float dy = (end.y - start.y) / std::abs(end.x - start.x);
+		int dir = (end.x > start.x) ? 1 : -1;
+
+		float h = start.y;
+		for (int i = 0; i <= xrange; i++) {
+			float y1 = std::round(h);
+			if (i == 0) {
+				h = start.y + (sx + 0.5f - start.x) * dy;
+			} else if (i == xrange) {
+				h = end.y;
+			} else {
+				h += dy;
+			}
+			float y2 = std::round(h);
+
+			for (int y = std::min(y1, y2); y <= std::max(y1, y2); y++) {
+				pair pos(sx + dir * i, y);
+				if (map.find(pos) != map.end()) return false;
+			}
+		}
+		return true;
+	}
 }

@@ -26,7 +26,7 @@
 		return strings[val];                                                         \
 	}                                                                                \
 	inline value random(uint seed) {                                                 \
-		return value(rand_int(seed, 1, value::MAX));                                 \
+		return value(noise::Int(seed, 1, value::MAX));                                 \
 	}                                                                                \
 	};                                                                               \
 	inline std::ostream& operator<<(std::ostream& s, name::value val) {              \

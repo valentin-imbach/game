@@ -165,7 +165,7 @@ bool Console::execute(std::string input) {
 		file.close();
 		LOG("World loaded");
 	} else if (inputs[0] == "test") {
-		visible({4.5,3.7}, {0.2,1.9}, game->world->realm->solidMap);
+		ai::visible({4.5,3.7}, {0.2,1.9}, game->world->realm->solidMap);
 	} else if (inputs[0] == "state") {
 		game->gameState = GameState::from_string(inputs[1]);
 	} else {

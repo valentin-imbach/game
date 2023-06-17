@@ -20,9 +20,9 @@ public:
 
 			if (ticks >= animalAiComponent.nextChange) {
 				creatureStateComponent.state = CreatureState::IDLE;
-				if (bernoulli(seed++, 0.3f)) creatureStateComponent.state = CreatureState::WALKING;
+				if (noise::bernoulli(seed++, 0.3f)) creatureStateComponent.state = CreatureState::WALKING;
 
-				if (bernoulli(seed++, 0.3f)) {
+				if (noise::bernoulli(seed++, 0.3f)) {
 					directionComponent.direction = Direction::random(seed++);
 					pair taxi = Direction::taxi[directionComponent.direction];
 					if (taxi.x == 1) {
@@ -32,7 +32,7 @@ public:
 					}
 				}
 
-				animalAiComponent.nextChange = ticks + 2000 + rand_int(seed++, 0, 1000);
+				animalAiComponent.nextChange = ticks + 2000 + noise::Int(seed++, 0, 1000);
 			}
 
 			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {

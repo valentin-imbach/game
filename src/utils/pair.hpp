@@ -127,5 +127,5 @@ struct std::hash<pair> {
 
 [[nodiscard]] inline bool isInside(pair p, pair position, pair size) {
 	pair offset = p - position;
-	return (abs(offset.x) <= size.x / 2 && abs(offset.y) <= size.y / 2);
+	return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
 }

@@ -18,7 +18,7 @@ public:
 		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 		vec offset = positionComponent.position - CHUNK_SIZE * positionComponent.chunk;
 
-		if (abs(offset.x) >= CHUNK_REACH || abs(offset.y) >= CHUNK_REACH) {
+		if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
 			pair newChunk = vec::round(positionComponent.position/CHUNK_SIZE);
 			chunks[positionComponent.chunk].erase(entity);
 			chunks[newChunk].insert(entity);

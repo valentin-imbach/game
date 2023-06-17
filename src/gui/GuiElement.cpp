@@ -323,7 +323,7 @@ void CraftingGrid::craft() {
 	SpriteStack spriteStack;
 	uint seed = 123;
 	for (SpriteTemplate& sprite : recipe.product.spriteTemplates) {
-		uint var = rand_int(seed++, 0, sprite.variations);
+		uint var = noise::Int(seed++, 0, sprite.variations);
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
 		spriteStack.addSprite({SpriteSheet::ITEMS, spritePosition, sprite.size}, sprite.offset);
 	}

@@ -70,15 +70,15 @@ void ParticleSystem::emit(ParticleStyle& style, vec position) {
 	index = (index == 0) ? (number - 1) : index - 1;
 
 	particle.sprite = style.sprite;
-	particle.scale = style.scale + rand_float(seed++, -style.scaleVariance, style.scaleVariance);
+	particle.scale = style.scale + noise::Float(seed++, -style.scaleVariance, style.scaleVariance);
 
 	particle.position = position + style.positionOffset;
-	particle.position.x += rand_float(seed++, -style.positionVariance.x, style.positionVariance.x);
-	particle.position.y += rand_float(seed++, -style.positionVariance.y, style.positionVariance.y);
+	particle.position.x += noise::Float(seed++, -style.positionVariance.x, style.positionVariance.x);
+	particle.position.y += noise::Float(seed++, -style.positionVariance.y, style.positionVariance.y);
 
 	particle.velocity = style.velocity;
-	particle.velocity.x += rand_float(seed++, -style.velocityVariance.x, style.velocityVariance.x);
-	particle.velocity.y += rand_float(seed++, -style.velocityVariance.y, style.velocityVariance.y);
+	particle.velocity.x += noise::Float(seed++, -style.velocityVariance.x, style.velocityVariance.x);
+	particle.velocity.y += noise::Float(seed++, -style.velocityVariance.y, style.velocityVariance.y);
 
 	particle.acceleration = style.acceleration;
 

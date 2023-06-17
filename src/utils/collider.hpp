@@ -19,9 +19,9 @@ struct Collider {
 
 	vec topBottom(vec position) {
 		if (type == Shape::CIRCLE) {
-			return {position.y + offset.y - radius, position.y + offset.y + radius};
+			return vec(position.y + offset.y - radius, position.y + offset.y + radius);
 		}
-		return {position.y + offset.y, position.y + offset.y + size.y};
+		return vec(position.y + offset.y, position.y + offset.y + size.y);
 	}
 
 	static bool RR(Collider A, vec a, Collider B, vec b) {
@@ -40,20 +40,19 @@ struct Collider {
 
 		if (b.x + r < a.x || b.y + r < a.y || b.x > a.x + s.x + r || b.y > a.y + s.y + r) return false;
 		if (b.x < a.x && b.y < a.y && vec::dist(a, b) > r) return false;
-		if (b.x < a.x && b.y > a.y + s.y && vec::dist({a.x, a.y + s.y}, b) > r) return false;
-		if (b.x > a.x + s.x && b.y < a.y && vec::dist({a.x + s.x, a.y}, b) > r) return false;
+		if (b.x < a.x && b.y > a.y + s.y && vec::dist(vec(a.x, a.y + s.y), b) > r) return false;
+		if (b.x > a.x + s.x && b.y < a.y && vec::dist(vec(a.x + s.x, a.y), b) > r) return false;
 		if (b.x > a.x + s.x && b.y > a.y + s.y && vec::dist(a + s, b) > r) return false;
 		return true;
 	}
 
 	static bool CC(Collider A, vec a, Collider B, vec b) {
-		return vec::dist(a + A.offset, b + B.offset) < A.radius + B.radius;
+		return vec::dist(a + A.offset, b + B.offset) < (A.radius + B.radius);
 	}
 
 	static bool colide(Collider A, vec a, Collider B, vec b) {
 		if (A.type == Shape::RECTANGLE && B.type == Shape::RECTANGLE) return RR(A, a, B, b);
 		if (A.type == Shape::CIRCLE && B.type == Shape::CIRCLE) return CC(A, a, B, b);
-
 		if (A.type == Shape::RECTANGLE && B.type == Shape::CIRCLE) return RC(A, a, B, b);
 		if (A.type == Shape::CIRCLE && B.type == Shape::RECTANGLE) return RC(B, b, A, a);
 		return false;

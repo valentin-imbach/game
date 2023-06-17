@@ -53,7 +53,7 @@ struct TrackMix {
 
     void change() {
         for (int i = 1; i < TrackId::count; i++) {
-            if (bernoulli(rand(), variance)) activeTracks[i] = !activeTracks[i];
+            if (noise::bernoulli(rand(), variance)) activeTracks[i] = !activeTracks[i];
             if (activeTracks[i]) {
                 TrackId::value trackId = TrackId::from_int(i);
                 SoundManager::playTrack(trackId, i + parity * TrackId::count, loops);

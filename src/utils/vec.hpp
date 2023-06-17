@@ -103,5 +103,5 @@ struct vec {
 
 [[nodiscard]] inline bool isInside(vec p, vec position, vec size) {
 	vec offset = p - position;
-	return (abs(offset.x) <= size.x / 2 && abs(offset.y) <= size.y / 2);
+	return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
 }

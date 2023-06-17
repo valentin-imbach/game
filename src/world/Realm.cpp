@@ -14,7 +14,7 @@ void Realm::generate() {
 			Biome::value biome = map->getBiome(position);
 			int variation = map->variationMap->get(position);
 			int vegetation = map->vegetationMap->get(position);
-			int choice = rand_int(s++, 0, 50 + vegetation);
+			int choice = noise::Int(s++, 0, 50 + vegetation);
 			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			for (auto& p : ground->resources) {
 				choice -= p.second;
@@ -40,8 +40,8 @@ pair Realm::findFree(pair pos) {
 	pair guess = pos;
 	uint seet = 123;
 	while (!free(guess)) {
-		guess.x = rand_int(seed++, pos.x - 20, pos.x + 20);
-		guess.y = rand_int(seed++, pos.y - 20, pos.y + 20);
+		guess.x = noise::Int(seed++, pos.x - 20, pos.x + 20);
+		guess.y = noise::Int(seed++, pos.y - 20, pos.y + 20);
 	}
 	return guess;
 }

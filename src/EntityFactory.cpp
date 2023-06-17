@@ -68,7 +68,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 
 	SpriteStack spriteStack;
 	for (SpriteTemplate& sprite : resourceTemplate->spriteTemplates) {
-		uint var = rand_int(seed++, 0, sprite.variations);
+		uint var = noise::Int(seed++, 0, sprite.variations);
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
 		spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, sprite.size}, sprite.offset);
 	}

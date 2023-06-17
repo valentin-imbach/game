@@ -21,8 +21,8 @@ public:
 				Entity rest = inventoryComponent.inventory.add(item);
 				if (rest) {
 					vec offset;
-					offset.x = rand_float(seed++, -0.3f, 0.3f);
-					offset.y = rand_float(seed++, -0.3f, 0.3f);
+					offset.x = noise::Float(seed++, -0.3f, 0.3f);
+					offset.y = noise::Float(seed++, -0.3f, 0.3f);
 					ecs->addComponent<PositionComponent>({positionComponent.position + offset}, rest);
 				}
 			}

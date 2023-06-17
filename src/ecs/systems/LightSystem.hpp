@@ -39,7 +39,7 @@ struct Time {
 class LightSystem : public System {
 public:
 	void update(Camera camera, Time time, uint ticks) {
-		Uint8 ambient = Lerp::smooth(abs(time.mins() - 720.0f) / 720, 0, 200);
+		Uint8 ambient = lerp::smooth(std::abs(time.mins() - 720.0f) / 720, 0, 200);
 
 		SDL_Texture* texture = TextureManager::createTexture(Window::instance->size, {0, 0, 0, ambient});
 		SDL_BlendMode blendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_SRC_ALPHA, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR, SDL_BLENDOPERATION_ADD);
@@ -50,7 +50,7 @@ public:
 			LightComponent& lightComponent = ecs->getComponent<LightComponent>(entity);
 
 			pair screenPosition = camera.screenPosition(positionComponent.position);
-			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * Lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
+			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
 			int size  = 2* BIT * camera.zoom * radius;
 
 			TextureStyle style;

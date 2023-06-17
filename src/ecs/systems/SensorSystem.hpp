@@ -18,7 +18,7 @@ public:
 			float d = vec::dist(positionComponent.position, playerPosition);
 			if (d > sensorComponent.radius) return;
 
-			if (visible(positionComponent.position, playerPosition, opaqueMap).first) {
+			if (ai::visible(positionComponent.position, playerPosition, opaqueMap).first) {
 				sensorComponent.position = playerPosition;
 				sensorComponent.lastSeen = ticks;
 				sensorComponent.engaged = true;

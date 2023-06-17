@@ -6,7 +6,7 @@
 
 template <typename T>
 [[nodiscard]] inline uint hash(T x) {
-	return rand_uint(uint(x));
+	return noise::UInt(uint(x));
 }
 
 template <typename T, typename... TT>
@@ -26,11 +26,11 @@ template <>
 	float dots[4];
 	for (int i = 0; i < 4; i++) {
 		uint s = hash(seed, cell + steps[i]);
-		dots[i] = vec::dot(vec::polar(rand_float(s, -M_PI, M_PI)), offset - steps[i]);
+		dots[i] = vec::dot(vec::polar(noise::Float(s, -M_PI, M_PI)), offset - steps[i]);
 	}
-	float left = Lerp::smooth(offset.y, dots[0], dots[2]);
-	float right = Lerp::smooth(offset.y, dots[1], dots[3]);
-	return Lerp::smooth(offset.x, left, right);
+	float left = lerp::smooth(offset.y, dots[0], dots[2]);
+	float right = lerp::smooth(offset.y, dots[1], dots[3]);
+	return lerp::smooth(offset.x, left, right);
 }
 
 struct Distribution {
@@ -51,8 +51,8 @@ struct PerlinNoise : public Distribution {
 		float res = mean;
 		for (int i = 0; i < oct; i++) {
 			vec offset;
-			offset.x = rand_float(s++);
-			offset.y = rand_float(s++);
+			offset.x = noise::Float(s++);
+			offset.y = noise::Float(s++);
 			res += a * perlin_octave(s++, offset + position / p);
 			p /= 2;
 			a /= 2;

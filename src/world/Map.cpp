@@ -76,7 +76,7 @@ void Map::updateStyle(pair position, bool propagate) {
 	sprites.clear();
 
 	TileId::value tileId = getTileId(position);
-	pair baseVariant = rand_choice<pair>(seed++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
+	pair baseVariant = noise::choice<pair>(seed++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
 	Sprite baseSprite = Sprite(Tile::spriteSheets[tileId], baseVariant);
 	sprites.emplace_back(tileId, baseSprite);
 
@@ -90,7 +90,7 @@ void Map::updateStyle(pair position, bool propagate) {
 		// Straights
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], rand_choice<pair>(seed++, variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(seed++, variants[d / 2]));
 			sprites.emplace_back(id, sprite);
 		}
 
@@ -147,8 +147,8 @@ void Map::updateStyle(pair position, bool propagate) {
 void Map::analyse(int samples) {
 	uint count[Biome::count] = {};
 	for (int i = 0; i < samples; i++) {
-		int x = rand_int(seed++, -10000, 10000);
-		int y = rand_int(seed++, -10000, 10000);
+		int x = noise::Int(seed++, -10000, 10000);
+		int y = noise::Int(seed++, -10000, 10000);
 		pair position(x, y);
 		count[getBiome(position)] += 1;
 	}

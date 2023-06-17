@@ -18,8 +18,8 @@ public:
 						Entity item = inventoryComponent.inventory.itemContainers[x][y].item;
 						if (item) {
 							vec offset;
-							offset.x = rand_float(seed++, -0.3f, 0.3f);
-							offset.y = rand_float(seed++, -0.3f, 0.3f);
+							offset.x = noise::Float(seed++, -0.3f, 0.3f);
+							offset.y = noise::Float(seed++, -0.3f, 0.3f);
 							vec position = positionComponent.position + offset;
 							ecs->addComponent<PositionComponent>({position}, item);
 							inventoryComponent.inventory.itemContainers[x][y].clear();
@@ -34,8 +34,8 @@ public:
 							Entity item = playerComponent.hotbar.itemContainers[x][y].item;
 							if (item) {
 								vec offset;
-								offset.x = rand_float(seed++, -0.3f, 0.3f);
-								offset.y = rand_float(seed++, -0.3f, 0.3f);
+								offset.x = noise::Float(seed++, -0.3f, 0.3f);
+								offset.y = noise::Float(seed++, -0.3f, 0.3f);
 								vec position = positionComponent.position + offset;
 								ecs->addComponent<PositionComponent>({position}, item);
 								playerComponent.hotbar.itemContainers[x][y].clear();
