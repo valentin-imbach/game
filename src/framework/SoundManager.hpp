@@ -46,8 +46,8 @@ struct TrackMix {
 
     std::bitset<TrackId::count> activeTracks;
     int loops;
-    uint32_t lastChange;
-    uint32_t duration = 8000;
+    uint lastChange;
+    uint duration = 8000;
     float variance = 0.2f;
     bool parity = false;
 
@@ -65,7 +65,7 @@ struct TrackMix {
     }
 
     void update() {
-        uint32_t ticks = SDL_GetTicks();
+        uint ticks = SDL_GetTicks();
         if (ticks > lastChange + loops * duration) change();
     }
 };

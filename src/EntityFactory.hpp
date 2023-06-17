@@ -23,8 +23,8 @@ public:
 	static Entity createResource(ResourceId::value resourceId, pair position);
 	static Entity createStation(StationId::value stationId, pair position);
 	
-	static Entity createItem(ItemId::value itemId, uint8_t count);
-	static Entity createItem(ItemId::value itemId, uint8_t count, vec position);
+	static Entity createItem(ItemId::value itemId, uchar count);
+	static Entity createItem(ItemId::value itemId, uchar count, vec position);
 
 	static Entity createProjectile(vec position, vec direction);
 

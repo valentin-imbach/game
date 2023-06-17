@@ -6,7 +6,7 @@
 
 class HealthSystem : public System {
 public:
-	void update(uint32_t ticks) {
+	void update(uint ticks) {
 		for (Entity entity : entities) {
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			if (ecs->hasComponent<CreatureStateComponent>(entity)) {

@@ -8,7 +8,7 @@
 
 class DamageSystem : public System {
 public:
-	void update(Entity actor, vec position, Entity item, uint32_t ticks) {
+	void update(Entity actor, vec position, Entity item, uint ticks) {
 		if (!ecs->hasComponent<DamageComponent>(item)) return;
 		vec actorPosition = ecs->getComponent<PositionComponent>(actor).position;
 		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item);

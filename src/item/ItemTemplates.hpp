@@ -5,7 +5,7 @@
 
 using ItemPropertyBitset = std::bitset<ItemProperty::count>;
 using ItemKindBitset = std::bitset<ItemKind::count>;
-using ItemProperties = std::unordered_map<ItemProperty::value, uint8_t>;
+using ItemProperties = std::unordered_map<ItemProperty::value, uchar>;
 
 struct ItemPropertyTemplate {
 	std::string name;

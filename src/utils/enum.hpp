@@ -8,7 +8,7 @@
 
 #define ENUM(name, items...)                                                         \
 	namespace name {                                                                 \
-	enum value : uint8_t { NONE,                                                     \
+	enum value : uchar { NONE,                                                     \
 		items,                                                                       \
 		MAX };                                                                       \
 	constexpr size_t count = value::MAX;                                             \

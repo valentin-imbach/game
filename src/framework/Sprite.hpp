@@ -38,7 +38,7 @@ CRAFTING_ICONS)
 
 class Sprite {
 public:
-	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uint8_t frameCount = 1, uint frameDuration = 0, uint animationStart = 0);
+	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0);
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	static void loadSpriteSheets();
 private:
@@ -46,8 +46,8 @@ private:
 	SpriteSheet::value spriteSheet;
 	pair source;
 	pair size;
-	uint8_t frameCount;
-	uint8_t frameDuration;
+	uchar frameCount;
+	uchar frameDuration;
 	uint animationStart;
 	static std::array<SDL_Texture*, SpriteSheet::count> spriteSheets;
 	static std::array<SDL_Texture*, SpriteSheet::count> outlineSpriteSheets;
@@ -65,7 +65,7 @@ public:
 
 private:
 	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
-	uint8_t depth = 0;
+	uchar depth = 0;
 	friend class CreatureAnimationSystem;
 };
 
@@ -81,7 +81,7 @@ struct SpriteTemplate {
 	pair anker;
 	pair size = {1, 1};
 	pair offset = {0, 0};
-	uint8_t variations = 1;
+	uchar variations = 1;
 };
 
 struct DrawCall {

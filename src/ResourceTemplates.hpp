@@ -40,11 +40,11 @@ struct ResourceTemplate {
 	bool opaque = true;
 
 	ItemKind::value toolId;
-	uint8_t level = 1;
+	uchar level = 1;
 
 	SoundId::value sound = SoundId::NONE;
 
-	uint8_t health = 1;
+	uchar health = 1;
 
 	// SoundId sound;
 

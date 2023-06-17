@@ -121,8 +121,8 @@ void Game::draw() {
 
 void Game::handleEvents() {
 	pair mousePosition;
-	const Uint8* keyState = SDL_GetKeyboardState(NULL);
-	const Uint32 mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	const uchar* keyState = SDL_GetKeyboardState(NULL);
+	const uint mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
 	if (world) {
 		world->guiManager.mousePosition = mousePosition;

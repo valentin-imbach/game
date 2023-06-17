@@ -61,7 +61,7 @@ LIGHT,
 SENSOR,
 PROJECTILE)
 
-using Entity = std::uint32_t;
+using Entity = uint;
 using Signature = std::bitset<ComponentId::count>;
 using GridMap = std::unordered_map<pair, Entity>;
 constexpr Entity MAX_ENTITIES = 100000;

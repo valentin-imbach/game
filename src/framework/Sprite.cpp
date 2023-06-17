@@ -4,7 +4,7 @@
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::spriteSheets = {};
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::outlineSpriteSheets = {};
 
-Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uint8_t frameCount, uint frameDuration, uint animationStart) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration), animationStart(animationStart) {}
+Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uchar frameCount, uint frameDuration, uint animationStart) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration), animationStart(animationStart) {}
 
 void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	if (!spriteSheet) return;

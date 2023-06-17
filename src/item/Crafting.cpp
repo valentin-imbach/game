@@ -52,7 +52,7 @@ void CraftingKindRecipe::setRecipes() {
 			pair anker(sprite["anker"][0], sprite["anker"][1]);
 			pair size(sprite["size"][0], sprite["size"][1]);
 			pair offset(sprite["offset"][0], sprite["offset"][1]);
-			uint8_t variations = sprite["variations"];
+			uchar variations = sprite["variations"];
 			recipes[recipeId].product.spriteTemplates.push_back({anker, size, offset, variations});
 		}
 

@@ -116,7 +116,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	return animal;
 }
 
-Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
+Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 	Entity item = world->ecs.createEntity();
 	Collider collider({0, 0}, {0.4f, 0.4f});
 	world->ecs.addComponent<ColliderComponent>({collider}, item);
@@ -132,7 +132,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count) {
 	return item;
 }
 
-Entity EntityFactory::createItem(ItemId::value itemId, uint8_t count, vec position) {
+Entity EntityFactory::createItem(ItemId::value itemId, uchar count, vec position) {
 	Entity item = createItem(itemId, count);
 	world->ecs.addComponent<PositionComponent>({position}, item);
 	return item;

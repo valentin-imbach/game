@@ -85,21 +85,21 @@ SDL_Texture* TextureManager::createTexture(pair size, SDL_Colour colour) {
 
 void TextureManager::outlineSurface(SDL_Surface* surface) {
 	if (SDL_LockSurface(surface)) ERROR("Failed to lock surface");
-	Uint32* pixels = (Uint32*)surface->pixels;
+	uint* pixels = (uint*)surface->pixels;
 	int pitch = surface->pitch;
 
 	for (int y = 0; y < surface->h; ++y) {
 		for (int x = 0; x < surface->w; ++x) {
-			Uint32 pixel = pixels[y * (surface->w) + x];
-			Uint8 alpha = (pixel >> 24) & 0xFF;
+			uint pixel = pixels[y * (surface->w) + x];
+			uchar alpha = (pixel >> 24) & 0xFF;
 			if (alpha > 0) continue;
 
 			bool outline = false;
 			for (int nx = x-1; nx <= x+1; nx++) {
 				for (int ny = y-1; ny <= y+1; ny++) {
 					if (nx < 0 || nx >= surface->w || ny < 0 || ny >= surface->h) continue;
-					Uint32 pix = pixels[ny * (surface->w) + nx];
-					Uint8 a = (pix >> 24) & 0xFF;
+					uint pix = pixels[ny * (surface->w) + nx];
+					uchar a = (pix >> 24) & 0xFF;
 					if (a > 0 && pix != 0xFFFFFFFF) outline = true;
 				}
 			}

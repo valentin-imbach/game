@@ -19,7 +19,7 @@ struct SpriteComponent {
 	float scale = 1;
 	float z = 0;
 	float angle = 0;
-	std::array<std::pair<bool, uint32_t>, SpriteEffectId::count> effects = {};
+	std::array<std::pair<bool, uint>, SpriteEffectId::count> effects = {};
 };
 
 struct CameraComponent {
@@ -74,15 +74,15 @@ struct InventoryComponent {
 };
 
 struct HealthComponent {
-	uint8_t health;
-	uint8_t maxHealth;
-	uint32_t lastDamage;
+	uchar health;
+	uchar maxHealth;
+	uint lastDamage;
 };
 
 struct PlayerComponent {
 	Inventory hotbar;
 	Inventory equipment;
-	uint8_t activeSlot;
+	uchar activeSlot;
 };
 
 struct ResourceComponent {
@@ -97,11 +97,11 @@ struct LootComponent {
 
 struct ItemKindComponent {
 	std::bitset<ItemKind::count> itemKinds;
-	std::array<uint8_t, ItemProperty::count> itemProperties;
+	std::array<uchar, ItemProperty::count> itemProperties;
 };
 
 struct DamageComponent {
-	uint8_t damage;
+	uchar damage;
 };
 
 struct ForceComponent {
@@ -129,7 +129,7 @@ struct StationComponent {
 };
 
 struct Textblock {
-	uint8_t size;
+	uchar size;
 	std::array<char, 20> chars;
 	Textblock(std::string text = "") : size(text.size()), chars() {
 		assert(size <= 20);
@@ -170,7 +170,7 @@ struct SensorComponent {
 	int radius;
 	bool engaged = false;
 	vec position = {0, 0};
-	uint32_t lastSeen = 0;
+	uint lastSeen = 0;
 };
 
 struct ProjectileComponent {
