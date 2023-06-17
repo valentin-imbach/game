@@ -11,50 +11,42 @@ struct vec {
 
 	//* operations
 
-	[[nodiscard]] inline vec operator*(float t) {
+	[[nodiscard]] inline vec operator*(float t) const {
 		return vec(t * x, t * y);
 	}
 
-	[[nodiscard]] inline vec operator+(vec other) {
+	[[nodiscard]] inline vec operator+(vec other) const {
 		return vec(other.x + x, other.y + y);
 	}
 		
 	inline vec operator+=(vec other) {
-		x += other.x;
-		y += other.y;
-		return vec(x, y);
+		return vec(x += other.x, y += other.y);
 	}
 
 	inline vec operator*=(float scalar) {
-		x *= scalar;
-		y *= scalar;
-		return vec(x, y);
+		return vec(x *= scalar, y *= scalar);
 	}
 
-	[[nodiscard]] inline vec operator-() {
+	[[nodiscard]] inline vec operator-() const {
 		return vec(-x, -y);
 	}
 
-	[[nodiscard]] inline vec operator-(vec other) {
+	[[nodiscard]] inline vec operator-(vec other) const {
 		return vec(x - other.x, y - other.y);
 	}
 
 	inline vec operator-=(vec other) {
-		x -= other.x;
-		y -= other.y;
-		return vec(x, y);
+		return vec(x -= other.x, y -= other.y);
 	}
 
-	[[nodiscard]] inline vec operator/(float scalar) {
+	[[nodiscard]] inline vec operator/(float scalar) const {
 		assert(scalar != 0);
 		return vec(x / scalar, y / scalar);
 	}
 
 	inline vec operator/=(float scalar) {
 		assert(scalar != 0);
-		x /= scalar;
-		y /= scalar;
-		return vec(x, y);
+		return vec(x /= scalar, y /= scalar);
 	}
 
 	//* utility functions
@@ -76,7 +68,9 @@ struct vec {
 	}
 
 	[[nodiscard]] static inline vec normalise(vec v) {
-		return v / norm(v);
+		float d = norm(v);
+		assert(d != 0);
+		return v / d;
 	}
 
 	[[nodiscard]] static inline vec polar(float ang, float r = 1.0f) {
@@ -101,7 +95,9 @@ struct vec {
 
 };
 
-[[nodiscard]] inline vec operator*(float t, vec v) { return v * t; }
+[[nodiscard]] inline vec operator*(float t, vec v) {
+	return v * t;
+}
 
 //* bounds checking
 
