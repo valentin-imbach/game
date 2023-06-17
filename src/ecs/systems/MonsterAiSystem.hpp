@@ -23,11 +23,11 @@ public:
 			}
 
 			vec targetPosition = sensorComponent.position;
-			if (dist(targetPosition, positionComponent.position) < 1) {
+			if (vec::dist(targetPosition, positionComponent.position) < 1) {
 				creatureStateComponent.state = CreatureState::IDLE;
 			} else {
-				pair start = round(positionComponent.position);
-				pair end = round(targetPosition);
+				pair start = vec::round(positionComponent.position);
+				pair end = vec::round(targetPosition);
 				vec offset = positionComponent.position - start;
 
 				Direction::value dir = PathFinder::find_direction(start, end, solidMap, true);
@@ -35,9 +35,9 @@ public:
 					pair step = start + Direction::taxi[dir];
 					pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
 					pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
-					if (solidMap.find(left) != solidMap.end() && (left-step)*offset > 0.1) {
+					if (solidMap.find(left) != solidMap.end() && vec::dot(left-step, offset) > 0.1) {
 						directionComponent.direction = Direction::rotate(dir, 7);
-					} else if (solidMap.find(right) != solidMap.end() && (right-step)*offset > 0.1) {
+					} else if (solidMap.find(right) != solidMap.end() && vec::dot(right - step, offset) > 0.1) {
 						directionComponent.direction = Direction::rotate(dir, 1);
 					} else {
 						directionComponent.direction = dir;

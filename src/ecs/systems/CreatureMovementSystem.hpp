@@ -38,8 +38,8 @@ public:
 
 private:
 	bool isColliding(Collider collider, vec position, std::unordered_set<pair>& solidMap, Map* map) {
-		pair topLeft = round(position - collider.size / 2);
-		pair bottomRight = round(position + collider.size / 2);
+		pair topLeft = vec::round(position - collider.size / 2);
+		pair bottomRight = vec::round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {
 			for (int y = topLeft.y; y <= bottomRight.y; y++) {
 				if (!isFree(solidMap, map, {x, y})) return true;

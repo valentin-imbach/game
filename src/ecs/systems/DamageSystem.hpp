@@ -22,7 +22,7 @@ public:
 				healthComponent.health -= damageComponent.damage;
 				healthComponent.lastDamage = ticks;
 				if (ecs->hasComponent<ForceComponent>(entity)) {
-					vec force = normalise(positionComponent.position - actorPosition) / 10;
+					vec force = vec::normalise(positionComponent.position - actorPosition) / 10;
 					ecs->getComponent<ForceComponent>(entity).force = force;
 				}
 				return;

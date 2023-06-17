@@ -95,7 +95,7 @@ bool Console::execute(std::string input) {
 		if (inputs.size() < 2) return false;
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
 		if (!player || !resourceId) return false;
-		pair position = round(ecs.getComponent<PositionComponent>(player).position);
+		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
 		Entity resource = EntityFactory::createResource(resourceId, position);
 		game->world->link(resource);
 	} else if (inputs[0] == "cows") {
@@ -126,7 +126,7 @@ bool Console::execute(std::string input) {
 		if (inputs.size() != 2 || !game->world || !player) return false;
 		TileId::value tileId = TileId::from_string(inputs[1]);
 		if (!tileId) return false;
-		pair position = round(ecs.getComponent<PositionComponent>(player).position);
+		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
 		game->world->realm->map->tiles[position.x][position.y]->tileId = tileId;
 		game->world->realm->map->updateStyle(position, true);
 	} else if (inputs[0] == "weather") {

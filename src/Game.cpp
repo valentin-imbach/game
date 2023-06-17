@@ -211,7 +211,7 @@ void Game::handleEvents() {
 }
 
 void Game::limitFrameRate(int fps) {
-	uint delay = ceil(1000.0f / fps);
+	uint delay = std::ceil(1000.0f / fps);
 	uint ticks = SDL_GetTicks();
 	uint past = ticks - lastFrameTicks;
 	lastFrameTicks = ticks;
@@ -228,6 +228,6 @@ void Game::limitFrameRate(int fps) {
 	if (sample.size() > SAMPLE_SIZE) {
 		sampleSum -= sample.front();
 		sample.pop();
-		framesPerSecond = floor(SAMPLE_SIZE * 1000.0f / sampleSum);
+		framesPerSecond = std::floor(SAMPLE_SIZE * 1000.0f / sampleSum);
 	}
 }

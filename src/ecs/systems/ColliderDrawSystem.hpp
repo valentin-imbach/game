@@ -23,7 +23,7 @@ public:
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
 			if (colliderComponent.collider.type == Shape::RECTANGLE) {
-				pair size = round(BIT * camera.zoom * colliderComponent.collider.size);
+				pair size = vec::round(BIT * camera.zoom * colliderComponent.collider.size);
 				TextureManager::drawRect(screenPosition, size, {255, 0, 0, 255});
 			} else if (colliderComponent.collider.type == Shape::CIRCLE) {
 				int radius = BIT * camera.zoom * colliderComponent.collider.radius;

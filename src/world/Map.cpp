@@ -153,7 +153,7 @@ void Map::analyse(int samples) {
 		count[getBiome(position)] += 1;
 	}
 	for (int b = 1; b < Biome::count; b++) {
-		int percent = round((100.0f * count[b]) / samples);
+		int percent = std::round((100.0f * count[b]) / samples);
 		LOG(Biome::strings[b], std::to_string(percent) + "%");
 	}
 }

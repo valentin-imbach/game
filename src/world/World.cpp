@@ -288,10 +288,10 @@ void World::draw() {
 	drawQueue.clear();
 	drawTiles();
 
-	pair gridPosition = camera.screenPosition(round(camera.worldPosition(Window::instance->mousePosition)));
+	pair gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
 	TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 
-	entityDrawSystem->update(camera, drawQueue, ticks, chunks[pair(0,0)]);  //TODO SLOW
+	entityDrawSystem->update(camera, drawQueue, player, ticks, chunks[pair(0,0)]);  //TODO SLOW
 	handRenderSystem->update(camera, drawQueue, ticks);
 
 	auto lambda = [](auto& l, auto& r) {
@@ -316,8 +316,8 @@ void World::drawTiles() {
 	pair screenSize = Window::instance->size;
 	int border = BIT * camera.zoom / 2;
 
-	pair range = ceil(vec(screenSize) / (2 * BIT * camera.zoom));
-	pair start = round(camera.position);
+	pair range = vec::ceil(vec(screenSize) / (2 * BIT * camera.zoom));
+	pair start = vec::round(camera.position);
 
 	int x1 = std::max(0, start.x - range.x);
 	int x2 = std::min(realm->map->size.x - 1, start.x + range.x);
@@ -412,7 +412,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			} else {
 				if (launcherComponent.charge > launcherComponent.minForce) {
 					vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
-					vec direction = normalise(position - playerPosition);
+					vec direction = vec::normalise(position - playerPosition);
 					EntityFactory::createProjectile(playerPosition, launcherComponent.charge * direction);
 				}
 				launcherComponent.charge = 0;

@@ -12,7 +12,7 @@ void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	int frame = frameCount > 1 ? ((past / frameDuration) % frameCount) : 0;
 	pair offset(frame, 0);
 	SDL_Texture* texture = style.outline ? outlineSpriteSheets[spriteSheet] : spriteSheets[spriteSheet];
-	pair dsize = round(scale * BIT * vec(size));
+	pair dsize = vec::round(scale * BIT * vec(size));
 	TextureManager::drawTexture(texture, nullptr, BIT * (source + offset), BIT * size, position, dsize, style);
 }
 
@@ -39,7 +39,7 @@ void SpriteStack::addSprite(Sprite sprite, pair offset) {
 
 void SpriteStack::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	for (int layer = 0; layer < depth; layer++) {
-		pair offset = round(scale * BIT * vec(stack[layer].second));
+		pair offset = vec::round(scale * BIT * vec(stack[layer].second));
 		if (style.centered) offset /= 2;
 		stack[layer].first.draw(position + offset, scale, style, ticks);
 	}
@@ -47,4 +47,16 @@ void SpriteStack::draw(pair position, float scale, TextureStyle style, uint tick
 
 void SpriteStack::clear() {
 	stack = {};
+}
+
+std::pair<pair, pair> SpriteStack::bounds() {
+	pair tl(0, 0);
+	pair br(0, 0);
+	for (int layer = 0; layer < depth; layer++) {
+		tl.y = std::min(tl.y, stack[layer].second.y);
+		tl.x = std::min(tl.x, stack[layer].second.x);
+		br.y = std::max(br.y, stack[layer].second.y + stack[layer].first.size.y);
+		br.x = std::max(br.x, stack[layer].second.x + stack[layer].first.size.x);
+	}
+	return {tl, br};
 }

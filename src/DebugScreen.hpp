@@ -36,7 +36,7 @@ public:
 		TextManager::drawText(entityCountText, {30, 50});
 
 		if (!world->player) return;
-		pair playerPosition = round(world->ecs.getComponent<PositionComponent>(world->player).position);
+		pair playerPosition = vec::round(world->ecs.getComponent<PositionComponent>(world->player).position);
 		std::string playerPositionText = "Player Position: " + std::to_string(playerPosition.x) + ", " + std::to_string(playerPosition.y);
 		TextManager::drawText(playerPositionText, {30, 70});
 
@@ -76,7 +76,7 @@ public:
 		std::string particleText = "Particles: " + std::to_string(particleCount);
 		TextManager::drawText(particleText, {30, 280});
 
-		pair playerChunk = round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
+		pair playerChunk = vec::round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
 		std::string playerChunkText = "Player Chunk: " + std::to_string(playerChunk.x) + ", " + std::to_string(playerChunk.y);
 		TextManager::drawText(playerChunkText, {30, 310});
 

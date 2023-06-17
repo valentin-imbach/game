@@ -13,7 +13,7 @@ public:
 			if (!projectileComponent.grounded) {
 				positionComponent.position += projectileComponent.speed;
 				projectileComponent.speed *= 0.95f;
-				if (norm(projectileComponent.speed) < 0.1) projectileComponent.grounded = true;
+				if (vec::norm(projectileComponent.speed) < 0.1) projectileComponent.grounded = true;
 			}
 			
 		}

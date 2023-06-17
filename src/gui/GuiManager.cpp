@@ -8,7 +8,7 @@ void GuiManager::update() {
 	for (auto& guiElement : guiElements) guiElement->update(this);
 
 	if (buildMode) {
-		pair gridPosition = round(world->camera.worldPosition(Window::instance->mousePosition));
+		pair gridPosition = vec::round(world->camera.worldPosition(Window::instance->mousePosition));
 		world->ecs.getComponent<PositionComponent>(buildMode).position = gridPosition;
 		world->ecs.getComponent<GridComponent>(buildMode).anker = gridPosition;
 		SpriteComponent& spriteComponent = world->ecs.getComponent<SpriteComponent>(buildMode);

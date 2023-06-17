@@ -15,7 +15,7 @@ public:
 			if (!player) return;
 			vec playerPosition = ecs->getComponent<PositionComponent>(player).position;
 
-			float d = dist(positionComponent.position, playerPosition);
+			float d = vec::dist(positionComponent.position, playerPosition);
 			if (d > sensorComponent.radius) return;
 
 			if (visible(positionComponent.position, playerPosition, opaqueMap).first) {

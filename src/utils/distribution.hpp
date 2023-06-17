@@ -21,12 +21,12 @@ template <>
 
 [[nodiscard]] inline float perlin_octave(uint seed, vec position) {
 	pair steps[4] = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
-	pair cell = floor(position);
+	pair cell = vec::floor(position);
 	vec offset = position - cell;
 	float dots[4];
 	for (int i = 0; i < 4; i++) {
 		uint s = hash(seed, cell + steps[i]);
-		dots[i] = polar(rand_float(s, -M_PI, M_PI)) * (offset - steps[i]);
+		dots[i] = vec::dot(vec::polar(rand_float(s, -M_PI, M_PI)), offset - steps[i]);
 	}
 	float left = Lerp::smooth(offset.y, dots[0], dots[2]);
 	float right = Lerp::smooth(offset.y, dots[1], dots[3]);

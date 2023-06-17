@@ -9,7 +9,7 @@ struct Camera {
 	float zoom = 4;
 
 	pair screenPosition(vec pos) {
-		return round(BIT * zoom * (pos  - position) + (Window::instance->size) / 2);
+		return vec::round(BIT * zoom * (pos  - position) + (Window::instance->size) / 2);
 	}
 
 	vec worldPosition(pair pos) {

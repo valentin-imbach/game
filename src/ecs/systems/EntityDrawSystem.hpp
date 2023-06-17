@@ -12,9 +12,11 @@
 
 class EntityDrawSystem : public System {
 public:
-	void update(Camera camera, std::vector<DrawCall>& drawQueue, uint ticks, std::set<Entity>& chunk) {
+	void update(Camera camera, std::vector<DrawCall>& drawQueue, Entity player, uint ticks, std::set<Entity>& chunk) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;
+
+		vec playerPos = player ? ecs->getComponent<PositionComponent>(player).position : pair(0,0);
 
 		for (Entity entity : entities) {
 			//if (chunk.find(entity) == chunk.end()) continue;
@@ -41,6 +43,17 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::HIGHLIGHT].first) style.tint = {100, 100, 255};
 			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
 			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
+
+			auto bounds = spriteComponent.spriteStack.bounds();
+			vec size = vec(bounds.second - bounds.first) - vec(1,1);
+			if (size.y >= 1 && isInside(playerPos, entityPosition + bounds.first + size/2, size) && playerPos.y + 0.2f < entityPosition.y) {
+				style.alpha = 0.5;
+			}
+
+			vec mouseWorldPos = camera.worldPosition(Window::instance->mousePosition);
+			if (size.y >= 1 && isInside(mouseWorldPos, entityPosition + bounds.first + size/2, size) && mouseWorldPos.y + 0.2f < entityPosition.y) {
+				style.alpha = 0.5;
+			}
 
 			// if (PIXEL_PERFECT) {
 			// 	entityPosition = vec(round(BIT * entityPosition)) / BIT;

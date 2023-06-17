@@ -53,6 +53,7 @@ private:
 	static std::array<SDL_Texture*, SpriteSheet::count> outlineSpriteSheets;
 
 	friend class CreatureAnimationSystem;
+	friend class SpriteStack;
 };
 
 class SpriteStack {
@@ -60,6 +61,7 @@ public:
 	void addSprite(Sprite sprite, pair offset = {0, 0});
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	void clear();
+	std::pair<pair, pair> bounds();
 
 private:
 	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
