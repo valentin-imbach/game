@@ -25,9 +25,9 @@ Game::Game()
 }
 
 void Game::buildMenu() {
-
 	std::vector<std::string> worldNames;
-	for (const auto& dir : std::filesystem::directory_iterator("../saves")) {
+	auto path = Window::instance->root / "saves";
+	for (const auto& dir : std::filesystem::directory_iterator(path)) {
 		if (dir.is_directory()) worldNames.push_back(dir.path().filename().string());
 	}
 
@@ -47,7 +47,8 @@ void Game::buildMenu() {
 
 void Game::create() {
 	std::string name = "world" + std::to_string(number);
-	for (const auto& dir : std::filesystem::directory_iterator("../saves")) {
+	auto path = Window::instance->root / "saves";
+	for (const auto& dir : std::filesystem::directory_iterator(path)) {
 		if (dir.path().filename().string() == name) return;
 	}
 	number += 1;
@@ -59,13 +60,13 @@ void Game::create() {
 }
 
 void Game::remove(std::string name) {
-	std::string path = "../saves/" + name;
+	auto path = Window::instance->root / "saves" / name;
 	std::filesystem::remove_all(path);
 	buildMenu();
 }
 
 void Game::load(std::string name) {
-	std::string path = "../saves/" + name + "/save.binary";
+	auto path = Window::instance->root / "saves" / name / "save.binary";
 	std::fstream file = std::fstream(path, std::ios::in | std::ios::binary);
 	if (!file) ERROR("No save for world", name);
 	world = std::make_unique<World>(file);
@@ -76,9 +77,9 @@ void Game::load(std::string name) {
 
 void Game::save() {
 	if (!world) return;
-	std::string path = "../saves/" + world->name;
+	auto path = Window::instance->root / "saves" / world->name;
 	std::filesystem::create_directory(path);
-	std::fstream file = std::fstream(path + "/save.binary", std::ios::out | std::ios::binary);
+	std::fstream file = std::fstream(path / "save.binary", std::ios::out | std::ios::binary);
 	if (!file) ERROR("No save for world");
 	world->serialise(file);
 	file.close();

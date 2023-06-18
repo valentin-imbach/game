@@ -18,5 +18,7 @@ public:
 	pair size;
 	pair mousePosition;
 
+	std::filesystem::path root;
+
 	static Window* instance;
 };

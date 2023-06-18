@@ -36,7 +36,7 @@ Entity CraftingIngredient::take(Entity item) {
 }
 
 void CraftingKindRecipe::setRecipes() {
-	std::ifstream file("../json/CraftingRecipes.json");
+	std::ifstream file(Window::instance->root / "json/CraftingRecipes.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
 	file.close();

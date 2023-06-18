@@ -9,6 +9,9 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
 		exit(EXIT_FAILURE);
 	}
 	LOG("SDL initialized");
+	
+	root = std::filesystem::path(SDL_GetBasePath()).parent_path().parent_path();
+	LOG("Root path is", root.string());
 
 	int flags = fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 	sdl_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, flags);

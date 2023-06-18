@@ -1,6 +1,7 @@
 
 #include "ItemTemplates.hpp"
 #include "json.hpp"
+#include "Window.hpp"
 #include <fstream>
 
 std::array<std::unique_ptr<ItemPropertyTemplate>, ItemProperty::count> ItemPropertyTemplate::templates;
@@ -10,7 +11,7 @@ std::array<std::unique_ptr<ItemTemplate>, ItemId::count> ItemTemplate::templates
 using namespace nlohmann;
 
 void ItemPropertyTemplate::setTemplates() {
-	std::ifstream file("../json/ItemProperties.json");
+	std::ifstream file(Window::instance->root / "json/ItemProperties.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
 
@@ -27,7 +28,7 @@ void ItemPropertyTemplate::setTemplates() {
 }
 
 void ItemKindTemplate::setTemplates() {
-	std::ifstream file("../json/ItemKinds.json");
+	std::ifstream file(Window::instance->root / "json/ItemKinds.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
     file.close();
@@ -55,7 +56,7 @@ void ItemKindTemplate::setTemplates() {
 }
 
 void ItemTemplate::setTemplates() {	
-	std::ifstream file("../json/Items.json");
+	std::ifstream file(Window::instance->root / "json/Items.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
     file.close();

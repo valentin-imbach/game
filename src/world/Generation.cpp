@@ -1,5 +1,6 @@
 
 #include "Generation.hpp"
+#include "Window.hpp"
 #include "json.hpp"
 
 using namespace nlohmann;
@@ -15,7 +16,7 @@ BiomeGroundTemplate* BiomeTemplate::getGround(int variation) {
 }
 
 void BiomeTemplate::setTemplates() {
-	std::ifstream file("../json/Generation.json");
+	std::ifstream file(Window::instance->root / "json/Generation.json");
 	if (!file) ERROR("File not found");
 	json data = json::parse(file);
 	file.close();
