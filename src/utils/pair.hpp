@@ -110,6 +110,11 @@ struct pair {
 		return tnorm(p1 - p2);
 	}
 
+	[[nodiscard]] inline static bool inside(pair p, pair position, pair size) {
+		pair offset = p - position;
+		return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
+	}
+
 };
 
 [[nodiscard]] inline pair operator*(int n, pair p) {
@@ -122,10 +127,3 @@ struct std::hash<pair> {
 		return std::hash<int>{}(p.x) ^ (std::hash<int>{}(p.y) << 1);
 	}
 };
-
-//* bounds checking
-
-[[nodiscard]] inline bool isInside(pair p, pair position, pair size) {
-	pair offset = p - position;
-	return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
-}

@@ -37,7 +37,7 @@ bool GuiElement::handleEvent(InputEvent event) {
 }
 
 bool GuiElement::inside(pair pos) {
-	return isInside(pos, screenPosition, screenSize);
+	return pair::inside(pos, screenPosition, screenSize);
 }
 
 //* Widget

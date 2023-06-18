@@ -45,14 +45,13 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
 
 			auto bounds = spriteComponent.spriteStack.bounds();
-			vec size = vec(bounds.second - bounds.first) - vec(1,1);
-			if (size.y >= 1 && isInside(playerPos, entityPosition + bounds.first + size/2, size) && playerPos.y + 0.2f < entityPosition.y) {
-				style.alpha = 0.5;
-			}
-
-			vec mouseWorldPos = camera.worldPosition(Window::instance->mousePosition);
-			if (size.y >= 1 && isInside(mouseWorldPos, entityPosition + bounds.first + size/2, size) && mouseWorldPos.y + 0.2f < entityPosition.y) {
-				style.alpha = 0.5;
+			vec size = vec(bounds.second - bounds.first) - vec(1, 1.5f);
+			if (size.y >= 1) {
+				float a1 = std::min(0.3f + 2 * vec::dist_to_rect(playerPos, entityPosition + bounds.first, size, false), 1.0f);
+				vec mouseWorldPos = camera.worldPosition(Window::instance->mousePosition);
+				size.y -= 0.5f;
+				float a2 = std::min(0.3f + 2 * vec::dist_to_rect(mouseWorldPos, entityPosition + bounds.first, size, false), 1.0f);
+				style.alpha = std::min(a1, a2);
 			}
 
 			// if (PIXEL_PERFECT) {

@@ -191,5 +191,20 @@
 		"loot": {
 			"potion": [1, 2]
 		}
+	},
+	"basalt_boulder": {
+		"sprites": [
+			{"anker": [0, 5], "size": [2, 2], "offset": [0, -1], "variations" : 1}
+		],
+		"size": [2, 1],
+		"opaque": true,
+		"solid" : true,
+		"health": 15,
+		"tool": "pick_axe",
+		"sound": "rock",
+		"loot": {
+			"basalt_cobble": [6, 13],
+			"basalt_pebble": [3, 7]
+		}
 	}
 }

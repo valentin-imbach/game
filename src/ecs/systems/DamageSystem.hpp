@@ -18,7 +18,7 @@ public:
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 
-			if (isInside(position, positionComponent.position + colliderComponent.collider.offset, colliderComponent.collider.size)) {
+			if (vec::inside(position, positionComponent.position + colliderComponent.collider.offset, colliderComponent.collider.size)) {
 				healthComponent.health -= damageComponent.damage;
 				healthComponent.lastDamage = ticks;
 				if (ecs->hasComponent<ForceComponent>(entity)) {

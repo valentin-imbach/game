@@ -24,7 +24,9 @@ ENUM(ResourceId,
 	BRANCH,
 	PEBBLE,
 	GRASS,
-	MUSHROOM
+	MUSHROOM,
+
+	BASALT_BOULDER
 )
 
 struct ResourceTemplate {

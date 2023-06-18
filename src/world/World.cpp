@@ -197,7 +197,7 @@ void World::rosterSystems() {
 	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI,
 		{ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
 	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE,
-		{ComponentId::RESOURCE, ComponentId::POSITION, ComponentId::HEALTH});
+		{ComponentId::RESOURCE, ComponentId::GRID, ComponentId::HEALTH});
 	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH,
 		{ComponentId::HEALTH});
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,

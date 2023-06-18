@@ -93,15 +93,22 @@ struct vec {
 		return pair(std::floor(v.x), std::floor(v.y));
 	}
 
+	[[nodiscard]] static inline bool inside(vec p, vec position, vec size, bool center = true) {
+		if (!center) position += size/2;
+		vec offset = p - position;
+		return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
+	}
+
+	[[nodiscard]] static inline float dist_to_rect(vec p, vec position, vec size, bool center = true) {
+		if (!center) position += size/2;
+		vec offset = p - position;
+		float dx = std::max(std::abs(offset.x) - size.x/2, 0.0f);
+		float dy = std::max(std::abs(offset.y) - size.y/2, 0.0f);
+		return std::sqrt(dx*dx + dy*dy);
+	}
+
 };
 
 [[nodiscard]] inline vec operator*(float t, vec v) {
 	return v * t;
-}
-
-//* bounds checking
-
-[[nodiscard]] inline bool isInside(vec p, vec position, vec size) {
-	vec offset = p - position;
-	return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
 }

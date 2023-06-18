@@ -12,7 +12,7 @@ public:
 		for (Entity entity : entities) {
 			StationComponent& stationComponent = ecs->getComponent<StationComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			if (!isInside(position, positionComponent.position, {1.0f, 1.0f})) continue;
+			if (!vec::inside(position, positionComponent.position, {1.0f, 1.0f})) continue;
 	
 			if (stationComponent.stationId == StationId::CHEST) {
 				Sprite sprite = Sprite(SpriteSheet::CHEST, {0, 0}, {10, 10});

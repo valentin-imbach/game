@@ -13,7 +13,7 @@ public:
 		uint seed = ticks;
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			if (!isInside(position, positionComponent.position, {1.0f, 1.0f})) continue;
+			if (!vec::inside(position, positionComponent.position, {1.0f, 1.0f})) continue;
 			LootComponent& lootComponent = ecs->getComponent<LootComponent>(entity);
 
 			for (int i = 0; i < lootComponent.lootTable.size; i++) {
