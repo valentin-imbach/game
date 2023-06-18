@@ -21,9 +21,13 @@ public:
 		for (Entity entity : entities) {
 			//if (chunk.find(entity) == chunk.end()) continue;
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
-
 			vec entityPosition = positionComponent.position;
+
+			pair roughScreenPosition = camera.screenPosition(entityPosition);
+			if (roughScreenPosition.x + border < 0 || roughScreenPosition.y + border < 0) continue;
+			if (roughScreenPosition.x > screenSize.x + border || roughScreenPosition.y > screenSize.y + border) continue;
+
+			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 
 			TextureStyle style;
 			style.centered = false;
@@ -63,9 +67,6 @@ public:
 
 			vec offset(0.5f, 0.5f);
 			pair screenPosition = camera.screenPosition(entityPosition - spriteComponent.scale * offset);
-			
-			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
-			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
 			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * camera.zoom * spriteComponent.z, int(spriteComponent.scale * camera.zoom), style});
 		}

@@ -25,63 +25,50 @@ public:
 		pair windowSize = Window::instance->size;
 		TextureManager::drawRect({20, 20}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
 
-		std::string fpsText = "FPS: " + std::to_string(framesPerSecond);
-		TextManager::drawText(fpsText, {30, 30});
+		std::string text;
+		text += "FPS: " + std::to_string(framesPerSecond) + '\n';
 
-		std::string ticksText = "Ticks: " + std::to_string(world->ticks);
-		TextManager::drawText(ticksText, {150, 30});
+		if (world) {
+			text += "Ticks: " + std::to_string(world->ticks) + '\n';
+			text += "Time: " + world->time.string() + '\n';
+			text += "Entity Count: " + std::to_string(world->ecs.entityCount()) + '\n';
+			int particleCount = world->particleSystem.activeCount;
+			text += "Particles: " + std::to_string(particleCount) + '\n';
 
-		if (!world) return;
-		std::string entityCountText = "Entity Count: " + std::to_string(world->ecs.entityCount());
-		TextManager::drawText(entityCountText, {30, 50});
+			if (world->player) {
+				pair playerPosition = vec::round(world->ecs.getComponent<PositionComponent>(world->player).position);
+				text += "Player Position: " + std::to_string(playerPosition.x) + ", " + std::to_string(playerPosition.y) + '\n';
 
-		if (!world->player) return;
-		pair playerPosition = vec::round(world->ecs.getComponent<PositionComponent>(world->player).position);
-		std::string playerPositionText = "Player Position: " + std::to_string(playerPosition.x) + ", " + std::to_string(playerPosition.y);
-		TextManager::drawText(playerPositionText, {30, 70});
+				pair playerChunk = vec::round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
+				text += "Player Chunk: " + std::to_string(playerChunk.x) + ", " + std::to_string(playerChunk.y) + '\n';
 
-		CreatureState::value playerState = world->ecs.getComponent<CreatureStateComponent>(world->player).state;
-		std::string playerStateText = "Player State: " + CreatureState::to_string(playerState);
-		TextManager::drawText(playerStateText, {30, 90});
+				CreatureState::value playerState = world->ecs.getComponent<CreatureStateComponent>(world->player).state;
+				text += "Player State: " + CreatureState::to_string(playerState) + '\n';
 
-		Biome::value biome = world->realm->map->getBiome(playerPosition);
-		std::string biomeText = "Biome: " + Biome::to_string(biome);
-		TextManager::drawText(biomeText, {30, 120});
+				Biome::value biome = world->realm->map->getBiome(playerPosition);
+				text += "Biome: " + Biome::to_string(biome) + '\n';
 
-		int temperature = world->realm->map->temparatureMap->get(playerPosition);
-		std::string temperatureText = "Temperateure: " + std::to_string(temperature);
-		TextManager::drawText(temperatureText, {30, 140});
+				int temperature = world->realm->map->temparatureMap->get(playerPosition);
+				text += "Temperateure: " + std::to_string(temperature) + '\n';
 
-		int elevation = world->realm->map->elevationMap->get(playerPosition);
-		std::string elevationText = "Elevation: " + std::to_string(elevation);
-		TextManager::drawText(elevationText, {30, 160});
+				int elevation = world->realm->map->elevationMap->get(playerPosition);
+				text += "Elevation: " + std::to_string(elevation) + '\n';
 
-		int precipitation = world->realm->map->precipitationMap->get(playerPosition);
-		std::string precipitationText = "Precipitation: " + std::to_string(precipitation);
-		TextManager::drawText(precipitationText, {30, 180});
+				int precipitation = world->realm->map->precipitationMap->get(playerPosition);
+				text += "Precipitation: " + std::to_string(precipitation) + '\n';
 
-		int vegetation = world->realm->map->vegetationMap->get(playerPosition);
-		std::string vegetationText = "Vegetation: " + std::to_string(vegetation);
-		TextManager::drawText(vegetationText, {30, 200});
+				int vegetation = world->realm->map->vegetationMap->get(playerPosition);
+				text += "Vegetation: " + std::to_string(vegetation) + '\n';
 
-		int variation = world->realm->map->variationMap->get(playerPosition);
-		std::string variationText = "Variation: " + std::to_string(variation);
-		TextManager::drawText(variationText, {30, 230});
+				int variation = world->realm->map->variationMap->get(playerPosition);
+				text += "Variation: " + std::to_string(variation) + '\n';
 
-		TileId::value tileId = world->realm->map->getTileId(playerPosition);
-		std::string tileText = "Tile: " + TileId::to_string(tileId);
-		TextManager::drawText(tileText, {30, 250});
+				TileId::value tileId = world->realm->map->getTileId(playerPosition);
+				text += "Tile: " + TileId::to_string(tileId) + '\n';
+			}
+		}
 
-		int particleCount = world->particleSystem.activeCount;
-		std::string particleText = "Particles: " + std::to_string(particleCount);
-		TextManager::drawText(particleText, {30, 280});
-
-		pair playerChunk = vec::round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
-		std::string playerChunkText = "Player Chunk: " + std::to_string(playerChunk.x) + ", " + std::to_string(playerChunk.y);
-		TextManager::drawText(playerChunkText, {30, 310});
-
-		std::string timeText = world->time.string();
-		TextManager::drawText(timeText, {30, 340});
+		TextManager::drawText(text, pair(30, 30));
 	}
 
 private:
