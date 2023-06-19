@@ -32,55 +32,65 @@ void Game::buildMenu() {
 	}
 
 	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::create, this), Sprite(), "New World"));
+	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), "New World"));
 
 	int offset = -40;
 	for (auto& name : worldNames) {
-		mainMenu->addGuiElement(std::make_unique<Button>(pair(0, offset), pair(50, 20), std::bind(&Game::load, this, name), Sprite(), name));
-		mainMenu->addGuiElement(std::make_unique<Button>(pair(50, offset), pair(20, 20), std::bind(&Game::remove, this, name), Sprite(), "del"));
+		mainMenu->addGuiElement(std::make_unique<Button>(pair(0, offset), pair(50, 20), std::bind(&Game::loadWorld, this, name), Sprite(), name));
+		mainMenu->addGuiElement(std::make_unique<Button>(pair(50, offset), pair(20, 20), std::bind(&Game::removeWorld, this, name), Sprite(), "del"));
 		offset += 25;
 	}
 
 	pauseMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::save, this), Sprite(), "Save and Quit"));
+	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::saveWorld, this), Sprite(), "Save and Quit"));
 }
 
-void Game::create() {
+void Game::createButton() {
+	static int number = 1;
 	std::string name = "world" + std::to_string(number);
-	auto path = Window::instance->root / "saves";
-	for (const auto& dir : std::filesystem::directory_iterator(path)) {
-		if (dir.path().filename().string() == name) return;
-	}
-	number += 1;
-
 	uint seed = arc4random();
+	createWorld(name, seed);
+	number += 1;
+}
+
+void Game::createWorld(std::string name, uint seed) {
+	auto path = Window::instance->root / "saves" / name;
+	if (std::filesystem::exists(path)) {
+		WARNING("Trying to create duplicate world", name);
+		return;
+	}
+
 	world = std::make_unique<World>(name, seed);
 	LOG("World", name, "created");
 	gameState = GameState::RUNNING;
 }
 
-void Game::remove(std::string name) {
+void Game::removeWorld(std::string name) {
 	auto path = Window::instance->root / "saves" / name;
+	if (!std::filesystem::exists(path)) {
+		WARNING("Trying to remove non-existent world", name);
+		return;
+	}
 	std::filesystem::remove_all(path);
 	buildMenu();
 }
 
-void Game::load(std::string name) {
+void Game::loadWorld(std::string name) {
 	auto path = Window::instance->root / "saves" / name / "save.binary";
 	std::fstream file = std::fstream(path, std::ios::in | std::ios::binary);
-	if (!file) ERROR("No save for world", name);
+	if (!file) ERROR("No save file found for world", name);
 	world = std::make_unique<World>(file);
 	file.close();
 	world->name = name;
 	gameState = GameState::RUNNING;
 }
 
-void Game::save() {
+void Game::saveWorld() {
 	if (!world) return;
 	auto path = Window::instance->root / "saves" / world->name;
 	std::filesystem::create_directory(path);
 	std::fstream file = std::fstream(path / "save.binary", std::ios::out | std::ios::binary);
-	if (!file) ERROR("No save for world");
+	if (!file) ERROR("Failed to create save file for world", world->name);
 	world->serialise(file);
 	file.close();
 	buildMenu();

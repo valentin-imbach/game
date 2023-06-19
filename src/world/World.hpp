@@ -40,6 +40,7 @@ public:
 	Time time;
 
 private:
+	uint seed;
 	void rosterComponents();
 	void rosterSystems();
 

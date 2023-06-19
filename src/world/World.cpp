@@ -31,31 +31,26 @@ void World::init() {
 	EntityFactory::world = this;
 }
 
-World::World(std::string name, uint seed)
-	: name(name), ticks(0) {
+World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0) {
 	init();
-	realm = std::make_unique<Realm>(pair(100, 100), seed);
 
+	realm = std::make_unique<Realm>(pair(100, 100), seed);
 	realm->generate();
 	gridSystem->rebuild(realm->gridMap, realm->solidMap, realm->opaqueMap);
 
-	pair spawn = realm->findFree({50,50});
+	pair spawn = realm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(spawn);
-
-	// camera = {};
 
 	//ecs.getComponent<SpriteComponent>(player).effects[SpriteEffectId::OUTLINE] = {true, 0};
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	//EntityFactory::createCamera({0, 0}, 4);
-
-	EntityFactory::createAnimal(AnimalId::COW, {6, 6});
+	// EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
 	Entity axe = ecs.createEntity();
 	SpriteStack axeSprites;
-	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, {2, 0}, {1, 1}));
+	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(2, 0)));
 	ecs.addComponent<SpriteComponent>({axeSprites, 0.5f}, axe);
 	ecs.getComponent<SpriteComponent>(axe).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
@@ -71,7 +66,7 @@ World::World(std::string name, uint seed)
 
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
-	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, {1, 0}, {1, 1}));
+	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(1, 0)));
 	ecs.addComponent<SpriteComponent>({pickSprites, 0.5f}, pick);
 	ecs.getComponent<SpriteComponent>(pick).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
@@ -80,26 +75,26 @@ World::World(std::string name, uint seed)
 	pickKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 4;
 	pickKindComponent.itemProperties[ItemProperty::LEVEL] = 3;
 	ecs.addComponent<ItemKindComponent>(pickKindComponent, pick);
-	Collider pickCollider({0, 0}, {0.4f, 0.4f});
+	Collider pickCollider(vec(0,0), vec(0.4f, 0.4f));
 	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
 	ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, pick);
 	Entity rest2 = ecs.getComponent<InventoryComponent>(player).inventory.add(pick);
 
 	Entity sword = ecs.createEntity();
 	SpriteStack swordSprites;
-	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, {0, 0}, {1, 1}));
+	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(0, 0)));
 	ecs.addComponent<SpriteComponent>({swordSprites, 0.5f}, sword);
 	ecs.getComponent<SpriteComponent>(sword).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
-	Collider swordCollider({0, 0}, {0.4f, 0.4f});
+	Collider swordCollider(vec(0, 0), vec(0.4f, 0.4f));
 	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 	Entity rest3 = ecs.getComponent<InventoryComponent>(player).inventory.add(sword);
 
 	Entity bow = ecs.createEntity();
 	SpriteStack bowSprites;
-	bowSprites.addSprite(Sprite(SpriteSheet::ITEMS, {4, 0}, {1, 1}));
+	bowSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(4, 0)));
 	ecs.addComponent<SpriteComponent>({bowSprites, 0.5f}, bow);
 	ecs.getComponent<SpriteComponent>(bow).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, bow);
@@ -107,7 +102,7 @@ World::World(std::string name, uint seed)
 	bowKindComponent.itemKinds[ItemKind::BOW] = true;
 	bowKindComponent.itemProperties[ItemProperty::DAMAGE] = 3;
 	ecs.addComponent<ItemKindComponent>(bowKindComponent, bow);
-	Collider bowCollider({0, 0}, {0.4f, 0.4f});
+	Collider bowCollider(vec(0, 0), vec(0.4f, 0.4f));
 	ecs.addComponent<ColliderComponent>({bowCollider}, bow);
 	ecs.addComponent<NameComponent>({Textblock("Bow")}, bow);
 	ecs.addComponent<LauncherComponent>({}, bow);
@@ -115,7 +110,7 @@ World::World(std::string name, uint seed)
 
 	// Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
-	EntityFactory::createAnimal(AnimalId::MONSTER, realm->findFree({55,55}));
+	EntityFactory::createAnimal(AnimalId::MONSTER, realm->findFree(pair(55,55)));
 
 	// Entity fire = ecs.createEntity();
 	// ecs.addComponent<PositionComponent>({pair(11, 3)}, fire);
@@ -134,12 +129,13 @@ World::World(std::string name, uint seed)
 }
 
 World::World(std::fstream& stream) {
+	deserialise_object(stream, seed);
 	deserialise_object(stream, ticks);
 
 	init();
 	ecs.deserialise(stream);
 
-	realm = std::make_unique<Realm>(pair(100, 100), 1729);
+	realm = std::make_unique<Realm>(pair(100, 100), seed);
 	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
@@ -301,9 +297,7 @@ void World::draw() {
 	};
 
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-	for (auto& p : drawQueue) {
-		p.spriteStack.draw(p.position, p.scale, p.style, ticks);
-	}
+	for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 
 	colliderDrawSystem->update(camera, ticks);
 	particleSystem.draw(camera);
@@ -313,10 +307,9 @@ void World::draw() {
 }
 
 void World::drawTiles() {
-	pair screenSize = Window::instance->size;
 	// int border = BIT * camera.zoom / 2;
 
-	pair range = vec::ceil(vec(screenSize) / (2 * BIT * camera.zoom));
+	pair range = vec::ceil(vec(Window::instance->size) / (2 * BIT * camera.zoom));
 	pair start = vec::round(camera.position);
 
 	int x1 = std::max(0, start.x - range.x);
@@ -327,7 +320,8 @@ void World::drawTiles() {
 	for (int x = x1; x <= x2; x++) {
 		for (int y = y1; y <= y2; y++) {
 			for (auto& layer : realm->map->tiles[x][y]->sprites) {
-				layer.second.draw(camera.screenPosition(vec(x, y)), camera.zoom);
+				pair screenPosition = camera.screenPosition(vec(x, y));
+				layer.second.draw(screenPosition, camera.zoom);
 			}
 		}
 	}
@@ -424,6 +418,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 }
 
 void World::serialise(std::fstream& stream) {
+	serialise_object(stream, seed);
 	serialise_object(stream, ticks);
 	ecs.serialise(stream);
 }

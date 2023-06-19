@@ -41,11 +41,10 @@ private:
 	std::unique_ptr<Widget> mainMenu;
 	std::unique_ptr<Widget> pauseMenu;
 
-	int number = 1;
-
-	void create();
-	void remove(std::string name);
-	void load(std::string name);
-	void save();
+	void createButton();
+	void createWorld(std::string name, uint seed);
+	void removeWorld(std::string name);
+	void loadWorld(std::string name);
+	void saveWorld();
 
 };
