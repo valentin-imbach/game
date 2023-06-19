@@ -33,16 +33,6 @@ pair TextManager::textSize(std::string& text) {
 }
 
 void TextManager::drawText(std::string& text, pair position, bool centred, SDL_Color colour) {
-	// if (!font || text.empty()) return;
-	// SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), colour);
-	// SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::instance->renderer, textSurface);
-	// pair textSize(textSurface->w, textSurface->h);
-	// if (centred) position -= (textSize / 2);
-	// SDL_Rect renderQuad = {position.x, position.y, textSurface->w, textSurface->h};
-	// SDL_RenderCopy(Window::instance->renderer, texture, NULL, &renderQuad);
-	// SDL_FreeSurface(textSurface);
-	// SDL_DestroyTexture(texture);
-
 	if (!font || text.empty()) return;
 	std::vector<std::string> lines;
 	std::istringstream iss(text);

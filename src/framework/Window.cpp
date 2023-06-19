@@ -14,15 +14,15 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
 	LOG("Root path is", root.string());
 
 	int flags = fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
-	sdl_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, flags);
-	if (!sdl_window) {
+	window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, flags);
+	if (!window) {
 		ERROR("Failed to create Window");
 		exit(EXIT_FAILURE);
 	}
 	LOG("Window created");
 
-	SDL_SetWindowMinimumSize(sdl_window, 1024, 640);
-	renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_TARGETTEXTURE);
+	SDL_SetWindowMinimumSize(window, 1024, 640);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!renderer) {
 		ERROR("Failed to create Renderer");
 		exit(EXIT_FAILURE);
@@ -39,7 +39,7 @@ void Window::clear() {
 }
 
 void Window::update() {
-	SDL_GetWindowSize(sdl_window, &size.x, &size.y);
+	SDL_GetWindowSize(window, &size.x, &size.y);
 	SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 }
 

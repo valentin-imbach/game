@@ -12,7 +12,7 @@ public:
 	void draw();
 
 	const char* title;
-	SDL_Window* sdl_window;
+	SDL_Window* window;
 	SDL_Renderer* renderer;
 
 	pair size;
