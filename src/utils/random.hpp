@@ -1,6 +1,7 @@
 #pragma once
 #include <limits>
 #include <vector>
+#include <cassert>
 #include "typedefs.hpp"
 
 namespace noise {

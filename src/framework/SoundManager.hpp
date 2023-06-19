@@ -52,15 +52,16 @@ struct TrackMix {
     bool parity = false;
 
     void change() {
-        for (int i = 1; i < TrackId::count; i++) {
-            if (noise::bernoulli(rand(), variance)) activeTracks[i] = !activeTracks[i];
+        uint ticks = SDL_GetTicks();
+        for (uint i = 1; i < TrackId::count; i++) {
+            if (noise::bernoulli(ticks, variance)) activeTracks[i] = !activeTracks[i];
             if (activeTracks[i]) {
                 TrackId::value trackId = TrackId::from_int(i);
                 SoundManager::playTrack(trackId, i + parity * TrackId::count, loops);
                 LOG(TrackId::to_string(trackId));
             }
         }
-        lastChange = SDL_GetTicks();
+        lastChange = ticks;
         parity = !parity;
     }
 

@@ -16,7 +16,7 @@ public:
 			if (!vec::inside(position, positionComponent.position, {1.0f, 1.0f})) continue;
 			LootComponent& lootComponent = ecs->getComponent<LootComponent>(entity);
 
-			for (int i = 0; i < lootComponent.lootTable.size; i++) {
+			for (uint i = 0; i < lootComponent.lootTable.size; i++) {
 				Entity item = lootComponent.lootTable.table[i].create(seed++);
 				Entity rest = inventoryComponent.inventory.add(item);
 				if (rest) {

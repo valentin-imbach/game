@@ -137,7 +137,7 @@ bool TabWidget::handleEvent(InputEvent event) {
 //* ItemSlot
 
 ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link)
-	: GuiElement(position, {18, 18}), itemContainer(itemContainer), link(link) {
+	: GuiElement(position, {18, 18}), link(link), itemContainer(itemContainer) {
 	sprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
 }
 
@@ -208,7 +208,7 @@ void HotbarGui::draw() {
 	Inventory& inventory = guiManager->world->ecs.getComponent<PlayerComponent>(player).hotbar;
 	uint activeSlot = guiManager->world->ecs.getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GuiManager::scale;
-	for (int x = 0; x < inventory.size.x; x++) {
+	for (uint x = 0; x < inventory.size.x; x++) {
 		pair offset(spacing * x - spacing * (inventory.size.x - 1) / 2, 0);
 		if (x == activeSlot)
 			activeSlotSprite.draw(screenPosition + offset, GuiManager::scale);
@@ -248,7 +248,7 @@ void HealthBarGui::draw() {
 //* InventoryGui
 
 InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link)
-	: Widget(position, spacing * inventory->size, Sprite()), inventory(inventory), spacing(spacing), link(link) {
+	: Widget(position, spacing * inventory->size, Sprite()), inventory(inventory), link(link), spacing(spacing) {
 	for (int x = 0; x < inventory->size.x; x++) {
 		for (int y = 0; y < inventory->size.y; y++) {
 			pair position(spacing * x - spacing * (inventory->size.x - 1) / 2, spacing * y - spacing * (inventory->size.y - 1) / 2);
@@ -262,9 +262,9 @@ InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inv
 CraftingGui::CraftingGui(pair position, Inventory* link)
 	: Widget(position, {144, 128}, Sprite()), link(link) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&CraftingGui::select, this, std::placeholders::_1), 3, Direction::WEST);
-	for (int n = 1; n < CraftingRecipeId::count; n++) {
+	for (uint n = 1; n < CraftingRecipeId::count; n++) {
 		SpriteStack sprites;
-		sprites.addSprite({SpriteSheet::CRAFTING_ICONS, {n - 1, 0}, {1, 1}}, {0, 0});
+		sprites.addSprite({SpriteSheet::CRAFTING_ICONS, pair(n - 1, 0), pair(1, 1)}, pair(0, 0));
 		selector->addSelection(sprites);
 	}
 	addGuiElement(std::move(selector));
@@ -289,7 +289,7 @@ CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inve
 	inputs = std::vector<ItemContainer>(arity);
 	output.output = true;
 
-	for (int i = 0; i < arity; i++) {
+	for (uint i = 0; i < arity; i++) {
 		inputs[i].itemKind = recipe.ingredients[i].itemKind;
 		int y = i * 20 - 10 * (1 + arity);
 		addGuiElement(std::make_unique<ItemSlot>(pair(10, y), inputs[i], link));
@@ -303,11 +303,11 @@ CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inve
 
 CraftingGrid::~CraftingGrid() {
 	if (link) {
-		for (int i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
+		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
 		output.item = link->add(output.item);
 	}
 	vec pos = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player).position;
-	for (int i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputs[i].item);
+	for (uint i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputs[i].item);
 	guiManager->world->ecs.addComponent<PositionComponent>({pos}, output.item);
 }
 
@@ -368,9 +368,9 @@ BuildGui::BuildGui(pair position)
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
 	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20, 20), std::bind(&BuildGui::build, this), Sprite(), "", Direction::SOUTH_EAST));
 
-	for (int n = 1; n < StationId::count; n++) {
+	for (uint n = 1; n < StationId::count; n++) {
 		SpriteStack sprites;
-		sprites.addSprite({SpriteSheet::STATION_ICONS, {n - 1, 0}, {1, 1}}, {0, 0});
+		sprites.addSprite({SpriteSheet::STATION_ICONS, pair(n - 1, 0), pair(1, 1)}, pair(0, 0));
 		selector->addSelection(sprites);
 	}
 	addGuiElement(std::move(selector));
@@ -390,7 +390,7 @@ void BuildGui::build() {
 //* Button
 
 Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite, std::string text, Direction::value alignment)
-	: GuiElement(position, size, alignment), sprite(sprite), callback(callback), text(text) {}
+	: GuiElement(position, size, alignment), sprite(sprite), text(text), callback(callback) {}
 
 bool Button::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
@@ -409,7 +409,7 @@ void Button::draw() {
 //* Selector
 
 Selector::Selector(pair position, pair size, std::function<void(int)> callback, int columns, Direction::value alignment)
-	: GuiElement(position, size, alignment), callback(callback), columns(columns) {}
+	: GuiElement(position, size, alignment), columns(columns), callback(callback) {}
 
 void Selector::addSelection(SpriteStack sprite) {
 	sprites.push_back(sprite);
@@ -419,7 +419,7 @@ bool Selector::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
 		int offset = screenSize.x / columns;
 		pair index = (event.mousePosition - screenPosition + screenSize / 2) / offset;
-		int n = index.x + columns * index.y;
+		uint n = index.x + columns * index.y;
 		if (n < sprites.size()) {
 			callback(n);
 			selected = n;
@@ -434,7 +434,7 @@ void Selector::draw() {
 	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 	Sprite slot(SpriteSheet::SLOT, {0, 2}, {2, 2});
 	Sprite slot2(SpriteSheet::SLOT, {2, 2}, {2, 2});
-	for (int i = 0; i < sprites.size(); i++) {
+	for (uint i = 0; i < sprites.size(); i++) {
 		pair index = pair(i % columns, i / columns);
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);
 		if (selected == i) {

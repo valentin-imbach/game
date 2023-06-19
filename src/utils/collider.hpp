@@ -14,8 +14,8 @@ struct Collider {
 	float radius;
 
 	Collider() = default;
-	Collider(vec offset, vec size) : offset(offset), type(Shape::RECTANGLE), size(size) {}
-	Collider(vec offset, float radius) : offset(offset), type(Shape::CIRCLE), radius(radius) {}
+	Collider(vec offset, vec size) : offset(offset), type(Shape::RECTANGLE), size(size), radius() {}
+	Collider(vec offset, float radius) : offset(offset), type(Shape::CIRCLE), size(), radius(radius) {}
 
 	vec topBottom(vec position) {
 		if (type == Shape::CIRCLE) {

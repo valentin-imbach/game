@@ -10,7 +10,7 @@ void Console::draw() {
 	if (!active) return;
 	pair windowSize = Window::instance->size;
 	TextureManager::drawRect({20, windowSize.y / 2 + 10}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
-	for (int i = 0; i < history.size(); i++) {
+	for (uint i = 0; i < history.size(); i++) {
 		pair position(40, windowSize.y - 60 - (history.size() - i) * 30);
 		TextManager::drawText(history[i], position);
 	}

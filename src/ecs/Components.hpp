@@ -37,7 +37,7 @@ JUMPING)
 struct CreatureStateComponent {
 	CreatureState::value state;
 	Direction::value facing;
-	uint lastChange;
+	uint lastChange = 0;
 };
 
 struct MovementComponent {
@@ -76,7 +76,7 @@ struct InventoryComponent {
 struct HealthComponent {
 	uchar health;
 	uchar maxHealth;
-	uint lastDamage;
+	uint lastDamage = 0;
 };
 
 struct PlayerComponent {

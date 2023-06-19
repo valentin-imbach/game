@@ -10,7 +10,7 @@
 #include <filesystem>
 
 Game::Game()
-	: console(this), trackMix(1) {
+	: trackMix(1), console(this) {
 	lastFrameTicks = SDL_GetTicks();
 	sample = std::queue<uint>();
 	sampleSum = 0;
@@ -53,7 +53,7 @@ void Game::create() {
 	}
 	number += 1;
 
-	uint seed = rand();
+	uint seed = arc4random();
 	world = std::make_unique<World>(name, seed);
 	LOG("World", name, "created");
 	gameState = GameState::RUNNING;

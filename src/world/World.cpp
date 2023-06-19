@@ -314,7 +314,7 @@ void World::draw() {
 
 void World::drawTiles() {
 	pair screenSize = Window::instance->size;
-	int border = BIT * camera.zoom / 2;
+	// int border = BIT * camera.zoom / 2;
 
 	pair range = vec::ceil(vec(screenSize) / (2 * BIT * camera.zoom));
 	pair start = vec::round(camera.position);

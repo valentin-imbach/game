@@ -19,7 +19,7 @@ Biome::value Map::getBiome(pair position) {
 	int temperature = temparatureMap->get(position);
 	int precipitation = precipitationMap->get(position);
 	int elevation = elevationMap->get(position);
-	int vegetation = vegetationMap->get(position);
+	// int vegetation = vegetationMap->get(position);
 
 	if (elevation <= 0) return Biome::OCEAN;
 	if (elevation >= 1000) return Biome::MOUNTAIN;
@@ -146,13 +146,13 @@ void Map::updateStyle(pair position, bool propagate) {
 
 void Map::analyse(int samples) {
 	uint count[Biome::count] = {};
-	for (int i = 0; i < samples; i++) {
+	for (uint i = 0; i < samples; i++) {
 		int x = noise::Int(seed++, -10000, 10000);
 		int y = noise::Int(seed++, -10000, 10000);
 		pair position(x, y);
 		count[getBiome(position)] += 1;
 	}
-	for (int b = 1; b < Biome::count; b++) {
+	for (uint b = 1; b < Biome::count; b++) {
 		int percent = std::round((100.0f * count[b]) / samples);
 		LOG(Biome::strings[b], std::to_string(percent) + "%");
 	}

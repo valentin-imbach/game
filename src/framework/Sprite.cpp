@@ -21,7 +21,7 @@ void Sprite::animationReset(uint ticks) {
 }
 
 void Sprite::loadSpriteSheets() {
-	for (int i = 1; i < SpriteSheet::count; i++) {
+	for (uint i = 1; i < SpriteSheet::count; i++) {
 		std::string fileName = SpriteSheet::strings[i] + ".png";
 		spriteSheets[i] = TextureManager::loadTexture(fileName);
 		outlineSpriteSheets[i] = TextureManager::loadTexture(fileName, true);

@@ -18,7 +18,7 @@ void SoundManager::Init() {
 	volume = Mix_VolumeMusic(-1);
 	Mix_AllocateChannels(2 * TrackId::count);
 
-    for (int i = 1; i < 2 * TrackId::count; i++) Mix_Volume(i, MIX_MAX_VOLUME / 10);
+    for (uint i = 1; i < 2 * TrackId::count; i++) Mix_Volume(i, MIX_MAX_VOLUME / 10);
 
 	loadSounds();
 	loadTracks();
@@ -40,7 +40,7 @@ void SoundManager::playTrack(TrackId::value trackId, int channel, int count) {
 }
 
 void SoundManager::loadSounds() {
-	for (int i = 1; i < SoundId::count; i++) {
+	for (uint i = 1; i < SoundId::count; i++) {
 		SoundId::value soundId = SoundId::from_int(i);
 		std::string path = SOUND_PATH + SoundId::to_string(soundId) + ".wav";
 		Mix_Chunk* sound = Mix_LoadWAV(path.c_str());
@@ -54,7 +54,7 @@ void SoundManager::loadSounds() {
 }
 
 void SoundManager::loadTracks() {
-	for (int i = 1; i < TrackId::count; i++) {
+	for (uint i = 1; i < TrackId::count; i++) {
 		TrackId::value trackId = TrackId::from_int(i);
 		std::string path = TRACK_PATH + TrackId::to_string(trackId) + ".wav";
 		Mix_Chunk* track = Mix_LoadWAV(path.c_str());

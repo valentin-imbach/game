@@ -21,7 +21,7 @@ public:
 				if (inputState[InputStateId::MOVE_SOUTH]) sum.y += 1;
 			}
 
-			Direction::value oldDirection = directionComponent.direction;
+			// Direction::value oldDirection = directionComponent.direction;
 			if (sum.x == 2 && sum.y == 1) directionComponent.direction = Direction::from_int(1);
 			if (sum.x == 2 && sum.y == 0) directionComponent.direction = Direction::from_int(2);
 			if (sum.x == 1 && sum.y == 0) directionComponent.direction = Direction::from_int(3);

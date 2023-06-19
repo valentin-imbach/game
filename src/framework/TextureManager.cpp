@@ -86,7 +86,7 @@ SDL_Texture* TextureManager::createTexture(pair size, SDL_Colour colour) {
 void TextureManager::outlineSurface(SDL_Surface* surface) {
 	if (SDL_LockSurface(surface)) ERROR("Failed to lock surface");
 	uint* pixels = (uint*)surface->pixels;
-	int pitch = surface->pitch;
+	// int pitch = surface->pitch;
 
 	for (int y = 0; y < surface->h; ++y) {
 		for (int x = 0; x < surface->w; ++x) {

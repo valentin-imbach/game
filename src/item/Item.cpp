@@ -75,7 +75,7 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 	ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 
 	int spacing = 30;
-	int width = 0;
+	// int width = 0;
 
 	std::vector<std::pair<Text, pair>> texts;
 	std::vector<std::pair<pair, pair>> icons;
@@ -100,14 +100,14 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 			}
 			if (EntityFactory::world->ecs.hasComponent<ItemKindComponent>(item)) {
 				ItemKindComponent& itemKindComponent = EntityFactory::world->ecs.getComponent<ItemKindComponent>(item);
-				for (int kind = 1; kind <= ItemKind::count; kind++) {
+				for (uint kind = 1; kind <= ItemKind::count; kind++) {
 					if (!itemKindComponent.itemKinds[kind]) continue;
 					icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
 					ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
 					std::string kindText = "   " + itemKindTemplate->name;
 					texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
 					pos.y += spacing;
-					for (int property = 1; property <= ItemProperty::count; property++) {
+					for (uint property = 1; property <= ItemProperty::count; property++) {
 						if (!itemKindTemplate->properties[property]) continue;
 						ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
 						int value = itemKindComponent.itemProperties[property];
@@ -127,14 +127,14 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 		if (elaborate) {
 			texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_UNDERLINE), pos);
 			pos.y += spacing;
-			for (int kind = 1; kind <= ItemKind::count; kind++) {
+			for (uint kind = 1; kind <= ItemKind::count; kind++) {
 				if (!itemTemplate->kinds[kind]) continue;
 				icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
 				ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
 				std::string kindText = "   " + itemKindTemplate->name;
 				texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
 				pos.y += spacing;
-				for (int property = 1; property <= ItemProperty::count; property++) {
+				for (uint property = 1; property <= ItemProperty::count; property++) {
 					if (!itemKindTemplate->properties[property]) continue;
 					ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
 					int value = itemTemplate->properties[ItemProperty::from_int(property)];

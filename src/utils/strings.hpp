@@ -8,7 +8,7 @@ namespace string {
 	inline std::vector<std::string> split(const std::string& str, const char* del = " ") {
 		std::vector<std::string> res;
 		std::string s = str;
-		char* token = strtok(&s[0], del);
+		char* token = strtok(s.data(), del);
 		while (token != nullptr) {
 			res.emplace_back(token);
 			token = strtok(nullptr, del);

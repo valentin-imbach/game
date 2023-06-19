@@ -21,10 +21,10 @@ public:
 	virtual bool handleEvent(InputEvent event);
 
 protected:
-	pair size;
-	pair screenSize;
 	pair position;
 	pair screenPosition;
+	pair size;
+	pair screenSize;
 	Direction::value alignment;
 	GuiManager* guiManager;
 	bool inside(pair position);
@@ -84,8 +84,8 @@ public:
 	Inventory* link;
 
 private:
-	Sprite sprite;
 	ItemContainer& itemContainer;
+	Sprite sprite;
 };
 
 class HotbarGui : public GuiElement {
@@ -147,7 +147,7 @@ public:
 
 private:
 	CraftingRecipeId::value recipeId;
-	int arity;
+	uint arity;
 	Inventory* link;
 	std::vector<ItemContainer> inputs;
 	ItemContainer output;
