@@ -18,11 +18,15 @@ SELECT_5,
 SELECT_6,
 SELECT_7,
 CONSOLE,
-STATE)
+STATE,
+BACKSPACE,
+RETURN,
+TEXT)
 
 struct InputEvent {
 	InputEventId::value id;
 	pair mousePosition;
+	std::string text;
 };
 
 ENUM(InputStateId,

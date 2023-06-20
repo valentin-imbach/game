@@ -33,6 +33,12 @@ void Game::buildMenu() {
 
 	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
 	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), "New World"));
+	std::unique_ptr<TextField> nameTextField = std::make_unique<TextField>(pair(-50, -90), pair(80, 15));
+	std::unique_ptr<TextField> seedTextField = std::make_unique<TextField>(pair(50, -90), pair(80, 15));
+	nameField = nameTextField.get();
+	seedField = seedTextField.get();
+	mainMenu->addGuiElement(std::move(nameTextField));
+	mainMenu->addGuiElement(std::move(seedTextField));
 
 	int offset = -40;
 	for (auto& name : worldNames) {
@@ -47,13 +53,23 @@ void Game::buildMenu() {
 
 void Game::createButton() {
 	static int number = 1;
-	std::string name = "world" + std::to_string(number);
-	uint seed = arc4random();
-	createWorld(name, seed);
+	if (!nameField || !seedField) return;
+	uint seed;
+	std::string seedString = seedField->getText();
+	if (!seedString.empty() && string::is_int(seedString)) {
+		seed = std::stoi(seedString);
+	} else {
+		seed = arc4random();
+	}
+	createWorld(nameField->getText(), seed);
 	number += 1;
 }
 
 void Game::createWorld(std::string name, uint seed) {
+	if (name.empty()) {
+		WARNING("World name can't be empty");
+		return;
+	}
 	auto path = Window::instance->root / "saves" / name;
 	if (std::filesystem::exists(path)) {
 		WARNING("Trying to create duplicate world", name);
@@ -168,7 +184,10 @@ void Game::handleEvents() {
 
 		InputEvent inputEvent;
 		inputEvent.mousePosition = mousePosition;
-		if (event.type == SDL_KEYDOWN) {
+		if (event.type == SDL_TEXTINPUT) {
+			inputEvent.id = InputEventId::TEXT;
+			inputEvent.text = event.text.text;
+		} else if (event.type == SDL_KEYDOWN) {
 			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
 				inputEvent.id = InputEventId::ESCAPE;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_E) {
@@ -191,6 +210,10 @@ void Game::handleEvents() {
 				inputEvent.id = InputEventId::SELECT_7;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_TAB) {
 				inputEvent.id = InputEventId::CONSOLE;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+				inputEvent.id = InputEventId::RETURN;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
+				inputEvent.id = InputEventId::BACKSPACE;
 			} else {
 				continue;
 			}

@@ -456,3 +456,43 @@ TextGui::TextGui(pair position, std::string text, Direction::value alignment) : 
 void TextGui::draw() {
 	TextManager::drawText(text, screenPosition, true);
 }
+
+//* TextField
+
+
+TextField::TextField(pair position, pair size, Direction::value alignment) : GuiElement(position, size, alignment) {}
+
+void TextField::draw() {
+    TextManager::drawText(text, screenPosition, true);
+	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+}
+
+bool TextField::handleEvent(InputEvent event) {
+	if (event.id == InputEventId::PRIMARY) {
+		if (inside(event.mousePosition)) {
+			active = true;
+			return true;
+		} else {
+			active = false;
+			return false;
+		}
+	} else if (event.id == InputEventId::ESCAPE) {
+		active = false;
+		return false;
+	} else if (event.id == InputEventId::TEXT) {
+		if (active) {
+			text += event.text;
+			return true;
+		}
+	} else if (event.id == InputEventId::BACKSPACE) {
+		if (active && text.length() > 0) {
+			text = text.substr(0, text.length() - 1);
+			return true;
+		}
+	}
+	return false;
+}
+
+std::string TextField::getText() {
+	return text;
+}

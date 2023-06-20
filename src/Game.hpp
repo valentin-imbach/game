@@ -36,6 +36,8 @@ private:
 	uint sampleSum;
 	int framesPerSecond;
 
+	TextField* nameField = nullptr;
+	TextField* seedField = nullptr;
 	void buildMenu();
 	
 	std::unique_ptr<Widget> mainMenu;

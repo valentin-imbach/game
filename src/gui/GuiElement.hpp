@@ -199,3 +199,14 @@ public:
 private:
 	std::string text;
 };
+
+class TextField : public GuiElement {
+public:
+    TextField(pair position, pair size, Direction::value alignment = Direction::NONE);
+	std::string getText();
+private:
+	std::string text;
+	bool active;
+	void draw() override;
+    bool handleEvent(InputEvent event) override;
+};
