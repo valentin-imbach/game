@@ -58,6 +58,7 @@ bool GuiManager::handleEvent(InputEvent event) {
 	for (auto& guiElement : guiElements) {
 		if (guiElement->handleEvent(event)) return true;
 	}
+	if (primary) return true;
 	return false;
 }
 

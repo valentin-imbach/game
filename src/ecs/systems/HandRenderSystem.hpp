@@ -9,10 +9,6 @@
 class HandRenderSystem : public System {
 public:
 	void update(Camera camera, std::vector<DrawCall>& drawQueue, uint ticks) {
-		// vec cameraPosition = ecs->getComponent<PositionComponent>(camera).position;
-		// float zoom = ecs->getComponent<CameraComponent>(camera).zoom;
-		pair screenSize = Window::instance->size;
-
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
@@ -26,20 +22,28 @@ public:
 			TextureStyle style;
 
 			entityPosition.y -= 0.5;
-			if (creatureStateComponent.facing == Direction::EAST) {
-				entityPosition.x += 0.2;
-			} else if (creatureStateComponent.facing == Direction::WEST) {
-				entityPosition.x -= 0.2;
-				style.flip = SDL_FLIP_HORIZONTAL;
-			}
+			uint timePassed = ticks - playerComponent.lastAction;
 
+			if (creatureStateComponent.facing == Direction::EAST) {
+				entityPosition.x += 0.625;
+				style.pivot = pair(-8 * camera.zoom, 8 * camera.zoom);
+				style.angle = -90;
+				if (timePassed < 300) style.angle = -90 + std::sin((M_PI * timePassed) / 300) * 90;
+			} else if (creatureStateComponent.facing == Direction::WEST) {
+				entityPosition.x -= 0.625;
+				style.flip = SDL_FLIP_HORIZONTAL;
+				style.pivot = pair(8 * camera.zoom, 8 * camera.zoom);
+				style.angle = 90;
+				if (timePassed < 300) style.angle = 90 - std::sin((M_PI * timePassed) / 300) * 90;
+			}
+			
 			// if (creatureStateComponent.state == CreatureState::WALKING) {
 			// 	uint past = ticks - creatureStateComponent.lastChange;
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 
 			pair screenPosition = camera.screenPosition(entityPosition);
-			drawQueue.push_back({itemSprites, screenPosition, 0, int(camera.zoom), style});
+			drawQueue.push_back({itemSprites, screenPosition, 1, int(camera.zoom), style});
 		}
 	}
 };

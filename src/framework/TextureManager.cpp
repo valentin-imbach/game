@@ -23,10 +23,11 @@ void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, 
 	if (style.centered) dpos -= dsize / 2;
 	SDL_Rect srect = {spos.x, spos.y, ssize.x, ssize.y};
 	SDL_Rect drect = {dpos.x, dpos.y, dsize.x, dsize.y};
+	SDL_Point pivot = {dsize.x / 2 + style.pivot.x, dsize.y / 2 + style.pivot.y};
 	SDL_SetRenderTarget(Window::instance->renderer, dst);
 	SDL_SetTextureAlphaMod(src, style.alpha * 255);
 	SDL_SetTextureColorMod(src, style.tint.r, style.tint.g, style.tint.b);
-	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, style.angle, NULL, style.flip);
+	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, style.angle, &pivot, style.flip);
 }
 
 void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool centered, bool filled) {

@@ -9,7 +9,7 @@
 
 class ForageSystem : public System {
 public:
-	void update(vec position, Entity item, uint ticks) {
+	bool update(vec position, Entity item, uint ticks) {
 		for (Entity entity : entities) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 			if (!vec::inside(position, vec(gridComponent.anker) - vec(0.5, 0.5), gridComponent.size, false)) continue;
@@ -20,7 +20,7 @@ public:
 			if (!resourceComponent.toolId) {
 				SoundManager::playSound(resourceComponent.soundId);
 				healthComponent.health -= 1;
-				return;
+				return true;
 			}
 
 			if (hasItemKind(item, resourceComponent.toolId)) {
@@ -29,8 +29,10 @@ public:
 					healthComponent.health -= damage;
 					spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
 					SoundManager::playSound(resourceComponent.soundId);
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 };

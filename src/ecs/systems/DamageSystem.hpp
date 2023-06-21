@@ -8,8 +8,8 @@
 
 class DamageSystem : public System {
 public:
-	void update(Entity actor, vec position, Entity item, uint ticks) {
-		if (!ecs->hasComponent<DamageComponent>(item)) return;
+	bool update(Entity actor, vec position, Entity item, uint ticks) {
+		if (!ecs->hasComponent<DamageComponent>(item)) return false;
 		vec actorPosition = ecs->getComponent<PositionComponent>(actor).position;
 		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item);
 		
@@ -25,8 +25,9 @@ public:
 					vec force = vec::normalise(positionComponent.position - actorPosition) / 10;
 					ecs->getComponent<ForceComponent>(entity).force = force;
 				}
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 };

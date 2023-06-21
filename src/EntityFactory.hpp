@@ -18,7 +18,6 @@ class EntityFactory {
 public:
 	EntityFactory() = delete;
 	static Entity createPlayer(vec position);
-	static Entity createCamera(vec position, float zoom);
 	static Entity createAnimal(AnimalId::value animalId, vec position);
 	static Entity createResource(ResourceId::value resourceId, pair position);
 	static Entity createStation(StationId::value stationId, pair position);

@@ -22,10 +22,6 @@ struct SpriteComponent {
 	std::array<std::pair<bool, uint>, SpriteEffectId::count> effects = {};
 };
 
-struct CameraComponent {
-	float zoom;
-};
-
 ENUM(CreatureState,
 IDLE,
 WALKING,
@@ -44,9 +40,7 @@ struct MovementComponent {
 	float speed;
 };
 
-struct ControllerComponent {
-
-};
+struct ControllerComponent {};
 
 struct DirectionComponent {
 	Direction::value direction;
@@ -58,16 +52,14 @@ struct ColliderComponent {
 
 struct ItemComponent {
 	ItemId::value itemId;
-	uint count;
+	uint count = 1;
 };
 
 struct AnimalAiComponent {
 	uint nextChange;
 };
 
-struct MonsterAiComponent {
-	
-};
+struct MonsterAiComponent {};
 
 struct InventoryComponent {
 	Inventory inventory;
@@ -82,7 +74,8 @@ struct HealthComponent {
 struct PlayerComponent {
 	Inventory hotbar;
 	Inventory equipment;
-	uchar activeSlot;
+	uchar activeSlot = 0;
+	uint lastAction = 0;
 };
 
 struct ResourceComponent {
@@ -110,9 +103,9 @@ struct ForceComponent {
 
 struct GridComponent {
 	pair anker;
-	pair size;
-	bool solid;
-	bool opaque;
+	pair size = {1, 1};
+	bool solid = true;
+	bool opaque = true;
 };
 
 ENUM(StationId,

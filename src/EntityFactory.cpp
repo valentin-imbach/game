@@ -38,13 +38,6 @@ Entity EntityFactory::createPlayer(vec position) {
 	return player;
 }
 
-Entity EntityFactory::createCamera(vec position, float zoom) {
-	Entity camera = world->ecs.createEntity();
-	world->ecs.addComponent<CameraComponent>({zoom}, camera);
-	world->ecs.addComponent<PositionComponent>({position}, camera);
-	return camera;
-}
-
 bool EntityFactory::free(pair position, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {

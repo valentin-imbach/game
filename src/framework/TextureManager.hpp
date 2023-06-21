@@ -14,6 +14,7 @@ struct TextureStyle {
 	SDL_Color tint = {255, 255, 255, 255};
 	bool outline = false;
 	float angle = 0;
+	pair pivot = {0, 0};
 };
 
 class TextureManager {

@@ -284,8 +284,10 @@ void World::draw() {
 	drawQueue.clear();
 	drawTiles();
 
-	pair gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
-	TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
+	if (!guiManager.active()) {
+		pair gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
+		TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
+	}
 
 	entityDrawSystem->update(camera, drawQueue, player, ticks, chunks[pair(0,0)]);  //TODO SLOW
 	handRenderSystem->update(camera, drawQueue, ticks);
@@ -370,7 +372,6 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
 	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
-
 	
 	if (event.id == InputEventId::INVENTORY) {
 		guiManager.open(makeInventory(), makeMenu());
@@ -389,11 +390,21 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
 
 	vec position = camera.worldPosition(event.mousePosition);
+	uint timePassed = ticks - playerComponent.lastAction;
 
 	if (event.id == InputEventId::PRIMARY) {
-		forageSystem->update(position, activeItemContainer.item, ticks);
-		//gatherSystem->update(player, position, ticks);
-		damageSystem->update(player, position, activeItemContainer.item, ticks);
+		if (timePassed > 500) {
+			if (forageSystem->update(position, activeItemContainer.item, ticks)) {
+				playerComponent.lastAction = ticks;
+				return true;
+			}
+			
+			if (damageSystem->update(player, position, activeItemContainer.item, ticks)) {
+				playerComponent.lastAction = ticks;
+				return true;
+			}
+			//gatherSystem->update(player, position, ticks);
+		}
 	} else if (event.id == InputEventId::SECONDARY) {
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
