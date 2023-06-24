@@ -28,6 +28,7 @@ public:
 
 	Entity buildMode = 0;
 
+	static bool box;
 	static uint scale;
 
 private:

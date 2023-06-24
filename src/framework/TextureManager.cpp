@@ -14,7 +14,7 @@ SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
 	if (outline) outlineSurface(tmpSurface);
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::instance->renderer, tmpSurface);
 	SDL_FreeSurface(tmpSurface);
-	LOG("Texture loaded from", path);
+	LOG("Texture loaded from", path, outline ? "(outlined)" : "");
 	return tex;
 }
 
@@ -85,10 +85,12 @@ SDL_Texture* TextureManager::createTexture(pair size, SDL_Colour colour) {
 }
 
 void TextureManager::outlineSurface(SDL_Surface* surface) {
-	if (SDL_LockSurface(surface)) ERROR("Failed to lock surface");
+	if (!surface) return;
+	if (SDL_LockSurface(surface)) {
+		ERROR("Failed to lock surface");
+		return;
+	}
 	uint* pixels = (uint*)surface->pixels;
-	// int pitch = surface->pitch;
-
 	for (int y = 0; y < surface->h; ++y) {
 		for (int x = 0; x < surface->w; ++x) {
 			uint pixel = pixels[y * (surface->w) + x];

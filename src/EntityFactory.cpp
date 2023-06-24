@@ -173,7 +173,7 @@ Entity EntityFactory::createProjectile(vec position, vec direction) {
 	
 	spriteComponent.angle = 45 - vec::angle(direction) * 180/M_PI;
 	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
-	world->ecs.addComponent<ProjectileComponent>({direction * 0.75f}, projectile);
+	world->ecs.addComponent<ProjectileComponent>({direction * 70}, projectile);
 
 	return projectile;
 }

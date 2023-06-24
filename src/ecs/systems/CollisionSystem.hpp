@@ -5,8 +5,6 @@
 #include "ECS.hpp"
 #include "TextureManager.hpp"
 
-#define COLLIDER_DEBUG true
-
 class CollisionSystem : public System {
 public:
 	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions) {

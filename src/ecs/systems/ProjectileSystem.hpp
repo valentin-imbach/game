@@ -6,14 +6,14 @@
 
 class ProjectileSystem : public System {
 public:
-	void update(uint ticks) {
+	void update(uint ticks, uint dt) {
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			ProjectileComponent& projectileComponent = ecs->getComponent<ProjectileComponent>(entity);
 			if (!projectileComponent.grounded) {
-				positionComponent.position += projectileComponent.speed;
-				projectileComponent.speed *= 0.95f;
-				if (vec::norm(projectileComponent.speed) < 0.1) projectileComponent.grounded = true;
+				positionComponent.position += projectileComponent.speed * dt / 1000;
+				projectileComponent.speed *= std::pow(0.995f, dt);
+				if (vec::norm(projectileComponent.speed) < 1) projectileComponent.grounded = true;
 			}
 			
 		}

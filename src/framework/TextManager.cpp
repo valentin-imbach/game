@@ -20,12 +20,13 @@ void TextManager::Init() {
 void TextManager::cleanup() {
 	if (font) TTF_CloseFont(font);
 	TTF_Quit();
+	LOG("TextManager cleaned up");
 }
 
 void TextManager::loadFont(std::string path, int size) {
 	font = TTF_OpenFont((FONT_PATH + path).c_str(), size);
 	if (!font) {
-		ERROR("Failed to load font from", path)
+		ERROR("Failed to load font", path)
 		return;
 	}
 	LOG("Font loaded from", path);
@@ -33,7 +34,10 @@ void TextManager::loadFont(std::string path, int size) {
 
 pair TextManager::textSize(std::string& text) {
 	pair size(0, 0);
-	if (TTF_SizeText(font, text.c_str(), &size.x, &size.y)) ERROR("Failed to determine size of string", text);
+	if (TTF_SizeText(font, text.c_str(), &size.x, &size.y)) {
+		ERROR("Failed to determine size of string", text);
+		return {};
+	}
 	return size;
 }
 
@@ -52,7 +56,10 @@ void TextManager::drawText(std::string& text, pair position, bool centred, SDL_C
 	}
 
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, textSize.x, textSize.y, 32, SDL_PIXELFORMAT_RGBA32);
-	if (!surface) ERROR("Failed to create surface:", SDL_GetError());
+	if (!surface) {
+		ERROR("Failed to create surface:", SDL_GetError());
+		return;
+	}
 
 	Uint32 colorKey = SDL_MapRGBA(surface->format, 0, 0, 0, 0);
     SDL_SetColorKey(surface, SDL_TRUE, colorKey);
@@ -60,7 +67,10 @@ void TextManager::drawText(std::string& text, pair position, bool centred, SDL_C
 	SDL_Rect textRect = {0, 0, 0, 0};
 	for (const auto& line : lines) {
 		SDL_Surface* textSurface = TTF_RenderText_Solid(font, line.c_str(), colour);
-		if (!textSurface) ERROR("Failed to render text:", TTF_GetError());
+		if (!textSurface) {
+			ERROR("Failed to render text:", TTF_GetError());
+			continue;
+		}
 		textRect.w = textSurface->w;
 		textRect.h = textSurface->h;
 		SDL_BlitSurface(textSurface, nullptr, surface, &textRect);
@@ -70,7 +80,10 @@ void TextManager::drawText(std::string& text, pair position, bool centred, SDL_C
 
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
 	SDL_FreeSurface(surface);
-	if (!texture) ERROR("Failed to create texture:", SDL_GetError());
+	if (!texture) {
+		ERROR("Failed to create texture:", SDL_GetError());
+		return;
+	}
 
 	if (centred) position -= textSize/2;
 	SDL_Rect dstRect = {position.x, position.y, textSize.x, textSize.y};

@@ -251,7 +251,7 @@ void World::update(uint dt) {
 	animalAiSystem->update(ticks);
 	monsterAiSystem->update(realm->solidMap, realm->opaqueMap, ticks);
 
-	projectileSystem->update(ticks);
+	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realm->solidMap, realm->map.get());
 	collisionSystem->update(collisions);
 
@@ -301,7 +301,7 @@ void World::draw() {
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
 	for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 
-	colliderDrawSystem->update(camera, ticks);
+	if (colliderDraw) colliderDrawSystem->update(camera, ticks);
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks);
 

@@ -18,7 +18,6 @@
 
 //* GuiElement
 
-uint GuiManager::scale = 3;
 GuiElement::GuiElement(pair position, pair size, Direction::value alignment)
 	: position(position), size(size), alignment(alignment) {}
 
@@ -43,7 +42,7 @@ void GuiElement::draw() {
 		sprite.draw(screenPosition, GuiManager::scale);
 	}
 
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	if (GuiManager::box) TextureManager::drawRect(screenPosition, screenSize);
 }
 
 bool GuiElement::handleEvent(InputEvent event) {
@@ -466,7 +465,7 @@ void Selector::draw() {
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);
 		(selected == i ? slot2 : slot).draw(pos, GuiManager::scale);
 		sprites[i].draw(pos, GuiManager::scale);
-		if (GUI_BOX) TextureManager::drawRect(pos, {offset, offset});
+		if (GuiManager::box) TextureManager::drawRect(pos, {offset, offset});
 	}
 }
 

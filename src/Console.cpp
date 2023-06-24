@@ -170,7 +170,11 @@ bool Console::execute(std::string input) {
 		ai::visible({4.5,3.7}, {0.2,1.9}, game->world->realm->solidMap);
 	} else if (inputs[0] == "state") {
 		game->gameState = GameState::from_string(inputs[1]);
-	} else {
+	} else if (inputs[0] == "gui_box") {
+		GuiManager::box = !GuiManager::box;
+	} else if (inputs[0] == "collider_box") {
+		game->world->colliderDraw = !game->world->colliderDraw;
+	}else {
 		return false;
 	}
 

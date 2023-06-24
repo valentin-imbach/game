@@ -3,6 +3,9 @@
 #include "GuiElement.hpp"
 #include "World.hpp"
 
+uint GuiManager::scale = 3;
+bool GuiManager::box = true;
+
 void GuiManager::update() {
 	for (auto& guiElement : guiElements) guiElement->reposition();
 	for (auto& guiElement : guiElements) guiElement->update(this);

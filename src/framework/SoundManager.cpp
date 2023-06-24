@@ -9,12 +9,11 @@ std::array<Mix_Chunk*, TrackId::count> SoundManager::tracks = {};
 int SoundManager::volume = 0;
 
 void SoundManager::Init() {
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) != -1) {
-		LOG("Mixer initialized");
-	} else {
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
 		ERROR("Failed to initialize Mixer");
 		return;
 	}
+	LOG("Mixer initialized");
 	volume = Mix_VolumeMusic(-1);
 	Mix_AllocateChannels(2 * TrackId::count);
 
@@ -34,6 +33,7 @@ void SoundManager::cleanup() {
 	}
 	
 	Mix_Quit();
+	LOG("Mixer clened up");
 }
 
 void SoundManager::setVolume(int v) {

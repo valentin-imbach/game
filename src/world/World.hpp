@@ -39,6 +39,7 @@ public:
 	void link(Entity entity);
 
 	Time time;
+	bool colliderDraw = true;
 
 private:
 	uint seed;
