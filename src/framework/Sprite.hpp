@@ -41,6 +41,9 @@ public:
 	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0);
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	static void loadSpriteSheets();
+	operator bool() {
+		return spriteSheet;
+	}
 private:
 	void animationReset(uint ticks);
 	SpriteSheet::value spriteSheet;

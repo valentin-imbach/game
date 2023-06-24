@@ -32,7 +32,7 @@ void Game::buildMenu() {
 	}
 
 	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), "New World"));
+	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), Sprite(), "New World"));
 	std::unique_ptr<TextField> nameTextField = std::make_unique<TextField>(pair(-50, -90), pair(80, 15));
 	std::unique_ptr<TextField> seedTextField = std::make_unique<TextField>(pair(50, -90), pair(80, 15));
 	nameField = nameTextField.get();
@@ -42,13 +42,13 @@ void Game::buildMenu() {
 
 	int offset = -40;
 	for (auto& name : worldNames) {
-		mainMenu->addGuiElement(std::make_unique<Button>(pair(0, offset), pair(50, 20), std::bind(&Game::loadWorld, this, name), Sprite(), name));
-		mainMenu->addGuiElement(std::make_unique<Button>(pair(50, offset), pair(20, 20), std::bind(&Game::removeWorld, this, name), Sprite(), "del"));
+		mainMenu->addGuiElement(std::make_unique<Button>(pair(0, offset), pair(50, 20), std::bind(&Game::loadWorld, this, name), Sprite(), Sprite(), name));
+		mainMenu->addGuiElement(std::make_unique<Button>(pair(50, offset), pair(20, 20), std::bind(&Game::removeWorld, this, name), Sprite(), Sprite(), "del"));
 		offset += 25;
 	}
 
 	pauseMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::saveWorld, this), Sprite(), "Save and Quit"));
+	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::saveWorld, this), Sprite(), Sprite(), "Save and Quit"));
 }
 
 void Game::createButton() {
@@ -194,6 +194,7 @@ void Game::pollEvents(uint dt) {
 		world->inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
 	}
 
+	handleEvent({InputEventId::RESET, mousePosition}, dt);
 	handleEvent({InputEventId::STATE, mousePosition}, dt);
 	handleEvent({InputEventId::HOVER, mousePosition}, dt);
 

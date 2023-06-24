@@ -32,7 +32,32 @@ void GuiElement::reposition(GuiElement* parent) {
 	screenPosition.y += parentSize.y * step.y / 2;
 }
 
+void GuiElement::update(GuiManager *manager) {
+	guiManager = manager;
+}
+
+void GuiElement::draw() {
+	if (hover && hoverSprite) {
+		hoverSprite.draw(screenPosition, GuiManager::scale);
+	} else if (sprite) {
+		sprite.draw(screenPosition, GuiManager::scale);
+	}
+
+	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+}
+
 bool GuiElement::handleEvent(InputEvent event) {
+	if (event.id == InputEventId::RESET) {
+		hover = false;
+		keys = false;
+		return false;
+	} else if (event.id == InputEventId::HOVER && inside(event.mousePosition)) {
+		hover = true;
+		return absorbHover;
+	} else if (event.id == InputEventId::STATE) {
+		keys = true;
+		return absorbKeys;
+	}
 	return false;
 }
 
@@ -42,9 +67,9 @@ bool GuiElement::inside(pair pos) {
 
 //* Widget
 
-Widget::Widget(pair position, pair size, Sprite sprite)
-	: GuiElement(position, size), sprite(sprite) {
+Widget::Widget(pair position, pair size, Sprite sprite) : GuiElement(position, size) {
 	children = std::vector<std::unique_ptr<GuiElement>>();
+	this->sprite = sprite;
 }
 
 void Widget::addGuiElement(std::unique_ptr<GuiElement> guiElement) {
@@ -56,7 +81,7 @@ void Widget::removeGuiElement() {
 }
 
 void Widget::update(GuiManager* manager) {
-	guiManager = manager;
+	GuiElement::update(manager);
 	for (auto& guiElement : children) {
 		guiElement->reposition(this);
 		guiElement->update(guiManager);
@@ -64,63 +89,58 @@ void Widget::update(GuiManager* manager) {
 }
 
 void Widget::draw() {
-	sprite.draw(screenPosition, GuiManager::scale);
+	GuiElement::draw();
 	for (int i = children.size() - 1; i >= 0; i--) children[i]->draw();
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 }
 
 bool Widget::handleEvent(InputEvent event) {
 	for (auto& guiElement : children) {
 		if (guiElement->handleEvent(event)) return true;
 	}
-	return false;
+	return (GuiElement::handleEvent(event));
 }
 
 //* Tab
 
 Tab::Tab(TabWidget* parent, uint index)
-	: GuiElement(pair(25 + 40 * index, 11), {24, 24}, Direction::NORTH_WEST), parent(parent), index(index) {}
+	: GuiElement(pair(25 + 40 * index, 11), pair(24, 24), Direction::NORTH_WEST), parent(parent), index(index) {}
 
 bool Tab::handleEvent(InputEvent event) {
-	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) parent->selectTab(index);
-	return false;
+	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
+		parent->selectTab(index);
+		return true;
+	}
+	return GuiElement::handleEvent(event);
 }
 
 void Tab::draw() {
 	bool selected = parent->selected == index;
-	Sprite sprite = Sprite(SpriteSheet::TAB, {2 * selected, 0}, {2, 2});
-	sprite.draw(screenPosition, GuiManager::scale);
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	sprite = Sprite(SpriteSheet::TAB, pair(2 * selected, 0), pair(2, 2));
+	GuiElement::draw();
 }
 
 //* TabWidget
 
 TabWidget::TabWidget(pair position, pair size)
-	: Widget(position, size, Sprite()) {}
+	: Widget(position, size) {}
 
 void TabWidget::draw() {
 	tabs[selected]->draw();
-	for (int i = children.size() - 1; i >= 0; i--) children[i]->draw();
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	Widget::draw();
 }
 
 void TabWidget::addTab(std::unique_ptr<GuiElement> guiElement) {
 	uint index = tabs.size();
 	tabs.push_back(std::move(guiElement));
-	pair position(index * 50, 0);
 	addGuiElement(std::make_unique<Tab>(this, index));
 }
 
-void TabWidget::selectTab(uint sel) {
-	if (selected < tabs.size()) selected = sel;
+void TabWidget::selectTab(uint n) {
+	if (selected < tabs.size()) selected = n;
 }
 
 void TabWidget::update(GuiManager* manager) {
-	guiManager = manager;
-	for (auto& guiElement : children) {
-		guiElement->reposition(this);
-		guiElement->update(guiManager);
-	}
+	Widget::update(manager);
 	for (auto& tab : tabs) {
 		tab->reposition(this);
 		tab->update(guiManager);
@@ -128,24 +148,22 @@ void TabWidget::update(GuiManager* manager) {
 }
 
 bool TabWidget::handleEvent(InputEvent event) {
-	for (auto& guiElement : children) {
-		if (guiElement->handleEvent(event)) return true;
-	}
-	return tabs[selected]->handleEvent(event);
+	if (tabs[selected]->handleEvent(event)) return true;
+	return Widget::handleEvent(event);
 }
 
 //* ItemSlot
 
 ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link)
-	: GuiElement(position, {18, 18}), link(link), itemContainer(itemContainer) {
-	sprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
+	: GuiElement(position, pair(18, 18)), link(link), itemContainer(itemContainer) {
+	sprite = Sprite(SpriteSheet::SLOT, pair(0, 0), pair(2, 2));
+	hoverSprite = Sprite(SpriteSheet::SLOT, pair(2, 0), pair(2, 2));
 }
 
 void ItemSlot::draw() {
-	sprite.draw(screenPosition, GuiManager::scale);
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	GuiElement::draw();
 	itemContainer.draw(screenPosition, GuiManager::scale);
-	if (inside(guiManager->mousePosition)) {
+	if (hover) {
 		pair infoPosition(screenPosition.x + 35, screenPosition.y - 30);
 		itemContainer.drawInfo(infoPosition, guiManager->world->inputState[InputStateId::ALTER]);
 	}
@@ -184,36 +202,36 @@ bool ItemSlot::handleEvent(InputEvent event) {
 		mouseItemContainer.item = itemContainer.add(mouseItemContainer.item, ItemAmount::ONE);
 		return true;
 	}
-	return false;
+	return GuiElement::handleEvent(event);
 }
 
 //* HotbarGui
 
 HotbarGui::HotbarGui(Entity player)
-	: GuiElement({0, 20}, {150, 30}, Direction::NORTH), player(player) {
+	: GuiElement(pair(0, 20), pair(150, 30), Direction::NORTH), player(player) {
 	sprite = Sprite(SpriteSheet::HOTBAR, {0, 0}, {10, 2});
 	slotSprite = Sprite(SpriteSheet::SLOT, {0, 0}, {2, 2});
 	activeSlotSprite = Sprite(SpriteSheet::SLOT, {2, 0}, {2, 2});
 }
 
 void HotbarGui::update(GuiManager* manager) {
-	guiManager = manager;
+	GuiElement::update(manager);
 	player = guiManager->world->player;
 }
 
 void HotbarGui::draw() {
 	if (guiManager->active() || !player) return;
-	sprite.draw(screenPosition, GuiManager::scale);
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	GuiElement::draw();
 	Inventory& inventory = guiManager->world->ecs.getComponent<PlayerComponent>(player).hotbar;
 	uint activeSlot = guiManager->world->ecs.getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GuiManager::scale;
 	for (uint x = 0; x < inventory.size.x; x++) {
 		pair offset(spacing * x - spacing * (inventory.size.x - 1) / 2, 0);
-		if (x == activeSlot)
+		if (x == activeSlot) {
 			activeSlotSprite.draw(screenPosition + offset, GuiManager::scale);
-		else
+		} else {
 			slotSprite.draw(screenPosition + offset, GuiManager::scale);
+		}
 		inventory.itemContainers[x][0].draw(screenPosition + offset, GuiManager::scale);
 	}
 }
@@ -221,18 +239,19 @@ void HotbarGui::draw() {
 //* Health Bar
 
 HealthBarGui::HealthBarGui(Entity player)
-	: GuiElement({-90, 20}, {}, Direction::NORTH_EAST), player(player) {
+	: GuiElement(pair(-90, 20), pair(0, 0), Direction::NORTH_EAST), player(player) {
 	heartSprite = Sprite(SpriteSheet::HEART, {0, 0}, {1, 1});
 	halfHeartSprite = Sprite(SpriteSheet::HEART, {1, 0}, {1, 1});
 }
 
 void HealthBarGui::update(GuiManager* manager) {
-	guiManager = manager;
+	GuiElement::update(manager);
 	player = guiManager->world->player;
 }
 
 void HealthBarGui::draw() {
 	if (!player) return;
+	GuiElement::draw();
 	HealthComponent& healthComponent = guiManager->world->ecs.getComponent<HealthComponent>(player);
 	int spacing = 9 * GuiManager::scale;
 	for (int x = 0; x < healthComponent.health / 2; x++) {
@@ -248,7 +267,7 @@ void HealthBarGui::draw() {
 //* InventoryGui
 
 InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link)
-	: Widget(position, spacing * inventory->size, Sprite()), inventory(inventory), link(link), spacing(spacing) {
+	: Widget(position, spacing * inventory->size), inventory(inventory), link(link), spacing(spacing) {
 	for (int x = 0; x < inventory->size.x; x++) {
 		for (int y = 0; y < inventory->size.y; y++) {
 			pair position(spacing * x - spacing * (inventory->size.x - 1) / 2, spacing * y - spacing * (inventory->size.y - 1) / 2);
@@ -260,7 +279,7 @@ InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inv
 //* CraftingGui
 
 CraftingGui::CraftingGui(pair position, Inventory* link)
-	: Widget(position, {144, 128}, Sprite()), link(link) {
+	: Widget(position, {144, 128}), link(link) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&CraftingGui::select, this, std::placeholders::_1), 3, Direction::WEST);
 	for (uint n = 1; n < CraftingRecipeId::count; n++) {
 		SpriteStack sprites;
@@ -277,11 +296,10 @@ void CraftingGui::select(int n) {
 	addGuiElement(std::move(grid));
 }
 
-
 //* CraftingGrid
 
 CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inventory* link)
-	: Widget(position, {40, 0}, Sprite()), recipeId(recipeId), link(link) {
+	: Widget(position, {40, 0}), recipeId(recipeId), link(link) {
 
 	CraftingKindRecipe& recipe = CraftingKindRecipe::recipes[recipeId];
 	arity = recipe.ingredients.size();
@@ -298,7 +316,9 @@ CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inve
 	}
 
 	addGuiElement(std::make_unique<ItemSlot>(pair(10, 10 * (arity + 1)), output, link));
-	addGuiElement(std::make_unique<Button>(pair(10, 10 * (arity - 1)), pair(16, 16), std::bind(&CraftingGrid::craft, this), Sprite(SpriteSheet::HAMMER, {0,0}, {1,1})));
+	Sprite buttonSprite(SpriteSheet::HAMMER, {0,0}, {1,1});
+	Sprite buttonHoverSprite(SpriteSheet::HAMMER, {1,0}, {1,1});
+	addGuiElement(std::make_unique<Button>(pair(10, 10 * (arity - 1)), pair(16, 16), std::bind(&CraftingGrid::craft, this), buttonSprite, buttonHoverSprite));
 }
 
 CraftingGrid::~CraftingGrid() {
@@ -334,7 +354,6 @@ void CraftingGrid::craft() {
 
 	for (auto& productKind : recipe.product.productKinds) itemKindComponent.itemKinds[productKind] = true;
 	for (auto& productProperty : recipe.product.productProperties) {
-
 		assert(productProperty.factors.size() == arity);
 
 		int total = 0;
@@ -353,7 +372,7 @@ void CraftingGrid::craft() {
 	}
 
 	EntityFactory::world->ecs.addComponent<ItemKindComponent>(itemKindComponent, item);
-	Collider itemCollider({0, 0}, {0.4f, 0.4f});
+	Collider itemCollider(vec(0, 0), vec(0.4f, 0.4f));
 	EntityFactory::world->ecs.addComponent<ColliderComponent>({itemCollider}, item);
 	EntityFactory::world->ecs.addComponent<NameComponent>({Textblock(recipe.product.name)}, item);
 
@@ -364,9 +383,9 @@ void CraftingGrid::craft() {
 //* BuildGui
 
 BuildGui::BuildGui(pair position)
-	: Widget(position, {144, 128}, Sprite()) {
+	: Widget(position, pair(144, 128)) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
-	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20, 20), std::bind(&BuildGui::build, this), Sprite(), "", Direction::SOUTH_EAST));
+	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20, 20), std::bind(&BuildGui::build, this), Sprite(), Sprite(), "", Direction::SOUTH_EAST));
 
 	for (uint n = 1; n < StationId::count; n++) {
 		SpriteStack sprites;
@@ -389,21 +408,29 @@ void BuildGui::build() {
 
 //* Button
 
-Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite, std::string text, Direction::value alignment)
-	: GuiElement(position, size, alignment), sprite(sprite), text(text), callback(callback) {}
+Button::Button(pair position, pair size, std::function<void()> callback, Sprite sprite, Sprite hoverSprite, std::string text, Direction::value alignment)
+	: GuiElement(position, size, alignment), text(text), callback(callback) {
+		this->sprite = sprite;
+		this->hoverSprite = hoverSprite;
+}
 
 bool Button::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
 		callback();
 		return true;
 	}
-	return false;
+	return GuiElement::handleEvent(event);
 }
 
 void Button::draw() {
-	sprite.draw(screenPosition, GuiManager::scale);
-	if (!text.empty()) TextManager::drawText(text, screenPosition, true);
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	GuiElement::draw();
+	if (!text.empty()) {
+		if (hover) {
+			TextManager::drawText(text, screenPosition, true, {150,150,255,255});
+		} else {
+			TextManager::drawText(text, screenPosition, true);
+		}
+	}
 }
 
 //* Selector
@@ -426,22 +453,18 @@ bool Selector::handleEvent(InputEvent event) {
 			return true;
 		}
 	}
-	return false;
+	return GuiElement::handleEvent(event);
 }
 
 void Selector::draw() {
 	int offset = screenSize.x / columns;
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
+	GuiElement::draw();
 	Sprite slot(SpriteSheet::SLOT, {0, 2}, {2, 2});
 	Sprite slot2(SpriteSheet::SLOT, {2, 2}, {2, 2});
 	for (uint i = 0; i < sprites.size(); i++) {
 		pair index = pair(i % columns, i / columns);
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);
-		if (selected == i) {
-			slot2.draw(pos, GuiManager::scale);
-		} else {
-			slot.draw(pos, GuiManager::scale);
-		}
+		(selected == i ? slot2 : slot).draw(pos, GuiManager::scale);
 		sprites[i].draw(pos, GuiManager::scale);
 		if (GUI_BOX) TextureManager::drawRect(pos, {offset, offset});
 	}
@@ -450,10 +473,11 @@ void Selector::draw() {
 //* TextGui
 
 TextGui::TextGui(pair position, std::string text, Direction::value alignment) : GuiElement(position, {0,0}, alignment), text(text) {
-	size = TextManager::textSize(text);
+	size = TextManager::textSize(text) / GuiManager::scale;
 }
 
 void TextGui::draw() {
+	GuiElement::draw();
 	TextManager::drawText(text, screenPosition, true);
 }
 
@@ -463,8 +487,8 @@ void TextGui::draw() {
 TextField::TextField(pair position, pair size, Direction::value alignment) : GuiElement(position, size, alignment) {}
 
 void TextField::draw() {
+	GuiElement::draw();
     TextManager::drawText(text, screenPosition, true);
-	if (GUI_BOX) TextureManager::drawRect(screenPosition, screenSize);
 }
 
 bool TextField::handleEvent(InputEvent event) {
@@ -490,7 +514,7 @@ bool TextField::handleEvent(InputEvent event) {
 			return true;
 		}
 	}
-	return false;
+	return GuiElement::handleEvent(event);
 }
 
 std::string TextField::getText() {

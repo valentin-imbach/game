@@ -36,10 +36,6 @@ void GuiManager::draw() {
 }
 
 bool GuiManager::handleEvent(InputEvent event) {
-	if (event.id == InputEventId::STATE || event.id == InputEventId::HOVER) {
-		return active();
-	}
-
 	if (buildMode && event.id == InputEventId::PRIMARY) {
 		GridComponent& gridComponent = world->ecs.getComponent<GridComponent>(buildMode);
 		if (world->realm->free(gridComponent.anker, gridComponent.size)) {

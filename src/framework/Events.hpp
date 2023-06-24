@@ -26,7 +26,8 @@ DEBUG,
 HOVER,
 QUIT,
 UP,
-DOWN)
+DOWN,
+RESET)
 
 struct InputEvent {
 	InputEventId::value id;

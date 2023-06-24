@@ -16,8 +16,8 @@ public:
 	GuiElement(pair position, pair size, Direction::value alignment = Direction::NONE);
 	virtual ~GuiElement() = default;
 	void reposition(GuiElement* parent = nullptr);
-	virtual void update(GuiManager* manager) { guiManager = manager; };
-	virtual void draw() = 0;
+	virtual void update(GuiManager* manager);
+	virtual void draw();
 	virtual bool handleEvent(InputEvent event);
 
 protected:
@@ -25,8 +25,16 @@ protected:
 	pair screenPosition;
 	pair size;
 	pair screenSize;
+
+	Sprite sprite;
+	Sprite hoverSprite;
 	Direction::value alignment;
 	GuiManager* guiManager;
+
+	bool hover;
+	bool keys;
+	bool absorbHover = true;
+	bool absorbKeys = false;
 	bool inside(pair position);
 
 	friend class GuiManager;
@@ -34,7 +42,7 @@ protected:
 
 class Widget : public GuiElement {
 public:
-	Widget(pair position, pair size, Sprite sprite);
+	Widget(pair position, pair size, Sprite sprite = {});
 	~Widget() override = default;
 	void update(GuiManager* manager) override;
 	void draw() override;
@@ -43,7 +51,6 @@ public:
 	bool handleEvent(InputEvent event) override;
 
 protected:
-	Sprite sprite;
 	std::vector<std::unique_ptr<GuiElement>> children;
 };
 
@@ -54,7 +61,7 @@ public:
 	void draw() override;
 	void update(GuiManager* manager) override;
 	void addTab(std::unique_ptr<GuiElement> guiElement);
-	void selectTab(uint selected);
+	void selectTab(uint n);
 	bool handleEvent(InputEvent event) override;
 
 private:
@@ -85,7 +92,6 @@ public:
 
 private:
 	ItemContainer& itemContainer;
-	Sprite sprite;
 };
 
 class HotbarGui : public GuiElement {
@@ -97,7 +103,6 @@ public:
 
 private:
 	Entity player;
-	Sprite sprite;
 	Sprite slotSprite;
 	Sprite activeSlotSprite;
 };
@@ -128,14 +133,13 @@ private:
 
 class Button : public GuiElement {
 public:
-	Button(pair position, pair size, std::function<void()> callback, Sprite sprite, std::string text = "", Direction::value alignment = Direction::NONE);
+	Button(pair position, pair size, std::function<void()> callback, Sprite sprite = {}, Sprite hoverSprite = {}, std::string text = "", Direction::value alignment = Direction::NONE);
 	~Button() override = default;
 	bool handleEvent(InputEvent event) override;
 	void draw() override;
 
 private:
 	std::string text;
-	Sprite sprite;
 	std::function<void()> callback;
 };
 
