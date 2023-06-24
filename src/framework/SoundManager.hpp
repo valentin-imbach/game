@@ -29,6 +29,7 @@ CELESTE)
 class SoundManager {
 public:
     static void Init();
+    static void cleanup();
     static void loadSounds();
     static void loadTracks();
     static void playSound(SoundId::value soundId);

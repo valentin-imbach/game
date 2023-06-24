@@ -20,45 +20,47 @@ void Console::draw() {
 	TextManager::drawText(input, {40, windowSize.y - 60});
 }
 
-bool Console::handleEvent(SDL_Event event) {
-	if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_TAB) {
+bool Console::handleEvent(InputEvent event) {
+	if (event.id == InputEventId::CONSOLE) {
 		active = !active;
 		return true;
 	}
 	if (!active) return false;
-	if (event.type == SDL_TEXTINPUT) {
+	if (event.id == InputEventId::TEXT) {
 		if (input.size() < 22) {
-			input += event.text.text;
+			input += event.text;
 			index = history.size();
 		}
-	} else if (event.type == SDL_KEYDOWN) {
-		switch (event.key.keysym.scancode) {
-		case SDL_SCANCODE_BACKSPACE:
-			if (input.length() > 0) {
-				input.pop_back();
-				index = history.size();
-			}
-			break;
-		case SDL_SCANCODE_ESCAPE:
-			active = false;
-			break;
-		case SDL_SCANCODE_RETURN:
-			if (execute(input)) {
-				history.push_back(input);
-				input.clear();
-				index = history.size();
-			}
-			break;
-		case SDL_SCANCODE_UP:
-			index = std::max(index, 1UL) - 1;
-			if (index < history.size()) input = history[index];
-			break;
-		case SDL_SCANCODE_DOWN:
-			index = std::min(index + 1, history.size());
-			if (index == history.size()) input.clear();
-			if (index < history.size()) input = history[index];
-			break;
-		default:
+	} else if (event.id == InputEventId::BACKSPACE) {
+		if (input.length() > 0) {
+			input.pop_back();
+			index = history.size();
+			return true;
+		}
+	} else if (event.id == InputEventId::ESCAPE) {
+		active = false;
+		return true;
+	} else if (event.id == InputEventId::RETURN) {
+		if (execute(input)) {
+			history.push_back(input);
+			input.clear();
+			index = history.size();
+			return true;
+		}
+		return false;
+	} else if (event.id == InputEventId::UP) {
+		index = std::max(index, 1UL) - 1;
+		if (index < history.size()) {
+			input = history[index];
+			return true;
+		}
+	} else if (event.id == InputEventId::DOWN) {
+		index = std::min(index + 1, history.size());
+		if (index == history.size()) {
+			input.clear();
+			return true;
+		} else if (index < history.size()) {
+			input = history[index];
 			return true;
 		}
 	}

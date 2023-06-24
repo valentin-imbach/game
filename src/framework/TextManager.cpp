@@ -17,6 +17,11 @@ void TextManager::Init() {
 	TextManager::loadFont("font.ttf", 32);
 }
 
+void TextManager::cleanup() {
+	if (font) TTF_CloseFont(font);
+	TTF_Quit();
+}
+
 void TextManager::loadFont(std::string path, int size) {
 	font = TTF_OpenFont((FONT_PATH + path).c_str(), size);
 	if (!font) {

@@ -33,6 +33,11 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
 	instance = this;
 }
 
+void Window::cleanup() {
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+}
+
 void Window::clear() {
 	SDL_SetRenderDrawColor(Window::renderer, 20, 20, 20, 255);
 	SDL_RenderClear(Window::renderer);

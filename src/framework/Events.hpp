@@ -21,12 +21,17 @@ CONSOLE,
 STATE,
 BACKSPACE,
 RETURN,
-TEXT)
+TEXT,
+DEBUG,
+HOVER,
+QUIT,
+UP,
+DOWN)
 
 struct InputEvent {
 	InputEventId::value id;
 	pair mousePosition;
-	std::string text;
+	std::string text = "";
 };
 
 ENUM(InputStateId,

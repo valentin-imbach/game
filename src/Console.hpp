@@ -18,7 +18,7 @@ public:
 	Console(Game* game);
 
 	void draw();
-	bool handleEvent(SDL_Event event);
+	bool handleEvent(InputEvent event);
 	bool active = false;
 
 private:

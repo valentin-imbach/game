@@ -5,8 +5,6 @@
 #include "GuiElement.hpp"
 #include "SoundManager.hpp"
 
-#define SAMPLE_SIZE 50
-
 ENUM(GameState,
 LOADING,
 MENU,
@@ -16,26 +14,24 @@ PAUSED)
 class Game {
 public:
 	Game();
+	~Game();
 
 	TrackMix trackMix;
 
-	void update();
+	void update(uint dt);
 	void draw();
-	void handleEvents();
-	void limitFrameRate(int fps);
+	void pollEvents(uint dt);
 
 	GameState::value gameState;
 	Console console;
 	DebugScreen debugScreen;
 	std::unique_ptr<World> world;
 
-private:
-	uint lastFrameTicks;
-	uint dt = 0;
-	std::queue<uint> sample;
-	uint sampleSum;
 	int framesPerSecond;
+	int updatesPerSecond;
 
+private:
+	bool handleEvent(InputEvent event, uint dt);
 	TextField* nameField = nullptr;
 	TextField* seedField = nullptr;
 	void buildMenu();

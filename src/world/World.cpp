@@ -245,7 +245,7 @@ void World::update(uint dt) {
 
 	guiManager.update();
 
-	controllerSystem->update(inputState, !guiManager.active(), ticks);
+	controllerSystem->update(inputState, state, ticks);
 
 	sensorSystem->update(realm->opaqueMap, player, ticks);
 	animalAiSystem->update(ticks);
@@ -289,7 +289,7 @@ void World::draw() {
 		TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 	}
 
-	entityDrawSystem->update(camera, drawQueue, player, ticks, chunks[pair(0,0)]);  //TODO SLOW
+	entityDrawSystem->update(camera, drawQueue, state, player, ticks, chunks[pair(0,0)]);  //TODO SLOW
 	handRenderSystem->update(camera, drawQueue, ticks);
 
 	auto lambda = [](auto& l, auto& r) {
@@ -306,6 +306,7 @@ void World::draw() {
 	lightSystem->update(camera, time, ticks);
 
 	guiManager.draw();
+	state = false;
 }
 
 void World::drawTiles() {
@@ -366,8 +367,9 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 }
 
 bool World::handleEvent(InputEvent event, uint dt) {
-	if (!player) return false;
 	if (guiManager.handleEvent(event)) return true;
+	if (!player) return false;
+	if (event.id == InputEventId::STATE) state = true;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
 	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);

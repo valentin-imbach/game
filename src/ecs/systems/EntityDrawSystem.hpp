@@ -12,7 +12,7 @@
 
 class EntityDrawSystem : public System {
 public:
-	void update(Camera camera, std::vector<DrawCall>& drawQueue, Entity player, uint ticks, std::set<Entity>& chunk) {
+	void update(Camera camera, std::vector<DrawCall>& drawQueue, bool active, Entity player, uint ticks, std::set<Entity>& chunk) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;
 
@@ -48,9 +48,17 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
 			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
 
+			if (active && ecs->hasComponent<GridComponent>(entity)) {
+				GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
+				vec mpos = camera.worldPosition(Window::instance->mousePosition);
+				if (vec::inside(mpos, vec(gridComponent.anker) - vec(0.5f, 0.5f), gridComponent.size, false)) {
+					style.outline = true;
+				}
+			}
+
 			auto bounds = spriteComponent.spriteStack.bounds();
 			vec size = vec(bounds.second - bounds.first) - vec(1, 1.5f);
-			if (size.y >= 1) {
+			if (active && size.y >= 1) {
 				float a1 = std::min(0.3f + 2 * vec::dist_to_rect(playerPos, entityPosition + bounds.first, size, false), 1.0f);
 				vec mouseWorldPos = camera.worldPosition(Window::instance->mousePosition);
 				size.y -= 0.5f;

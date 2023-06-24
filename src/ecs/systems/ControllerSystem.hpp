@@ -19,9 +19,15 @@ public:
 				if (inputState[InputStateId::MOVE_NORTH]) sum.y -= 1;
 				if (inputState[InputStateId::MOVE_WEST]) sum.x -= 1;
 				if (inputState[InputStateId::MOVE_SOUTH]) sum.y += 1;
+
+				pair mpos = Window::instance->mousePosition;
+				if (mpos.x > Window::instance->size.x / 2) {
+					creatureStateComponent.facing = Direction::EAST;
+				} else {
+					creatureStateComponent.facing = Direction::WEST;
+				}
 			}
 
-			// Direction::value oldDirection = directionComponent.direction;
 			if (sum.x == 2 && sum.y == 1) directionComponent.direction = Direction::from_int(1);
 			if (sum.x == 2 && sum.y == 0) directionComponent.direction = Direction::from_int(2);
 			if (sum.x == 1 && sum.y == 0) directionComponent.direction = Direction::from_int(3);
@@ -31,10 +37,6 @@ public:
 			if (sum.x == 1 && sum.y == 2) directionComponent.direction = Direction::from_int(7);
 			if (sum.x == 2 && sum.y == 2) directionComponent.direction = Direction::from_int(8);
 
-			Direction::value oldFacing = creatureStateComponent.facing;
-			if (sum.x == 2) creatureStateComponent.facing = Direction::EAST;
-			if (sum.x == 0) creatureStateComponent.facing = Direction::WEST;
-
 			CreatureState::value oldState = creatureStateComponent.state;
 			if (sum.x == 1 && sum.y == 1) {
 				creatureStateComponent.state = CreatureState::IDLE;
@@ -42,9 +44,7 @@ public:
 				creatureStateComponent.state = CreatureState::WALKING;
 			}
 
-			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {
-				creatureStateComponent.lastChange = ticks;
-			}
+			if (creatureStateComponent.state != oldState) creatureStateComponent.lastChange = ticks;
 		}
 	}
 };

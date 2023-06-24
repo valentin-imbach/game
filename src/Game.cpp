@@ -9,12 +9,7 @@
 #include "utils.hpp"
 #include <filesystem>
 
-Game::Game()
-	: trackMix(1), console(this) {
-	lastFrameTicks = SDL_GetTicks();
-	sample = std::queue<uint>();
-	sampleSum = 0;
-
+Game::Game() : trackMix(1), console(this) {
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();
 	TextManager::Init();
@@ -22,6 +17,11 @@ Game::Game()
 
 	gameState = GameState::MENU;
 	buildMenu();
+}
+
+Game::~Game() {
+	TextManager::cleanup();
+	SoundManager::cleanup();
 }
 
 void Game::buildMenu() {
@@ -114,7 +114,7 @@ void Game::saveWorld() {
 	gameState = GameState::MENU;
 }
 
-void Game::update() {
+void Game::update(uint dt) {
 	Window::instance->update();
 	//trackMix.update();
 	if (gameState == GameState::MENU) {
@@ -123,10 +123,10 @@ void Game::update() {
 	} else if (gameState == GameState::PAUSED) {
 		pauseMenu->reposition();
 		pauseMenu->update(nullptr);
-		debugScreen.update(world.get(), framesPerSecond);
+		debugScreen.update(world.get(), framesPerSecond, updatesPerSecond);
 	} else if (gameState == GameState::RUNNING) {
 		world->update(dt);
-		debugScreen.update(world.get(), framesPerSecond);
+		debugScreen.update(world.get(), framesPerSecond, updatesPerSecond);
 	}
 }
 
@@ -146,7 +146,35 @@ void Game::draw() {
 	Window::instance->draw();
 }
 
-void Game::handleEvents() {
+bool Game::handleEvent(InputEvent event, uint dt) {
+	if (event.id == InputEventId::QUIT) {
+		LOG("Window closed");
+		gameState = GameState::NONE;
+		return true;
+	}
+
+	if (console.handleEvent(event)) return true;
+
+	if (gameState == GameState::MENU) {
+		return mainMenu->handleEvent(event);
+	} else if (gameState == GameState::PAUSED) {
+		if (pauseMenu->handleEvent(event)) return true;
+		if (event.id == InputEventId::ESCAPE) {
+			gameState = GameState::RUNNING;
+			return true;
+		}
+	} else if (gameState == GameState::RUNNING) {
+		if (debugScreen.handleEvent(event)) return true;
+		if (event.id == InputEventId::ESCAPE) {
+			gameState = GameState::PAUSED;
+			return true;
+		}
+		return world->handleEvent(event, dt);
+	}
+	return false;
+}
+
+void Game::pollEvents(uint dt) {
 	pair mousePosition;
 	const uchar* keyState = SDL_GetKeyboardState(NULL);
 	const uint mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
@@ -166,28 +194,20 @@ void Game::handleEvents() {
 		world->inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
 	}
 
-	InputEvent stateEvent;
-	stateEvent.mousePosition = mousePosition;
-	stateEvent.id = InputEventId::STATE;
-	if (gameState == GameState::RUNNING) world->handleEvent(stateEvent, dt);
+	handleEvent({InputEventId::STATE, mousePosition}, dt);
+	handleEvent({InputEventId::HOVER, mousePosition}, dt);
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_QUIT) {
-			LOG("Window closed");
-			gameState = GameState::NONE;
-			continue;
-		}
-
-		if (console.handleEvent(event)) continue;
-		if (event.key.repeat) continue;
-
 		InputEvent inputEvent;
 		inputEvent.mousePosition = mousePosition;
-		if (event.type == SDL_TEXTINPUT) {
+		if (event.type == SDL_QUIT) {
+			inputEvent.id = InputEventId::QUIT;
+		} else if (event.type == SDL_TEXTINPUT) {
 			inputEvent.id = InputEventId::TEXT;
 			inputEvent.text = event.text.text;
 		} else if (event.type == SDL_KEYDOWN) {
+			if (event.key.repeat) continue;
 			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
 				inputEvent.id = InputEventId::ESCAPE;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_E) {
@@ -214,6 +234,12 @@ void Game::handleEvents() {
 				inputEvent.id = InputEventId::RETURN;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
 				inputEvent.id = InputEventId::BACKSPACE;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_F1) {
+				inputEvent.id = InputEventId::DEBUG;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
+				inputEvent.id = InputEventId::UP;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+				inputEvent.id = InputEventId::DOWN;
 			} else {
 				continue;
 			}
@@ -228,40 +254,6 @@ void Game::handleEvents() {
 		} else {
 			continue;
 		}
-
-		if (gameState == GameState::MENU) {
-			mainMenu->handleEvent(inputEvent);
-		} else if (gameState == GameState::PAUSED) {
-			pauseMenu->handleEvent(inputEvent);
-			if (inputEvent.id == InputEventId::ESCAPE) gameState = GameState::RUNNING;
-		} else if (gameState == GameState::RUNNING) {
-			if (debugScreen.handleEvent(event)) continue;
-			if (inputEvent.id == InputEventId::ESCAPE) gameState = GameState::PAUSED;
-			world->handleEvent(inputEvent, dt);
-		}
-	}
-
-	if (world && console.active) world->inputState = 0;
-}
-
-void Game::limitFrameRate(int fps) {
-	uint delay = std::ceil(1000.0f / fps);
-	uint ticks = SDL_GetTicks();
-	uint past = ticks - lastFrameTicks;
-	lastFrameTicks = ticks;
-
-	if (past < delay) {
-		SDL_Delay(delay - past);
-		past = delay;
-	}
-
-	dt = past;
-
-	sample.push(past);
-	sampleSum += past;
-	if (sample.size() > SAMPLE_SIZE) {
-		sampleSum -= sample.front();
-		sample.pop();
-		framesPerSecond = std::floor(SAMPLE_SIZE * 1000.0f / sampleSum);
+		handleEvent(inputEvent, dt);
 	}
 }

@@ -27,6 +27,7 @@ public:
 	void deserialise(std::fstream& stream);
 
 	std::bitset<size_t(InputStateId::MAX)> inputState;
+	bool state = false;
 
 	Entity player = 0;
 	Camera camera;

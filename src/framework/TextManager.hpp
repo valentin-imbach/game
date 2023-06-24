@@ -19,6 +19,7 @@ public:
 	static SDL_Color color;
 
 	static void Init();
+	static void cleanup();
 	static pair textSize(std::string& text);
 
 	static void drawText(std::string& text, pair position, bool centred = false, SDL_Color colour = {255, 255, 255, 255});

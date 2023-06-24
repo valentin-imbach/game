@@ -10,6 +10,7 @@ public:
 	void clear();
 	void update();
 	void draw();
+	void cleanup();
 
 	const char* title;
 	SDL_Window* window;

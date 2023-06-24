@@ -7,17 +7,18 @@
 
 class DebugScreen {
 public:
-	bool handleEvent(SDL_Event event) {
-		if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_F1) {
+	bool handleEvent(InputEvent event) {
+		if (event.id == InputEventId::DEBUG) {
 			active = !active;
 			return true;
 		}
 		return false;
 	}
 
-	void update(World* w, int fps) {
+	void update(World* w, int fps, int ups) {
 		world = w;
 		framesPerSecond = fps;
+		updatesPerSecond = ups;
 	}
 
 	void draw() {
@@ -27,6 +28,7 @@ public:
 
 		std::string text;
 		text += "FPS: " + std::to_string(framesPerSecond) + '\n';
+		text += "UPS: " + std::to_string(updatesPerSecond) + '\n';
 
 		if (world) {
 			text += "Ticks: " + std::to_string(world->ticks) + '\n';
@@ -73,6 +75,7 @@ public:
 
 private:
 	int framesPerSecond;
+	int updatesPerSecond;
 	World* world;
 	bool active = true;
 };

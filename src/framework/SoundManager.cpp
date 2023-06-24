@@ -24,6 +24,18 @@ void SoundManager::Init() {
 	loadTracks();
 }
 
+void SoundManager::cleanup() {
+	for (uint i = 1; i < SoundId::count; i++) {
+		if (sounds[i]) Mix_FreeChunk(sounds[i]);
+	}
+
+	for (uint i = 1; i < TrackId::count; i++) {
+		if (tracks[i]) Mix_FreeChunk(tracks[i]);
+	}
+	
+	Mix_Quit();
+}
+
 void SoundManager::setVolume(int v) {
 	Mix_VolumeMusic(v);
 	volume = Mix_VolumeMusic(-1);
