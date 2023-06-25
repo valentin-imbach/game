@@ -24,10 +24,8 @@ void Particle::draw(Camera camera) {
 	sprite.draw(camera.screenPosition(position), camera.zoom * scale, style);
 }
 
-ParticleSystem::ParticleSystem(int number) : number(number) {
+ParticleSystem::ParticleSystem(int number) : number(number), index(number - 1), seed(123) {
 	pool.resize(number);
-	seed = SDL_GetTicks();
-	index = number - 1;
 
 	DIRT.sprite = Sprite(SpriteSheet::PARTICLES, {0, 0});
 	DIRT.velocity = {0, -1};

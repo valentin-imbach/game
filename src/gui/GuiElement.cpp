@@ -400,7 +400,7 @@ void BuildGui::select(int n) {
 
 void BuildGui::build() {
 	ECS& ecs = guiManager->world->ecs;
-	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), {0, 0});
+	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), nullptr, {0, 0});
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();
 }

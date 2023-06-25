@@ -98,13 +98,12 @@ bool Console::execute(std::string input) {
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
 		if (!player || !resourceId) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		Entity resource = EntityFactory::createResource(resourceId, position);
-		game->world->link(resource);
+		Entity resource = EntityFactory::createResource(resourceId, game->world->realm.get(), position);
 	} else if (inputs[0] == "cows") {
 		if (inputs.size() < 2 || !player) return false;
 		int n = std::stoi(inputs[1]);
 		vec position = ecs.getComponent<PositionComponent>(player).position;
-		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, position);
+		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, game->world->realm.get(), position);
 	} else if (inputs[0] == "give") {
 		if (inputs.size() < 2 || !player) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);

@@ -12,14 +12,12 @@
 
 class EntityDrawSystem : public System {
 public:
-	void update(Camera camera, std::vector<DrawCall>& drawQueue, bool active, Entity player, uint ticks, std::set<Entity>& chunk) {
+	void update(Camera camera, std::vector<DrawCall>& drawQueue, bool active, Entity player, uint ticks, EntitySet& set) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;
 
-		vec playerPos = player ? ecs->getComponent<PositionComponent>(player).position : pair(0,0);
-
-		for (Entity entity : entities) {
-			//if (chunk.find(entity) == chunk.end()) continue;
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			vec entityPosition = positionComponent.position;
 
@@ -58,7 +56,8 @@ public:
 
 			auto bounds = spriteComponent.spriteStack.bounds();
 			vec size = vec(bounds.second - bounds.first) - vec(1, 1.5f);
-			if (active && size.y >= 1) {
+			if (active && size.y >= 1 && player) {
+				vec playerPos = ecs->getComponent<PositionComponent>(player).position;
 				float a1 = std::min(0.3f + 2 * vec::dist_to_rect(playerPos, entityPosition + bounds.first, size, false), 1.0f);
 				vec mouseWorldPos = camera.worldPosition(Window::instance->mousePosition);
 				size.y -= 0.5f;

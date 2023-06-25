@@ -5,7 +5,7 @@
 #include "Window.hpp"
 
 struct Camera {
-	vec position = {0, 0};
+	vec position;
 	float zoom = 4;
 
 	pair screenPosition(vec pos) {

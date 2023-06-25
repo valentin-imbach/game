@@ -14,10 +14,19 @@ public:
 		return (entityToIndex.find(entity)!= entityToIndex.end());
 	}
 
+	void setCallbacks(std::function<void(Entity)> start, std::function<void(Entity)> end) {
+		this->start = start;
+		this->end = end;
+	}
+
 protected:
 	std::unordered_map<Entity, size_t> entityToIndex;
 	std::unordered_map<size_t, Entity> indexToEntity;
 	size_t size;
+
+	std::function<void(Entity)> start;
+	std::function<void(Entity)> end;
+		
 };
 
 template <typename T>
@@ -37,6 +46,8 @@ public:
 		indexToEntity[size] = entity;
 		components[size] = component;
 		size += 1;
+
+		if (start) start(entity);
 	}
 
 	void removeComponent(Entity entity) {
@@ -44,6 +55,8 @@ public:
 			WARNING("Trying to remove non-existent component");
 			return;
 		}
+
+		if (end) end(entity);
 
 		size_t index = entityToIndex[entity];
 		components[index] = components[size - 1];

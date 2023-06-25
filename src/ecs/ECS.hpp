@@ -42,8 +42,10 @@ public:
 	}
 
 	template <typename T>
-	ComponentId::value rosterComponent(ComponentId::value type = ComponentId::NONE) {
-		return componentManager.roster<T>(type);
+	ComponentId::value rosterComponent(ComponentId::value type = ComponentId::NONE, std::function<void(Entity)> start = nullptr, std::function<void(Entity)> end = nullptr) {
+		ComponentId::value res = componentManager.roster<T>(type);
+		componentManager.setCallbacks<T>(start, end);
+		return res;
 	}
 
 	template <typename T>

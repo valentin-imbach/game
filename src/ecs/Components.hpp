@@ -11,7 +11,7 @@
 
 struct PositionComponent {
 	vec position;
-	pair chunk = {0,0};
+	pair chunk;
 };
 
 struct SpriteComponent {

@@ -22,7 +22,6 @@
 #include "ParticleEmitSystem.hpp"
 #include "CreatureParticleSystem.hpp"
 #include "HandRenderSystem.hpp"
-#include "GridDeathSystem.hpp"
 #include "ChunkSystem.hpp"
 #include "LightSystem.hpp"
 #include "SensorSystem.hpp"

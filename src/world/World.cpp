@@ -31,17 +31,15 @@ void World::init() {
 	EntityFactory::world = this;
 }
 
-World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0) {
+World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), particleSystem(1000) {
 	init();
 
-	realm = std::make_unique<Realm>(pair(100, 100), seed);
+	realm = std::make_unique<Realm>(this, pair(100, 100), seed);
 	realm->generate();
-	gridSystem->rebuild(realm->gridMap, realm->solidMap, realm->opaqueMap);
+	//gridSystem->rebuild(realm->gridMap, realm->solidMap, realm->opaqueMap);
 
 	pair spawn = realm->findFree(pair(50,50));
-	Entity player = EntityFactory::createPlayer(spawn);
-
-	//ecs.getComponent<SpriteComponent>(player).effects[SpriteEffectId::OUTLINE] = {true, 0};
+	Entity player = EntityFactory::createPlayer(realm.get(), spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -110,7 +108,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0) {
 
 	// Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
-	EntityFactory::createAnimal(AnimalId::MONSTER, realm->findFree(pair(55,55)));
+	EntityFactory::createAnimal(AnimalId::MONSTER, realm.get(), realm->findFree(pair(55,55)));
 
 	// Entity fire = ecs.createEntity();
 	// ecs.addComponent<PositionComponent>({pair(11, 3)}, fire);
@@ -128,14 +126,14 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0) {
 
 }
 
-World::World(std::fstream& stream) {
+World::World(std::fstream& stream) : particleSystem(1000) {
 	deserialise_object(stream, seed);
 	deserialise_object(stream, ticks);
 
 	init();
 	ecs.deserialise(stream);
 
-	realm = std::make_unique<Realm>(pair(100, 100), seed);
+	realm = std::make_unique<Realm>(this, pair(100, 100), seed);
 	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
@@ -145,7 +143,7 @@ World::World(std::fstream& stream) {
 }
 
 void World::rosterComponents() {
-	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
+	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION, std::bind(&World::linkChunk, this, std::placeholders::_1), std::bind(&World::unlinkChunk, this, std::placeholders::_1));
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
@@ -162,7 +160,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemKindComponent>(ComponentId::ITEM_KIND);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
-	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
+	ecs.rosterComponent<GridComponent>(ComponentId::GRID, std::bind(&World::linkGrid, this, std::placeholders::_1), std::bind(&World::unlinkGrid, this, std::placeholders::_1));
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
@@ -222,8 +220,6 @@ void World::rosterSystems() {
 		{ComponentId::PARTICLE, ComponentId::CREATURE_STATE});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
 		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::CREATURE_STATE});
-	gridDeathSystem = ecs.rosterSystem<GridDeathSystem>(SystemId::GRID_DEATH,
-		{ComponentId::GRID, ComponentId::DEATH});
 	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
 		{ComponentId::POSITION, ComponentId::MOVEMENT});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
@@ -240,12 +236,22 @@ void World::update(uint dt) {
 	ticks += dt;
 	time.update(dt);
 	player = playerSystem->getPlayer();
+	if (player) playerChunk = ecs.getComponent<PositionComponent>(player).chunk;
 
 	std::unordered_map<Entity, std::vector<Entity>> collisions;
 
 	guiManager.update();
-
 	controllerSystem->update(inputState, state, ticks);
+
+	EntitySet updateSet;
+	const uchar updateDistance = 1;
+	for (int x = -updateDistance; x <= updateDistance; x++) {
+		for (int y = -updateDistance; y <= updateDistance; y++) {
+			pair chunk(playerChunk.x + x, playerChunk.y + y);
+			EntitySet& set = realm->chunks[chunk];
+        	updateSet.insert(set.begin(), set.end());
+		}
+	}
 
 	sensorSystem->update(realm->opaqueMap, player, ticks);
 	animalAiSystem->update(ticks);
@@ -255,18 +261,17 @@ void World::update(uint dt) {
 	creatureMovementSystem->update(dt, realm->solidMap, realm->map.get());
 	collisionSystem->update(collisions);
 
-	chunkSystem->update(chunks);
+	chunkSystem->update(realm->chunks);
 
 	itemPickupSystem->update(collisions);
 
 	updateCamera(player);
-	healthSystem->update(ticks); //TODO SLOW
+	healthSystem->update(ticks, updateSet);
 
-	lootSystem->update(ticks);
+	lootSystem->update(ticks, realm.get());
 
 	creatureAnimationSystem->update(ticks);
 
-	gridDeathSystem->update(realm->gridMap, realm->solidMap, realm->opaqueMap);
 	inventoryDeathSystem->update(ticks);
 	deathSystem->update();
 
@@ -289,7 +294,17 @@ void World::draw() {
 		TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 	}
 
-	entityDrawSystem->update(camera, drawQueue, state, player, ticks, chunks[pair(0,0)]);  //TODO SLOW
+	EntitySet drawSet;
+	const uchar renderDistance = 1;
+	for (int x = -renderDistance; x <= renderDistance; x++) {
+		for (int y = -renderDistance; y <= renderDistance; y++) {
+			pair chunk(playerChunk.x + x, playerChunk.y + y);
+			EntitySet& set = realm->chunks[chunk];
+			drawSet.insert(set.begin(), set.end());
+		}
+	}
+
+	entityDrawSystem->update(camera, drawQueue, state, player, ticks, drawSet);  //TODO SLOW
 	handRenderSystem->update(camera, drawQueue, ticks);
 
 	auto lambda = [](auto& l, auto& r) {
@@ -328,11 +343,6 @@ void World::drawTiles() {
 			}
 		}
 	}
-}
-
-void World::link(Entity entity) {
-	if (ecs.hasComponent<GridComponent>(entity)) gridSystem->link(realm->gridMap, realm->solidMap, realm->opaqueMap, entity);
-	if (ecs.hasComponent<PositionComponent>(entity)) chunkSystem->assign(entity, chunks);
 }
 
 std::unique_ptr<GuiElement> World::makeInventory() {
@@ -420,7 +430,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				if (launcherComponent.charge > launcherComponent.minForce) {
 					vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
 					vec direction = vec::normalise(position - playerPosition);
-					EntityFactory::createProjectile(playerPosition, launcherComponent.charge * direction);
+					EntityFactory::createProjectile(realm.get(), playerPosition, launcherComponent.charge * direction);
 				}
 				launcherComponent.charge = 0;
 			}

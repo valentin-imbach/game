@@ -19,7 +19,8 @@ public:
 
 			if (!resourceComponent.toolId) {
 				SoundManager::playSound(resourceComponent.soundId);
-				healthComponent.health -= 1;
+				int damage = std::min(1, int(healthComponent.health));
+				healthComponent.health -= damage;
 				return true;
 			}
 

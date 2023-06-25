@@ -7,9 +7,13 @@
 ENUM(InputEventId,
 PRIMARY,
 SECONDARY,
-ESCAPE,
+
 INVENTORY,
 THROW,
+CONSOLE,
+DEBUG,
+QUIT,
+
 SELECT_1,
 SELECT_2,
 SELECT_3,
@@ -17,31 +21,33 @@ SELECT_4,
 SELECT_5,
 SELECT_6,
 SELECT_7,
-CONSOLE,
-STATE,
+
+ESCAPE,
 BACKSPACE,
 RETURN,
 TEXT,
-DEBUG,
-HOVER,
-QUIT,
 UP,
 DOWN,
+
+STATE,
+HOVER,
 RESET)
 
 struct InputEvent {
 	InputEventId::value id;
 	pair mousePosition;
-	std::string text = "";
+	std::string text;
 };
 
 ENUM(InputStateId,
 PRIMARY,
 SECONDARY,
+
 MOVE_EAST,
 MOVE_NORTH,
 MOVE_WEST,
 MOVE_SOUTH,
+
 INFO,
 ALTER)
 

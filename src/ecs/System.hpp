@@ -8,5 +8,5 @@ class ECS;
 class System {
 public:
 	ECS* ecs;
-	std::set<Entity> entities;
+	EntitySet entities;
 };

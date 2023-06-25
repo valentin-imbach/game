@@ -6,7 +6,7 @@
 class DeathSystem : public System {
 public:
 	void update() {
-		std::set<Entity> copy(entities);
+		EntitySet copy(entities);
 		for (Entity entity : copy) ecs -> destroyEntity(entity);
 	}
 };

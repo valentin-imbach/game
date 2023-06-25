@@ -16,6 +16,12 @@ class World {
 public:
 	World(std::string name, uint seed);
 	World(std::fstream& stream);
+
+	void linkGrid(Entity entity) { realm->linkGrid(entity); }
+	void unlinkGrid(Entity entity) { realm->unlinkGrid(entity); }
+
+	void linkChunk(Entity entity) { realm->linkChunk(entity); }
+	void unlinkChunk(Entity entity) { realm->unlinkChunk(entity); }
 	
 	void update(uint dt);
 	void updateCamera(Entity target);
@@ -33,10 +39,9 @@ public:
 	Camera camera;
 
 	ECS ecs;
-	ParticleSystem particleSystem = ParticleSystem(1000);
+	ParticleSystem particleSystem;
 
 	std::unique_ptr<Realm> realm;
-	void link(Entity entity);
 
 	Time time;
 	bool colliderDraw = true;
@@ -51,7 +56,6 @@ private:
 	std::unique_ptr<GuiElement> makeInventory();
 	std::unique_ptr<GuiElement> makeMenu();
 
-	std::unordered_map<pair, std::set<Entity>> chunks;
 	std::vector<DrawCall> drawQueue;
 
 	EntityDrawSystem* entityDrawSystem;
@@ -76,7 +80,6 @@ private:
 	ParticleEmitSystem* particleEmitSystem;
 	CreatureParticleSystem* creatureParticleSystem;
 	HandRenderSystem* handRenderSystem;
-	GridDeathSystem* gridDeathSystem;
 	ChunkSystem* chunkSystem;
 	LightSystem* lightSystem;
 	SensorSystem* sensorSystem;
@@ -86,8 +89,11 @@ private:
 	std::string name;
 	uint ticks;
 
+	pair playerChunk;
+
 	friend class Game;
 	friend class Console;
 	friend class DebugScreen;
 	friend class EntityFactory;
+	friend class Realm;
 };

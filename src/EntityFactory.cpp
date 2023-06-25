@@ -9,7 +9,7 @@
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;
 
-Entity EntityFactory::createPlayer(vec position) {
+Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	Entity player = world->ecs.createEntity();
 	world->ecs.addComponent<PositionComponent>({position}, player);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
@@ -35,20 +35,21 @@ Entity EntityFactory::createPlayer(vec position) {
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	world->ecs.addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, player);
+
 	return player;
 }
 
-bool EntityFactory::free(pair position, pair size) {
+bool EntityFactory::free(Realm* realm, pair position, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair offset(x,y);
-			if (world->realm->gridMap.find(position + offset) != world->realm->gridMap.end()) return false;
+			if (realm->gridMap.find(position + offset) != world->realm->gridMap.end()) return false;
 		}
 	}
 	return true;
 }
 
-Entity EntityFactory::createResource(ResourceId::value resourceId, pair position) {
+Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm, pair position) {
 	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
 	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
 	//if (!free(position, resourceTemplate->size)) return 0;
@@ -70,11 +71,10 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, pair position
 	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId, resourceTemplate->sound, resourceTemplate->level}, resource);
 	world->ecs.addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	world->ecs.addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
-	
 	return resource;
 }
 
-Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
+Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec position) {
 	Entity animal = world->ecs.createEntity();
 	world->ecs.addComponent<PositionComponent>({position}, animal);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
@@ -105,7 +105,6 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, vec position) {
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
-
 	return animal;
 }
 
@@ -125,13 +124,13 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 	return item;
 }
 
-Entity EntityFactory::createItem(ItemId::value itemId, uchar count, vec position) {
+Entity EntityFactory::createItem(ItemId::value itemId, uchar count, Realm* realm, vec position) {
 	Entity item = createItem(itemId, count);
 	world->ecs.addComponent<PositionComponent>({position}, item);
 	return item;
 }
 
-Entity EntityFactory::createStation(StationId::value stationId, pair position) {
+Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pair position) {
 	if (!stationId) return 0;
 	Entity station = world->ecs.createEntity();
 	if (!station) return 0;
@@ -155,13 +154,11 @@ Entity EntityFactory::createStation(StationId::value stationId, pair position) {
 
 	if (stationId == StationId::CHEST) {
 		 world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, station);
-		 return station;
 	}
-
 	return station;
 }
 
-Entity EntityFactory::createProjectile(vec position, vec direction) {
+Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction) {
 	Entity projectile = world->ecs.createEntity();
 	if (!projectile) return 0;
 

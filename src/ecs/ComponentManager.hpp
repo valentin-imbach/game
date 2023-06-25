@@ -20,6 +20,11 @@ public:
 	}
 
 	template <typename T>
+	void setCallbacks(std::function<void(Entity)> start, std::function<void(Entity)> end) {
+		componentArrays[roster<T>()]->setCallbacks(start, end);
+	}
+
+	template <typename T>
 	bool has(Entity entity) {
 		return getComponentArray<T>()->hasComponent(entity);
 	}

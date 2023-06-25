@@ -7,6 +7,7 @@
 #include "Components.hpp"
 
 class World;
+class Realm;
 
 ENUM(AnimalId,
 COW,
@@ -17,19 +18,19 @@ MONSTER)
 class EntityFactory {
 public:
 	EntityFactory() = delete;
-	static Entity createPlayer(vec position);
-	static Entity createAnimal(AnimalId::value animalId, vec position);
-	static Entity createResource(ResourceId::value resourceId, pair position);
-	static Entity createStation(StationId::value stationId, pair position);
+	static Entity createPlayer(Realm* realm, vec position);
+	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
+	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
+	static Entity createStation(StationId::value stationId, Realm* realm, pair position);
 	
 	static Entity createItem(ItemId::value itemId, uchar count);
-	static Entity createItem(ItemId::value itemId, uchar count, vec position);
+	static Entity createItem(ItemId::value itemId, uchar count, Realm* realm, vec position);
 
-	static Entity createProjectile(vec position, vec direction);
+	static Entity createProjectile(Realm* realm, vec position, vec direction);
 
 	static World* world;
 
 private:
-	static bool free(pair position, pair size);
+	static bool free(Realm* realm, pair position, pair size);
 	static uint seed;
 };

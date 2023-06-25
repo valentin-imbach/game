@@ -1,8 +1,9 @@
 
 #include "Realm.hpp"
+#include "World.hpp"
 #include "EntityFactory.hpp"
 
-Realm::Realm(pair size, uint seed) : size(size), seed(seed) {
+Realm::Realm(World* world, pair size, uint seed) : world(world), size(size), seed(seed) {
 	map = std::make_unique<Map>(size, seed);
 }
 
@@ -19,12 +20,28 @@ void Realm::generate() {
 			for (auto& p : ground->resources) {
 				choice -= p.second;
 				if (choice < 0) {
-					EntityFactory::createResource(p.first, position);
+					Entity resource = EntityFactory::createResource(p.first, this, position);
 					break;
 				}
 			}
 		}
 	}
+}
+
+void Realm::linkGrid(Entity entity) {
+	world->gridSystem->link(entity, gridMap, solidMap, opaqueMap);
+}
+
+void Realm::unlinkGrid(Entity entity) {
+	world->gridSystem->unlink(entity, gridMap, solidMap, opaqueMap);
+}
+
+void Realm::linkChunk(Entity entity) {
+	world->chunkSystem->link(entity, chunks);
+}
+
+void Realm::unlinkChunk(Entity entity) {
+	world->chunkSystem->unlink(entity, chunks);
 }
 
 bool Realm::free(pair anker, pair size = {1, 1}) {

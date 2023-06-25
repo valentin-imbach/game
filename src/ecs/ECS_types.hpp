@@ -55,13 +55,13 @@ INVENTORY_DEATH,
 PARTICLE_EMIT,
 CREATURE_PARTICLE,
 HAND_RENDER,
-GRID_DEATH,
 CHUNK,
 LIGHT,
 SENSOR,
 PROJECTILE)
 
 using Entity = uint;
+using EntitySet = std::unordered_set<Entity>;
 using Signature = std::bitset<ComponentId::count>;
 using GridMap = std::unordered_map<pair, Entity>;
 constexpr Entity MAX_ENTITIES = 100000;
