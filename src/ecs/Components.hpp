@@ -177,3 +177,5 @@ struct LauncherComponent {
 	float chargeTime = 2000;
 	float charge = 0;
 };
+
+struct ChunkComponent {};

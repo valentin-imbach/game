@@ -35,6 +35,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	world->ecs.addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, player);
+	world->ecs.addComponent<ChunkComponent>({}, player);
 
 	return player;
 }
@@ -80,6 +81,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
+	world->ecs.addComponent<ChunkComponent>({}, animal);
 
 	if (animalId == AnimalId::MONSTER) {
 		world->ecs.addComponent<MovementComponent>({1}, animal);
@@ -136,7 +138,11 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 	if (!station) return 0;
 
 	world->ecs.addComponent<PositionComponent>({position}, station);
-	world->ecs.addComponent<GridComponent>({position, {1,1}, true, false}, station);
+	if (realm) {
+		world->ecs.addComponent<GridComponent>({position, {1,1}, true, false}, station);
+	} else {
+		world->ecs.addComponent<ChunkComponent>({}, station);
+	}
 	world->ecs.addComponent<StationComponent>({stationId}, station);
 
 	if (stationId == StationId::CAMP_FIRE) {
@@ -171,6 +177,7 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 	spriteComponent.angle = 45 - vec::angle(direction) * 180/M_PI;
 	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
 	world->ecs.addComponent<ProjectileComponent>({direction * 70}, projectile);
+	world->ecs.addComponent<ChunkComponent>({}, projectile);
 
 	return projectile;
 }

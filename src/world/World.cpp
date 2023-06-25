@@ -171,6 +171,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<SensorComponent>(ComponentId::SENSOR);
 	ecs.rosterComponent<ProjectileComponent>(ComponentId::PROJECTILE);
 	ecs.rosterComponent<LauncherComponent>(ComponentId::LAUNCHER);
+	ecs.rosterComponent<ChunkComponent>(ComponentId::CHUNK);
 
 	LOG("Components rostered");
 }
@@ -221,7 +222,7 @@ void World::rosterSystems() {
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
 		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::CREATURE_STATE});
 	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
-		{ComponentId::POSITION, ComponentId::MOVEMENT});
+		{ComponentId::POSITION, ComponentId::CHUNK});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
 		{ComponentId::POSITION, ComponentId::LIGHT});
 	sensorSystem = ecs.rosterSystem<SensorSystem>(SystemId::SENSOR,

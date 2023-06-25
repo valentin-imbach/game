@@ -13,7 +13,7 @@ void GuiManager::update() {
 	if (buildMode) {
 		pair gridPosition = vec::round(world->camera.worldPosition(Window::instance->mousePosition));
 		world->ecs.getComponent<PositionComponent>(buildMode).position = gridPosition;
-		world->ecs.getComponent<GridComponent>(buildMode).anker = gridPosition;
+		//world->ecs.getComponent<GridComponent>(buildMode).anker = gridPosition;
 		SpriteComponent& spriteComponent = world->ecs.getComponent<SpriteComponent>(buildMode);
 		if (world->realm->gridMap.find(gridPosition) != world->realm->gridMap.end()) {
 			spriteComponent.effects[SpriteEffectId::RED] = {true, 0};
@@ -40,10 +40,12 @@ void GuiManager::draw() {
 
 bool GuiManager::handleEvent(InputEvent event) {
 	if (buildMode && event.id == InputEventId::PRIMARY) {
-		GridComponent& gridComponent = world->ecs.getComponent<GridComponent>(buildMode);
-		if (world->realm->free(gridComponent.anker, gridComponent.size)) {
-			//world->realm->linkGrid(buildMode);
+		PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(buildMode);
+		pair pos = vec::round(positionComponent.position);
+		if (world->realm->free(pos, {1, 1})) {
 			world->ecs.getComponent<SpriteComponent>(buildMode).z = 0;
+			world->ecs.removeComponent<ChunkComponent>(buildMode);
+			world->ecs.addComponent<GridComponent>({pos, {1, 1}, true, false}, buildMode);
 			buildMode = 0;
 		}
 		return true;
