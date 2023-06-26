@@ -21,7 +21,7 @@ public:
 							offset.x = noise::Float(seed++, -0.3f, 0.3f);
 							offset.y = noise::Float(seed++, -0.3f, 0.3f);
 							vec position = positionComponent.position + offset;
-							ecs->addComponent<PositionComponent>({position}, item);
+							ecs->addComponent<PositionComponent>({position, positionComponent.realmId}, item);
 							inventoryComponent.inventory.itemContainers[x][y].clear();
 						}
 					}
@@ -37,7 +37,7 @@ public:
 								offset.x = noise::Float(seed++, -0.3f, 0.3f);
 								offset.y = noise::Float(seed++, -0.3f, 0.3f);
 								vec position = positionComponent.position + offset;
-								ecs->addComponent<PositionComponent>({position}, item);
+								ecs->addComponent<PositionComponent>({position, positionComponent.realmId}, item);
 								playerComponent.hotbar.itemContainers[x][y].clear();
 							}
 						}

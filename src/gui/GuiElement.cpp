@@ -325,9 +325,9 @@ CraftingGrid::~CraftingGrid() {
 		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
 		output.item = link->add(output.item);
 	}
-	vec pos = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player).position;
-	for (uint i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({pos}, inputs[i].item);
-	guiManager->world->ecs.addComponent<PositionComponent>({pos}, output.item);
+	PositionComponent& positionComponent = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player);
+	for (uint i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({positionComponent.position, positionComponent.realmId}, inputs[i].item);
+	guiManager->world->ecs.addComponent<PositionComponent>({positionComponent.position, positionComponent.realmId}, output.item);
 }
 
 void CraftingGrid::craft() {
@@ -400,7 +400,9 @@ void BuildGui::select(int n) {
 
 void BuildGui::build() {
 	ECS& ecs = guiManager->world->ecs;
-	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), nullptr, {0, 0});
+	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), guiManager->world->playerRealm, {0, 0});
+	guiManager->world->unlinkGrid(guiManager->buildMode);
+	ecs.addComponent<ChunkComponent>({}, guiManager->buildMode);
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();
 }

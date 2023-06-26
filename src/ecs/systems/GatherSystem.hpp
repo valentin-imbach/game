@@ -23,7 +23,7 @@ public:
 					vec offset;
 					offset.x = noise::Float(seed++, -0.3f, 0.3f);
 					offset.y = noise::Float(seed++, -0.3f, 0.3f);
-					ecs->addComponent<PositionComponent>({positionComponent.position + offset}, rest);
+					ecs->addComponent<PositionComponent>({positionComponent.position + offset, positionComponent.realmId}, rest);
 				}
 			}
 		}

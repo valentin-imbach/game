@@ -8,9 +8,11 @@
 #include "Loot.hpp"
 #include "ParticleSystem.hpp"
 #include "SoundManager.hpp"
+#include "RealmManager.hpp"
 
 struct PositionComponent {
 	vec position;
+	RealmId realmId;
 	pair chunk;
 };
 
@@ -103,6 +105,7 @@ struct ForceComponent {
 
 struct GridComponent {
 	pair anker;
+	RealmId realmId;
 	pair size = {1, 1};
 	bool solid = true;
 	bool opaque = true;

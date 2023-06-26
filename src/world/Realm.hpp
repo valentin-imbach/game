@@ -3,10 +3,11 @@
 #include "Chunk.hpp"
 
 class World;
+using RealmId = unsigned char;
 
 class Realm {
 public:
-	Realm(World* world, pair size, uint seed);
+	Realm(RealmId realmId, World* world, pair size, uint seed);
 
 	void generate();
 
@@ -15,11 +16,14 @@ public:
 
 	// std::unordered_map<pair, Chunk> chunks;
 
+	RealmId realmId;
+
 	pair size;
-	std::unique_ptr<Map> map;
+	Map map;
 	GridMap gridMap;
 	std::unordered_set<pair> solidMap;
 	std::unordered_set<pair> opaqueMap;
+
 	void linkGrid(Entity entity);
 	void unlinkGrid(Entity entity);
 	void linkChunk(Entity entity);

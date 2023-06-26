@@ -98,12 +98,12 @@ bool Console::execute(std::string input) {
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
 		if (!player || !resourceId) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		Entity resource = EntityFactory::createResource(resourceId, game->world->realm.get(), position);
+		Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm, position);
 	} else if (inputs[0] == "cows") {
 		if (inputs.size() < 2 || !player) return false;
 		int n = std::stoi(inputs[1]);
 		vec position = ecs.getComponent<PositionComponent>(player).position;
-		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, game->world->realm.get(), position);
+		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, game->world->playerRealm, position);
 	} else if (inputs[0] == "give") {
 		if (inputs.size() < 2 || !player) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);
@@ -128,8 +128,8 @@ bool Console::execute(std::string input) {
 		TileId::value tileId = TileId::from_string(inputs[1]);
 		if (!tileId) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		game->world->realm->map->tiles[position.x][position.y]->tileId = tileId;
-		game->world->realm->map->updateStyle(position, true);
+		game->world->playerRealm->map.tiles[position.x][position.y]->tileId = tileId;
+		game->world->playerRealm->map.updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
 		// if (split.size() != 2) return false;
 		// WeatherType w = WeatherTypeFromString(split[1]);
@@ -166,7 +166,7 @@ bool Console::execute(std::string input) {
 		file.close();
 		LOG("World loaded");
 	} else if (inputs[0] == "test") {
-		ai::visible({4.5,3.7}, {0.2,1.9}, game->world->realm->solidMap);
+		
 	} else if (inputs[0] == "state") {
 		game->gameState = GameState::from_string(inputs[1]);
 	} else if (inputs[0] == "gui_box") {

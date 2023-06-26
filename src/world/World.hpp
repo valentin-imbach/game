@@ -11,17 +11,18 @@
 #include "Realm.hpp"
 #include "Camera.hpp"
 #include "Sprite.hpp"
+#include "RealmManager.hpp"
 
 class World {
 public:
 	World(std::string name, uint seed);
 	World(std::fstream& stream);
 
-	void linkGrid(Entity entity) { realm->linkGrid(entity); }
-	void unlinkGrid(Entity entity) { realm->unlinkGrid(entity); }
+	void linkGrid(Entity entity) { realmManager.getRealm(ecs.getComponent<GridComponent>(entity).realmId)->linkGrid(entity); }
+	void unlinkGrid(Entity entity) { realmManager.getRealm(ecs.getComponent<GridComponent>(entity).realmId)->unlinkGrid(entity); }
 
-	void linkChunk(Entity entity) { realm->linkChunk(entity); }
-	void unlinkChunk(Entity entity) { realm->unlinkChunk(entity); }
+	void linkChunk(Entity entity) { realmManager.getRealm(ecs.getComponent<PositionComponent>(entity).realmId)->linkChunk(entity); }
+	void unlinkChunk(Entity entity) { realmManager.getRealm(ecs.getComponent<PositionComponent>(entity).realmId)->unlinkChunk(entity); }
 	
 	void update(uint dt);
 	void updateCamera(Entity target);
@@ -41,7 +42,10 @@ public:
 	ECS ecs;
 	ParticleSystem particleSystem;
 
-	std::unique_ptr<Realm> realm;
+	//std::unique_ptr<Realm> realm;
+
+	RealmManager realmManager;
+	Realm* playerRealm;
 
 	Time time;
 	bool colliderDraw = true;
