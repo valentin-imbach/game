@@ -97,6 +97,7 @@ public:
 			indexToEntity[index] = entity;
 			entityToIndex[entity] = index;
 			deserialise_object(stream, components[index]);
+			if (start) start(entity);
 		}
 	}
 

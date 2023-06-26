@@ -35,11 +35,12 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	init();
 
 	Realm* realm = realmManager.addRealm(this, pair(100, 100), seed);
+	Realm* otherRealm = realmManager.addRealm(this, pair(100, 100), seed + 1);
 	realm->generate();
-	//gridSystem->rebuild(realm->gridMap, realm->solidMap, realm->opaqueMap);
+	//otherRealm->generate();
 
 	pair spawn = realm->findFree(pair(50,50));
-	Entity player = EntityFactory::createPlayer(realm, spawn);
+	Entity player = EntityFactory::createPlayer(otherRealm, spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -127,19 +128,19 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 }
 
 World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
+	init();
+
 	deserialise_object(stream, seed);
 	deserialise_object(stream, ticks);
-
-	init();
+	realmManager.deserialise(this, stream);
 	ecs.deserialise(stream);
 
-	Realm* realm = realmManager.addRealm(this, pair(100, 100), seed);
 	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	gridSystem->rebuild(realm->gridMap, realm->solidMap, realm->opaqueMap);
+	//gridSystem->rebuild(realmManager);
 }
 
 void World::rosterComponents() {
@@ -258,15 +259,15 @@ void World::update(uint dt) {
 		}
 	}
 
-	sensorSystem->update(playerRealm->opaqueMap, player, ticks);
+	sensorSystem->update(player, ticks, realmManager);
 	animalAiSystem->update(ticks);
-	monsterAiSystem->update(playerRealm->solidMap, playerRealm->opaqueMap, ticks);
+	monsterAiSystem->update(ticks, realmManager);
 
 	projectileSystem->update(ticks, dt);
-	creatureMovementSystem->update(dt, playerRealm->solidMap, &playerRealm->map);
-	collisionSystem->update(collisions);
+	creatureMovementSystem->update(dt, realmManager);
+	collisionSystem->update(collisions, updateSet);
 
-	chunkSystem->update(playerRealm->chunks);
+	chunkSystem->update(realmManager);
 
 	itemPickupSystem->update(collisions);
 
@@ -287,7 +288,9 @@ void World::update(uint dt) {
 
 void World::updateCamera(Entity target) {
 	if (!target || !ecs.hasComponent<PositionComponent>(target)) return;
-	camera.position = ecs.getComponent<PositionComponent>(target).position;
+	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(target);
+	camera.position = positionComponent.position;
+	camera.realmId = positionComponent.realmId;
 }
 
 void World::draw() {
@@ -300,16 +303,18 @@ void World::draw() {
 	}
 
 	EntitySet drawSet;
+	pair cameraChunk = vec::round(camera.position / CHUNK_SIZE);
+	Realm* cameraRealm = realmManager.getRealm(camera.realmId);
 	const uchar renderDistance = 1;
 	for (int x = -renderDistance; x <= renderDistance; x++) {
 		for (int y = -renderDistance; y <= renderDistance; y++) {
-			pair chunk(playerChunk.x + x, playerChunk.y + y);
-			EntitySet& set = playerRealm->chunks[chunk];
+			pair chunk(cameraChunk.x + x, cameraChunk.y + y);
+			EntitySet& set = cameraRealm->chunks[chunk];
 			drawSet.insert(set.begin(), set.end());
 		}
 	}
 
-	entityDrawSystem->update(camera, drawQueue, state, player, ticks, drawSet);  //TODO SLOW
+	entityDrawSystem->update(camera, drawQueue, state, player, ticks, drawSet);
 	handRenderSystem->update(camera, drawQueue, ticks);
 
 	auto lambda = [](auto& l, auto& r) {
@@ -321,9 +326,9 @@ void World::draw() {
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
 	for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 
-	if (colliderDraw) colliderDrawSystem->update(camera, ticks);
+	if (colliderDraw) colliderDrawSystem->update(camera, ticks, drawSet);
 	particleSystem.draw(camera);
-	lightSystem->update(camera, time, ticks);
+	lightSystem->update(camera, time, ticks, drawSet);
 
 	guiManager.draw();
 	state = false;
@@ -336,13 +341,13 @@ void World::drawTiles() {
 	pair start = vec::round(camera.position);
 
 	int x1 = std::max(0, start.x - range.x);
-	int x2 = std::min(playerRealm->map.size.x - 1, start.x + range.x);
+	int x2 = std::min(playerRealm->map->size.x - 1, start.x + range.x);
 	int y1 = std::max(0, start.y - range.y);
-	int y2 = std::min(playerRealm->map.size.y - 1, start.y + range.y);
+	int y2 = std::min(playerRealm->map->size.y - 1, start.y + range.y);
 
 	for (int x = x1; x <= x2; x++) {
 		for (int y = y1; y <= y2; y++) {
-			for (auto& layer : playerRealm->map.tiles[x][y]->sprites) {
+			for (auto& layer : playerRealm->map->tiles[x][y]->sprites) {
 				pair screenPosition = camera.screenPosition(vec(x, y));
 				layer.second.draw(screenPosition, camera.zoom);
 			}
@@ -448,5 +453,6 @@ bool World::handleEvent(InputEvent event, uint dt) {
 void World::serialise(std::fstream& stream) {
 	serialise_object(stream, seed);
 	serialise_object(stream, ticks);
+	realmManager.serialise(stream);
 	ecs.serialise(stream);
 }

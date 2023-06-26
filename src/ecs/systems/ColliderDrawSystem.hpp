@@ -10,11 +10,12 @@
 
 class ColliderDrawSystem : public System {
 public:
-	void update(Camera camera, uint ticks) {
+	void update(Camera camera, uint ticks, EntitySet& set) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;
 
-		for (Entity entity : entities) {
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			ColliderComponent& colliderComponent = ecs -> getComponent<ColliderComponent>(entity);
 			PositionComponent& positionComponent = ecs -> getComponent<PositionComponent>(entity);
 			pair screenPosition = camera.screenPosition( positionComponent.position + colliderComponent.collider.offset);

@@ -7,19 +7,21 @@
 
 class SensorSystem : public System {
 public:
-	void update(std::unordered_set<pair>& opaqueMap, Entity player, uint ticks) {
+	void update(Entity player, uint ticks, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 
 			if (!player) return;
-			vec playerPosition = ecs->getComponent<PositionComponent>(player).position;
+			PositionComponent& playerPositionComponent = ecs->getComponent<PositionComponent>(entity);
+			if (playerPositionComponent.realmId != positionComponent.realmId) return;
+			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
-			float d = vec::dist(positionComponent.position, playerPosition);
+			float d = vec::dist(positionComponent.position, playerPositionComponent.position);
 			if (d > sensorComponent.radius) return;
 
-			if (ai::visible(positionComponent.position, playerPosition, opaqueMap).first) {
-				sensorComponent.position = playerPosition;
+			if (ai::visible(positionComponent.position, playerPositionComponent.position, realm->opaqueMap).first) {
+				sensorComponent.position = playerPositionComponent.position;
 				sensorComponent.lastSeen = ticks;
 				sensorComponent.engaged = true;
 			}

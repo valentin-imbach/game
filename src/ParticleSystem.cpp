@@ -17,6 +17,7 @@ void Particle::update(uint dt) {
 }
 
 void Particle::draw(Camera camera) {
+	if (realmId != camera.realmId) return;
 	float t = float(age) / lifeSpan;
 	float alpha = (1-t) * alphaStart + t * alphaEnd;
 	TextureStyle style;
@@ -63,12 +64,14 @@ void ParticleSystem::draw(Camera camera) {
 	}
 }
 
-void ParticleSystem::emit(ParticleStyle& style, vec position) {
+void ParticleSystem::emit(ParticleStyle& style, vec position, RealmId realmId) {
 	Particle& particle = pool[index];
 	index = (index == 0) ? (number - 1) : index - 1;
 
 	particle.sprite = style.sprite;
 	particle.scale = style.scale + noise::Float(seed++, -style.scaleVariance, style.scaleVariance);
+
+	particle.realmId = realmId;
 
 	particle.position = position + style.positionOffset;
 	particle.position.x += noise::Float(seed++, -style.positionVariance.x, style.positionVariance.x);

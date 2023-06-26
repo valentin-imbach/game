@@ -7,7 +7,8 @@ using RealmId = unsigned char;
 
 class Realm {
 public:
-	Realm(RealmId realmId, World* world, pair size, uint seed);
+	Realm(RealmId realmId, pair size, uint seed);
+	Realm(std::fstream& stream);
 
 	void generate();
 
@@ -17,9 +18,10 @@ public:
 	// std::unordered_map<pair, Chunk> chunks;
 
 	RealmId realmId;
+	World* world;
 
 	pair size;
-	Map map;
+	std::unique_ptr<Map> map;
 	GridMap gridMap;
 	std::unordered_set<pair> solidMap;
 	std::unordered_set<pair> opaqueMap;
@@ -34,9 +36,10 @@ public:
 	bool free(pair anker, pair size);
 	pair findFree(pair pos);
 
+	void serialise(std::fstream& stream);
+
 private:
 	std::unordered_map<pair, EntitySet> chunks;
-	World* world;
 	uint seed;
 	
 	friend class World;

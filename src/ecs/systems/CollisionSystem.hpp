@@ -7,11 +7,12 @@
 
 class CollisionSystem : public System {
 public:
-	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions) {
+	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions, EntitySet& set) {
 		collisions.clear();
 
 		std::vector<std::pair<Entity, vec>> ents;
-		for (Entity entity : entities) {
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			Collider& collider = ecs -> getComponent<ColliderComponent>(entity).collider;
 			vec position = ecs -> getComponent<PositionComponent>(entity).position;
 			ents.emplace_back(entity, collider.topBottom(position));

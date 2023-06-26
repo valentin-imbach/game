@@ -13,7 +13,7 @@ public:
 
 			if (!particleComponent.active) continue;
 			if (particleComponent.lastEmit + particleComponent.cooldown < ticks) {
-				particleSystem.emit(particleComponent.style, positionComponent.position);
+				particleSystem.emit(particleComponent.style, positionComponent.position, positionComponent.realmId);
 				particleComponent.lastEmit = ticks;
 			}
 			

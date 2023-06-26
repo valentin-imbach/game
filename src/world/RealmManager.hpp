@@ -2,6 +2,7 @@
 #pragma once
 #include "utils.hpp"
 #include "Realm.hpp"
+#include "serialiser.hpp"
 
 using RealmId = unsigned char;
 
@@ -19,7 +20,8 @@ public:
 		}
 		RealmId realmId = availableRealms.back();
 		availableRealms.pop_back();
-		realms[realmId] = std::make_unique<Realm>(realmId, world, size, seed);
+		realms[realmId] = std::make_unique<Realm>(realmId, size, seed);
+		realms[realmId]->world = world;
 		LOG("Realm", int(realmId), "created");
 		return realms[realmId].get();
 	}
@@ -42,6 +44,33 @@ public:
 			return nullptr;
 		}
 		return realms[realmId].get();
+	}
+
+	void serialise(std::fstream& stream) {
+		uint num = realms.size();
+		serialise_object(stream, num);
+		for (const auto& pair : realms) pair.second->serialise(stream);
+		uint available = availableRealms.size();
+		serialise_object(stream, available);
+		for (RealmId realmId : availableRealms) serialise_object(stream, realmId);
+	}
+
+	void deserialise(World* world, std::fstream& stream) {
+		uint num;
+		deserialise_object(stream, num);
+		for (int i = 0; i < num; i++) {
+			std::unique_ptr<Realm> realm = std::make_unique<Realm>(stream);
+			realm->world = world;
+			realms[realm->realmId] = std::move(realm);
+		}
+		uint available;
+		deserialise_object(stream, available);
+		availableRealms.clear();
+		for (int i = 0; i < available; i++) {
+			RealmId realmId;
+			deserialise_object(stream, realmId);
+			availableRealms.push_back(realmId);
+		}
 	}
 
 private:

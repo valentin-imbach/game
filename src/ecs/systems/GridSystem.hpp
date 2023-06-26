@@ -41,10 +41,10 @@ public:
 		}
 	}
 
-	void rebuild(GridMap& gridMap, std::unordered_set<pair>& solidMap, std::unordered_set<pair>& opaqueMap) {
-		gridMap.clear();
-		solidMap.clear();
-		opaqueMap.clear();
-		for (Entity entity : entities) link(entity, gridMap, solidMap, opaqueMap);
+	void rebuild(RealmManager& realmManager) {
+		for (Entity entity : entities) {
+			Realm* realm = realmManager.getRealm(ecs->getComponent<GridComponent>(entity).realmId);
+			link(entity, realm->gridMap, realm->solidMap, realm->opaqueMap);
+		}
 	}
 };

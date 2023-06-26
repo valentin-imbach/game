@@ -6,7 +6,7 @@
 
 class HealthSystem : public System {
 public:
-	void update(uint ticks, EntitySet set) {
+	void update(uint ticks, EntitySet& set) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);

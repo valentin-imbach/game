@@ -3,16 +3,25 @@
 #include "World.hpp"
 #include "EntityFactory.hpp"
 
-Realm::Realm(RealmId realmId, World* world, pair size, uint seed) : realmId(realmId), world(world), size(size), seed(seed), map(size, seed) {}
+Realm::Realm(RealmId realmId, pair size, uint seed) : realmId(realmId), size(size), seed(seed) {
+	map = std::make_unique<Map>(size, seed);
+}
+
+Realm::Realm(std::fstream& stream) {
+	deserialise_object(stream, realmId);
+	deserialise_object(stream, size);
+	deserialise_object(stream, seed);
+	map = std::make_unique<Map>(size, seed);
+}
 
 void Realm::generate() {
 	uint s = seed;
-	for (int x = 0; x < map.size.x; x++) {
-		for (int y = 0; y < map.size.y; y++) {
+	for (int x = 0; x < map->size.x; x++) {
+		for (int y = 0; y < map->size.y; y++) {
 			pair position(x, y);
-			Biome::value biome = map.getBiome(position);
-			int variation = map.variationMap->get(position);
-			int vegetation = map.vegetationMap->get(position);
+			Biome::value biome = map->getBiome(position);
+			int variation = map->variationMap->get(position);
+			int vegetation = map->vegetationMap->get(position);
 			int choice = noise::Int(s++, 0, 50 + vegetation);
 			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			for (auto& p : ground->resources) {
@@ -59,4 +68,10 @@ pair Realm::findFree(pair pos) {
 		guess.y = noise::Int(seed++, pos.y - 20, pos.y + 20);
 	}
 	return guess;
+}
+
+void Realm::serialise(std::fstream& stream) {
+	serialise_object(stream, realmId);
+	serialise_object(stream, size);
+	serialise_object(stream, seed);
 }

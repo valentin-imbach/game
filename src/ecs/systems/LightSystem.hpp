@@ -38,14 +38,15 @@ struct Time {
 
 class LightSystem : public System {
 public:
-	void update(Camera camera, Time time, uint ticks) {
+	void update(Camera camera, Time time, uint ticks, EntitySet& set) {
 		uchar ambient = lerp::smooth(std::abs(time.mins() - 720.0f) / 720, 0, 200);
 
 		SDL_Texture* texture = TextureManager::createTexture(Window::instance->size, {0, 0, 0, ambient});
 		SDL_BlendMode blendMode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_SRC_ALPHA, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE_MINUS_SRC_COLOR, SDL_BLENDOPERATION_ADD);
 		SDL_SetTextureBlendMode(TextureManager::lightTexture, blendMode);
 
-		for (Entity entity : entities) {
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			LightComponent& lightComponent = ecs->getComponent<LightComponent>(entity);
 

@@ -10,8 +10,8 @@
 
 class ChunkSystem : public System {
 public:
-	void update(std::unordered_map<pair, EntitySet>& chunks) {
-		for (Entity entity : entities) reassign(entity, chunks);
+	void update(RealmManager& realmManager) {
+		for (Entity entity : entities) reassign(entity, realmManager);
 	}
 
 	void link(Entity entity, std::unordered_map<pair, EntitySet>& chunks) {
@@ -34,15 +34,16 @@ public:
 		chunks[positionComponent.chunk].erase(entity);
 	}
 
-	void reassign(Entity entity, std::unordered_map<pair, EntitySet>& chunks) {
+	void reassign(Entity entity, RealmManager& realmManager) {
 		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+		Realm* realm = realmManager.getRealm(positionComponent.realmId);
+
 		vec offset = positionComponent.position - CHUNK_SIZE * positionComponent.chunk;
 
 		if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
 			pair newChunk = vec::round(positionComponent.position / CHUNK_SIZE);
-			chunks[positionComponent.chunk].erase(entity);
-			chunks[newChunk].insert(entity);
-			positionComponent.chunk = newChunk;
+			realm->unlinkChunk(entity);
+			realm->linkChunk(entity);
 		}
 	}
 };

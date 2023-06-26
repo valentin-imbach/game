@@ -128,8 +128,8 @@ bool Console::execute(std::string input) {
 		TileId::value tileId = TileId::from_string(inputs[1]);
 		if (!tileId) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		game->world->playerRealm->map.tiles[position.x][position.y]->tileId = tileId;
-		game->world->playerRealm->map.updateStyle(position, true);
+		game->world->playerRealm->map->tiles[position.x][position.y]->tileId = tileId;
+		game->world->playerRealm->map->updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
 		// if (split.size() != 2) return false;
 		// WeatherType w = WeatherTypeFromString(split[1]);
@@ -173,7 +173,14 @@ bool Console::execute(std::string input) {
 		GuiManager::box = !GuiManager::box;
 	} else if (inputs[0] == "collider_box") {
 		game->world->colliderDraw = !game->world->colliderDraw;
-	}else {
+	} else if (inputs[0] == "realm") {
+		if (!player) return false;
+		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+		game->world->unlinkChunk(player);
+		int realmId = std::stoi(inputs[1]);
+		ecs.getComponent<PositionComponent>(player).realmId = realmId;
+		game->world->linkChunk(player);
+	} else {
 		return false;
 	}
 

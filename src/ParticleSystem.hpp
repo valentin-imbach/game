@@ -20,6 +20,7 @@ struct Particle {
 	Sprite sprite;
 	float scale;
 	vec position, velocity, acceleration;
+	RealmId realmId;
 	uint lifeSpan, age;
 	bool active = false;
 	float alphaStart, alphaEnd;
@@ -34,7 +35,7 @@ public:
 
 	void update(uint dt);
 	void draw(Camera camera);
-	void emit(ParticleStyle& style, vec position);
+	void emit(ParticleStyle& style, vec position, RealmId realmId);
 
 	static ParticleStyle DIRT;
 	static ParticleStyle SMOKE;

@@ -7,7 +7,7 @@
 
 class CreatureMovementSystem : public System {
 public:
-	void update(uint dt, std::unordered_set<pair>& solidMap, Map* map) {
+	void update(uint dt, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
@@ -26,18 +26,20 @@ public:
 				forceComponent.force *= 0.9f;
 			}
 
-			if (!isColliding(colliderComponent.collider, newPosition, solidMap, map) || isColliding(colliderComponent.collider, positionComponent.position, solidMap, map)) {
+			Realm* realm = realmManager.getRealm(positionComponent.realmId);
+
+			if (!isColliding(colliderComponent.collider, newPosition, realm->solidMap, *realm->map) || isColliding(colliderComponent.collider, positionComponent.position, realm->solidMap, *realm->map)) {
 				positionComponent.position = newPosition;
-			} else if (!isColliding(colliderComponent.collider, {newPosition.x, positionComponent.position.y}, solidMap, map)) {
+			} else if (!isColliding(colliderComponent.collider, {newPosition.x, positionComponent.position.y}, realm->solidMap, *realm->map)) {
 				positionComponent.position.x = newPosition.x;
-			} else if (!isColliding(colliderComponent.collider, {positionComponent.position.x, newPosition.y}, solidMap, map)) {
+			} else if (!isColliding(colliderComponent.collider, {positionComponent.position.x, newPosition.y}, realm->solidMap, *realm->map)) {
 				positionComponent.position.y = newPosition.y;
 			}
 		}
 	}
 
 private:
-	bool isColliding(Collider collider, vec position, std::unordered_set<pair>& solidMap, Map* map) {
+	bool isColliding(Collider collider, vec position, std::unordered_set<pair>& solidMap, Map& map) {
 		pair topLeft = vec::round(position - collider.size / 2);
 		pair bottomRight = vec::round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {
@@ -48,9 +50,9 @@ private:
 		return false;
 	}
 
-	bool isFree(std::unordered_set<pair>& solidMap, Map* map, pair position) {
+	bool isFree(std::unordered_set<pair>& solidMap, Map& map, pair position) {
 		if (solidMap.find(position) != solidMap.end()) return false;
-		if (map->getTileId(position) == TileId::WATER) return false;
+		if (map.getTileId(position) == TileId::WATER) return false;
 		return true;
 	}
 };

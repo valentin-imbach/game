@@ -7,7 +7,7 @@
 
 class MonsterAiSystem : public System {
 public:
-	void update(std::unordered_set<pair>& solidMap, std::unordered_set<pair>& opaqueMap, uint ticks) {
+	void update(uint ticks, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
@@ -22,6 +22,8 @@ public:
 				continue;
 			}
 
+			Realm* realm = realmManager.getRealm(positionComponent.realmId);
+
 			vec targetPosition = sensorComponent.position;
 			if (vec::dist(targetPosition, positionComponent.position) < 1) {
 				creatureStateComponent.state = CreatureState::IDLE;
@@ -30,14 +32,14 @@ public:
 				pair end = vec::round(targetPosition);
 				vec offset = positionComponent.position - start;
 
-				Direction::value dir = ai::find_direction(start, end, solidMap, true);
+				Direction::value dir = ai::find_direction(start, end, realm->solidMap, true);
 				if (dir) {
 					pair step = start + Direction::taxi[dir];
 					pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
 					pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
-					if (solidMap.find(left) != solidMap.end() && vec::dot(left-step, offset) > 0.1) {
+					if (realm->solidMap.find(left) != realm->solidMap.end() && vec::dot(left-step, offset) > 0.1) {
 						directionComponent.direction = Direction::rotate(dir, 7);
-					} else if (solidMap.find(right) != solidMap.end() && vec::dot(right - step, offset) > 0.1) {
+					} else if (realm->solidMap.find(right) != realm->solidMap.end() && vec::dot(right - step, offset) > 0.1) {
 						directionComponent.direction = Direction::rotate(dir, 1);
 					} else {
 						directionComponent.direction = dir;

@@ -4,8 +4,11 @@
 #include "TextureManager.hpp"
 #include "Window.hpp"
 
+using RealmId = unsigned char;
+
 struct Camera {
 	vec position;
+	RealmId realmId;
 	float zoom = 4;
 
 	pair screenPosition(vec pos) {
