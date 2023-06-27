@@ -21,7 +21,6 @@ public:
 		RealmId realmId = availableRealms.back();
 		availableRealms.pop_back();
 		realms[realmId] = std::make_unique<Realm>(realmId, size, seed);
-		realms[realmId]->world = world;
 		LOG("Realm", int(realmId), "created");
 		return realms[realmId].get();
 	}
@@ -60,7 +59,6 @@ public:
 		deserialise_object(stream, num);
 		for (int i = 0; i < num; i++) {
 			std::unique_ptr<Realm> realm = std::make_unique<Realm>(stream);
-			realm->world = world;
 			realms[realm->realmId] = std::move(realm);
 		}
 		uint available;

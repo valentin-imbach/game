@@ -35,20 +35,55 @@ void Realm::generate() {
 	}
 }
 
-void Realm::linkGrid(Entity entity) {
-	world->gridSystem->link(entity, gridMap, solidMap, opaqueMap);
+void Realm::linkGrid(Entity entity, GridComponent& gridComponent) {
+	if (!entity) return;
+	for (int x = 0; x < gridComponent.size.x; x++) {
+		for (int y = 0; y < gridComponent.size.y; y++) {
+			pair key = gridComponent.anker + pair(x, y);
+			if (gridMap.find(key) != gridMap.end()) {
+				WARNING("Trying to link more than one entity to a tile");
+				continue;
+			}
+			gridMap[key] = entity;
+			if (gridComponent.solid) solidMap.insert(key);
+			if (gridComponent.opaque) opaqueMap.insert(key);
+		}
+	}
+	//world->gridSystem->link(entity, gridMap, solidMap, opaqueMap);
 }
 
-void Realm::unlinkGrid(Entity entity) {
-	world->gridSystem->unlink(entity, gridMap, solidMap, opaqueMap);
+void Realm::unlinkGrid(Entity entity, GridComponent& gridComponent) {
+	if (!entity) return;
+	for (int x = 0; x < gridComponent.size.x; x++) {
+		for (int y = 0; y < gridComponent.size.y; y++) {
+			pair key = gridComponent.anker + pair(x, y);
+			if (gridMap.find(key) == gridMap.end()) {
+				WARNING("Trying to remove non-existing link");
+				continue;
+			}
+			gridMap.erase(key);
+			if (gridComponent.solid) solidMap.erase(key);
+			if (gridComponent.opaque) opaqueMap.erase(key);
+		}
+	}
 }
 
-void Realm::linkChunk(Entity entity) {
-	world->chunkSystem->link(entity, chunks);
+void Realm::linkChunk(Entity entity, PositionComponent& positionComponent) {
+	pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
+	positionComponent.chunk = chunk;
+	if (chunks[chunk].find(entity) != chunks[chunk].end()) {
+		WARNING("Trying to link entity to chunk twice");
+		return;
+	}
+	chunks[chunk].insert(entity);
 }
 
-void Realm::unlinkChunk(Entity entity) {
-	world->chunkSystem->unlink(entity, chunks);
+void Realm::unlinkChunk(Entity entity, PositionComponent& positionComponent) {
+	if (chunks[positionComponent.chunk].find(entity) == chunks[positionComponent.chunk].end()) {
+		WARNING("Trying to unlink non-existing entity from chunk");
+		return;
+	}
+	chunks[positionComponent.chunk].erase(entity);
 }
 
 bool Realm::free(pair anker, pair size = {1, 1}) {

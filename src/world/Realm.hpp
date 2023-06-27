@@ -4,6 +4,8 @@
 
 class World;
 using RealmId = unsigned char;
+struct GridComponent;
+struct PositionComponent;
 
 class Realm {
 public:
@@ -18,7 +20,6 @@ public:
 	// std::unordered_map<pair, Chunk> chunks;
 
 	RealmId realmId;
-	World* world;
 
 	pair size;
 	std::unique_ptr<Map> map;
@@ -26,10 +27,10 @@ public:
 	std::unordered_set<pair> solidMap;
 	std::unordered_set<pair> opaqueMap;
 
-	void linkGrid(Entity entity);
-	void unlinkGrid(Entity entity);
-	void linkChunk(Entity entity);
-	void unlinkChunk(Entity entity);
+	void linkGrid(Entity entity, GridComponent& gridComponent);
+	void unlinkGrid(Entity entity, GridComponent& gridComponent);
+	void linkChunk(Entity entity, PositionComponent& positionComponent);
+	void unlinkChunk(Entity entity, PositionComponent& positionComponent);
 	
 	// void unlink(Entity entity);
 

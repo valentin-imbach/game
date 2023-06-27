@@ -401,7 +401,7 @@ void BuildGui::select(int n) {
 void BuildGui::build() {
 	ECS& ecs = guiManager->world->ecs;
 	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), guiManager->world->playerRealm, {0, 0});
-	guiManager->world->unlinkGrid(guiManager->buildMode);
+	guiManager->world->unlinkGrid(guiManager->buildMode, ecs.getComponent<GridComponent>(guiManager->buildMode));
 	ecs.addComponent<ChunkComponent>({}, guiManager->buildMode);
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();

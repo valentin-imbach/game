@@ -14,19 +14,10 @@ public:
 		return (entityToIndex.find(entity)!= entityToIndex.end());
 	}
 
-	void setCallbacks(std::function<void(Entity)> start, std::function<void(Entity)> end) {
-		this->start = start;
-		this->end = end;
-	}
-
 protected:
 	std::unordered_map<Entity, size_t> entityToIndex;
 	std::unordered_map<size_t, Entity> indexToEntity;
 	size_t size;
-
-	std::function<void(Entity)> start;
-	std::function<void(Entity)> end;
-		
 };
 
 template <typename T>
@@ -47,7 +38,7 @@ public:
 		components[size] = component;
 		size += 1;
 
-		if (start) start(entity);
+		if (start) start(entity, component);
 	}
 
 	void removeComponent(Entity entity) {
@@ -56,9 +47,8 @@ public:
 			return;
 		}
 
-		if (end) end(entity);
-
 		size_t index = entityToIndex[entity];
+		if (end) end(entity, components[index]);
 		components[index] = components[size - 1];
 
 		Entity lastEntity = indexToEntity[size - 1];
@@ -97,10 +87,17 @@ public:
 			indexToEntity[index] = entity;
 			entityToIndex[entity] = index;
 			deserialise_object(stream, components[index]);
-			if (start) start(entity);
+			if (start) start(entity, components[index]);
 		}
+	}
+
+	void setCallbacks(std::function<void(Entity, T&)> start, std::function<void(Entity, T&)> end) {
+		this->start = start;
+		this->end = end;
 	}
 
 private:
 	std::array<T, MAX_ENTITIES> components;
+	std::function<void(Entity, T&)> start;
+	std::function<void(Entity, T&)> end;
 };

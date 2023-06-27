@@ -14,26 +14,6 @@ public:
 		for (Entity entity : entities) reassign(entity, realmManager);
 	}
 
-	void link(Entity entity, std::unordered_map<pair, EntitySet>& chunks) {
-		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-		pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
-		positionComponent.chunk = chunk;
-		if (chunks[chunk].find(entity) != chunks[chunk].end()) {
-			WARNING("Trying to link entity to chunk twice");
-			return;
-		}
-		chunks[chunk].insert(entity);
-	}
-
-	void unlink(Entity entity, std::unordered_map<pair, EntitySet>& chunks) {
-		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-		if (chunks[positionComponent.chunk].find(entity) == chunks[positionComponent.chunk].end()) {
-			WARNING("Trying to unlink non-existing entity from chunk");
-			return;
-		}
-		chunks[positionComponent.chunk].erase(entity);
-	}
-
 	void reassign(Entity entity, RealmManager& realmManager) {
 		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 		Realm* realm = realmManager.getRealm(positionComponent.realmId);
@@ -42,8 +22,8 @@ public:
 
 		if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
 			pair newChunk = vec::round(positionComponent.position / CHUNK_SIZE);
-			realm->unlinkChunk(entity);
-			realm->linkChunk(entity);
+			realm->unlinkChunk(entity, positionComponent);
+			realm->linkChunk(entity, positionComponent);
 		}
 	}
 };

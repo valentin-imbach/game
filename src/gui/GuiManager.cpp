@@ -42,11 +42,12 @@ void GuiManager::draw() {
 bool GuiManager::handleEvent(InputEvent event) {
 	if (buildMode && event.id == InputEventId::PRIMARY) {
 		PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(buildMode);
+		GridComponent& gridComponent = world->ecs.getComponent<GridComponent>(buildMode);
 		pair pos = vec::round(positionComponent.position);
 		if (world->playerRealm->free(pos, {1, 1})) {
 			world->ecs.getComponent<SpriteComponent>(buildMode).z = 0;
 			world->ecs.removeComponent<ChunkComponent>(buildMode);
-			world->linkGrid(buildMode);
+			world->linkGrid(buildMode, gridComponent);
 			buildMode = 0;
 		}
 		return true;

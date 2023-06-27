@@ -144,7 +144,7 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 }
 
 void World::rosterComponents() {
-	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION, std::bind(&World::linkChunk, this, std::placeholders::_1), std::bind(&World::unlinkChunk, this, std::placeholders::_1));
+	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION, std::bind(&World::linkChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&World::unlinkChunk, this, std::placeholders::_1, std::placeholders::_2));
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
@@ -161,7 +161,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemKindComponent>(ComponentId::ITEM_KIND);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
-	ecs.rosterComponent<GridComponent>(ComponentId::GRID, std::bind(&World::linkGrid, this, std::placeholders::_1), std::bind(&World::unlinkGrid, this, std::placeholders::_1));
+	ecs.rosterComponent<GridComponent>(ComponentId::GRID, std::bind(&World::linkGrid, this, std::placeholders::_1, std::placeholders::_2), std::bind(&World::unlinkGrid, this, std::placeholders::_1, std::placeholders::_2));
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);

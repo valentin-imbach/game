@@ -18,12 +18,22 @@ public:
 	World(std::string name, uint seed);
 	World(std::fstream& stream);
 
-	void linkGrid(Entity entity) { realmManager.getRealm(ecs.getComponent<GridComponent>(entity).realmId)->linkGrid(entity); }
-	void unlinkGrid(Entity entity) { realmManager.getRealm(ecs.getComponent<GridComponent>(entity).realmId)->unlinkGrid(entity); }
+	void linkGrid(Entity entity, GridComponent& gridComponent) {
+		realmManager.getRealm(gridComponent.realmId)->linkGrid(entity, gridComponent);
+	}
 
-	void linkChunk(Entity entity) { realmManager.getRealm(ecs.getComponent<PositionComponent>(entity).realmId)->linkChunk(entity); }
-	void unlinkChunk(Entity entity) { realmManager.getRealm(ecs.getComponent<PositionComponent>(entity).realmId)->unlinkChunk(entity); }
-	
+	void unlinkGrid(Entity entity, GridComponent& gridComponent) {
+		realmManager.getRealm(gridComponent.realmId)->unlinkGrid(entity, gridComponent);
+	}
+
+	void linkChunk(Entity entity, PositionComponent& positionComponent) {
+		realmManager.getRealm(positionComponent.realmId)->linkChunk(entity, positionComponent);
+	}
+
+	void unlinkChunk(Entity entity, PositionComponent& positionComponent) {
+		realmManager.getRealm(positionComponent.realmId)->unlinkChunk(entity, positionComponent);
+	}
+
 	void update(uint dt);
 	void updateCamera(Entity target);
 	bool handleEvent(InputEvent event, uint dt);
