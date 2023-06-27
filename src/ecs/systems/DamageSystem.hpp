@@ -8,12 +8,13 @@
 
 class DamageSystem : public System {
 public:
-	bool update(Entity actor, vec position, Entity item, uint ticks) {
+	bool update(Entity actor, vec position, Entity item, uint ticks, EntitySet& set) {
 		if (!ecs->hasComponent<DamageComponent>(item)) return false;
 		vec actorPosition = ecs->getComponent<PositionComponent>(actor).position;
 		DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(item);
 		
-		for (Entity entity : entities) {
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);

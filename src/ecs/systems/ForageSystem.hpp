@@ -9,8 +9,9 @@
 
 class ForageSystem : public System {
 public:
-	bool update(vec position, Entity item, uint ticks) {
-		for (Entity entity : entities) {
+	bool update(vec position, Entity item, uint ticks, EntitySet& set) {
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 			if (!vec::inside(position, vec(gridComponent.anker) - vec(0.5, 0.5), gridComponent.size, false)) continue;
 			ResourceComponent& resourceComponent = ecs->getComponent<ResourceComponent>(entity);

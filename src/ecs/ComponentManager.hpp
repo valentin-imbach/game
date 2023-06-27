@@ -21,7 +21,7 @@ public:
 
 	template <typename T>
 	void setCallbacks(std::function<void(Entity, T&)> start, std::function<void(Entity, T&)> end) {
-		static_cast<ComponentArray<T>*>(componentArrays[roster<T>()].get())->setCallbacks(start, end);
+		getComponentArray<T>()->setCallbacks(start, end);
 	}
 
 	template <typename T>

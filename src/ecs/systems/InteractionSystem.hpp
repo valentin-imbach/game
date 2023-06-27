@@ -8,8 +8,9 @@
 
 class InteractionSystem : public System {
 public:
-	std::unique_ptr<GuiElement> update(vec position) {
-		for (Entity entity : entities) {
+	std::unique_ptr<GuiElement> update(vec position, EntitySet& set) {
+		for (Entity entity : set) {
+			if (entities.find(entity) == entities.end()) continue;
 			StationComponent& stationComponent = ecs->getComponent<StationComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			if (!vec::inside(position, positionComponent.position, {1.0f, 1.0f})) continue;

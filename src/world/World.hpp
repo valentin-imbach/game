@@ -67,6 +67,8 @@ private:
 
 	void init();
 
+	EntitySet updateSet;
+
 	std::unique_ptr<GuiElement> makeInventory();
 	std::unique_ptr<GuiElement> makeMenu();
 

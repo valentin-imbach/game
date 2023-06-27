@@ -249,7 +249,7 @@ void World::update(uint dt) {
 	guiManager.update();
 	controllerSystem->update(inputState, state, ticks);
 
-	EntitySet updateSet;
+	updateSet.clear();
 	const uchar updateDistance = 1;
 	for (int x = -updateDistance; x <= updateDistance; x++) {
 		for (int y = -updateDistance; y <= updateDistance; y++) {
@@ -416,19 +416,19 @@ bool World::handleEvent(InputEvent event, uint dt) {
 
 	if (event.id == InputEventId::PRIMARY) {
 		if (timePassed > 500) {
-			if (forageSystem->update(position, activeItemContainer.item, ticks)) {
+			if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
 				playerComponent.lastAction = ticks;
 				return true;
 			}
 			
-			if (damageSystem->update(player, position, activeItemContainer.item, ticks)) {
+			if (damageSystem->update(player, position, activeItemContainer.item, ticks, updateSet)) {
 				playerComponent.lastAction = ticks;
 				return true;
 			}
 			//gatherSystem->update(player, position, ticks);
 		}
 	} else if (event.id == InputEventId::SECONDARY) {
-		std::unique_ptr<GuiElement> gui = interactionSystem->update(position);
+		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
 		if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
