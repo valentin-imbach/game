@@ -25,6 +25,8 @@ public:
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
 			vec targetPosition = sensorComponent.position;
+			// LOG(targetPosition);
+
 			if (vec::dist(targetPosition, positionComponent.position) < 1) {
 				creatureStateComponent.state = CreatureState::IDLE;
 			} else {
@@ -34,6 +36,7 @@ public:
 
 				Direction::value dir = ai::find_direction(start, end, realm->solidMap, true);
 				if (dir) {
+					
 					pair step = start + Direction::taxi[dir];
 					pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
 					pair right = start + Direction::taxi[Direction::rotate(dir, 7)];

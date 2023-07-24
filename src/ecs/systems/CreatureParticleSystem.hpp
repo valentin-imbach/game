@@ -11,7 +11,7 @@ public:
 			ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 
-			if (creatureStateComponent.state == CreatureState::WALKING) {
+			if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
 				particleComponent.active = true;
 				particleComponent.style = ParticleSystem::DIRT;
 			} else {

@@ -17,7 +17,7 @@ SOUTH_EAST)
 
 namespace Direction {
 	[[nodiscard]] inline Direction::value from_vec(vec v) {
-		return Direction::from_int(1 + int((vec::angle(v) + M_PI + M_PI / 8) / M_PI_4) % 8);
+		return Direction::from_int(1 + int(4 + (vec::angle(v) + M_PI + M_PI / 8) / M_PI_4) % 8);
 	}
 
 	[[nodiscard]] inline Direction::value rotate(Direction::value d, int n) {
@@ -27,13 +27,13 @@ namespace Direction {
 	const vec unit[9] = {
 		vec(0, 0),
 		vec(1, 0),
-		vec(1 / std::sqrt(2), -1 / std::sqrt(2)),
+		vec(std::sqrt(2)/2, -std::sqrt(2)/2),
 		vec(0, -1),
-		vec(-1 / std::sqrt(2), -1 / std::sqrt(2)),
+		vec(-std::sqrt(2)/2, -std::sqrt(2/2)),
 		vec(-1, 0),
-		vec(-1 / std::sqrt(2), 1 / std::sqrt(2)),
+		vec(-std::sqrt(2)/2, std::sqrt(2)/2),
 		vec(0, 1),
-		vec(1 / std::sqrt(2), 1 / std::sqrt(2))
+		vec(std::sqrt(2)/2, std::sqrt(2)/2)
 	};
 
 	const pair taxi[9] = {

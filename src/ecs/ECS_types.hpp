@@ -31,7 +31,11 @@ LIGHT,
 SENSOR,
 PROJECTILE,
 LAUNCHER,
-CHUNK)
+CHUNK,
+AI,
+AI_WANDER,
+AI_MOVE,
+AI_FLEE)
 
 ENUM(SystemId,
 ENTITY_DRAW,
@@ -59,7 +63,11 @@ HAND_RENDER,
 CHUNK,
 LIGHT,
 SENSOR,
-PROJECTILE)
+PROJECTILE,
+AI,
+AI_WANDER,
+AI_MOVE,
+AI_FLEE)
 
 using Entity = uint;
 using EntitySet = std::unordered_set<Entity>;

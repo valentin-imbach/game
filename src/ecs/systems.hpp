@@ -26,3 +26,7 @@
 #include "LightSystem.hpp"
 #include "SensorSystem.hpp"
 #include "ProjectileSystem.hpp"
+#include "AiSystem.hpp"
+#include "AiWanderSystem.hpp"
+#include "AiMoveSystem.hpp"
+#include "AiFleeSystem.hpp"

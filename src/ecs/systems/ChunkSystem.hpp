@@ -21,7 +21,7 @@ public:
 		vec offset = positionComponent.position - CHUNK_SIZE * positionComponent.chunk;
 
 		if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
-			pair newChunk = vec::round(positionComponent.position / CHUNK_SIZE);
+			//pair newChunk = vec::round(positionComponent.position / CHUNK_SIZE);
 			realm->unlinkChunk(entity, positionComponent);
 			realm->linkChunk(entity, positionComponent);
 		}

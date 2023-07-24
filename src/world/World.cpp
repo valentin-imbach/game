@@ -35,17 +35,20 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	init();
 
 	Realm* realm = realmManager.addRealm(this, pair(100, 100), seed);
-	Realm* otherRealm = realmManager.addRealm(this, pair(100, 100), seed + 1);
+	//Realm* otherRealm = realmManager.addRealm(this, pair(100, 100), seed + 1);
 	realm->generate();
 	//otherRealm->generate();
 
 	pair spawn = realm->findFree(pair(50,50));
-	Entity player = EntityFactory::createPlayer(otherRealm, spawn);
+	Entity player = EntityFactory::createPlayer(realm, spawn);
+	EntityFactory::createAnimal(AnimalId::COW, realm, realm->findFree(pair(52,52)));
+
+	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
+
+	//EntityFactory::createAnimal(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
-
-	// EntityFactory::createAnimal(AnimalId::COW, {6, 6});
 
 	Entity axe = ecs.createEntity();
 	SpriteStack axeSprites;
@@ -109,8 +112,6 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 
 	// Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
-	EntityFactory::createAnimal(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
-
 	// Entity fire = ecs.createEntity();
 	// ecs.addComponent<PositionComponent>({pair(11, 3)}, fire);
 	// ecs.addComponent<GridComponent>({pair(11, 3), pair(1, 1), true, false}, fire);
@@ -144,7 +145,8 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 }
 
 void World::rosterComponents() {
-	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION, std::bind(&World::linkChunk, this, std::placeholders::_1, std::placeholders::_2), std::bind(&World::unlinkChunk, this, std::placeholders::_1, std::placeholders::_2));
+
+	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION, [this](Entity e, auto& c) { linkChunk(e, c); }, [this](Entity e, auto& c) { unlinkChunk(e, c); });
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
@@ -161,7 +163,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemKindComponent>(ComponentId::ITEM_KIND);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
-	ecs.rosterComponent<GridComponent>(ComponentId::GRID, std::bind(&World::linkGrid, this, std::placeholders::_1, std::placeholders::_2), std::bind(&World::unlinkGrid, this, std::placeholders::_1, std::placeholders::_2));
+	ecs.rosterComponent<GridComponent>(ComponentId::GRID, [this](Entity e, auto& c) { linkGrid(e, c); }, [this](Entity e, auto& c) { unlinkGrid(e, c); });
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
@@ -173,6 +175,10 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ProjectileComponent>(ComponentId::PROJECTILE);
 	ecs.rosterComponent<LauncherComponent>(ComponentId::LAUNCHER);
 	ecs.rosterComponent<ChunkComponent>(ComponentId::CHUNK);
+	ecs.rosterComponent<AiComponent>(ComponentId::AI);
+	ecs.rosterComponent<AiWanderComponent>(ComponentId::AI_WANDER);
+	ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
+	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
 
 	LOG("Components rostered");
 }
@@ -230,6 +236,14 @@ void World::rosterSystems() {
 		{ComponentId::POSITION, ComponentId::SENSOR});
 	projectileSystem = ecs.rosterSystem<ProjectileSystem>(SystemId::PROJECTILE,
 		{ComponentId::POSITION, ComponentId::PROJECTILE});
+	aiSystem = ecs.rosterSystem<AiSystem>(SystemId::AI,
+		{ComponentId::AI});
+	aiWanderSystem = ecs.rosterSystem<AiWanderSystem>(SystemId::AI_WANDER,
+		{ComponentId::AI, ComponentId::AI_WANDER});
+	aiMoveSystem = ecs.rosterSystem<AiMoveSystem>(SystemId::AI_MOVE,
+		{ComponentId::AI, ComponentId::AI_MOVE});
+	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE,
+		{ComponentId::AI, ComponentId::AI_FLEE});
 
 	LOG("Systems rostered")
 }
@@ -238,6 +252,7 @@ void World::update(uint dt) {
 	ticks += dt;
 	time.update(dt);
 	player = playerSystem->getPlayer();
+
 	if (player) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 		playerChunk = positionComponent.chunk;
@@ -260,14 +275,24 @@ void World::update(uint dt) {
 	}
 
 	sensorSystem->update(player, ticks, realmManager);
-	animalAiSystem->update(ticks);
+
+	//animalAiSystem->update(ticks);
 	monsterAiSystem->update(ticks, realmManager);
+
+	//aiMoveSystem->update(ticks, realmManager);
+	aiWanderSystem->score(ticks);
+	aiFleeSystem->score(ticks);
+	aiSystem->update(ticks);
+	//aiMoveSystem->move(ticks);
+	aiWanderSystem->update(ticks, realmManager);
+	aiFleeSystem->update(ticks, realmManager);
 
 	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realmManager);
 	collisionSystem->update(collisions, updateSet);
 
 	chunkSystem->update(realmManager);
+	//assert(false);
 
 	itemPickupSystem->update(collisions);
 

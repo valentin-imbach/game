@@ -182,3 +182,34 @@ struct LauncherComponent {
 };
 
 struct ChunkComponent {};
+
+ENUM(AiState,
+WANDER,
+CHASE,
+MELEE,
+RANGED,
+FLEE,
+EAT);
+
+struct AiComponent {
+	AiState::value state = AiState::NONE;
+	uint lastChange = 0;
+	bool change = false;
+	std::array<ushort, AiState::count> scores = {};
+};
+
+struct AiMoveComponent {
+	bool move = false;
+	std::array<float, Direction::count> moveScores = {};
+};
+
+struct AiWanderComponent {
+	vec position;
+	vec direction;
+};
+
+struct AiFleeComponent {
+	vec avoid;
+	vec target;
+	uint lastChange;
+};

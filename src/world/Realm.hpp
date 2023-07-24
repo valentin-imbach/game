@@ -14,9 +14,6 @@ public:
 
 	void generate();
 
-	// void serialise(std::fstream& stream);
-	// void deserialise(std::fstream& stream);
-
 	// std::unordered_map<pair, Chunk> chunks;
 
 	RealmId realmId;
@@ -35,7 +32,8 @@ public:
 	// void unlink(Entity entity);
 
 	bool free(pair anker, pair size);
-	pair findFree(pair pos);
+	bool walkable(pair pos);
+	pair findFree(pair pos, int radius = 5, bool origin = true);
 
 	void serialise(std::fstream& stream);
 

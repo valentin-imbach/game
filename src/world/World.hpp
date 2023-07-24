@@ -52,8 +52,6 @@ public:
 	ECS ecs;
 	ParticleSystem particleSystem;
 
-	//std::unique_ptr<Realm> realm;
-
 	RealmManager realmManager;
 	Realm* playerRealm;
 
@@ -100,6 +98,10 @@ private:
 	LightSystem* lightSystem;
 	SensorSystem* sensorSystem;
 	ProjectileSystem* projectileSystem;
+	AiSystem* aiSystem;
+	AiWanderSystem* aiWanderSystem;
+	AiMoveSystem* aiMoveSystem;
+	AiFleeSystem* aiFleeSystem;
 
 	GuiManager guiManager;
 	std::string name;

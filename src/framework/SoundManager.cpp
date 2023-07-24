@@ -33,7 +33,7 @@ void SoundManager::cleanup() {
 	}
 	
 	Mix_Quit();
-	LOG("Mixer clened up");
+	LOG("Mixer cleaned up");
 }
 
 void SoundManager::setVolume(int v) {

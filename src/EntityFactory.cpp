@@ -11,7 +11,7 @@ uint EntityFactory::seed = 1729;
 
 Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	Entity player = world->ecs.createEntity();
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId}, player);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, vec::round(position / CHUNK_SIZE)}, player);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	world->ecs.addComponent<MovementComponent>({2}, player);
@@ -58,7 +58,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	Entity resource = world->ecs.createEntity();
 	if (!resource) return 0;
 
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId}, resource);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, vec::round(position / CHUNK_SIZE)}, resource);
 	world->ecs.addComponent<GridComponent>({position, realm->realmId, resourceTemplate->size, resourceTemplate->solid, resourceTemplate->opaque}, resource);
 
 	SpriteStack spriteStack;
@@ -77,7 +77,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 
 Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec position) {
 	Entity animal = world->ecs.createEntity();
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId}, animal);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, vec::round(position / CHUNK_SIZE)}, animal);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
@@ -103,10 +103,17 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
 	Collider collider({0, 0}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, animal);
-	world->ecs.addComponent<AnimalAiComponent>({0}, animal);
+	//world->ecs.addComponent<AnimalAiComponent>({0}, animal);
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
+
+	world->ecs.addComponent<AiComponent>({}, animal);
+	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
+	world->ecs.addComponent<AiMoveComponent>({}, animal);
+	world->ecs.addComponent<AiFleeComponent>({}, animal);
+	world->ecs.addComponent<SensorComponent>({5}, animal);
+
 	return animal;
 }
 

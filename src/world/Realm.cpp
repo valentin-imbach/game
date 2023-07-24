@@ -72,7 +72,7 @@ void Realm::linkChunk(Entity entity, PositionComponent& positionComponent) {
 	pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
 	positionComponent.chunk = chunk;
 	if (chunks[chunk].find(entity) != chunks[chunk].end()) {
-		WARNING("Trying to link entity to chunk twice");
+		WARNING("Trying to link entity", entity, "to chunk", chunk, "twice");
 		return;
 	}
 	chunks[chunk].insert(entity);
@@ -80,7 +80,7 @@ void Realm::linkChunk(Entity entity, PositionComponent& positionComponent) {
 
 void Realm::unlinkChunk(Entity entity, PositionComponent& positionComponent) {
 	if (chunks[positionComponent.chunk].find(entity) == chunks[positionComponent.chunk].end()) {
-		WARNING("Trying to unlink non-existing entity from chunk");
+		WARNING("Trying to unlink non-existing entity", entity, "from chunk", positionComponent.chunk);
 		return;
 	}
 	chunks[positionComponent.chunk].erase(entity);
@@ -95,12 +95,17 @@ bool Realm::free(pair anker, pair size = {1, 1}) {
 	return true;
 }
 
-pair Realm::findFree(pair pos) {
+bool Realm::walkable(pair pos) {
+	if (solidMap.find(pos) != solidMap.end()) return false;
+	return map->getTileId(pos) != TileId::WATER;
+}
+
+pair Realm::findFree(pair pos, int radius, bool origin) {
 	pair guess = pos;
 	uint seet = 123;
-	while (!free(guess)) {
-		guess.x = noise::Int(seed++, pos.x - 20, pos.x + 20);
-		guess.y = noise::Int(seed++, pos.y - 20, pos.y + 20);
+	while (!free(guess) || (!origin && guess == pos)) {
+		guess.x = noise::Int(seed++, pos.x - radius, pos.x + radius);
+		guess.y = noise::Int(seed++, pos.y - radius, pos.y + radius);
 	}
 	return guess;
 }

@@ -2,7 +2,6 @@
 #pragma once
 #include "System.hpp"
 #include "Components.hpp"
-#include "SDL2/SDL_timer.h"
 #include "ECS.hpp"
 
 class AnimalAiSystem : public System {

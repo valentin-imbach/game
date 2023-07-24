@@ -16,7 +16,7 @@ public:
 				if (creatureStateComponent.state == CreatureState::IDLE) {
 					sprite.frameCount = 1;
 					sprite.source.x = 7;
-				} else if (creatureStateComponent.state == CreatureState::WALKING) {
+				} else if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
 					sprite.frameCount = 8;
 					sprite.source.x = 0;
 				}
