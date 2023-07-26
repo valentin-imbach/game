@@ -30,31 +30,26 @@ public:
 
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
-			if (!isColliding(colliderComponent.collider, newPosition, realm->solidMap, *realm->map) || isColliding(colliderComponent.collider, positionComponent.position, realm->solidMap, *realm->map)) {
+			if (!isColliding(colliderComponent.collider, newPosition, realm) || isColliding(colliderComponent.collider, positionComponent.position, realm)) {
 				positionComponent.position = newPosition;
-			} else if (!isColliding(colliderComponent.collider, {newPosition.x, positionComponent.position.y}, realm->solidMap, *realm->map)) {
+			} else if (!isColliding(colliderComponent.collider, {newPosition.x, positionComponent.position.y}, realm)) {
 				positionComponent.position.x = newPosition.x;
-			} else if (!isColliding(colliderComponent.collider, {positionComponent.position.x, newPosition.y}, realm->solidMap, *realm->map)) {
+			} else if (!isColliding(colliderComponent.collider, {positionComponent.position.x, newPosition.y}, realm)) {
 				positionComponent.position.y = newPosition.y;
 			}
 		}
 	}
 
 private:
-	bool isColliding(Collider collider, vec position, std::unordered_set<pair>& solidMap, Map& map) {
+	bool isColliding(Collider collider, vec position, Realm* realm) {
 		pair topLeft = vec::round(position - collider.size / 2);
 		pair bottomRight = vec::round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {
 			for (int y = topLeft.y; y <= bottomRight.y; y++) {
-				if (!isFree(solidMap, map, {x, y})) return true;
+				pair pos(x, y);
+				if (!realm->walkable(pos)) return true;
 			}
 		}
 		return false;
-	}
-
-	bool isFree(std::unordered_set<pair>& solidMap, Map& map, pair position) {
-		if (solidMap.find(position) != solidMap.end()) return false;
-		if (map.getTileId(position) == TileId::WATER) return false;
-		return true;
 	}
 };

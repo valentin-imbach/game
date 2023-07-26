@@ -47,7 +47,7 @@ bool GuiManager::handleEvent(InputEvent event) {
 		if (world->playerRealm->free(pos, {1, 1})) {
 			world->ecs.getComponent<SpriteComponent>(buildMode).z = 0;
 			world->ecs.removeComponent<ChunkComponent>(buildMode);
-			world->linkGrid(buildMode, gridComponent);
+			world->playerRealm->linkGrid(buildMode, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);
 			buildMode = 0;
 		}
 		return true;

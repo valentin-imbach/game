@@ -21,7 +21,8 @@ public:
 			float d = vec::dist(positionComponent.position, playerPositionComponent.position);
 			if (d > sensorComponent.radius) return;
 
-			if (ai::visible(positionComponent.position, playerPositionComponent.position, realm->opaqueMap).first) {
+			auto lambda = [realm](pair pos){ return !realm->opaque(pos); };
+			if (ai::visible(positionComponent.position, playerPositionComponent.position, lambda).first) {
 				sensorComponent.position = playerPositionComponent.position;
 				sensorComponent.lastSeen = ticks;
 				sensorComponent.engaged = true;

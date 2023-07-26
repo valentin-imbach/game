@@ -213,3 +213,8 @@ struct AiFleeComponent {
 	vec target;
 	uint lastChange;
 };
+
+struct PortalComponent {
+	RealmId realmId;
+	pair position;
+};

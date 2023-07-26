@@ -30,3 +30,4 @@
 #include "AiWanderSystem.hpp"
 #include "AiMoveSystem.hpp"
 #include "AiFleeSystem.hpp"
+#include "PositionSystem.hpp"

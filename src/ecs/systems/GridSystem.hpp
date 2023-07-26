@@ -10,8 +10,8 @@ public:
 	void rebuild(RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
-			Realm* realm = realmManager.getRealm(ecs->getComponent<GridComponent>(entity).realmId);
-			realm->linkGrid(entity, gridComponent);
+			Realm* realm = realmManager.getRealm(gridComponent.realmId);
+			realm->linkGrid(entity, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);
 		}
 	}
 };

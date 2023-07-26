@@ -3,9 +3,11 @@
 #include "utils.hpp"
 
 namespace ai {
+
+	using GridPred = std::function<bool(pair)>;
 	using Node = std::pair<int, pair>;
 
-	inline std::vector<Direction::value> bfs(pair start, pair end, std::unordered_set<pair>& map, bool diagonal = false) {
+	inline std::vector<Direction::value> bfs(pair start, pair end, GridPred free, bool diagonal = false) {
 		std::unordered_map<pair, Direction::value> visited;
 
 		auto comp = [&](Node& left, Node& right) {
@@ -26,9 +28,9 @@ namespace ai {
 				if (d % 2 == 0) {
 					pair left = node.second + Direction::taxi[d % 8 + 1];
 					pair right = node.second + Direction::taxi[(d + 6) % 8 + 1];
-					if (map.find(left) != map.end() || map.find(right) != map.end()) continue;
+					if (!free(left) || !free(right)) continue;
 				}
-				if (visited.find(next) == visited.end() && map.find(next) == map.end()) {
+				if (free(next) && visited.find(next) == visited.end()) {
 					visited[next] = Direction::from_int(d);
 					if (next == end) {
 						found = true;
@@ -51,19 +53,19 @@ namespace ai {
 		return res;
 	}
 
-	inline Direction::value find_direction(pair start, pair end, std::unordered_set<pair>& map, bool diagonal = false) {
-		std::vector<Direction::value> path = bfs(start, end, map, diagonal);
+	inline Direction::value find_direction(pair start, pair end, GridPred free, bool diagonal = false) {
+		std::vector<Direction::value> path = bfs(start, end, free, diagonal);
 		return path.empty() ? Direction::NONE : path[0];
 	}
 
-	inline std::pair<bool, pair> visible(vec start, vec end, std::unordered_set<pair>& map) {
+	inline std::pair<bool, pair> visible(vec start, vec end, GridPred free) {
 		float d = vec::dist(start, end);
 		int steps = std::max(int(std::ceil(10 * d)), 2);
 		vec offset = (end - start)/steps;
 		vec pos = start;
 		for (int i = 0; i <= steps; i++) {
 			pair p = vec::round(pos);
-			if (map.find(p) != map.end()) return {false, p};
+			if (!free(p)) return {false, p};
 			pos += offset;
 		}
 		return {true, {}};

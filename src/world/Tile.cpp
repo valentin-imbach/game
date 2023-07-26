@@ -8,6 +8,7 @@ Tile::Tile(TileId::value tileId) : tileId(tileId) {
 
 std::array<SpriteSheet::value, TileId::count> Tile::spriteSheets = {
     SpriteSheet::NONE,
+    SpriteSheet::PLANKS,
     SpriteSheet::GRASS,
     SpriteSheet::DIRT,
     SpriteSheet::MUD,

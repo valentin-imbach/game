@@ -18,21 +18,21 @@ public:
 	World(std::string name, uint seed);
 	World(std::fstream& stream);
 
-	void linkGrid(Entity entity, GridComponent& gridComponent) {
-		realmManager.getRealm(gridComponent.realmId)->linkGrid(entity, gridComponent);
-	}
+	// void linkGrid(Entity entity, GridComponent& gridComponent) {
+	// 	realmManager.getRealm(gridComponent.realmId)->linkGrid(entity, gridComponent);
+	// }
 
-	void unlinkGrid(Entity entity, GridComponent& gridComponent) {
-		realmManager.getRealm(gridComponent.realmId)->unlinkGrid(entity, gridComponent);
-	}
+	// void unlinkGrid(Entity entity, GridComponent& gridComponent) {
+	// 	realmManager.getRealm(gridComponent.realmId)->unlinkGrid(entity, gridComponent);
+	// }
 
-	void linkChunk(Entity entity, PositionComponent& positionComponent) {
-		realmManager.getRealm(positionComponent.realmId)->linkChunk(entity, positionComponent);
-	}
+	// void linkChunk(Entity entity, PositionComponent& positionComponent) {
+	// 	realmManager.getRealm(positionComponent.realmId)->linkChunk(entity, positionComponent);
+	// }
 
-	void unlinkChunk(Entity entity, PositionComponent& positionComponent) {
-		realmManager.getRealm(positionComponent.realmId)->unlinkChunk(entity, positionComponent);
-	}
+	// void unlinkChunk(Entity entity, PositionComponent& positionComponent) {
+	// 	realmManager.getRealm(positionComponent.realmId)->unlinkChunk(entity, positionComponent);
+	// }
 
 	void update(uint dt);
 	void updateCamera(Entity target);
@@ -102,6 +102,7 @@ private:
 	AiWanderSystem* aiWanderSystem;
 	AiMoveSystem* aiMoveSystem;
 	AiFleeSystem* aiFleeSystem;
+	PositionSystem* positionSystem;
 
 	GuiManager guiManager;
 	std::string name;

@@ -11,7 +11,9 @@ uint EntityFactory::seed = 1729;
 
 Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	Entity player = world->ecs.createEntity();
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, vec::round(position / CHUNK_SIZE)}, player);
+	pair chunk = vec::round(position / CHUNK_SIZE);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, player);
+	realm->linkChunk(player, chunk);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	world->ecs.addComponent<MovementComponent>({2}, player);
@@ -58,8 +60,11 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	Entity resource = world->ecs.createEntity();
 	if (!resource) return 0;
 
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, vec::round(position / CHUNK_SIZE)}, resource);
+	pair chunk = vec::round(position / CHUNK_SIZE);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, resource);
+	realm->linkChunk(resource, chunk);
 	world->ecs.addComponent<GridComponent>({position, realm->realmId, resourceTemplate->size, resourceTemplate->solid, resourceTemplate->opaque}, resource);
+	realm->linkGrid(resource, position, resourceTemplate->size, resourceTemplate->solid, resourceTemplate->opaque);
 
 	SpriteStack spriteStack;
 	for (SpriteTemplate& sprite : resourceTemplate->spriteTemplates) {
@@ -77,7 +82,9 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 
 Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec position) {
 	Entity animal = world->ecs.createEntity();
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, vec::round(position / CHUNK_SIZE)}, animal);
+	pair chunk = vec::round(position / CHUNK_SIZE);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, animal);
+	realm->linkChunk(animal, chunk);
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
@@ -135,7 +142,9 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 
 Entity EntityFactory::createItem(ItemId::value itemId, uchar count, Realm* realm, vec position) {
 	Entity item = createItem(itemId, count);
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId}, item);
+	pair chunk = vec::round(position / CHUNK_SIZE);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, item);
+	realm->linkChunk(item, chunk);
 	return item;
 }
 
@@ -144,8 +153,11 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 	Entity station = world->ecs.createEntity();
 	if (!station) return 0;
 	
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId}, station);
+	pair chunk = vec::round(position / CHUNK_SIZE);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, station);
+	realm->linkChunk(station, chunk);
 	world->ecs.addComponent<GridComponent>({position, realm->realmId, {1,1}, true, false}, station);
+	realm->linkGrid(station, position, {1,1}, true, false);
 	// } else {
 	// 	world->ecs.addComponent<PositionComponent>({position, 0}, station);
 	// 	world->ecs.addComponent<ChunkComponent>({}, station);
@@ -175,7 +187,9 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 	Entity projectile = world->ecs.createEntity();
 	if (!projectile) return 0;
 
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId}, projectile);
+	pair chunk = vec::round(position / CHUNK_SIZE);
+	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, projectile);
+	realm->linkChunk(projectile, chunk);
 
 	SpriteStack spriteStack;
 	spriteStack.addSprite({SpriteSheet::ITEMS, {5, 0}, {1, 1}});

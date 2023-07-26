@@ -37,15 +37,16 @@ public:
 			pair end = vec::round(aiWanderComponent.position);
 			vec offset = positionComponent.position - start;
 			//LOG(start, end);
-			Direction::value dir = ai::find_direction(start, end, realm->solidMap, true);
+			auto lambda = [realm](pair pos){ return realm->walkable(pos); };
+			Direction::value dir = ai::find_direction(start, end, lambda, true);
 	
 			if (dir) {
 				pair step = start + Direction::taxi[dir];
 				pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
 				pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
-				if (realm->solidMap.find(left) != realm->solidMap.end() && vec::dot(left-step, offset) > 0.1) {
+				if (!realm->walkable(left) && vec::dot(left-step, offset) > 0.1) {
 					directionComponent.direction = Direction::rotate(dir, 7);
-				} else if (realm->solidMap.find(right) != realm->solidMap.end() && vec::dot(right - step, offset) > 0.1) {
+				} else if (!realm->walkable(right) && vec::dot(right - step, offset) > 0.1) {
 					directionComponent.direction = Direction::rotate(dir, 1);
 				} else {
 					directionComponent.direction = dir;

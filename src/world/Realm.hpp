@@ -2,6 +2,9 @@
 #pragma once
 #include "Chunk.hpp"
 
+#define CHUNK_SIZE 16
+#define CHUNK_REACH 10
+
 class World;
 using RealmId = unsigned char;
 struct GridComponent;
@@ -24,15 +27,17 @@ public:
 	std::unordered_set<pair> solidMap;
 	std::unordered_set<pair> opaqueMap;
 
-	void linkGrid(Entity entity, GridComponent& gridComponent);
-	void unlinkGrid(Entity entity, GridComponent& gridComponent);
-	void linkChunk(Entity entity, PositionComponent& positionComponent);
-	void unlinkChunk(Entity entity, PositionComponent& positionComponent);
+	void linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque);
+	void unlinkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque);
+	void linkChunk(Entity entity, pair chunk);
+	void unlinkChunk(Entity entity, pair chunk);
 	
-	// void unlink(Entity entity);
+	void link(Entity entity);
+	void unlink(Entity entity);
 
 	bool free(pair anker, pair size);
 	bool walkable(pair pos);
+	bool opaque(pair pos);
 	pair findFree(pair pos, int radius = 5, bool origin = true);
 
 	void serialise(std::fstream& stream);

@@ -4,15 +4,41 @@
 #include "utils.hpp"
 
 Map::Map(pair size, uint seed)
-	: size(size), mapSeed(seed) {
-	for (int y = 0; y < size.y; y++) tiles.emplace_back(size.x);
+	: size(size), seed(seed) {
+	for (int x = 0; x < size.x; x++) tiles.emplace_back(size.y);
 	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
 	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
 	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
 	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
 	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
-	generate();
+	// generate();
 	// analyse(100000);
+}
+
+Map::Map(std::fstream& stream) {
+	deserialise_object(stream, seed);
+	deserialise_object(stream, size);
+	for (int x = 0; x < size.x; x++) {
+		tiles.emplace_back(size.y);
+		for (int y = 0; y < size.y; y++) {
+			TileId::value tileId;
+			deserialise_object(stream, tileId);
+			tiles[x][y] = std::make_unique<Tile>(tileId);
+		}
+	}
+
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			pair position(x, y);
+			updateStyle(position);
+		}
+	}
+
+	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
+	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
+	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
+	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
+	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
 }
 
 Biome::value Map::getBiome(pair position) {
@@ -65,6 +91,21 @@ void Map::generate() {
 	}
 }
 
+void Map::generateInterior() {
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			tiles[x][y] = std::make_unique<Tile>(TileId::PLANKS);
+		}
+	}
+
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			pair position(x, y);
+			updateStyle(position);
+		}
+	}
+}
+
 TileId::value Map::getTileId(pair position) {
 	if (position.x < 0 || position.y < 0) return TileId::NONE;
 	if (position.x >= size.x || position.y >= size.y) return TileId::NONE;
@@ -72,11 +113,12 @@ TileId::value Map::getTileId(pair position) {
 }
 
 void Map::updateStyle(pair position, bool propagate) {
+	uint s = seed + hash(position);
 	std::vector<std::pair<TileId::value, Sprite>>& sprites = tiles[position.x][position.y]->sprites;
 	sprites.clear();
 
 	TileId::value tileId = getTileId(position);
-	pair baseVariant = noise::choice<pair>(seed++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
+	pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
 	Sprite baseSprite = Sprite(Tile::spriteSheets[tileId], baseVariant);
 	sprites.emplace_back(tileId, baseSprite);
 
@@ -90,7 +132,7 @@ void Map::updateStyle(pair position, bool propagate) {
 		// Straights
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(seed++, variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(s++, variants[d / 2]));
 			sprites.emplace_back(id, sprite);
 		}
 
@@ -145,10 +187,11 @@ void Map::updateStyle(pair position, bool propagate) {
 }
 
 void Map::analyse(int samples) {
+	uint s = seed;
 	uint count[Biome::count] = {};
 	for (uint i = 0; i < samples; i++) {
-		int x = noise::Int(seed++, -10000, 10000);
-		int y = noise::Int(seed++, -10000, 10000);
+		int x = noise::Int(s++, -10000, 10000);
+		int y = noise::Int(s++, -10000, 10000);
 		pair position(x, y);
 		count[getBiome(position)] += 1;
 	}
@@ -156,4 +199,21 @@ void Map::analyse(int samples) {
 		int percent = std::round((100.0f * count[b]) / samples);
 		LOG(Biome::strings[b], std::to_string(percent) + "%");
 	}
+}
+
+void Map::serialize(std::fstream& stream) {
+	serialise_object(stream, seed);
+	serialise_object(stream, size);
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			serialise_object(stream, tiles[x][y]->tileId);
+		}
+	}
+}
+
+bool Map::inside(pair pos) {
+	if (pos.x < 0 || pos.x >= size.x) return false;
+	if (pos.y < 0 || pos.y >= size.y) return false;
+	return true;
+
 }

@@ -4,6 +4,7 @@
 #include "Sprite.hpp"
 
 ENUM(TileId,
+PLANKS,
 GRASS,
 DIRT,
 MUD,

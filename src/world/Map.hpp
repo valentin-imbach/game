@@ -8,6 +8,7 @@
 class Map {
 public:
 	Map(pair size, uint seed);
+	Map(std::fstream& stream);
 
 	Biome::value getBiome(pair position);
 	std::unique_ptr<Distribution> temparatureMap;
@@ -17,16 +18,19 @@ public:
 	std::unique_ptr<Distribution> variationMap;
 
 	void generate();
+	void generateInterior();
 
 	void updateStyle(pair position, bool propagate = false);
 	std::vector<std::vector<std::unique_ptr<Tile>>> tiles;
 	TileId::value getTileId(pair position);
 
 	void analyse(int samples);
+	bool inside(pair pos);
 
 	pair size;
 
+	void serialize(std::fstream& stream);
+
 private:
-	uint mapSeed;
 	uint seed;
 };

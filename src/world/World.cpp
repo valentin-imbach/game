@@ -35,7 +35,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	init();
 
 	Realm* realm = realmManager.addRealm(this, pair(100, 100), seed);
-	//Realm* otherRealm = realmManager.addRealm(this, pair(100, 100), seed + 1);
+	Realm* otherRealm = realmManager.addRealm(this, pair(5, 5), seed + 1);
 	realm->generate();
 	//otherRealm->generate();
 
@@ -43,9 +43,11 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	Entity player = EntityFactory::createPlayer(realm, spawn);
 	EntityFactory::createAnimal(AnimalId::COW, realm, realm->findFree(pair(52,52)));
 
-	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
+	Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
+	ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
 
-	//EntityFactory::createAnimal(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
+	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
+	EntityFactory::createAnimal(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -141,12 +143,13 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	//gridSystem->rebuild(realmManager);
+	gridSystem->rebuild(realmManager);
+	positionSystem->rebuild(realmManager);
 }
 
 void World::rosterComponents() {
 
-	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION, [this](Entity e, auto& c) { linkChunk(e, c); }, [this](Entity e, auto& c) { unlinkChunk(e, c); });
+	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION); // , [this](Entity e, auto& c) { linkChunk(e, c); }, [this](Entity e, auto& c) { unlinkChunk(e, c); });
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
@@ -163,7 +166,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemKindComponent>(ComponentId::ITEM_KIND);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
-	ecs.rosterComponent<GridComponent>(ComponentId::GRID, [this](Entity e, auto& c) { linkGrid(e, c); }, [this](Entity e, auto& c) { unlinkGrid(e, c); });
+	ecs.rosterComponent<GridComponent>(ComponentId::GRID); //, [this](Entity e, auto& c) { linkGrid(e, c); }, [this](Entity e, auto& c) { unlinkGrid(e, c); });
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
@@ -179,6 +182,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<AiWanderComponent>(ComponentId::AI_WANDER);
 	ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
 	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
+	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 
 	LOG("Components rostered");
 }
@@ -244,6 +248,8 @@ void World::rosterSystems() {
 		{ComponentId::AI, ComponentId::AI_MOVE});
 	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE,
 		{ComponentId::AI, ComponentId::AI_FLEE});
+	positionSystem = ecs.rosterSystem<PositionSystem>(SystemId::POSITION,
+		{ComponentId::POSITION});
 
 	LOG("Systems rostered")
 }
@@ -304,7 +310,7 @@ void World::update(uint dt) {
 	creatureAnimationSystem->update(ticks);
 
 	inventoryDeathSystem->update(ticks);
-	deathSystem->update();
+	deathSystem->update(realmManager);
 
 	creatureParticleSystem->update();
 	particleEmitSystem->update(particleSystem, ticks);
@@ -453,6 +459,14 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			//gatherSystem->update(player, position, ticks);
 		}
 	} else if (event.id == InputEventId::SECONDARY) {
+		Entity entity = playerRealm->gridMap[vec::round(position)];
+		if (entity && ecs.hasComponent<PortalComponent>(entity)) {
+			PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(entity);
+			positionComponent.position = portalComponent.position;
+			positionComponent.realmId = portalComponent.realmId;
+			return true;
+		}
+
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
