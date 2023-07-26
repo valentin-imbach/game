@@ -462,8 +462,14 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		Entity entity = playerRealm->gridMap[vec::round(position)];
 		if (entity && ecs.hasComponent<PortalComponent>(entity)) {
 			PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(entity);
+			playerRealm->unlinkChunk(player, positionComponent.chunk);
 			positionComponent.position = portalComponent.position;
+			pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
+			positionComponent.chunk = chunk;
 			positionComponent.realmId = portalComponent.realmId;
+			Realm* realm = realmManager.getRealm(portalComponent.realmId);
+			realm->linkChunk(player, chunk);
+
 			return true;
 		}
 

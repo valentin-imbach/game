@@ -21,7 +21,6 @@ public:
 
 	RealmId realmId;
 
-	pair size;
 	std::unique_ptr<Map> map;
 	GridMap gridMap;
 	std::unordered_set<pair> solidMap;

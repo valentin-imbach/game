@@ -176,10 +176,11 @@ bool Console::execute(std::string input) {
 	} else if (inputs[0] == "realm") {
 		if (!player) return false;
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-		// game->world->playerRealm->unlinkChunk(player, positionComponent.chunk);
+		game->world->playerRealm->unlinkChunk(player, positionComponent.chunk);
 		int realmId = std::stoi(inputs[1]);
 		positionComponent.realmId = realmId;
-		// game->world->linkChunk(player, positionComponent);
+		Realm* realm = game->world->realmManager.getRealm(realmId);
+		realm->linkChunk(player, positionComponent.chunk);
 	} else {
 		return false;
 	}

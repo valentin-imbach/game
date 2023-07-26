@@ -3,17 +3,15 @@
 #include "World.hpp"
 #include "EntityFactory.hpp"
 
-Realm::Realm(RealmId realmId, pair size, uint seed) : realmId(realmId), size(size), seed(seed) {
+Realm::Realm(RealmId realmId, pair size, uint seed) : realmId(realmId), seed(seed) {
 	map = std::make_unique<Map>(size, seed + 1);
 	map->generate();
 }
 
 Realm::Realm(std::fstream& stream) {
 	deserialise_object(stream, realmId);
-	deserialise_object(stream, size);
 	deserialise_object(stream, seed);
 	map = std::make_unique<Map>(stream);
-	//map->generate();
 }
 
 void Realm::generate() {
@@ -119,7 +117,6 @@ pair Realm::findFree(pair pos, int radius, bool origin) {
 
 void Realm::serialise(std::fstream& stream) {
 	serialise_object(stream, realmId);
-	serialise_object(stream, size);
 	serialise_object(stream, seed);
 	map->serialize(stream);
 }
