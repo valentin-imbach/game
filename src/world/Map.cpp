@@ -5,11 +5,7 @@
 Map::Map(pair size, uint seed)
 	: size(size), seed(seed) {
 	for (int x = 0; x < size.x; x++) tiles.emplace_back(size.y);
-	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
-	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
-	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
-	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
-	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
+	
 }
 
 Map::Map(std::fstream& stream) {
@@ -30,51 +26,14 @@ Map::Map(std::fstream& stream) {
 			updateStyle(position);
 		}
 	}
-
-	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
-	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
-	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
-	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
-	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
 }
 
-Biome::value Map::getBiome(pair position) {
-	int temperature = temparatureMap->get(position);
-	int precipitation = precipitationMap->get(position);
-	int elevation = elevationMap->get(position);
-	// int vegetation = vegetationMap->get(position);
-
-	if (elevation <= 0) return Biome::OCEAN;
-	if (elevation >= 1000) return Biome::MOUNTAIN;
-
-	if (temperature < -5) return Biome::TUNDRA;
-	if (temperature < 0) return Biome::TAIGA;
-
-	if (temperature < 10) {
-		if (precipitation < 40) return Biome::DESERT;
-		if (precipitation < 120) return Biome::GRASSLAND;
-		if (precipitation < 200) return Biome::FOREST;
-	}
-
-	if (temperature < 20) {
-		if (precipitation < 60) return Biome::DESERT;
-		if (precipitation < 140) return Biome::SAVANNA;
-		if (precipitation < 200) return Biome::FOREST;
-		return Biome::SWAMP;
-	}
-
-	if (precipitation < 70) return Biome::DESERT;
-	if (precipitation < 150) return Biome::SAVANNA;
-	if (precipitation < 250) return Biome::FOREST;
-	return Biome::RAINFOREST;
-}
-
-void Map::generate() {
+void Map::generate(Environment* environment) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair position(x, y);
-			Biome::value biome = getBiome(position);
-			int variation = variationMap->get(position);
+			Biome::value biome = environment->getBiome(position);
+			int variation = environment->variationMap->get(position);
 			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			tiles[x][y] = std::make_unique<Tile>(ground->tileId);
 		}
@@ -88,7 +47,7 @@ void Map::generate() {
 	}
 }
 
-void Map::generateInterior() {
+void Map::generateInterior(Environment* environment) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			tiles[x][y] = std::make_unique<Tile>(TileId::PLANKS);
@@ -183,20 +142,20 @@ void Map::updateStyle(pair position, bool propagate) {
 	}
 }
 
-void Map::analyse(int samples) {
-	uint s = seed;
-	uint count[Biome::count] = {};
-	for (uint i = 0; i < samples; i++) {
-		int x = noise::Int(s++, -10000, 10000);
-		int y = noise::Int(s++, -10000, 10000);
-		pair position(x, y);
-		count[getBiome(position)] += 1;
-	}
-	for (uint b = 1; b < Biome::count; b++) {
-		int percent = std::round((100.0f * count[b]) / samples);
-		LOG(Biome::strings[b], std::to_string(percent) + "%");
-	}
-}
+// void Map::analyse(int samples) {
+// 	uint s = seed;
+// 	uint count[Biome::count] = {};
+// 	for (uint i = 0; i < samples; i++) {
+// 		int x = noise::Int(s++, -10000, 10000);
+// 		int y = noise::Int(s++, -10000, 10000);
+// 		pair position(x, y);
+// 		count[getBiome(position)] += 1;
+// 	}
+// 	for (uint b = 1; b < Biome::count; b++) {
+// 		int percent = std::round((100.0f * count[b]) / samples);
+// 		LOG(Biome::strings[b], std::to_string(percent) + "%");
+// 	}
+// }
 
 void Map::serialize(std::fstream& stream) {
 	serialise_object(stream, seed);

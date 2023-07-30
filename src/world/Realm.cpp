@@ -5,11 +5,12 @@
 
 Realm::Realm(RealmId realmId, pair size, uint seed, RealmType::value realmType) : realmId(realmId), seed(seed) {
 	map = std::make_unique<Map>(size, seed + 1);
+	environment = std::make_unique<Environment>(seed + 2);
 	if (realmType == RealmType::WORLD) {
-		map->generate();
+		map->generate(environment.get());
 		generate();
 	}
-	if (realmType == RealmType::HOUSE) map->generateInterior();
+	if (realmType == RealmType::HOUSE) map->generateInterior(environment.get());
 
 	SDL_Surface* surface = map->makeMiniMap();
 	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
@@ -20,6 +21,7 @@ Realm::Realm(std::fstream& stream) {
 	deserialise_object(stream, realmId);
 	deserialise_object(stream, seed);
 	map = std::make_unique<Map>(stream);
+	environment = std::make_unique<Environment>(seed + 2);
 	
 	SDL_Surface* surface = map->makeMiniMap();
 	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
@@ -31,9 +33,9 @@ void Realm::generate() {
 	for (int x = 0; x < map->size.x; x++) {
 		for (int y = 0; y < map->size.y; y++) {
 			pair position(x, y);
-			Biome::value biome = map->getBiome(position);
-			int variation = map->variationMap->get(position);
-			int vegetation = map->vegetationMap->get(position);
+			Biome::value biome = environment->getBiome(position);
+			int variation = environment->variationMap->get(position);
+			int vegetation = environment->vegetationMap->get(position);
 			int choice = noise::Int(s++, 0, 50 + vegetation);
 			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
 			for (auto& p : ground->resources) {

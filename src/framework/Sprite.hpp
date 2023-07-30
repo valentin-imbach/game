@@ -35,7 +35,8 @@ STATION_ICONS,
 HAMMER,
 OUTPUT,
 CRAFTING_ICONS,
-PLANKS)
+PLANKS,
+RAIN)
 
 class Sprite {
 public:

@@ -47,22 +47,22 @@ public:
 				CreatureState::value playerState = world->ecs.getComponent<CreatureStateComponent>(world->player).state;
 				text += "Player State: " + CreatureState::to_string(playerState) + '\n';
 
-				Biome::value biome = world->playerRealm->map->getBiome(playerPosition);
+				Biome::value biome = world->playerRealm->environment->getBiome(playerPosition);
 				text += "Biome: " + Biome::to_string(biome) + '\n';
 
-				int temperature = world->playerRealm->map->temparatureMap->get(playerPosition);
+				int temperature = world->playerRealm->environment->temparatureMap->get(playerPosition);
 				text += "Temperateure: " + std::to_string(temperature) + '\n';
 
-				int elevation = world->playerRealm->map->elevationMap->get(playerPosition);
+				int elevation = world->playerRealm->environment->elevationMap->get(playerPosition);
 				text += "Elevation: " + std::to_string(elevation) + '\n';
 
-				int precipitation = world->playerRealm->map->precipitationMap->get(playerPosition);
+				int precipitation = world->playerRealm->environment->precipitationMap->get(playerPosition);
 				text += "Precipitation: " + std::to_string(precipitation) + '\n';
 
-				int vegetation = world->playerRealm->map->vegetationMap->get(playerPosition);
+				int vegetation = world->playerRealm->environment->vegetationMap->get(playerPosition);
 				text += "Vegetation: " + std::to_string(vegetation) + '\n';
 
-				int variation = world->playerRealm->map->variationMap->get(playerPosition);
+				int variation = world->playerRealm->environment->variationMap->get(playerPosition);
 				text += "Variation: " + std::to_string(variation) + '\n';
 
 				TileId::value tileId = world->playerRealm->map->getTileId(playerPosition);

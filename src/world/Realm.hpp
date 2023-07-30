@@ -1,6 +1,7 @@
 
 #pragma once
 #include "Chunk.hpp"
+#include "Environment.hpp"
 
 #define CHUNK_SIZE 16
 #define CHUNK_REACH 10
@@ -27,6 +28,7 @@ public:
 	SDL_Texture* minimap;
 
 	std::unique_ptr<Map> map;
+	std::unique_ptr<Environment> environment;
 	std::unordered_map<pair, EntitySet> chunks;
 	GridMap gridMap;
 

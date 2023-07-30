@@ -367,6 +367,7 @@ void World::draw() {
 	if (colliderDraw) colliderDrawSystem->update(camera, ticks, drawSet);
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks, drawSet);
+	playerRealm->environment->draw(ticks);
 
 	guiManager.draw();
 

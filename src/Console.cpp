@@ -131,9 +131,9 @@ bool Console::execute(std::string input) {
 		game->world->playerRealm->map->tiles[position.x][position.y]->tileId = tileId;
 		game->world->playerRealm->map->updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
-		// if (split.size() != 2) return false;
-		// WeatherType w = WeatherTypeFromString(split[1]);
-		// MessageManager::notify(SetWeatherMessage(w));
+		WeatherId::value weatherId = WeatherId::from_string(inputs[1]);
+		LOG(int(weatherId));
+		if (weatherId) game->world->playerRealm->environment->weatherId = weatherId;
 	} else if (inputs[0] == "zoom") {
 		if (inputs.size() != 2) return false;
 		int zoom = std::stoi(inputs[1]);
