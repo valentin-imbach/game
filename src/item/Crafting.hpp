@@ -8,8 +8,11 @@
 ENUM(CraftingRecipeId,
 AXE,
 PICK_AXE,
-SWORD
-)
+SWORD)
+
+ENUM(BuildRecipeId,
+CHEST,
+WORK_TABLE)
 
 struct CraftingIngredient {
 	ItemId::value itemId;
@@ -56,5 +59,14 @@ struct CraftingKindRecipe {
 	CraftingKindProduct product;
 
 	static std::array<CraftingKindRecipe, CraftingRecipeId::count> recipes;
+	static void setRecipes();
+};
+
+//* Build
+
+struct BuildKindRecipe {
+	std::vector<CraftingKindIngredient> ingredients;
+	int stationId;
+	static std::array<BuildKindRecipe, BuildRecipeId::count> recipes;
 	static void setRecipes();
 };

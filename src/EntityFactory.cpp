@@ -42,16 +42,6 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	return player;
 }
 
-bool EntityFactory::free(Realm* realm, pair position, pair size) {
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair offset(x,y);
-			if (realm->gridMap.find(position + offset) != realm->gridMap.end()) return false;
-		}
-	}
-	return true;
-}
-
 Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm, pair position) {
 	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
 	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
@@ -91,16 +81,21 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	world->ecs.addComponent<ChunkComponent>({}, animal);
 
 	if (animalId == AnimalId::MONSTER) {
-		world->ecs.addComponent<MovementComponent>({1}, animal);
+		world->ecs.addComponent<MovementComponent>({0.5f}, animal);
 		SpriteStack monsterSprites;
 		monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 		world->ecs.addComponent<SpriteComponent>({monsterSprites}, animal);
 		Collider collider({0, 0}, {0.6f, 0.6f});
 		world->ecs.addComponent<ColliderComponent>({collider}, animal);
 		world->ecs.addComponent<HealthComponent>({20, 20}, animal);
-		world->ecs.addComponent<MonsterAiComponent>({}, animal);
+		//world->ecs.addComponent<MonsterAiComponent>({}, animal);
 		world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
 		world->ecs.addComponent<SensorComponent>({10}, animal);
+
+		world->ecs.addComponent<AiComponent>({}, animal);
+		world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
+		world->ecs.addComponent<AiChaseComponent>({}, animal);
+
 		return animal;
 	}
 
@@ -117,7 +112,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
-	world->ecs.addComponent<AiMoveComponent>({}, animal);
+	// world->ecs.addComponent<AiMoveComponent>({}, animal);
 	world->ecs.addComponent<AiFleeComponent>({}, animal);
 	world->ecs.addComponent<SensorComponent>({5}, animal);
 
@@ -148,7 +143,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, Realm* realm
 	return item;
 }
 
-Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pair position) {
+Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pair position, bool link) {
 	if (!stationId) return 0;
 	Entity station = world->ecs.createEntity();
 	if (!station) return 0;
@@ -157,7 +152,7 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, station);
 	realm->linkChunk(station, chunk);
 	world->ecs.addComponent<GridComponent>({position, realm->realmId, {1,1}, true, false}, station);
-	realm->linkGrid(station, position, {1,1}, true, false);
+	if (link) realm->linkGrid(station, position, {1,1}, true, false);
 	// } else {
 	// 	world->ecs.addComponent<PositionComponent>({position, 0}, station);
 	// 	world->ecs.addComponent<ChunkComponent>({}, station);

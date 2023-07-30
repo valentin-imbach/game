@@ -22,6 +22,7 @@ public:
 	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position);
+	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);
 	
 	static Entity createItem(ItemId::value itemId, uchar count);
 	static Entity createItem(ItemId::value itemId, uchar count, Realm* realm, vec position);
@@ -31,6 +32,5 @@ public:
 	static World* world;
 
 private:
-	static bool free(Realm* realm, pair position, pair size);
 	static uint seed;
 };

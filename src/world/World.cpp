@@ -25,6 +25,7 @@ void World::init() {
 	ResourceTemplate::setTemplates();
 	CraftingRecipe::setRecipes();
 	CraftingKindRecipe::setRecipes();
+	BuildKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
 
 	guiManager.world = this;
@@ -35,9 +36,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	init();
 
 	Realm* realm = realmManager.addRealm(this, pair(100, 100), seed);
-	Realm* otherRealm = realmManager.addRealm(this, pair(5, 5), seed + 1);
-	realm->generate();
-	//otherRealm->generate();
+	Realm* otherRealm = realmManager.addRealm(this, pair(5, 5), seed + 1, RealmType::HOUSE);
 
 	pair spawn = realm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(realm, spawn);
@@ -182,6 +181,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<AiWanderComponent>(ComponentId::AI_WANDER);
 	ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
 	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
+	ecs.rosterComponent<AiChaseComponent>(ComponentId::AI_CHASE);
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 
 	LOG("Components rostered");
@@ -248,6 +248,8 @@ void World::rosterSystems() {
 		{ComponentId::AI, ComponentId::AI_MOVE});
 	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE,
 		{ComponentId::AI, ComponentId::AI_FLEE});
+	aiChaseSystem = ecs.rosterSystem<AiChaseSystem>(SystemId::AI_CHASE,
+		{ComponentId::AI, ComponentId::AI_CHASE});
 	positionSystem = ecs.rosterSystem<PositionSystem>(SystemId::POSITION,
 		{ComponentId::POSITION});
 
@@ -264,6 +266,8 @@ void World::update(uint dt) {
 		playerChunk = positionComponent.chunk;
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
 	}
+
+	minimap.update(playerRealm);
 
 	std::unordered_map<Entity, std::vector<Entity>> collisions;
 
@@ -288,10 +292,13 @@ void World::update(uint dt) {
 	//aiMoveSystem->update(ticks, realmManager);
 	aiWanderSystem->score(ticks);
 	aiFleeSystem->score(ticks);
+	aiChaseSystem->score(ticks);
+
 	aiSystem->update(ticks);
 	//aiMoveSystem->move(ticks);
 	aiWanderSystem->update(ticks, realmManager);
 	aiFleeSystem->update(ticks, realmManager);
+	aiChaseSystem->update(ticks, realmManager);
 
 	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realmManager);
@@ -362,6 +369,11 @@ void World::draw() {
 	lightSystem->update(camera, time, ticks, drawSet);
 
 	guiManager.draw();
+
+	if (player) {
+		vec playerPos = ecs.getComponent<PositionComponent>(player).position;
+		minimap.draw(playerPos);
+	}
 	state = false;
 }
 
@@ -409,7 +421,7 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 	std::unique_ptr<Widget> tab3 = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	tab1->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 10), &playerComponent.equipment, 20, &inventoryComponent.inventory));
 	tab2->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10), &inventoryComponent.inventory));
-	tab3->addGuiElement(std::make_unique<BuildGui>(pair(0, 10)));
+	tab3->addGuiElement(std::make_unique<BuildGui>(pair(0, 10), &inventoryComponent.inventory));
 
 	gui->addTab(std::move(tab1));
 	gui->addTab(std::move(tab2));
@@ -419,6 +431,7 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 
 bool World::handleEvent(InputEvent event, uint dt) {
 	if (guiManager.handleEvent(event)) return true;
+	if (minimap.handleEvent(event)) return true;
 	if (!player) return false;
 	if (event.id == InputEventId::STATE) state = true;
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);

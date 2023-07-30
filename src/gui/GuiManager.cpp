@@ -16,10 +16,10 @@ void GuiManager::update() {
 		world->ecs.getComponent<GridComponent>(buildMode).anker = gridPosition;
 
 		SpriteComponent& spriteComponent = world->ecs.getComponent<SpriteComponent>(buildMode);
-		if (world->playerRealm->gridMap.find(gridPosition) != world->playerRealm->gridMap.end()) {
-			spriteComponent.effects[SpriteEffectId::RED] = {true, 0};
-		} else {
+		if (world->playerRealm->free(gridPosition)) {
 			spriteComponent.effects[SpriteEffectId::RED] = {false, 0};
+		} else {
+			spriteComponent.effects[SpriteEffectId::RED] = {true, 0};
 		}
 	}
 
@@ -44,7 +44,7 @@ bool GuiManager::handleEvent(InputEvent event) {
 		PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(buildMode);
 		GridComponent& gridComponent = world->ecs.getComponent<GridComponent>(buildMode);
 		pair pos = vec::round(positionComponent.position);
-		if (world->playerRealm->free(pos, {1, 1})) {
+		if (world->playerRealm->free(pos)) {
 			world->ecs.getComponent<SpriteComponent>(buildMode).z = 0;
 			world->ecs.removeComponent<ChunkComponent>(buildMode);
 			world->playerRealm->linkGrid(buildMode, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);

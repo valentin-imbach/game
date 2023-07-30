@@ -179,20 +179,34 @@ public:
 
 private:
 	int columns;
-	int selected = 0;
+	int selected = -1;
 	std::function<void(int)> callback;
 	std::vector<SpriteStack> sprites;
 };
 
+class BuildGrid : public Widget {
+public:
+	BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* link = nullptr);
+	~BuildGrid() override;
+	void build();
+
+private:
+	BuildRecipeId::value recipeId;
+	uint arity;
+	Inventory* link;
+	std::vector<ItemContainer> inputs;
+};
+
 class BuildGui : public Widget {
 public:
-	BuildGui(pair position);
+	BuildGui(pair position, Inventory* link = nullptr);
 	~BuildGui() = default;
 	void select(int n);
 	void build();
 
 private:
-	int selected = 0;
+	BuildGrid* buildGrid = nullptr;
+	Inventory* link;
 };
 
 class TextGui : public GuiElement {

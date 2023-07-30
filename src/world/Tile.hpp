@@ -19,4 +19,5 @@ public:
 	TileId::value tileId;
 	std::vector<std::pair<TileId::value, Sprite>> sprites;
 	static std::array<SpriteSheet::value, TileId::count> spriteSheets;
+	static std::array<uint, TileId::count> tileColours;
 };

@@ -8,7 +8,7 @@ int main() {
 	Game game;
 
 	const uint targetFPS = 60;
-	const uint targetUPS = 1000;
+	const uint targetUPS = 60;
     const uint targetFrameTime = 1000 / targetFPS;
     const uint targetUpdateTime = 1000 / targetUPS;
 

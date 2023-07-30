@@ -11,6 +11,8 @@ using namespace nlohmann;
 std::vector<std::unique_ptr<CraftingRecipe>> CraftingRecipe::recipes = {};
 std::array<CraftingKindRecipe, CraftingRecipeId::count> CraftingKindRecipe::recipes = {};
 
+std::array<BuildKindRecipe, BuildRecipeId::count> BuildKindRecipe::recipes = {};
+
 void CraftingRecipe::setRecipes() {
 	std::unique_ptr<CraftingRecipe> recipe = std::make_unique<CraftingRecipe>();
 	recipe->product = {ItemId::OAK_PLANK, 4};
@@ -118,6 +120,18 @@ void CraftingKindRecipe::setRecipes() {
 // 	recipes[2].product.productProperties.push_back({ItemProperty::EFFICIENCY, {{ItemProperty::FLEXIBILITY, 1},{}}});
 // 	recipes[2].product.productProperties.push_back({ItemProperty::LEVEL, {{},{ItemProperty::STRENGTH, 1}}});
 // 	recipes[2].product.productProperties.push_back({ItemProperty::DURABILITY, {{},{ItemProperty::STRENGTH, 1}}});
+}
+
+
+void BuildKindRecipe::setRecipes() {
+	recipes[1].ingredients.push_back({ItemKind::LOG, 5});
+	recipes[1].ingredients.push_back({ItemKind::PLATE, 8});
+	recipes[1].stationId = StationId::CHEST;
+
+	recipes[2].ingredients.push_back({ItemKind::LOG, 4});
+	recipes[2].ingredients.push_back({ItemKind::PLATE, 6});
+	recipes[2].ingredients.push_back({ItemKind::PEBBLE, 4});
+	recipes[2].stationId = StationId::WORK_STATION;
 }
 
 bool CraftingKindIngredient::check(Entity item) {

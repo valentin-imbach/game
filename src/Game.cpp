@@ -241,6 +241,12 @@ void Game::pollEvents(uint dt) {
 				inputEvent.id = InputEventId::UP;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN) {
 				inputEvent.id = InputEventId::DOWN;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_M) {
+				inputEvent.id = InputEventId::MAP;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_COMMA) {
+				inputEvent.id = InputEventId::ZOOM_OUT;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_PERIOD) {
+				inputEvent.id = InputEventId::ZOOM_IN;
 			} else {
 				continue;
 			}

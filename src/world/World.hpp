@@ -12,6 +12,7 @@
 #include "Camera.hpp"
 #include "Sprite.hpp"
 #include "RealmManager.hpp"
+#include "Minimap.hpp"
 
 class World {
 public:
@@ -102,9 +103,11 @@ private:
 	AiWanderSystem* aiWanderSystem;
 	AiMoveSystem* aiMoveSystem;
 	AiFleeSystem* aiFleeSystem;
+	AiChaseSystem* aiChaseSystem;
 	PositionSystem* positionSystem;
 
 	GuiManager guiManager;
+	Minimap minimap;
 	std::string name;
 	uint ticks;
 

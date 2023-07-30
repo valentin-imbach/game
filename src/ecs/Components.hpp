@@ -214,6 +214,10 @@ struct AiFleeComponent {
 	uint lastChange;
 };
 
+struct AiChaseComponent {
+	vec target;
+};
+
 struct PortalComponent {
 	RealmId realmId;
 	pair position;

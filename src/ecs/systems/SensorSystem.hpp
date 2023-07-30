@@ -13,7 +13,9 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 
 			sensorComponent.engaged = false;
+
 			if (!player) return;
+			
 			PositionComponent& playerPositionComponent = ecs->getComponent<PositionComponent>(player);
 			if (playerPositionComponent.realmId != positionComponent.realmId) return;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);

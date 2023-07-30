@@ -1,6 +1,5 @@
 
 #include "Map.hpp"
-
 #include "utils.hpp"
 
 Map::Map(pair size, uint seed)
@@ -11,8 +10,6 @@ Map::Map(pair size, uint seed)
 	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
 	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
 	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
-	// generate();
-	// analyse(100000);
 }
 
 Map::Map(std::fstream& stream) {
@@ -216,4 +213,15 @@ bool Map::inside(pair pos) {
 	if (pos.y < 0 || pos.y >= size.y) return false;
 	return true;
 
+}
+
+SDL_Surface* Map::makeMiniMap() {
+	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, size.x, size.y, 32, SDL_PIXELFORMAT_RGBA8888);
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			Uint32 *pixels = (Uint32 *)surface->pixels;
+			pixels[y * size.x + x] = Tile::tileColours[tiles[x][y]->tileId];
+		}
+	}
+	return surface;
 }

@@ -30,6 +30,7 @@ public:
 	pair size;
 
 	void serialize(std::fstream& stream);
+	SDL_Surface* makeMiniMap();
 
 private:
 	uint seed;

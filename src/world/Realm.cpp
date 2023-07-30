@@ -3,15 +3,27 @@
 #include "World.hpp"
 #include "EntityFactory.hpp"
 
-Realm::Realm(RealmId realmId, pair size, uint seed) : realmId(realmId), seed(seed) {
+Realm::Realm(RealmId realmId, pair size, uint seed, RealmType::value realmType) : realmId(realmId), seed(seed) {
 	map = std::make_unique<Map>(size, seed + 1);
-	map->generate();
+	if (realmType == RealmType::WORLD) {
+		map->generate();
+		generate();
+	}
+	if (realmType == RealmType::HOUSE) map->generateInterior();
+
+	SDL_Surface* surface = map->makeMiniMap();
+	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 Realm::Realm(std::fstream& stream) {
 	deserialise_object(stream, realmId);
 	deserialise_object(stream, seed);
 	map = std::make_unique<Map>(stream);
+	
+	SDL_Surface* surface = map->makeMiniMap();
+	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 void Realm::generate() {
@@ -85,7 +97,7 @@ void Realm::unlinkChunk(Entity entity, pair chunk) {
 	chunks[chunk].erase(entity);
 }
 
-bool Realm::free(pair anker, pair size = {1, 1}) {
+bool Realm::free(pair anker, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			if (gridMap.find(anker + pair(x,y)) != gridMap.end()) return false;

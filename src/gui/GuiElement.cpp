@@ -381,12 +381,11 @@ void CraftingGrid::craft() {
 
 //* BuildGui
 
-BuildGui::BuildGui(pair position)
-	: Widget(position, pair(144, 128)) {
+BuildGui::BuildGui(pair position, Inventory* link)
+	: Widget(position, pair(144, 128)), link(link) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
-	addGuiElement(std::make_unique<Button>(pair(-20, -20), pair(20, 20), std::bind(&BuildGui::build, this), Sprite(), Sprite(), "", Direction::SOUTH_EAST));
 
-	for (uint n = 1; n < StationId::count; n++) {
+	for (uint n = 1; n < BuildRecipeId::count; n++) {
 		SpriteStack sprites;
 		sprites.addSprite({SpriteSheet::STATION_ICONS, pair(n - 1, 0), pair(1, 1)}, pair(0, 0));
 		selector->addSelection(sprites);
@@ -395,12 +394,51 @@ BuildGui::BuildGui(pair position)
 }
 
 void BuildGui::select(int n) {
-	selected = n;
+	if (buildGrid) removeGuiElement();
+	std::unique_ptr<BuildGrid> grid = std::make_unique<BuildGrid>(pair(40, 0), BuildRecipeId::from_int(n+1), link);
+	buildGrid = grid.get();
+	addGuiElement(std::move(grid));
 }
 
-void BuildGui::build() {
+BuildGrid::BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* link)
+	: Widget(position, {40, 0}), recipeId(recipeId), link(link) {
+
+	BuildKindRecipe& recipe = BuildKindRecipe::recipes[recipeId];
+	arity = recipe.ingredients.size();
+	size.y = 20 * (2 + arity);
+	inputs = std::vector<ItemContainer>(arity);
+
+	for (uint i = 0; i < arity; i++) {
+		inputs[i].itemKind = recipe.ingredients[i].itemKind;
+		int y = i * 20 - 10 * (1 + arity);
+		addGuiElement(std::make_unique<ItemSlot>(pair(10, y), inputs[i], link));
+		std::string text = std::to_string(recipe.ingredients[i].count) + " x";
+		addGuiElement(std::make_unique<TextGui>(pair(-10, y), text));
+	}
+
+	Sprite buttonSprite(SpriteSheet::HAMMER, {0,0}, {1,1});
+	Sprite buttonHoverSprite(SpriteSheet::HAMMER, {1,0}, {1,1});
+	addGuiElement(std::make_unique<Button>(pair(10, 10 * (arity - 1)), pair(16, 16), std::bind(&BuildGrid::build, this), buttonSprite, buttonHoverSprite));
+}
+
+BuildGrid::~BuildGrid() {
+	if (link) {
+		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
+	}
+	PositionComponent& positionComponent = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player);
+	for (uint i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({positionComponent.position, positionComponent.realmId}, inputs[i].item);
+}
+
+void BuildGrid::build() {
+	BuildKindRecipe& recipe = BuildKindRecipe::recipes[recipeId];
+	for (int i = 0; i < arity; i++) {
+		if (!recipe.ingredients[i].check(inputs[i].item)) return;
+	}
+
+	for (int i = 0; i < arity; i++) inputs[i].item = recipe.ingredients[i].take(inputs[i].item);
+
 	ECS& ecs = guiManager->world->ecs;
-	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(selected + 1), guiManager->world->playerRealm, {0, 0});
+	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(recipe.stationId), guiManager->world->playerRealm, {0, 0}, false);
 	ecs.addComponent<ChunkComponent>({}, guiManager->buildMode);
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();

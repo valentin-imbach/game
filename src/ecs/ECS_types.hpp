@@ -36,6 +36,7 @@ AI,
 AI_WANDER,
 AI_MOVE,
 AI_FLEE,
+AI_CHASE,
 PORTAL)
 
 ENUM(SystemId,
@@ -69,7 +70,8 @@ PROJECTILE,
 AI,
 AI_WANDER,
 AI_MOVE,
-AI_FLEE)
+AI_FLEE,
+AI_CHASE)
 
 using Entity = uint;
 using EntitySet = std::unordered_set<Entity>;
