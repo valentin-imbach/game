@@ -74,7 +74,7 @@ void GuiManager::open(std::unique_ptr<GuiElement> a, std::unique_ptr<GuiElement>
 	secondary = std::move(b);
 	if (!primary) return;
 	if (buildMode) {
-		world->ecs.destroyEntity(buildMode);
+		world->ecs.addComponent<DeathComponent>({}, buildMode);
 		buildMode = 0;
 	}
 	primary->position.y = 0;

@@ -67,6 +67,9 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId, resourceTemplate->sound, resourceTemplate->level}, resource);
 	world->ecs.addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
 	world->ecs.addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
+	// if (6 <= resourceId && resourceId <= 10) {
+	// 	world->ecs.addComponent<MaturityComponent>({world->ticks, 10000, 5}, resource);
+	// }
 	return resource;
 }
 

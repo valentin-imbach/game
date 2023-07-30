@@ -8,7 +8,7 @@
 
 class ItemPickupSystem : public System {
 public:
-	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions) {
+	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
 			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
@@ -17,7 +17,12 @@ public:
 				if (ecs->hasComponent<ItemComponent>(other)) {
 					Entity rest = playerComponent.hotbar.add(other);
 					rest = inventoryComponent.inventory.add(rest);
-					if (!rest) ecs->removeComponent<PositionComponent>(other);
+					if (!rest) {
+						PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(other);
+						Realm* realm = realmManager.getRealm(positionComponent.realmId);
+						realm->unlinkChunk(other, positionComponent.chunk);
+						ecs->removeComponent<PositionComponent>(other);
+					}
 				}
 			}
 		}

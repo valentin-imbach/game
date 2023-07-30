@@ -15,14 +15,12 @@ public:
 				Sprite& sprite = layer.first;
 				if (creatureStateComponent.state == CreatureState::IDLE) {
 					sprite.frameCount = 1;
-					sprite.source.x = 7;
 				} else if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
 					sprite.frameCount = 8;
-					sprite.source.x = 0;
 				}
 
 				sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
-				if (creatureStateComponent.lastChange == ticks) sprite.animationReset(ticks);
+				if (creatureStateComponent.lastChange == ticks) sprite.animationReset(ticks - sprite.frameDuration);
 			}
 		}
 	}

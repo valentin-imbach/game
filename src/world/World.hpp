@@ -105,6 +105,7 @@ private:
 	AiFleeSystem* aiFleeSystem;
 	AiChaseSystem* aiChaseSystem;
 	PositionSystem* positionSystem;
+	MaturitySystem* maturitySystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

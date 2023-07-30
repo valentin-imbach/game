@@ -36,7 +36,8 @@ HAMMER,
 OUTPUT,
 CRAFTING_ICONS,
 PLANKS,
-RAIN)
+RAIN,
+RESOURCES_NEW)
 
 class Sprite {
 public:
@@ -58,6 +59,7 @@ private:
 	static std::array<SDL_Texture*, SpriteSheet::count> outlineSpriteSheets;
 
 	friend class CreatureAnimationSystem;
+	friend class MaturitySystem;
 	friend class SpriteStack;
 };
 
@@ -71,7 +73,9 @@ public:
 private:
 	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
 	uchar depth = 0;
+
 	friend class CreatureAnimationSystem;
+	friend class MaturitySystem;
 };
 
 ENUM(SpriteEffectId,

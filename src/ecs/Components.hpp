@@ -222,3 +222,10 @@ struct PortalComponent {
 	RealmId realmId;
 	pair position;
 };
+
+struct MaturityComponent {
+	uint lastChange;
+	uint maturityTime;
+	ushort maxMaturity = 5;
+	ushort maturity = 1;
+};

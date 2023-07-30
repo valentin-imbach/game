@@ -42,8 +42,21 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	Entity player = EntityFactory::createPlayer(realm, spawn);
 	EntityFactory::createAnimal(AnimalId::COW, realm, realm->findFree(pair(52,52)));
 
-	Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
-	ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
+	// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
+	// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
+
+
+	// Entity tree = ecs.createEntity();
+	// pair chunk = vec::round(spawn / CHUNK_SIZE);
+	// ecs.addComponent<PositionComponent>({spawn, realm->realmId, chunk}, tree);
+	// realm->linkChunk(tree, chunk);
+	// ecs.addComponent<GridComponent>({spawn, realm->realmId, pair(1, 1), true, true}, tree);
+	// realm->linkGrid(tree, spawn, pair(1, 1), true, true);
+	// SpriteStack spriteStack;
+	// spriteStack.addSprite({SpriteSheet::RESOURCES_NEW, pair(0, 0), pair(1, 2)}, pair(0, -1));
+	// spriteStack.addSprite({SpriteSheet::RESOURCES_NEW, pair(0, 2), pair(3, 3)}, pair(-1, -3));
+	// ecs.addComponent<SpriteComponent>({spriteStack}, tree);
+	// ecs.addComponent<MaturityComponent>({ticks, 10000, 5}, tree);
 
 	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
 	EntityFactory::createAnimal(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
@@ -183,6 +196,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
 	ecs.rosterComponent<AiChaseComponent>(ComponentId::AI_CHASE);
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
+	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 
 	LOG("Components rostered");
 }
@@ -252,6 +266,8 @@ void World::rosterSystems() {
 		{ComponentId::AI, ComponentId::AI_CHASE});
 	positionSystem = ecs.rosterSystem<PositionSystem>(SystemId::POSITION,
 		{ComponentId::POSITION});
+	maturitySystem = ecs.rosterSystem<MaturitySystem>(SystemId::MATURITY,
+		{ComponentId::MATURITY});
 
 	LOG("Systems rostered")
 }
@@ -307,11 +323,11 @@ void World::update(uint dt) {
 	chunkSystem->update(realmManager);
 	//assert(false);
 
-	itemPickupSystem->update(collisions);
+	itemPickupSystem->update(collisions, realmManager);
 
 	updateCamera(player);
 	healthSystem->update(ticks, updateSet);
-
+	maturitySystem->update(ticks, updateSet);
 	lootSystem->update(ticks, playerRealm);
 
 	creatureAnimationSystem->update(ticks);

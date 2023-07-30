@@ -118,7 +118,7 @@ bool Console::execute(std::string input) {
 			count -= batch;
 			Entity item = EntityFactory::createItem(itemId, batch);
 			Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(item);
-			if (rest) ecs.destroyEntity(rest);
+			if (rest) ecs.addComponent<DeathComponent>({}, rest);
 		}
 	} else if (inputs[0] == "empty") {
 		if (!player) return false;
