@@ -13,14 +13,17 @@ struct PositionComponent;
 
 ENUM(RealmType,
 WORLD,
-HOUSE)
+HOUSE,
+CAVE)
 
 class Realm {
 public:
-	Realm(RealmId realmId, pair size, uint seed, RealmType::value realmType);
+	Realm(RealmId realmId, uint seed, RealmType::value realmType);
 	Realm(std::fstream& stream);
 
-	void generate();
+	void generateWorld(pair size);
+	void generateHouse(pair size);
+	void generateCave(int count, int length);
 
 	// std::unordered_map<pair, Chunk> chunks;
 

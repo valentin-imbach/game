@@ -13,14 +13,14 @@ public:
 		for (uint i = maxRealms; i > 0; i--) availableRealms.push_back(i);
 	}
 
-	Realm* addRealm(World* world, pair size, uint seed, RealmType::value realmType = RealmType::WORLD) {
+	Realm* addRealm(World* world, uint seed, RealmType::value realmType = RealmType::WORLD) {
 		if (availableRealms.empty()) {
 			WARNING("Max realms reached");
 			return 0;
 		}
 		RealmId realmId = availableRealms.back();
 		availableRealms.pop_back();
-		realms[realmId] = std::make_unique<Realm>(realmId, size, seed, realmType);
+		realms[realmId] = std::make_unique<Realm>(realmId, seed, realmType);
 		LOG("Realm", int(realmId), "created");
 		return realms[realmId].get();
 	}

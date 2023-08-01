@@ -3,14 +3,12 @@
 #include "World.hpp"
 #include "EntityFactory.hpp"
 
-Realm::Realm(RealmId realmId, pair size, uint seed, RealmType::value realmType) : realmId(realmId), seed(seed) {
-	map = std::make_unique<Map>(size, seed + 1);
-	environment = std::make_unique<Environment>(seed + 2);
-	if (realmType == RealmType::WORLD) {
-		map->generate(environment.get());
-		generate();
-	}
-	if (realmType == RealmType::HOUSE) map->generateInterior(environment.get());
+Realm::Realm(RealmId realmId, uint seed, RealmType::value realmType) : realmId(realmId), seed(seed) {
+	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100));
+	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
+	if (realmType == RealmType::CAVE) generateCave(3, 500);
+
+	map->updateStyle();
 
 	SDL_Surface* surface = map->makeMiniMap();
 	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
@@ -28,7 +26,20 @@ Realm::Realm(std::fstream& stream) {
 	SDL_FreeSurface(surface);
 }
 
-void Realm::generate() {
+void Realm::generateWorld(pair size) {
+	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
+
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			pair position(x, y);
+			Biome::value biome = environment->getBiome(position);
+			int variation = environment->variationMap->get(position);
+			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
+			map->tiles[x][y] = std::make_unique<Tile>(ground->tileId);
+		}
+	}
+
 	uint s = seed;
 	for (int x = 0; x < map->size.x; x++) {
 		for (int y = 0; y < map->size.y; y++) {
@@ -44,6 +55,74 @@ void Realm::generate() {
 					Entity resource = EntityFactory::createResource(p.first, this, position);
 					break;
 				}
+			}
+		}
+	}
+}
+
+void Realm::generateHouse(pair size) {
+	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
+
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			map->tiles[x][y] = std::make_unique<Tile>(TileId::PLANKS);
+		}
+	}
+}
+
+void Realm::generateCave(int count, int length) {
+	uint s = seed;
+	std::unordered_set<pair> cave;
+	for (int i = 0; i < count; i++) {
+		pair pos(0, 0);
+		for (int j = 0; j < length; j++) {
+			for (int x = 0; x <= 1; x++) {
+				for (int y = 0; y <= 1; y++) {
+					pair offset(x, y);
+					cave.insert(pos + offset);
+				}
+			}
+			int dx = noise::Int(s++, -1, 2);
+			int dy = noise::Int(s++, -1, 2);
+			pos += {dx, dy};
+		}
+	}
+
+	int u = 0;
+	int d = 0;
+	int l = 0;
+	int r = 0;
+	pair entry;
+
+	for (pair p : cave) {
+		r = std::max(r, p.x);
+		l = std::min(l, p.x);
+		u = std::min(u, p.y);
+		if (p.y >= d) {
+			d = p.y;
+			entry = p;
+		}
+	}
+
+	pair size(d - u + 1, r - l + 1);
+	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
+
+	pair offset(l, u);
+
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+
+			pair position(x, y);
+			int c = 0;
+			for (int dx = -1; dx <= 1; dx++) {
+				for (int dy = -1; dy <= 1; dy++) {
+					if (cave.find(position + pair(dx, dy) + offset) != cave.end()) c++;
+				}
+			}
+			if (c > 4) {
+				map->tiles[x][y] = std::make_unique<Tile>(TileId::ROCK);
 			}
 		}
 	}
@@ -109,7 +188,7 @@ bool Realm::free(pair anker, pair size) {
 }
 
 bool Realm::walkable(pair position) {
-	if (!map->inside(position)) return false;
+	if (map->getTileId(position) == TileId::NONE) return false;
 	if (map->getTileId(position) == TileId::WATER) return false;
 	if (solidMap.find(position) != solidMap.end()) return false;
 	return true;

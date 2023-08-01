@@ -10,10 +10,9 @@ public:
 	Map(pair size, uint seed);
 	Map(std::fstream& stream);
 
-	void generate(Environment* environment);
-	void generateInterior(Environment* environment);
-
 	void updateStyle(pair position, bool propagate = false);
+	void updateStyle();
+	
 	std::vector<std::vector<std::unique_ptr<Tile>>> tiles;
 	TileId::value getTileId(pair position);
 

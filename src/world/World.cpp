@@ -35,8 +35,9 @@ void World::init() {
 World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
 	init();
 
-	Realm* realm = realmManager.addRealm(this, pair(100, 100), seed);
-	Realm* otherRealm = realmManager.addRealm(this, pair(5, 5), seed + 1, RealmType::HOUSE);
+	Realm* realm = realmManager.addRealm(this, noise::UInt(seed + 1));
+	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2), RealmType::HOUSE);
+	Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3), RealmType::CAVE);
 
 	pair spawn = realm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(realm, spawn);
@@ -407,6 +408,7 @@ void World::drawTiles() {
 
 	for (int x = x1; x <= x2; x++) {
 		for (int y = y1; y <= y2; y++) {
+			if (!playerRealm->map->tiles[x][y]) continue;
 			for (auto& layer : playerRealm->map->tiles[x][y]->sprites) {
 				pair screenPosition = camera.screenPosition(vec(x, y));
 				layer.second.draw(screenPosition, camera.zoom);

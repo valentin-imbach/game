@@ -16,59 +16,29 @@ Map::Map(std::fstream& stream) {
 		for (int y = 0; y < size.y; y++) {
 			TileId::value tileId;
 			deserialise_object(stream, tileId);
-			tiles[x][y] = std::make_unique<Tile>(tileId);
+			if (tileId) tiles[x][y] = std::make_unique<Tile>(tileId);
 		}
 	}
 
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair position(x, y);
-			updateStyle(position);
-		}
-	}
+	updateStyle();
 }
 
-void Map::generate(Environment* environment) {
+void Map::updateStyle() {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
-			pair position(x, y);
-			Biome::value biome = environment->getBiome(position);
-			int variation = environment->variationMap->get(position);
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
-			tiles[x][y] = std::make_unique<Tile>(ground->tileId);
-		}
-	}
-
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair position(x, y);
-			updateStyle(position);
-		}
-	}
-}
-
-void Map::generateInterior(Environment* environment) {
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			tiles[x][y] = std::make_unique<Tile>(TileId::PLANKS);
-		}
-	}
-
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair position(x, y);
-			updateStyle(position);
+			updateStyle(pair(x, y));
 		}
 	}
 }
 
 TileId::value Map::getTileId(pair position) {
-	if (position.x < 0 || position.y < 0) return TileId::NONE;
-	if (position.x >= size.x || position.y >= size.y) return TileId::NONE;
+	if (!inside(position)) return TileId::NONE;
+	if (!tiles[position.x][position.y]) return TileId::NONE;
 	return tiles[position.x][position.y]->tileId;
 }
 
 void Map::updateStyle(pair position, bool propagate) {
+	if (!tiles[position.x][position.y]) return;
 	uint s = seed + hash(position);
 	std::vector<std::pair<TileId::value, Sprite>>& sprites = tiles[position.x][position.y]->sprites;
 	sprites.clear();
@@ -162,7 +132,9 @@ void Map::serialize(std::fstream& stream) {
 	serialise_object(stream, size);
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
-			serialise_object(stream, tiles[x][y]->tileId);
+			pair position(x, y);
+			TileId::value tileId =  getTileId(position);
+			serialise_object(stream, tileId);
 		}
 	}
 }
@@ -179,7 +151,7 @@ SDL_Surface* Map::makeMiniMap() {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			Uint32 *pixels = (Uint32 *)surface->pixels;
-			pixels[y * size.x + x] = Tile::tileColours[tiles[x][y]->tileId];
+			pixels[y * size.x + x] = Tile::tileColours[getTileId({x,y})];
 		}
 	}
 	return surface;

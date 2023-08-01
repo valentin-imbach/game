@@ -20,6 +20,7 @@ public:
 	EntityFactory() = delete;
 	static Entity createPlayer(Realm* realm, vec position);
 	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
+	static Entity createMonster(AnimalId::value animalId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);
@@ -32,5 +33,7 @@ public:
 	static World* world;
 
 private:
+	static Entity createStaticEntity(Realm* realm, pair position, pair size, bool solid, bool opaque);
+	static Entity createDynamicEntity(Realm* realm, vec position);
 	static uint seed;
 };
