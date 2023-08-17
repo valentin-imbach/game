@@ -53,7 +53,16 @@ public:
 			pair end = worldToMap(vec(realm->map->size.y + 0.5f, yy - 0.5f));
 			SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
 		}
-		
+
+		pair tl = worldToMap(vec(-0.5f, -0.5f));
+		pair tr = worldToMap(vec(mapSize.x - 0.5f, -0.5f));
+		pair bl = worldToMap(vec(-0.5f, mapSize.y - 0.5f));
+		pair br = worldToMap(vec(mapSize.x - 0.5f, mapSize.y - 0.5f));
+		SDL_SetRenderDrawColor(Window::instance->renderer, 0, 255, 0, 100);
+		SDL_RenderDrawLine(Window::instance->renderer, tl.x, tl.y, tr.x, tr.y);
+		SDL_RenderDrawLine(Window::instance->renderer, bl.x, bl.y, br.x, br.y);
+		SDL_RenderDrawLine(Window::instance->renderer, tl.x, tl.y, bl.x, bl.y);
+		SDL_RenderDrawLine(Window::instance->renderer, tr.x, tr.y, br.x, br.y);
 	}
 
 	pair worldToMap(vec position) {

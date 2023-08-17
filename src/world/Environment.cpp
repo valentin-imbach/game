@@ -2,7 +2,7 @@
 #include "Environment.hpp"
 #include "Window.hpp"
 
-Environment::Environment(uint seed) : seed(seed), weatherId(WeatherId::NONE) {
+Environment::Environment(uint seed, RealmType::value realmType) : seed(seed), realmType(realmType) {
 	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
 	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
 	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
@@ -11,6 +11,7 @@ Environment::Environment(uint seed) : seed(seed), weatherId(WeatherId::NONE) {
 }
 
 Biome::value Environment::getBiome(pair position) {
+	if (realmType == RealmType::CAVE) return Biome::MOUNTAIN;
 	int temperature = temparatureMap->get(position);
 	int precipitation = precipitationMap->get(position);
 	int elevation = elevationMap->get(position);

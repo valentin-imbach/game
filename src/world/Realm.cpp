@@ -105,11 +105,13 @@ void Realm::generateCave(int count, int length) {
 		}
 	}
 
-	pair size(d - u + 1, r - l + 1);
-	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
-	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
+	int padding = 2;
+	pair size( r - l + 1 + 2 * padding, d - u + 1 + 2 * padding);
 
-	pair offset(l, u);
+	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), RealmType::CAVE);
+
+	pair offset(l - padding, u - padding);
 
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
@@ -123,6 +125,42 @@ void Realm::generateCave(int count, int length) {
 			}
 			if (c > 4) {
 				map->tiles[x][y] = std::make_unique<Tile>(TileId::ROCK);
+			}
+		}
+	}
+
+
+	for (int x = 1; x < size.x - 1; x++) {
+		for (int y = 1; y < size.y - 1; y++) {
+			pair pos(x, y);
+			if (map->getTileId(pos)) continue;
+			bool wall = false;
+			for (int dx = -1; dx <= 1; dx++) {
+				for (int dy = -1; dy <= 1; dy++) {
+					pair neig(x + dx, y + dy);
+					if (map->getTileId(neig) == TileId::ROCK) wall = true;
+				}
+			}
+			if (wall) map->tiles[x][y] = std::make_unique<Tile>(TileId::ROCK_WALL);
+		}
+	}
+
+	s = seed;
+	for (int x = 0; x < map->size.x; x++) {
+		for (int y = 0; y < map->size.y; y++) {
+			pair position(x, y);
+			if (!free(position)) continue;
+			Biome::value biome = environment->getBiome(position);
+			int variation = environment->variationMap->get(position);
+			int vegetation = environment->vegetationMap->get(position);
+			int choice = noise::Int(s++, 0, 50 + vegetation);
+			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
+			for (auto& p : ground->resources) {
+				choice -= p.second;
+				if (choice < 0) {
+					Entity resource = EntityFactory::createResource(p.first, this, position);
+					break;
+				}
 			}
 		}
 	}
@@ -181,15 +219,17 @@ void Realm::unlinkChunk(Entity entity, pair chunk) {
 bool Realm::free(pair anker, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
-			if (gridMap.find(anker + pair(x,y)) != gridMap.end()) return false;
+			pair pos = anker + pair(x, y);
+			if (gridMap.find(pos) != gridMap.end()) return false;
+			if (!map->getTileId(pos) || TileId::wall(map->getTileId(pos))) return false;
 		}
 	}
 	return true;
 }
 
 bool Realm::walkable(pair position) {
-	if (map->getTileId(position) == TileId::NONE) return false;
-	if (map->getTileId(position) == TileId::WATER) return false;
+	TileId::value tileId = map->getTileId(position);
+	if (!TileId::walkable(tileId)) return false;
 	if (solidMap.find(position) != solidMap.end()) return false;
 	return true;
 }

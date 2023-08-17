@@ -8,12 +8,17 @@ RAIN,
 FOG,
 SNOW)
 
+ENUM(RealmType,
+WORLD,
+HOUSE,
+CAVE)
+
 class Environment {
 public:
-	Environment(uint seed);
+	Environment(uint seed, RealmType::value realmType = RealmType::WORLD);
 
 	void draw(uint ticks);
-	WeatherId::value weatherId;
+	WeatherId::value weatherId = WeatherId::NONE;
 	int intensity = 50;
 
 	Biome::value getBiome(pair position);
@@ -24,4 +29,5 @@ public:
 	std::unique_ptr<Distribution> variationMap;
 private:
 	uint seed;
+	RealmType::value realmType;
 };

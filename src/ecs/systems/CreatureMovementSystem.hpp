@@ -16,10 +16,13 @@ public:
 			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 
 			vec newPosition = positionComponent.position;
+			Realm* realm = realmManager.getRealm(positionComponent.realmId);
+			float speed = movementComponent.speed * TileId::speedMul(realm->map->getTileId(vec::round(positionComponent.position)));
+
 			if (creatureStateComponent.state == CreatureState::WALKING) {
-				newPosition += dt * movementComponent.speed * Direction::unit[directionComponent.direction] / 1000;
+				newPosition += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			} else if (creatureStateComponent.state == CreatureState::RUNNING) {
-				newPosition += dt * 2* movementComponent.speed * Direction::unit[directionComponent.direction] / 1000;
+				newPosition += dt * 2 * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
 			if (ecs->hasComponent<ForceComponent>(entity)) {
@@ -27,8 +30,6 @@ public:
 				newPosition += forceComponent.force;
 				forceComponent.force *= 0.9f;
 			}
-
-			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
 			if (!isColliding(colliderComponent.collider, newPosition, realm) || isColliding(colliderComponent.collider, positionComponent.position, realm)) {
 				positionComponent.position = newPosition;

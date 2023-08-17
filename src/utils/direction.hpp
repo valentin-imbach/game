@@ -20,8 +20,8 @@ namespace Direction {
 		return Direction::from_int(1 + int(4 + (vec::angle(v) + M_PI + M_PI / 8) / M_PI_4) % 8);
 	}
 
-	[[nodiscard]] inline Direction::value rotate(Direction::value d, int n) {
-		return Direction::from_int((d + n - 1) % 8 + 1);
+	[[nodiscard]] inline Direction::value rotate(int d, int n) {
+		return Direction::from_int((d + n + 7) % 8 + 1);
 	}
 
 	const vec unit[9] = {

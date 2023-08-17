@@ -11,11 +11,6 @@ using RealmId = unsigned char;
 struct GridComponent;
 struct PositionComponent;
 
-ENUM(RealmType,
-WORLD,
-HOUSE,
-CAVE)
-
 class Realm {
 public:
 	Realm(RealmId realmId, uint seed, RealmType::value realmType);

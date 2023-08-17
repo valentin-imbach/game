@@ -5,7 +5,6 @@
 Map::Map(pair size, uint seed)
 	: size(size), seed(seed) {
 	for (int x = 0; x < size.x; x++) tiles.emplace_back(size.y);
-	
 }
 
 Map::Map(std::fstream& stream) {
@@ -19,7 +18,6 @@ Map::Map(std::fstream& stream) {
 			if (tileId) tiles[x][y] = std::make_unique<Tile>(tileId);
 		}
 	}
-
 	updateStyle();
 }
 
@@ -38,51 +36,120 @@ TileId::value Map::getTileId(pair position) {
 }
 
 void Map::updateStyle(pair position, bool propagate) {
-	if (!tiles[position.x][position.y]) return;
+	if (!getTileId(position)) return;
 	uint s = seed + hash(position);
 	std::vector<std::pair<TileId::value, Sprite>>& sprites = tiles[position.x][position.y]->sprites;
 	sprites.clear();
 
+
+
+
 	TileId::value tileId = getTileId(position);
+	TileId::value top = getTileId(position + pair(0, -1));
+	TileId::value bottom = getTileId(position + pair(0, 1));
+	TileId::value left = getTileId(position + pair(-1, 0));
+	TileId::value right = getTileId(position + pair(1, 0));
+	TileId::value bl = getTileId(position + pair(-1, 1));
+	TileId::value br = getTileId(position + pair(1, 1));
+	TileId::value tl = getTileId(position + pair(-1, -1));
+	TileId::value tr = getTileId(position + pair(1, -1));
+
+	if (tileId == TileId::ROCK_WALL) {
+		if ((top && top != TileId::ROCK_WALL) || (bottom && bottom != TileId::ROCK_WALL)) {
+			Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(1, 4));
+			sprites.emplace_back(tileId, sprite);
+		} else {
+			if (right == TileId::ROCK_WALL && bottom == TileId::ROCK_WALL && br != TileId::ROCK_WALL && br) {
+				Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(1, 2));
+				sprites.emplace_back(tileId, sprite);
+			}
+			if (left == TileId::ROCK_WALL && bottom == TileId::ROCK_WALL && bl != TileId::ROCK_WALL && bl) {
+				Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(4, 2));
+				sprites.emplace_back(tileId, sprite);
+			}
+
+			if (right == TileId::ROCK_WALL && top == TileId::ROCK_WALL && tr != TileId::ROCK_WALL && tr) {
+				Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(3, 4));
+				sprites.emplace_back(tileId, sprite);
+			}
+			if (left == TileId::ROCK_WALL && top == TileId::ROCK_WALL && tl != TileId::ROCK_WALL && tl) {
+				Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(5, 4));
+				sprites.emplace_back(tileId, sprite);
+			}
+		}
+
+		if (bottom == TileId::ROCK_WALL && right && right != TileId::ROCK_WALL) {
+			Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(1, 2));
+			sprites.emplace_back(tileId, sprite);
+		}
+
+		if (bottom == TileId::ROCK_WALL && left && left != TileId::ROCK_WALL) {
+			Sprite sprite = Sprite(Tile::spriteSheets[tileId], pair(4, 2));
+			sprites.emplace_back(tileId, sprite);
+		}
+		
+		return;
+	}
+
 	pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
 	Sprite baseSprite = Sprite(Tile::spriteSheets[tileId], baseVariant);
 	sprites.emplace_back(tileId, baseSprite);
 
-	for (int d = 0; d < 8; d += 2) {
-		TileId::value id = getTileId(position + Direction::taxi[d + 1]);
+	if (left == TileId::ROCK_WALL) {
+		if (bl == TileId::ROCK_WALL) {
+			Sprite sprite = Sprite(Tile::spriteSheets[TileId::ROCK_WALL], pair(2, 2));
+			sprites.emplace_back(TileId::ROCK_WALL, sprite);
+		} else if (tileId != TileId::ROCK_WALL) {
+			Sprite sprite = Sprite(Tile::spriteSheets[TileId::ROCK_WALL], pair(2, 4));
+			sprites.emplace_back(TileId::ROCK_WALL, sprite);
+		}
+	}
+
+	if (bottom == TileId::ROCK_WALL) {
+		Sprite sprite = Sprite(Tile::spriteSheets[TileId::ROCK_WALL], pair(1, 3));
+		sprites.emplace_back(TileId::ROCK_WALL, sprite);
+	}
+
+
+
+
+
+	for (int dir = 1; dir < Direction::count; dir += 2) {
+		TileId::value id = getTileId(position + Direction::taxi[dir]);
+		if (id == TileId::ROCK_WALL) continue;
 		if (id == TileId::NONE || id >= tileId) continue;
-		TileId::value left = getTileId(position + Direction::taxi[(d + 2) % 8 + 1]);
-		TileId::value right = getTileId(position + Direction::taxi[(d + 6) % 8 + 1]);
-		TileId::value opposite = getTileId(position + Direction::taxi[(d + 4) % 8 + 1]);
+		TileId::value left = getTileId(position + Direction::taxi[Direction::rotate(dir, 2)]);
+		TileId::value right = getTileId(position + Direction::taxi[Direction::rotate(dir, -2)]);
+		TileId::value opposite = getTileId(position + Direction::taxi[Direction::rotate(dir, 4)]);
 
 		// Straights
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(s++, variants[d / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(s++, variants[dir / 2]));
 			sprites.emplace_back(id, sprite);
 		}
 
 		// Us
 		if (left == id && right == id && opposite != id) {
 			pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[d / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[dir / 2]);
 			sprites.emplace_back(id, sprite);
 		}
 	}
 
-	for (int d = 1; d < 8; d += 2) {
-		TileId::value id = getTileId(position + Direction::taxi[d + 1]);
-		if (id == TileId::NONE) continue;
-		TileId::value left = getTileId(position + Direction::taxi[(d + 1) % 8 + 1]);
-		TileId::value left2 = getTileId(position + Direction::taxi[(d + 3) % 8 + 1]);
-		TileId::value right = getTileId(position + Direction::taxi[(d + 7) % 8 + 1]);
-		TileId::value right2 = getTileId(position + Direction::taxi[(d + 5) % 8 + 1]);
+	for (int dir = 2; dir < Direction::count; dir += 2) {
+		TileId::value id = getTileId(position + Direction::taxi[dir]);
+		if (!id || TileId::wall(id)) continue;
+		TileId::value left = getTileId(position + Direction::taxi[Direction::rotate(dir, 1)]);
+		TileId::value left2 = getTileId(position + Direction::taxi[Direction::rotate(dir, 3)]);
+		TileId::value right = getTileId(position + Direction::taxi[Direction::rotate(dir, -1)]);
+		TileId::value right2 = getTileId(position + Direction::taxi[Direction::rotate(dir, -3)]);
 
 		// Curves
 		TileId::value curve = TileId::MAX;
-		if (left < tileId && left == right && left2 != left && right2 != right) {
+		if (!TileId::wall(left) && left < tileId && left == right && left2 != left && right2 != right) {
 			pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
-			Sprite sprite = Sprite(Tile::spriteSheets[left], variants[d / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[left], variants[dir / 2 - 1]);
 			sprites.emplace_back(left, sprite);
 			curve = left;
 		}
@@ -90,7 +157,7 @@ void Map::updateStyle(pair position, bool propagate) {
 		// Corners
 		if (id < tileId && left != id && right != id && id < curve) {
 			pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[d / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[dir / 2 - 1]);
 			sprites.emplace_back(id, sprite);
 		}
 	}
@@ -105,10 +172,12 @@ void Map::updateStyle(pair position, bool propagate) {
 		sprites.emplace_back(id1, sprite);
 	}
 
-	std::sort(sprites.begin(), sprites.end(), [](const auto left, const auto right) { return left.first > right.first; });
+	std::sort(sprites.begin(), sprites.end(), [](const auto left, const auto right) { return left.first >= right.first; });
 
 	if (propagate) {
-		for (pair step : Direction::taxi) updateStyle(position + step);
+		for (int dir = 1; dir < Direction::count; dir++) {
+			updateStyle(position + Direction::taxi[dir]);
+		}
 	}
 }
 
@@ -133,17 +202,14 @@ void Map::serialize(std::fstream& stream) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair position(x, y);
-			TileId::value tileId =  getTileId(position);
+			TileId::value tileId = getTileId(position);
 			serialise_object(stream, tileId);
 		}
 	}
 }
 
 bool Map::inside(pair pos) {
-	if (pos.x < 0 || pos.x >= size.x) return false;
-	if (pos.y < 0 || pos.y >= size.y) return false;
-	return true;
-
+	return (0 <= pos.x && pos.x < size.x && 0 <= pos.y && pos.y < size.y);
 }
 
 SDL_Surface* Map::makeMiniMap() {
