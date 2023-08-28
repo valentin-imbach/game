@@ -49,12 +49,17 @@ struct DirectionComponent {
 };
 
 struct ColliderComponent {
-	Collider collider;
+	Shape collider;
+};
+
+struct HitboxComponent {
+	Shape hitbox;
 };
 
 struct ItemComponent {
 	ItemId::value itemId;
 	uint count = 1;
+	bool show = false;
 };
 
 struct AnimalAiComponent {

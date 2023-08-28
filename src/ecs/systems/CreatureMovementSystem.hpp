@@ -42,7 +42,7 @@ public:
 	}
 
 private:
-	bool isColliding(Collider collider, vec position, Realm* realm) {
+	bool isColliding(Shape collider, vec position, Realm* realm) {
 		pair topLeft = vec::round(position - collider.size / 2);
 		pair bottomRight = vec::round(position + collider.size / 2);
 		for (int x = topLeft.x; x <= bottomRight.x; x++) {

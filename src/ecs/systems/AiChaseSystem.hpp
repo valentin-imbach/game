@@ -61,6 +61,12 @@ public:
 				creatureStateComponent.facing = Direction::EAST;
 			} else if (Direction::taxi[directionComponent.direction].x == -1) {
 				creatureStateComponent.facing = Direction::WEST;
+			} else {
+				if (aiChaseComponent.target.x > positionComponent.position.x) {
+					creatureStateComponent.facing = Direction::EAST;
+				} else if (aiChaseComponent.target.x < positionComponent.position.x) {
+					creatureStateComponent.facing = Direction::WEST;
+				}
 			}
 			creatureStateComponent.state = dir ? CreatureState::RUNNING : CreatureState::IDLE;
 			

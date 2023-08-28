@@ -79,7 +79,6 @@ private:
 	CreatureAnimationSystem* creatureAnimationSystem;
 	CollisionSystem* collisionSystem;
 	ItemPickupSystem* itemPickupSystem;
-	AnimalAiSystem* animalAiSystem;
 	ForageSystem* forageSystem;
 	HealthSystem* healthSystem;
 	LootSystem* lootSystem;
@@ -88,8 +87,6 @@ private:
 	ColliderDrawSystem* colliderDrawSystem;
 	GridSystem* gridSystem;
 	InteractionSystem* interactionSystem;
-	MonsterAiSystem* monsterAiSystem;
-	GatherSystem* gatherSystem;
 	DeathSystem* deathSystem;
 	InventoryDeathSystem* inventoryDeathSystem;
 	ParticleEmitSystem* particleEmitSystem;
@@ -106,6 +103,7 @@ private:
 	AiChaseSystem* aiChaseSystem;
 	PositionSystem* positionSystem;
 	MaturitySystem* maturitySystem;
+	HitboxDrawSystem* hitboxDrawSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

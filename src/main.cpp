@@ -7,8 +7,8 @@ int main() {
 	Window window("Title", {1024, 640}, false);
 	Game game;
 
-	const uint targetFPS = 60;
-	const uint targetUPS = 60;
+	const uint targetFPS = 100;
+	const uint targetUPS = 100;
     const uint targetFrameTime = 1000 / targetFPS;
     const uint targetUpdateTime = 1000 / targetUPS;
 

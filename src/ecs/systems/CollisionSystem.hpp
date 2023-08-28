@@ -13,7 +13,7 @@ public:
 		std::vector<std::pair<Entity, vec>> ents;
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
-			Collider& collider = ecs -> getComponent<ColliderComponent>(entity).collider;
+			Shape& collider = ecs -> getComponent<ColliderComponent>(entity).collider;
 			vec position = ecs -> getComponent<PositionComponent>(entity).position;
 			ents.emplace_back(entity, collider.topBottom(position));
 		}
@@ -24,15 +24,15 @@ public:
 		for (int i = 0; i < ents.size(); i++) {
 			Entity entityA = ents[i].first;
 			vec positionA = ecs -> getComponent<PositionComponent>(entityA).position;
-			Collider colliderA = ecs -> getComponent<ColliderComponent>(entityA).collider;
+			Shape colliderA = ecs -> getComponent<ColliderComponent>(entityA).collider;
 			for (int j = i + 1; j < ents.size(); j++) {
 				Entity entityB = ents[j].first;
 				vec positionB = ecs -> getComponent<PositionComponent>(entityB).position;
-				Collider colliderB = ecs -> getComponent<ColliderComponent>(entityB).collider;
+				Shape colliderB = ecs -> getComponent<ColliderComponent>(entityB).collider;
 
 				if (ents[j].second.x > ents[i].second.y) break;
 
-				if (Collider::colide(colliderA, positionA, colliderB, positionB)) {
+				if (Shape::colide(colliderA, positionA, colliderB, positionB)) {
 					collisions[entityA].push_back(entityB);
 					collisions[entityB].push_back(entityA);
 				}

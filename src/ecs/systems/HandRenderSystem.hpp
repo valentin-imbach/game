@@ -15,7 +15,11 @@ public:
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 
 			Entity item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
+
 			if (!item) continue;
+			ItemComponent& itemComponent = ecs->getComponent<ItemComponent>(item);
+			if (!itemComponent.show) continue;
+
 			SpriteStack& itemSprites = ecs->getComponent<SpriteComponent>(item).spriteStack;
 
 			vec entityPosition = positionComponent.position;

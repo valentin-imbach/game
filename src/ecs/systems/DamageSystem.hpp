@@ -15,11 +15,11 @@ public:
 		
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
-			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
+			HitboxComponent& hitboxComponent = ecs->getComponent<HitboxComponent>(entity);
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 
-			if (vec::inside(position, positionComponent.position + colliderComponent.collider.offset, colliderComponent.collider.size)) {
+			if (Shape::inside(position, hitboxComponent.hitbox, positionComponent.position)) {
 				healthComponent.health -= damageComponent.damage;
 				healthComponent.lastDamage = ticks;
 				if (ecs->hasComponent<ForceComponent>(entity)) {

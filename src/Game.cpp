@@ -207,6 +207,14 @@ void Game::pollEvents(uint dt) {
 		} else if (event.type == SDL_TEXTINPUT) {
 			inputEvent.id = InputEventId::TEXT;
 			inputEvent.text = event.text.text;
+		} else if (event.type == SDL_MOUSEWHEEL) {
+			if (event.wheel.y > 0) {
+				inputEvent.id = InputEventId::ROTATE_LEFT;
+			} else if (event.wheel.y < 0) {
+				inputEvent.id = InputEventId::ROTATE_RIGHT;
+			} else {
+				continue;
+			}
 		} else if (event.type == SDL_KEYDOWN) {
 			if (event.key.repeat) continue;
 			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {

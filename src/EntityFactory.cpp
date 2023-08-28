@@ -32,7 +32,6 @@ Entity EntityFactory::createDynamicEntity(Realm* realm, vec position) {
 	realm->linkChunk(entity, chunk);
 	world->ecs.addComponent<ChunkComponent>({}, entity);
 
-
 	return entity;
 }
 
@@ -49,8 +48,11 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	spriteStack.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, player);
 
-	Collider collider({0, 0}, {0.6f, 0.6f});
+	Shape collider({0, 0}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, player);
+
+	Shape hitbox({0, -0.6}, {0.8f, 1.5f});
+	world->ecs.addComponent<HitboxComponent>({hitbox}, player);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, player);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, player);
@@ -109,8 +111,11 @@ Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec 
 	monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({monsterSprites}, monster);
 
-	Collider collider({0, 0}, {0.6f, 0.6f});
+	Shape collider({0, 0}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, monster);
+
+	Shape hitbox({0, -0.6}, {0.8f, 1.5f});
+	world->ecs.addComponent<HitboxComponent>({hitbox}, monster);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, monster);
 	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, monster);
@@ -137,8 +142,11 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100}, pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
 
-	Collider collider({0, 0}, {0.6f, 0.6f});
+	Shape collider({0, -0.2f}, {0.6f, 0.6f});
 	world->ecs.addComponent<ColliderComponent>({collider}, animal);
+
+	Shape hitbox({0, -0.3}, {0.8f, 0.8f});
+	world->ecs.addComponent<HitboxComponent>({hitbox}, animal);
 
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
@@ -156,7 +164,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 	Entity item = world->ecs.createEntity();
 	if (!item) return 0;
 
-	Collider collider({0, 0}, {0.4f, 0.4f});
+	Shape collider({0, 0}, {0.4f, 0.4f});
 	world->ecs.addComponent<ColliderComponent>({collider}, item);
 
 	SpriteStack spriteStack;

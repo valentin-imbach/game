@@ -41,7 +41,9 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 
 	pair spawn = realm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(realm, spawn);
-	EntityFactory::createAnimal(AnimalId::COW, realm, realm->findFree(pair(52,52)));
+	
+	
+	//EntityFactory::createAnimal(AnimalId::COW, realm, realm->findFree(pair(52,52)));
 
 	// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
 	// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
@@ -60,7 +62,8 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	// ecs.addComponent<MaturityComponent>({ticks, 10000, 5}, tree);
 
 	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
-	EntityFactory::createAnimal(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
+
+	EntityFactory::createMonster(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -70,13 +73,13 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(2, 0)));
 	ecs.addComponent<SpriteComponent>({axeSprites, 0.5f}, axe);
 	ecs.getComponent<SpriteComponent>(axe).effects[SpriteEffectId::BOUNCE] = {true, 0};
-	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, axe);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, axe);
 	ItemKindComponent axeKindComponent = {};
 	axeKindComponent.itemKinds[ItemKind::AXE] = true;
 	axeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
 	axeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
 	ecs.addComponent<ItemKindComponent>(axeKindComponent, axe);
-	Collider axeCollider({0, 0}, {0.4f, 0.4f});
+	Shape axeCollider({0, 0}, {0.4f, 0.4f});
 	ecs.addComponent<ColliderComponent>({axeCollider}, axe);
 	ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
 	Entity rest1 = ecs.getComponent<InventoryComponent>(player).inventory.add(axe);
@@ -86,13 +89,13 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(1, 0)));
 	ecs.addComponent<SpriteComponent>({pickSprites, 0.5f}, pick);
 	ecs.getComponent<SpriteComponent>(pick).effects[SpriteEffectId::BOUNCE] = {true, 0};
-	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, pick);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, pick);
 	ItemKindComponent pickKindComponent = {};
 	pickKindComponent.itemKinds[ItemKind::PICK_AXE] = true;
 	pickKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 4;
 	pickKindComponent.itemProperties[ItemProperty::LEVEL] = 3;
 	ecs.addComponent<ItemKindComponent>(pickKindComponent, pick);
-	Collider pickCollider(vec(0,0), vec(0.4f, 0.4f));
+	Shape pickCollider(vec(0,0), vec(0.4f, 0.4f));
 	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
 	ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, pick);
 	Entity rest2 = ecs.getComponent<InventoryComponent>(player).inventory.add(pick);
@@ -102,9 +105,9 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(0, 0)));
 	ecs.addComponent<SpriteComponent>({swordSprites, 0.5f}, sword);
 	ecs.getComponent<SpriteComponent>(sword).effects[SpriteEffectId::BOUNCE] = {true, 0};
-	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, sword);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
-	Collider swordCollider(vec(0, 0), vec(0.4f, 0.4f));
+	Shape swordCollider(vec(0, 0), vec(0.4f, 0.4f));
 	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 	Entity rest3 = ecs.getComponent<InventoryComponent>(player).inventory.add(sword);
@@ -114,12 +117,12 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	bowSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(4, 0)));
 	ecs.addComponent<SpriteComponent>({bowSprites, 0.5f}, bow);
 	ecs.getComponent<SpriteComponent>(bow).effects[SpriteEffectId::BOUNCE] = {true, 0};
-	ecs.addComponent<ItemComponent>({ItemId::NONE, 1}, bow);
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, bow);
 	ItemKindComponent bowKindComponent = {};
 	bowKindComponent.itemKinds[ItemKind::BOW] = true;
 	bowKindComponent.itemProperties[ItemProperty::DAMAGE] = 3;
 	ecs.addComponent<ItemKindComponent>(bowKindComponent, bow);
-	Collider bowCollider(vec(0, 0), vec(0.4f, 0.4f));
+	Shape bowCollider(vec(0, 0), vec(0.4f, 0.4f));
 	ecs.addComponent<ColliderComponent>({bowCollider}, bow);
 	ecs.addComponent<NameComponent>({Textblock("Bow")}, bow);
 	ecs.addComponent<LauncherComponent>({}, bow);
@@ -138,7 +141,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 
 	// Entity circle = ecs.createEntity();
 	// ecs.addComponent<PositionComponent>({{10, 10}}, circle);
-	// Collider circleCollider({0, 0}, 0.5f);
+	// Shape circleCollider({0, 0}, 0.5f);
 	// ecs.addComponent<ColliderComponent>({circleCollider}, circle);
 
 }
@@ -161,7 +164,6 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 }
 
 void World::rosterComponents() {
-
 	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION); // , [this](Entity e, auto& c) { linkChunk(e, c); }, [this](Entity e, auto& c) { unlinkChunk(e, c); });
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
@@ -170,7 +172,6 @@ void World::rosterComponents() {
 	ecs.rosterComponent<MovementComponent>(ComponentId::MOVEMENT);
 	ecs.rosterComponent<ColliderComponent>(ComponentId::COLLIDER);
 	ecs.rosterComponent<ItemComponent>(ComponentId::ITEM);
-	ecs.rosterComponent<AnimalAiComponent>(ComponentId::ANIMAL_AI);
 	ecs.rosterComponent<InventoryComponent>(ComponentId::INVENTORY);
 	ecs.rosterComponent<HealthComponent>(ComponentId::HEALTH);
 	ecs.rosterComponent<PlayerComponent>(ComponentId::PLAYER);
@@ -182,8 +183,6 @@ void World::rosterComponents() {
 	ecs.rosterComponent<GridComponent>(ComponentId::GRID); //, [this](Entity e, auto& c) { linkGrid(e, c); }, [this](Entity e, auto& c) { unlinkGrid(e, c); });
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
-	ecs.rosterComponent<MonsterAiComponent>(ComponentId::MONSTER_AI);
-	ecs.rosterComponent<GatherComponent>(ComponentId::GATHER);
 	ecs.rosterComponent<DeathComponent>(ComponentId::DEATH);
 	ecs.rosterComponent<ParticleComponent>(ComponentId::PARTICLE);
 	ecs.rosterComponent<LightComponent>(ComponentId::LIGHT);
@@ -198,6 +197,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<AiChaseComponent>(ComponentId::AI_CHASE);
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
+	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
 
 	LOG("Components rostered");
 }
@@ -215,8 +215,6 @@ void World::rosterSystems() {
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,
 		{ComponentId::PLAYER, ComponentId::INVENTORY});
-	animalAiSystem = ecs.rosterSystem<AnimalAiSystem>(SystemId::ANIMAL_AI,
-		{ComponentId::CREATURE_STATE, ComponentId::ANIMAL_AI, ComponentId::DIRECTION});
 	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE,
 		{ComponentId::RESOURCE, ComponentId::GRID, ComponentId::HEALTH});
 	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH,
@@ -224,7 +222,7 @@ void World::rosterSystems() {
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,
 		{ComponentId::LOOT, ComponentId::DEATH, ComponentId::POSITION});
 	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE,
-		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::HEALTH});
+		{ComponentId::POSITION, ComponentId::HITBOX, ComponentId::HEALTH});
 	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER,
 		{ComponentId::PLAYER});
 	colliderDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
@@ -233,10 +231,6 @@ void World::rosterSystems() {
 		{ComponentId::GRID});
 	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION,
 		{ComponentId::INTERACTION});
-	monsterAiSystem = ecs.rosterSystem<MonsterAiSystem>(SystemId::MONSTER_AI,
-		{ComponentId::CREATURE_STATE, ComponentId::MONSTER_AI, ComponentId::DIRECTION, ComponentId::SENSOR});
-	gatherSystem = ecs.rosterSystem<GatherSystem>(SystemId::GATHER,
-		{ComponentId::GATHER, ComponentId::POSITION, ComponentId::LOOT});
 	deathSystem = ecs.rosterSystem<DeathSystem>(SystemId::DEATH,
 		{ComponentId::DEATH});
 	inventoryDeathSystem = ecs.rosterSystem<InventoryDeathSystem>(SystemId::INVENTORY_DEATH,
@@ -269,6 +263,8 @@ void World::rosterSystems() {
 		{ComponentId::POSITION});
 	maturitySystem = ecs.rosterSystem<MaturitySystem>(SystemId::MATURITY,
 		{ComponentId::MATURITY});
+	hitboxDrawSystem = ecs.rosterSystem<HitboxDrawSystem>(SystemId::HITBOX_DRAW,
+		{ComponentId::HITBOX});
 
 	LOG("Systems rostered")
 }
@@ -303,9 +299,6 @@ void World::update(uint dt) {
 
 	sensorSystem->update(player, ticks, realmManager);
 
-	//animalAiSystem->update(ticks);
-	monsterAiSystem->update(ticks, realmManager);
-
 	//aiMoveSystem->update(ticks, realmManager);
 	aiWanderSystem->score(ticks);
 	aiFleeSystem->score(ticks);
@@ -322,7 +315,6 @@ void World::update(uint dt) {
 	collisionSystem->update(collisions, updateSet);
 
 	chunkSystem->update(realmManager);
-	//assert(false);
 
 	itemPickupSystem->update(collisions, realmManager);
 
@@ -381,7 +373,10 @@ void World::draw() {
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
 	for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 
-	if (colliderDraw) colliderDrawSystem->update(camera, ticks, drawSet);
+	if (colliderDraw) {
+		colliderDrawSystem->update(camera, ticks, drawSet);
+		hitboxDrawSystem->update(camera, ticks, drawSet);
+	}
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks, drawSet);
 	playerRealm->environment->draw(ticks);
@@ -474,21 +469,26 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
 	if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
 
+	if (event.id == InputEventId::ROTATE_LEFT) {
+		playerComponent.activeSlot = (playerComponent.activeSlot + 6) % 7;
+	} else if (event.id == InputEventId::ROTATE_RIGHT) {
+		playerComponent.activeSlot = (playerComponent.activeSlot + 1) % 7;
+	}
+
 	vec position = camera.worldPosition(event.mousePosition);
 	uint timePassed = ticks - playerComponent.lastAction;
 
 	if (event.id == InputEventId::PRIMARY) {
 		if (timePassed > 500) {
-			if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
-				playerComponent.lastAction = ticks;
-				return true;
-			}
-			
 			if (damageSystem->update(player, position, activeItemContainer.item, ticks, updateSet)) {
 				playerComponent.lastAction = ticks;
 				return true;
 			}
-			//gatherSystem->update(player, position, ticks);
+
+			if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
+				playerComponent.lastAction = ticks;
+				return true;
+			}
 		}
 	} else if (event.id == InputEventId::SECONDARY) {
 		Entity entity = playerRealm->gridMap[vec::round(position)];
