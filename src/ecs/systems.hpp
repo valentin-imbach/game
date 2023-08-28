@@ -28,6 +28,7 @@
 #include "AiMoveSystem.hpp"
 #include "AiFleeSystem.hpp"
 #include "AiChaseSystem.hpp"
+#include "AiMeleeSystem.hpp"
 #include "PositionSystem.hpp"
 #include "MaturitySystem.hpp"
 #include "HitboxDrawSystem.hpp"

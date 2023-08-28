@@ -223,6 +223,13 @@ struct AiChaseComponent {
 	vec target;
 };
 
+struct AiMeleeComponent {
+	int damage;
+	uint cooldown;
+	uint lastHit;
+	Entity target;
+};
+
 struct PortalComponent {
 	RealmId realmId;
 	pair position;

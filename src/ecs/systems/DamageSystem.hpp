@@ -15,19 +15,20 @@ public:
 		
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
+			if (entity == actor) continue;
 			HitboxComponent& hitboxComponent = ecs->getComponent<HitboxComponent>(entity);
-			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+			if (!Shape::inside(position, hitboxComponent.hitbox, positionComponent.position)) continue;
 
-			if (Shape::inside(position, hitboxComponent.hitbox, positionComponent.position)) {
-				healthComponent.health -= damageComponent.damage;
-				healthComponent.lastDamage = ticks;
-				if (ecs->hasComponent<ForceComponent>(entity)) {
-					vec force = vec::normalise(positionComponent.position - actorPosition) / 10;
-					ecs->getComponent<ForceComponent>(entity).force = force;
-				}
-				return true;
+			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
+			healthComponent.health -= damageComponent.damage;
+			healthComponent.lastDamage = ticks;
+			if (ecs->hasComponent<ForceComponent>(entity)) {
+				vec force = vec::normalise(positionComponent.position - actorPosition) / 10;
+				ecs->getComponent<ForceComponent>(entity).force = force;
 			}
+			return true;
+			
 		}
 		return false;
 	}

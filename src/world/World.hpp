@@ -101,6 +101,7 @@ private:
 	AiMoveSystem* aiMoveSystem;
 	AiFleeSystem* aiFleeSystem;
 	AiChaseSystem* aiChaseSystem;
+	AiMeleeSystem* aiMeleeSystem;
 	PositionSystem* positionSystem;
 	MaturitySystem* maturitySystem;
 	HitboxDrawSystem* hitboxDrawSystem;

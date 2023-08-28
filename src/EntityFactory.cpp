@@ -98,7 +98,7 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	return resource;
 }
 
-Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec position) {
+Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, vec position) {
 	Entity monster = createDynamicEntity(realm, position);
 	if (!monster) return 0;
 	
@@ -124,12 +124,13 @@ Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec 
 	world->ecs.addComponent<AiComponent>({}, monster);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, monster);
 	world->ecs.addComponent<AiChaseComponent>({}, monster);
+	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, monster);
 
 	return monster;
 }
 
 
-Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec position) {
+Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, vec position) {
 	Entity animal = createDynamicEntity(realm, position);
 	if (!animal) return 0;
 	

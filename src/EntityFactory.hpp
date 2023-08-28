@@ -9,7 +9,7 @@
 class World;
 class Realm;
 
-ENUM(AnimalId,
+ENUM(CreatureId,
 COW,
 PIG,
 HORSE,
@@ -19,8 +19,8 @@ class EntityFactory {
 public:
 	EntityFactory() = delete;
 	static Entity createPlayer(Realm* realm, vec position);
-	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
-	static Entity createMonster(AnimalId::value animalId, Realm* realm, vec position);
+	static Entity createAnimal(CreatureId::value creatureId, Realm* realm, vec position);
+	static Entity createMonster(CreatureId::value creatureId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);

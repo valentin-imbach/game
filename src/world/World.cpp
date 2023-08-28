@@ -43,7 +43,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	Entity player = EntityFactory::createPlayer(realm, spawn);
 	
 	
-	//EntityFactory::createAnimal(AnimalId::COW, realm, realm->findFree(pair(52,52)));
+	//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 
 	// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
 	// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
@@ -63,7 +63,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 
 	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
 
-	EntityFactory::createMonster(AnimalId::MONSTER, realm, realm->findFree(pair(55,55)));
+	EntityFactory::createMonster(CreatureId::MONSTER, realm, realm->findFree(pair(55,55)));
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -164,7 +164,7 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 }
 
 void World::rosterComponents() {
-	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION); // , [this](Entity e, auto& c) { linkChunk(e, c); }, [this](Entity e, auto& c) { unlinkChunk(e, c); });
+	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
 	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
@@ -180,7 +180,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemKindComponent>(ComponentId::ITEM_KIND);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
-	ecs.rosterComponent<GridComponent>(ComponentId::GRID); //, [this](Entity e, auto& c) { linkGrid(e, c); }, [this](Entity e, auto& c) { unlinkGrid(e, c); });
+	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<DeathComponent>(ComponentId::DEATH);
@@ -195,6 +195,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
 	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
 	ecs.rosterComponent<AiChaseComponent>(ComponentId::AI_CHASE);
+	ecs.rosterComponent<AiMeleeComponent>(ComponentId::AI_MELEE);
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
@@ -259,6 +260,8 @@ void World::rosterSystems() {
 		{ComponentId::AI, ComponentId::AI_FLEE});
 	aiChaseSystem = ecs.rosterSystem<AiChaseSystem>(SystemId::AI_CHASE,
 		{ComponentId::AI, ComponentId::AI_CHASE});
+	aiMeleeSystem = ecs.rosterSystem<AiMeleeSystem>(SystemId::AI_MELEE,
+		{ComponentId::AI, ComponentId::AI_MELEE});
 	positionSystem = ecs.rosterSystem<PositionSystem>(SystemId::POSITION,
 		{ComponentId::POSITION});
 	maturitySystem = ecs.rosterSystem<MaturitySystem>(SystemId::MATURITY,
@@ -303,12 +306,14 @@ void World::update(uint dt) {
 	aiWanderSystem->score(ticks);
 	aiFleeSystem->score(ticks);
 	aiChaseSystem->score(ticks);
+	aiMeleeSystem->score(ticks);
 
 	aiSystem->update(ticks);
 	//aiMoveSystem->move(ticks);
 	aiWanderSystem->update(ticks, realmManager);
 	aiFleeSystem->update(ticks, realmManager);
 	aiChaseSystem->update(ticks, realmManager);
+	aiMeleeSystem->update(ticks, realmManager);
 
 	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realmManager);
@@ -344,7 +349,7 @@ void World::draw() {
 	drawQueue.clear();
 	drawTiles();
 
-	if (!guiManager.active()) {
+	if (state) {
 		pair gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
 		TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 	}
@@ -377,6 +382,7 @@ void World::draw() {
 		colliderDrawSystem->update(camera, ticks, drawSet);
 		hitboxDrawSystem->update(camera, ticks, drawSet);
 	}
+
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks, drawSet);
 	playerRealm->environment->draw(ticks);
@@ -391,8 +397,6 @@ void World::draw() {
 }
 
 void World::drawTiles() {
-	// int border = BIT * camera.zoom / 2;
-
 	pair range = vec::ceil(vec(Window::instance->size) / (2 * BIT * camera.zoom));
 	pair start = vec::round(camera.position);
 
@@ -447,53 +451,53 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	if (guiManager.handleEvent(event)) return true;
 	if (minimap.handleEvent(event)) return true;
 	if (!player) return false;
-	if (event.id == InputEventId::STATE) state = true;
-	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
-	CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
-	PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
 	
+	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
+	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
+
 	if (event.id == InputEventId::INVENTORY) {
 		guiManager.open(makeInventory(), makeMenu());
 	} else if (event.id == InputEventId::THROW) {
+		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+		CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
 		vec position = positionComponent.position + Direction::unit[creatureStateComponent.facing];
 		ecs.addComponent<PositionComponent>({position, positionComponent.realmId}, activeItemContainer.item);
 		activeItemContainer.clear();
-	}
-
-	if (event.id == InputEventId::SELECT_1) playerComponent.activeSlot = 0;
-	if (event.id == InputEventId::SELECT_2) playerComponent.activeSlot = 1;
-	if (event.id == InputEventId::SELECT_3) playerComponent.activeSlot = 2;
-	if (event.id == InputEventId::SELECT_4) playerComponent.activeSlot = 3;
-	if (event.id == InputEventId::SELECT_5) playerComponent.activeSlot = 4;
-	if (event.id == InputEventId::SELECT_6) playerComponent.activeSlot = 5;
-	if (event.id == InputEventId::SELECT_7) playerComponent.activeSlot = 6;
-
-	if (event.id == InputEventId::ROTATE_LEFT) {
+	} else if (event.id == InputEventId::SELECT_1) {
+		playerComponent.activeSlot = 0;
+	} else if (event.id == InputEventId::SELECT_2) {
+		playerComponent.activeSlot = 1;
+	} else if (event.id == InputEventId::SELECT_3) {
+		playerComponent.activeSlot = 2;
+	} else if (event.id == InputEventId::SELECT_4) {
+		playerComponent.activeSlot = 3;
+	} else if (event.id == InputEventId::SELECT_5) {
+		playerComponent.activeSlot = 4;
+	} else if (event.id == InputEventId::SELECT_6) {
+		playerComponent.activeSlot = 5;
+	} else if (event.id == InputEventId::SELECT_7) {
+		playerComponent.activeSlot = 6;
+	} else if (event.id == InputEventId::ROTATE_LEFT) {
 		playerComponent.activeSlot = (playerComponent.activeSlot + 6) % 7;
 	} else if (event.id == InputEventId::ROTATE_RIGHT) {
 		playerComponent.activeSlot = (playerComponent.activeSlot + 1) % 7;
-	}
-
-	vec position = camera.worldPosition(event.mousePosition);
-	uint timePassed = ticks - playerComponent.lastAction;
-
-	if (event.id == InputEventId::PRIMARY) {
-		if (timePassed > 500) {
+	} else if (event.id == InputEventId::PRIMARY) {
+		vec position = camera.worldPosition(event.mousePosition);
+		if (ticks - playerComponent.lastAction > 500) {
 			if (damageSystem->update(player, position, activeItemContainer.item, ticks, updateSet)) {
 				playerComponent.lastAction = ticks;
 				return true;
-			}
-
-			if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
+			} else if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
 				playerComponent.lastAction = ticks;
 				return true;
 			}
 		}
 	} else if (event.id == InputEventId::SECONDARY) {
+		vec position = camera.worldPosition(event.mousePosition);
 		Entity entity = playerRealm->gridMap[vec::round(position)];
 		if (entity && ecs.hasComponent<PortalComponent>(entity)) {
 			PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(entity);
+			PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 			playerRealm->unlinkChunk(player, positionComponent.chunk);
 			positionComponent.position = portalComponent.position;
 			pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
@@ -508,6 +512,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
+		state = true;
 		if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
 			LauncherComponent& launcherComponent = ecs.getComponent<LauncherComponent>(activeItemContainer.item);
 			if (inputState[InputStateId::SECONDARY]) {
@@ -515,6 +520,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				launcherComponent.charge = std::min(launcherComponent.charge, launcherComponent.maxForce);
 			} else {
 				if (launcherComponent.charge > launcherComponent.minForce) {
+					vec position = camera.worldPosition(event.mousePosition);
 					vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
 					vec direction = vec::normalise(position - playerPosition);
 					EntityFactory::createProjectile(playerRealm, playerPosition, launcherComponent.charge * direction);

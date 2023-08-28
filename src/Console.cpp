@@ -103,7 +103,7 @@ bool Console::execute(std::string input) {
 		if (inputs.size() < 2 || !player) return false;
 		int n = std::stoi(inputs[1]);
 		vec position = ecs.getComponent<PositionComponent>(player).position;
-		for (int i = 0; i < n; i++) EntityFactory::createAnimal(AnimalId::COW, game->world->playerRealm, position);
+		for (int i = 0; i < n; i++) EntityFactory::createAnimal(CreatureId::COW, game->world->playerRealm, position);
 	} else if (inputs[0] == "give") {
 		if (inputs.size() < 2 || !player) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);
