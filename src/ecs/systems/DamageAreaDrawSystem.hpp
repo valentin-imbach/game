@@ -7,7 +7,7 @@
 #include "ECS.hpp"
 #include "Camera.hpp"
 
-class HitboxDrawSystem : public System {
+class DamageAreaDrawSystem : public System {
 public:
 	void update(Camera camera, uint ticks, EntitySet& set) {
 		pair screenSize = Window::instance->size;
@@ -15,19 +15,19 @@ public:
 
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
-			HitboxComponent& hitboxComponent = ecs -> getComponent<HitboxComponent>(entity);
+			DamageAreaComponent& damageAreaComponent = ecs -> getComponent<DamageAreaComponent>(entity);
 			PositionComponent& positionComponent = ecs -> getComponent<PositionComponent>(entity);
-			pair screenPosition = camera.screenPosition(positionComponent.position + hitboxComponent.hitbox.offset);
+			pair screenPosition = camera.screenPosition(positionComponent.position + damageAreaComponent.shape.offset);
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;
 
-			if (hitboxComponent.hitbox.type == ShapeId::RECTANGLE) {
-				pair size = vec::round(BIT * camera.zoom * hitboxComponent.hitbox.size);
-				TextureManager::drawRect(screenPosition, size, {0, 255, 0, 255});
-			} else if (hitboxComponent.hitbox.type == ShapeId::CIRCLE) {
-				int radius = BIT * camera.zoom * hitboxComponent.hitbox.radius;
-				TextureManager::drawCirc(screenPosition, radius, {0, 255, 0, 255});
+			if (damageAreaComponent.shape.type == ShapeId::RECTANGLE) {
+				pair size = vec::round(BIT * camera.zoom * damageAreaComponent.shape.size);
+				TextureManager::drawRect(screenPosition, size, {255, 0, 0, 255});
+			} else if (damageAreaComponent.shape.type == ShapeId::CIRCLE) {
+				int radius = BIT * camera.zoom * damageAreaComponent.shape.radius;
+				TextureManager::drawCirc(screenPosition, radius, {255, 0, 0, 255});
 			}
 		}
 	}

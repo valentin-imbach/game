@@ -241,3 +241,10 @@ struct MaturityComponent {
 	ushort maxMaturity = 5;
 	ushort maturity = 1;
 };
+
+struct DamageAreaComponent {
+	Shape shape;
+	int damage;
+	uint startTime;
+	uint endTime;
+};

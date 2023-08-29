@@ -236,3 +236,13 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 
 	return projectile;
 }
+
+Entity EntityFactory::createDamageArea(Realm* realm, vec position) {
+	Entity damage = createDynamicEntity(realm, position);
+	if (!damage) return 0;
+
+	Shape shape({0,0}, 1.0f);
+	uint ticks = world->ticks;
+	world->ecs.addComponent<DamageAreaComponent>({shape, 3, ticks, ticks}, damage);
+	return damage;
+}

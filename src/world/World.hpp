@@ -105,6 +105,8 @@ private:
 	PositionSystem* positionSystem;
 	MaturitySystem* maturitySystem;
 	HitboxDrawSystem* hitboxDrawSystem;
+	DamageAreaSystem* damageAreaSystem;
+	DamageAreaDrawSystem* damageAreaDrawSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

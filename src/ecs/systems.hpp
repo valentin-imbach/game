@@ -32,3 +32,5 @@
 #include "PositionSystem.hpp"
 #include "MaturitySystem.hpp"
 #include "HitboxDrawSystem.hpp"
+#include "DamageAreaSystem.hpp"
+#include "DamageAreaDrawSystem.hpp"

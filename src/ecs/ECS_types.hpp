@@ -52,7 +52,8 @@ AI_MELEE,
 PORTAL,
 MATURITY,
 LAUNCHER,
-PROJECTILE)
+PROJECTILE,
+DAMAGE_AREA)
 
 ENUM(SystemId,
 // Basic
@@ -71,6 +72,7 @@ PARTICLE_EMIT,
 CREATURE_PARTICLE,
 COLLIDER_DRAW,
 HITBOX_DRAW,
+DAMAGE_AREA_DRAW,
 LIGHT,
 
 //Player
@@ -100,7 +102,8 @@ AI_MELEE,
 
 // Misc
 PROJECTILE,
-MATURITY)
+MATURITY,
+DAMAGE_AREA)
 
 using Entity = uint;
 using EntitySet = std::unordered_set<Entity>;

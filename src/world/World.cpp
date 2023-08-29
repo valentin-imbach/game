@@ -41,7 +41,8 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 
 	pair spawn = realm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(realm, spawn);
-	
+
+	Entity dam = EntityFactory::createDamageArea(realm, spawn + pair(1,1));
 	
 	//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 
@@ -199,6 +200,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
+	ecs.rosterComponent<DamageAreaComponent>(ComponentId::DAMAGE_AREA);
 
 	LOG("Components rostered");
 }
@@ -268,6 +270,10 @@ void World::rosterSystems() {
 		{ComponentId::MATURITY});
 	hitboxDrawSystem = ecs.rosterSystem<HitboxDrawSystem>(SystemId::HITBOX_DRAW,
 		{ComponentId::HITBOX});
+	damageAreaSystem = ecs.rosterSystem<DamageAreaSystem>(SystemId::DAMAGE_AREA,
+		{ComponentId::POSITION, ComponentId::DAMAGE_AREA});
+	damageAreaDrawSystem = ecs.rosterSystem<DamageAreaDrawSystem>(SystemId::DAMAGE_AREA_DRAW,
+		{ComponentId::POSITION, ComponentId::DAMAGE_AREA});
 
 	LOG("Systems rostered")
 }
@@ -284,8 +290,6 @@ void World::update(uint dt) {
 	}
 
 	minimap.update(playerRealm);
-
-	std::unordered_map<Entity, std::vector<Entity>> collisions;
 
 	guiManager.update();
 	controllerSystem->update(inputState, state, ticks);
@@ -317,6 +321,8 @@ void World::update(uint dt) {
 
 	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realmManager);
+
+	std::unordered_map<Entity, std::vector<Entity>> collisions;
 	collisionSystem->update(collisions, updateSet);
 
 	chunkSystem->update(realmManager);
@@ -381,6 +387,7 @@ void World::draw() {
 	if (colliderDraw) {
 		colliderDrawSystem->update(camera, ticks, drawSet);
 		hitboxDrawSystem->update(camera, ticks, drawSet);
+		damageAreaDrawSystem->update(camera, ticks, drawSet);
 	}
 
 	particleSystem.draw(camera);

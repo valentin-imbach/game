@@ -24,10 +24,10 @@ public:
 
 			if (colliderComponent.collider.type == ShapeId::RECTANGLE) {
 				pair size = vec::round(BIT * camera.zoom * colliderComponent.collider.size);
-				TextureManager::drawRect(screenPosition, size, {255, 0, 0, 255});
+				TextureManager::drawRect(screenPosition, size, {255, 255, 255, 255});
 			} else if (colliderComponent.collider.type == ShapeId::CIRCLE) {
 				int radius = BIT * camera.zoom * colliderComponent.collider.radius;
-				TextureManager::drawCirc(screenPosition, radius);
+				TextureManager::drawCirc(screenPosition, radius, {255, 255, 255, 255});
 			}
 
 			if (ecs->hasComponent<AiMoveComponent>(entity)) {
