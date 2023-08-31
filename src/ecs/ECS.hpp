@@ -62,7 +62,7 @@ public:
 	void removeComponent(Entity entity) {
 		componentManager.remove<T>(entity);
 		auto signature = entityManager.signatures[entity];
-		signature.set(size_t(componentManager.roster<T>()), false);
+		signature.set(componentManager.roster<T>(), false);
 		entityManager.signatures[entity] = signature;
 		systemManager.signatureChange(entity, signature);
 	}
@@ -87,7 +87,7 @@ public:
 
 	static Signature makeSiganture(std::vector<ComponentId::value>&& ids) {
 		Signature signature;
-		for (ComponentId::value id : ids) signature.set(size_t(id), true);
+		for (ComponentId::value id : ids) signature.set(id, true);
 		return signature;
 	}
 

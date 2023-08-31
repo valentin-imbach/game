@@ -1,6 +1,7 @@
 
 #pragma once
 #include "utils.hpp"
+#include "definitions.hpp"
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
 #include "Item.hpp"
@@ -23,14 +24,6 @@ struct SpriteComponent {
 	float angle = 0;
 	std::array<std::pair<bool, uint>, SpriteEffectId::count> effects = {};
 };
-
-ENUM(CreatureState,
-IDLE,
-WALKING,
-RUNNING,
-SITTING,
-EATING,
-JUMPING)
 
 struct CreatureStateComponent {
 	CreatureState::value state;
@@ -61,12 +54,6 @@ struct ItemComponent {
 	uint count = 1;
 	bool show = false;
 };
-
-struct AnimalAiComponent {
-	uint nextChange;
-};
-
-struct MonsterAiComponent {};
 
 struct InventoryComponent {
 	Inventory inventory;
@@ -116,15 +103,6 @@ struct GridComponent {
 	bool opaque = true;
 };
 
-ENUM(StationId,
-ANVIL,
-FURNACE,
-TOOL_STATION,
-WORK_STATION,
-SAWMILL,
-CHEST,
-CAMP_FIRE)
-
 struct StationComponent {
 	StationId::value stationId;
 };
@@ -147,8 +125,6 @@ struct Textblock {
 struct NameComponent {
 	Textblock name;
 };
-
-struct GatherComponent {};
 
 struct DeathComponent {};
 
@@ -187,14 +163,6 @@ struct LauncherComponent {
 };
 
 struct ChunkComponent {};
-
-ENUM(AiState,
-WANDER,
-CHASE,
-MELEE,
-RANGED,
-FLEE,
-EAT);
 
 struct AiComponent {
 	AiState::value state = AiState::NONE;
@@ -243,7 +211,6 @@ struct MaturityComponent {
 };
 
 struct DamageAreaComponent {
-	Shape shape;
 	int damage;
 	uint startTime;
 	uint endTime;

@@ -71,6 +71,6 @@ private:
 
 	template <typename T>
 	ComponentArray<T>* getComponentArray() {
-		return static_cast<ComponentArray<T>*>(componentArrays[size_t(roster<T>())].get());
+		return static_cast<ComponentArray<T>*>(componentArrays[roster<T>()].get());
 	}
 };

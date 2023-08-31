@@ -44,7 +44,7 @@ public:
 	void serialise(std::fstream& stream);
 	void deserialise(std::fstream& stream);
 
-	std::bitset<size_t(InputStateId::MAX)> inputState;
+	std::bitset<InputStateId::count> inputState;
 	bool state = false;
 
 	Entity player = 0;

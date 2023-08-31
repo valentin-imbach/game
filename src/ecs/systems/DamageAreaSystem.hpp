@@ -6,12 +6,18 @@
 
 class DamageAreaSystem : public System {
 public:
-	void update() {
-		for (Entity entity : entities) {
-			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			DamageAreaComponent& damageAreaComponent = ecs->getComponent<DamageAreaComponent>(entity);
+	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions, uint ticks) {
+		for (Entity damageArea : entities) {
+			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(damageArea);
+			DamageAreaComponent& damageAreaComponent = ecs->getComponent<DamageAreaComponent>(damageArea);
+			for (Entity entity : collisions[damageArea]) {
+				if (!ecs->hasComponent<HealthComponent>(entity)) continue;
+				HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
+				if (ticks - healthComponent.lastDamage < 500) continue;
 
-			
+				healthComponent.health = std::max(0, healthComponent.health - damageAreaComponent.damage);
+				healthComponent.lastDamage = ticks;
+			}
 		}
 	}
 };

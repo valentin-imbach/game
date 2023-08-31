@@ -6,7 +6,6 @@
 
 ENUM(ItemKind,
 
-
 //Tools
 PICK_AXE,
 AXE,
@@ -22,10 +21,6 @@ SWORD,
 BOW,
 ARROW,
 SHIELD,
-
-
-
-
 
 //Materials
 COBBLE,

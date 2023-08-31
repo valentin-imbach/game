@@ -38,7 +38,9 @@ CRAFTING_ICONS,
 PLANKS,
 RAIN,
 RESOURCES_NEW,
-ROCK_WALL)
+ROCK_WALL,
+HOE,
+SOIL)
 
 class Sprite {
 public:

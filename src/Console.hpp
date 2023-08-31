@@ -25,7 +25,7 @@ private:
 	Game* game;
 	std::string input;
 	std::vector<std::string> history;
-	size_t index = 0;
+	uint index = 0;
 
 	bool execute(std::string input);
 };

@@ -106,10 +106,10 @@ MATURITY,
 DAMAGE_AREA)
 
 using Entity = uint;
+
 using EntitySet = std::unordered_set<Entity>;
 using Signature = std::bitset<ComponentId::count>;
 using GridMap = std::unordered_map<pair, Entity>;
-constexpr Entity MAX_ENTITIES = 100000;
+using EntityMap = std::unordered_map<Entity,std::vector<Entity>>;
 
-using Collisions = std::unordered_map<Entity,std::vector<Entity>>;
-using gridMap = std::unordered_map<pair, Entity>;
+constexpr Entity MAX_ENTITIES = 100000;

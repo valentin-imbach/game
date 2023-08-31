@@ -12,6 +12,7 @@ std::array<SpriteSheet::value, TileId::count> Tile::spriteSheets = {
 	SpriteSheet::ROCK_WALL,
 	SpriteSheet::PLANKS,
 	SpriteSheet::GRASS,
+	SpriteSheet::SOIL,
 	SpriteSheet::DIRT,
 	SpriteSheet::MUD,
 	SpriteSheet::ROCK,
@@ -25,6 +26,7 @@ std::array<uint, TileId::count> Tile::tileColours = {
 	0x000000FF,
 	0xb89b65FF,
 	0x4db349FF,
+	0x605136FF,
 	0x786146FF,
 	0x59462eFF,
     0x635f5aFF,
@@ -44,7 +46,7 @@ bool TileId::liquid(value tileId) {
 }
 
 float TileId::speedMul(value tileId) {
-	if (tileId == GRASS || tileId == DIRT) return 0.9f;
+	if (tileId == GRASS || tileId == DIRT || tileId == SOIL) return 0.9f;
 	if (tileId == SAND || tileId == GRAVEL) return 0.8f;
 	if (tileId == MUD) return 0.7f;
 	return 1.0f;

@@ -168,14 +168,16 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 	Shape collider({0, 0}, {0.4f, 0.4f});
 	world->ecs.addComponent<ColliderComponent>({collider}, item);
 
-	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::ITEMS, {(itemId - 1) % 6, (itemId - 1) / 6}, {1, 1}});
-	SpriteComponent spriteComponent = {spriteStack, 0.5f};
-	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, item);
+	if (itemId) {
+		SpriteStack spriteStack;
+		spriteStack.addSprite(Sprite(SpriteSheet::ITEMS, pair((itemId - 1) % 6, (itemId - 1) / 6)));
+		SpriteComponent spriteComponent = {spriteStack, 0.5f};
+		spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
+		world->ecs.addComponent<SpriteComponent>(spriteComponent, item);
+	}
 
 	world->ecs.addComponent<ItemComponent>({itemId, count}, item);
-
+	
 	return item;
 }
 
@@ -238,11 +240,11 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 }
 
 Entity EntityFactory::createDamageArea(Realm* realm, vec position) {
-	Entity damage = createDynamicEntity(realm, position);
-	if (!damage) return 0;
+	Entity damageArea = createDynamicEntity(realm, position);
+	if (!damageArea) return 0;
 
-	Shape shape({0,0}, 1.0f);
 	uint ticks = world->ticks;
-	world->ecs.addComponent<DamageAreaComponent>({shape, 3, ticks, ticks}, damage);
-	return damage;
+	world->ecs.addComponent<ColliderComponent>({Shape({0,0}, 1.0f)}, damageArea);
+	world->ecs.addComponent<DamageAreaComponent>({1, ticks, ticks}, damageArea);
+	return damageArea;
 }

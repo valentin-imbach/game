@@ -60,6 +60,11 @@
         "properties": ["efficiency", "durability", "level"]
     },
 
+    "hoe": {
+        "name": "Hoe",
+        "properties": ["efficiency", "durability", "level"]
+    },
+
     "sword": {
         "name": "Sword",
         "properties": ["damage", "parry", "durability"]

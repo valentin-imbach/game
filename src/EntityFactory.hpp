@@ -25,7 +25,7 @@ public:
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);
 	
-	static Entity createItem(ItemId::value itemId, uchar count);
+	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1);
 	static Entity createItem(ItemId::value itemId, uchar count, Realm* realm, vec position);
 
 	static Entity createProjectile(Realm* realm, vec position, vec direction);

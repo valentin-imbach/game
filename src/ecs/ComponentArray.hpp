@@ -15,9 +15,9 @@ public:
 	}
 
 protected:
-	std::unordered_map<Entity, size_t> entityToIndex;
-	std::unordered_map<size_t, Entity> indexToEntity;
-	size_t size;
+	std::unordered_map<Entity, uint> entityToIndex;
+	std::unordered_map<uint, Entity> indexToEntity;
+	uint size;
 };
 
 template <typename T>
@@ -47,7 +47,7 @@ public:
 			return;
 		}
 
-		size_t index = entityToIndex[entity];
+		uint index = entityToIndex[entity];
 		if (end) end(entity, components[index]);
 		components[index] = components[size - 1];
 

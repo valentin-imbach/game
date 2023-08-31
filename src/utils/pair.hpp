@@ -123,7 +123,7 @@ struct pair {
 
 template <>
 struct std::hash<pair> {
-	std::size_t operator()(::pair p) const {
+	uint operator()(::pair p) const {
 		return std::hash<int>{}(p.x) ^ (std::hash<int>{}(p.y) << 1);
 	}
 };

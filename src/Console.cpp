@@ -49,13 +49,13 @@ bool Console::handleEvent(InputEvent event) {
 		}
 		return false;
 	} else if (event.id == InputEventId::UP) {
-		index = std::max(index, 1UL) - 1;
+		index = std::max(index, 1u) - 1;
 		if (index < history.size()) {
 			input = history[index];
 			return true;
 		}
 	} else if (event.id == InputEventId::DOWN) {
-		index = std::min(index + 1, history.size());
+		index = std::min(index + 1, uint(history.size()));
 		if (index == history.size()) {
 			input.clear();
 			return true;

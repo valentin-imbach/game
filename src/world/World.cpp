@@ -85,6 +85,22 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
 	Entity rest1 = ecs.getComponent<InventoryComponent>(player).inventory.add(axe);
 
+	Entity hoe = ecs.createEntity();
+	SpriteStack hoeSprites;
+	hoeSprites.addSprite(Sprite(SpriteSheet::HOE, pair(0, 0)));
+	ecs.addComponent<SpriteComponent>({hoeSprites, 0.5f}, hoe);
+	ecs.getComponent<SpriteComponent>(hoe).effects[SpriteEffectId::BOUNCE] = {true, 0};
+	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, hoe);
+	ItemKindComponent hoeKindComponent = {};
+	hoeKindComponent.itemKinds[ItemKind::HOE] = true;
+	hoeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
+	hoeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
+	ecs.addComponent<ItemKindComponent>(hoeKindComponent, hoe);
+	Shape hoeCollider({0, 0}, {0.4f, 0.4f});
+	ecs.addComponent<ColliderComponent>({hoeCollider}, hoe);
+	ecs.addComponent<NameComponent>({Textblock("Hoe")}, hoe);
+	Entity rest5 = ecs.getComponent<InventoryComponent>(player).inventory.add(hoe);
+
 	Entity pick = ecs.createEntity();
 	SpriteStack pickSprites;
 	pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(1, 0)));
@@ -271,9 +287,9 @@ void World::rosterSystems() {
 	hitboxDrawSystem = ecs.rosterSystem<HitboxDrawSystem>(SystemId::HITBOX_DRAW,
 		{ComponentId::HITBOX});
 	damageAreaSystem = ecs.rosterSystem<DamageAreaSystem>(SystemId::DAMAGE_AREA,
-		{ComponentId::POSITION, ComponentId::DAMAGE_AREA});
+		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::DAMAGE_AREA});
 	damageAreaDrawSystem = ecs.rosterSystem<DamageAreaDrawSystem>(SystemId::DAMAGE_AREA_DRAW,
-		{ComponentId::POSITION, ComponentId::DAMAGE_AREA});
+		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::DAMAGE_AREA});
 
 	LOG("Systems rostered")
 }
@@ -322,8 +338,9 @@ void World::update(uint dt) {
 	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realmManager);
 
-	std::unordered_map<Entity, std::vector<Entity>> collisions;
+	EntityMap collisions;
 	collisionSystem->update(collisions, updateSet);
+	damageAreaSystem->update(collisions, ticks);
 
 	chunkSystem->update(realmManager);
 
@@ -387,7 +404,7 @@ void World::draw() {
 	if (colliderDraw) {
 		colliderDrawSystem->update(camera, ticks, drawSet);
 		hitboxDrawSystem->update(camera, ticks, drawSet);
-		damageAreaDrawSystem->update(camera, ticks, drawSet);
+		//damageAreaDrawSystem->update(camera, ticks, drawSet);
 	}
 
 	particleSystem.draw(camera);
