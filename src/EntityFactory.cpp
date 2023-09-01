@@ -98,6 +98,18 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	return resource;
 }
 
+Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair position) {
+	if (!cropId) return 0;
+	Entity crop = createStaticEntity(realm, position, pair(1, 1), false, false);
+	if (!crop) return 0;
+
+	SpriteStack spriteStack;
+	spriteStack.addSprite({SpriteSheet::CROPS, pair(0, 2 * (cropId - 1)), pair(1, 2)}, pair(0, -1));
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, crop);
+	world->ecs.addComponent<MaturityComponent>({world->ticks, 5000, 5}, crop);
+	return crop;
+}
+
 Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, vec position) {
 	Entity monster = createDynamicEntity(realm, position);
 	if (!monster) return 0;

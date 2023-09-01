@@ -14,6 +14,7 @@ struct Shape {
 	vec size;
 	float radius;
 
+	Shape() = default;
 	Shape(vec offset, vec size) : offset(offset), type(ShapeId::RECTANGLE), size(size), radius() {}
 	Shape(vec offset, float radius) : offset(offset), type(ShapeId::CIRCLE), size(), radius(radius) {}
 
@@ -66,9 +67,9 @@ struct Shape {
 
 	static bool colide(Shape shapeA, vec posA, Shape shapeB, vec posB) {
 		if (shapeA.type == ShapeId::RECTANGLE && shapeB.type == ShapeId::RECTANGLE) return RR(shapeA, posA, shapeB, posB);
-		if (shapeA.type == ShapeId::CIRCLE && shapeA.type == ShapeId::CIRCLE) return CC(shapeA, posA, shapeB, posB);
-		if (shapeA.type == ShapeId::RECTANGLE && shapeA.type == ShapeId::CIRCLE) return RC(shapeA, posA, shapeB, posB);
-		if (shapeA.type == ShapeId::CIRCLE && shapeA.type == ShapeId::RECTANGLE) return RC(shapeB, posB, shapeA, posA);
+		if (shapeA.type == ShapeId::CIRCLE && shapeB.type == ShapeId::CIRCLE) return CC(shapeA, posA, shapeB, posB);
+		if (shapeA.type == ShapeId::RECTANGLE && shapeB.type == ShapeId::CIRCLE) return RC(shapeA, posA, shapeB, posB);
+		if (shapeA.type == ShapeId::CIRCLE && shapeB.type == ShapeId::RECTANGLE) return RC(shapeB, posB, shapeA, posA);
 		WARNING("Shape not handled");
 		return false;
 	}

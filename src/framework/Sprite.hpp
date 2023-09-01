@@ -40,7 +40,8 @@ RAIN,
 RESOURCES_NEW,
 ROCK_WALL,
 HOE,
-SOIL)
+SOIL,
+CROPS)
 
 class Sprite {
 public:

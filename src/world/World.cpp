@@ -49,18 +49,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
 	// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
 
-
-	// Entity tree = ecs.createEntity();
-	// pair chunk = vec::round(spawn / CHUNK_SIZE);
-	// ecs.addComponent<PositionComponent>({spawn, realm->realmId, chunk}, tree);
-	// realm->linkChunk(tree, chunk);
-	// ecs.addComponent<GridComponent>({spawn, realm->realmId, pair(1, 1), true, true}, tree);
-	// realm->linkGrid(tree, spawn, pair(1, 1), true, true);
-	// SpriteStack spriteStack;
-	// spriteStack.addSprite({SpriteSheet::RESOURCES_NEW, pair(0, 0), pair(1, 2)}, pair(0, -1));
-	// spriteStack.addSprite({SpriteSheet::RESOURCES_NEW, pair(0, 2), pair(3, 3)}, pair(-1, -3));
-	// ecs.addComponent<SpriteComponent>({spriteStack}, tree);
-	// ecs.addComponent<MaturityComponent>({ticks, 10000, 5}, tree);
+	EntityFactory::createCrop(CropId::PARSNIP, realm, spawn + pair(1, -1));
 
 	//LOG(ecs.getComponent<PositionComponent>(player).chunk);
 
@@ -518,21 +507,45 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		}
 	} else if (event.id == InputEventId::SECONDARY) {
 		vec position = camera.worldPosition(event.mousePosition);
-		Entity entity = playerRealm->gridMap[vec::round(position)];
-		if (entity && ecs.hasComponent<PortalComponent>(entity)) {
-			PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(entity);
-			PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-			playerRealm->unlinkChunk(player, positionComponent.chunk);
-			positionComponent.position = portalComponent.position;
-			pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
-			positionComponent.chunk = chunk;
-			positionComponent.realmId = portalComponent.realmId;
-			Realm* realm = realmManager.getRealm(portalComponent.realmId);
-			realm->linkChunk(player, chunk);
+		pair gridPos = vec::round(position);
 
-			return true;
+		if (playerRealm->gridMap.find(gridPos) != playerRealm->gridMap.end()) {
+			Entity entity = playerRealm->gridMap[gridPos];
+			if (entity && ecs.hasComponent<PortalComponent>(entity)) {
+				PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(entity);
+				PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+				playerRealm->unlinkChunk(player, positionComponent.chunk);
+				positionComponent.position = portalComponent.position;
+				pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
+				positionComponent.chunk = chunk;
+				positionComponent.realmId = portalComponent.realmId;
+				Realm* realm = realmManager.getRealm(portalComponent.realmId);
+				realm->linkChunk(player, chunk);
+
+				return true;
+			}
+		} else {
+			if (hasItemKind(activeItemContainer.item, ItemKind::HOE)) {
+				TileId:: value tileId = playerRealm->map->getTileId(gridPos);
+				if (tileId == TileId::DIRT || tileId == TileId::GRASS) {
+					playerRealm->map->tiles[gridPos.x][gridPos.y]->tileId = TileId::SOIL;
+					playerRealm->map->updateStyle(gridPos, true);
+					return true;
+				}
+			} else {
+				ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
+				if (itemComponent.itemId == ItemId::PARSNIP_SEEDS) {
+					EntityFactory::createCrop(CropId::PARSNIP, playerRealm, gridPos);
+					itemComponent.count -= 1;
+					if (itemComponent.count == 0) {
+						ecs.addComponent<DeathComponent>({}, activeItemContainer.item);
+						activeItemContainer.item = 0;
+					}
+					return true;
+				}
+			}
 		}
-
+		
 		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {

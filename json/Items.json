@@ -305,5 +305,14 @@
         "properties": {
             "nutrition": 3
         }
+    },
+    "parsnip_seeds": {
+        "name": "Parsnip Seeds",
+        "kinds": [
+            "rope"
+        ],
+        "properties": {
+            "nutrition": 3
+        }
     }
 }
