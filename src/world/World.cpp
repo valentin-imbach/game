@@ -42,7 +42,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	pair spawn = realm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(realm, spawn);
 
-	Entity dam = EntityFactory::createDamageArea(realm, spawn + pair(1,1));
+	Entity dam = EntityFactory::createDamageArea(realm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
 	
 	//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 
@@ -69,8 +69,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	axeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
 	axeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
 	ecs.addComponent<ItemKindComponent>(axeKindComponent, axe);
-	Shape axeCollider({0, 0}, {0.4f, 0.4f});
-	ecs.addComponent<ColliderComponent>({axeCollider}, axe);
+	ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, axe);
 	ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
 	Entity rest1 = ecs.getComponent<InventoryComponent>(player).inventory.add(axe);
 
@@ -85,8 +84,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	hoeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
 	hoeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
 	ecs.addComponent<ItemKindComponent>(hoeKindComponent, hoe);
-	Shape hoeCollider({0, 0}, {0.4f, 0.4f});
-	ecs.addComponent<ColliderComponent>({hoeCollider}, hoe);
+	ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, hoe);
 	ecs.addComponent<NameComponent>({Textblock("Hoe")}, hoe);
 	Entity rest5 = ecs.getComponent<InventoryComponent>(player).inventory.add(hoe);
 
@@ -101,8 +99,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	pickKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 4;
 	pickKindComponent.itemProperties[ItemProperty::LEVEL] = 3;
 	ecs.addComponent<ItemKindComponent>(pickKindComponent, pick);
-	Shape pickCollider(vec(0,0), vec(0.4f, 0.4f));
-	ecs.addComponent<ColliderComponent>({pickCollider}, pick);
+	ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, pick);
 	ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, pick);
 	Entity rest2 = ecs.getComponent<InventoryComponent>(player).inventory.add(pick);
 
@@ -113,8 +110,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	ecs.getComponent<SpriteComponent>(sword).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, sword);
 	ecs.addComponent<DamageComponent>({1}, sword);
-	Shape swordCollider(vec(0, 0), vec(0.4f, 0.4f));
-	ecs.addComponent<ColliderComponent>({swordCollider}, sword);
+	ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 	Entity rest3 = ecs.getComponent<InventoryComponent>(player).inventory.add(sword);
 
@@ -128,8 +124,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	bowKindComponent.itemKinds[ItemKind::BOW] = true;
 	bowKindComponent.itemProperties[ItemProperty::DAMAGE] = 3;
 	ecs.addComponent<ItemKindComponent>(bowKindComponent, bow);
-	Shape bowCollider(vec(0, 0), vec(0.4f, 0.4f));
-	ecs.addComponent<ColliderComponent>({bowCollider}, bow);
+	ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, bow);
 	ecs.addComponent<NameComponent>({Textblock("Bow")}, bow);
 	ecs.addComponent<LauncherComponent>({}, bow);
 	Entity rest4 = ecs.getComponent<InventoryComponent>(player).inventory.add(bow);
@@ -342,7 +337,7 @@ void World::update(uint dt) {
 
 	creatureAnimationSystem->update(ticks);
 
-	inventoryDeathSystem->update(ticks);
+	inventoryDeathSystem->update(ticks, realmManager);
 	deathSystem->update(realmManager);
 
 	creatureParticleSystem->update();
@@ -475,6 +470,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
 		vec position = positionComponent.position + Direction::unit[creatureStateComponent.facing];
 		ecs.addComponent<PositionComponent>({position, positionComponent.realmId}, activeItemContainer.item);
+		pair chunk = vec::round(position / CHUNK_SIZE);
+		playerRealm->linkChunk(activeItemContainer.item, chunk);
 		activeItemContainer.clear();
 	} else if (event.id == InputEventId::SELECT_1) {
 		playerComponent.activeSlot = 0;
@@ -497,7 +494,17 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	} else if (event.id == InputEventId::PRIMARY) {
 		vec position = camera.worldPosition(event.mousePosition);
 		if (ticks - playerComponent.lastAction > 500) {
-			if (damageSystem->update(player, position, activeItemContainer.item, ticks, updateSet)) {
+			// if (damageSystem->update(player, position, activeItemContainer.item, ticks, updateSet)) {
+			// 	playerComponent.lastAction = ticks;
+			// 	return true;
+			// }
+			
+			Entity item = activeItemContainer.item;
+			if (item && ecs.hasComponent<DamageComponent>(item)) {
+				DamageComponent& damageComponent = ecs.getComponent<DamageComponent>(item);
+				PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+				vec force = vec::normalise(position - positionComponent.position) / 10;
+				EntityFactory::createDamageArea(playerRealm, position, vec(0.2f, 0.2f), ticks, 1, force);
 				playerComponent.lastAction = ticks;
 				return true;
 			} else if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
@@ -521,7 +528,6 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				positionComponent.realmId = portalComponent.realmId;
 				Realm* realm = realmManager.getRealm(portalComponent.realmId);
 				realm->linkChunk(player, chunk);
-
 				return true;
 			}
 		} else {

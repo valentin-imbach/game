@@ -15,8 +15,8 @@ struct Shape {
 	float radius;
 
 	Shape() = default;
-	Shape(vec offset, vec size) : offset(offset), type(ShapeId::RECTANGLE), size(size), radius() {}
-	Shape(vec offset, float radius) : offset(offset), type(ShapeId::CIRCLE), size(), radius(radius) {}
+	Shape(vec size, vec offset = {0,0}) : offset(offset), type(ShapeId::RECTANGLE), size(size), radius() {}
+	Shape(float radius, vec offset = {0,0}) : offset(offset), type(ShapeId::CIRCLE), size(), radius(radius) {}
 
 	vec topBottom(vec position) {
 		if (type == ShapeId::CIRCLE) {

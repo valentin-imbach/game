@@ -371,8 +371,7 @@ void CraftingGrid::craft() {
 	}
 
 	EntityFactory::world->ecs.addComponent<ItemKindComponent>(itemKindComponent, item);
-	Shape itemCollider(vec(0, 0), vec(0.4f, 0.4f));
-	EntityFactory::world->ecs.addComponent<ColliderComponent>({itemCollider}, item);
+	EntityFactory::world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
 	EntityFactory::world->ecs.addComponent<NameComponent>({Textblock(recipe.product.name)}, item);
 
 	output.item = item;

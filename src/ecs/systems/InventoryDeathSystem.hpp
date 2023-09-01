@@ -7,7 +7,7 @@
 
 class InventoryDeathSystem : public System {
 public:
-	void update(uint ticks) {
+	void update(uint ticks, RealmManager& realmManager) {
 		uint seed = ticks;
 		for (Entity entity : entities) {
 			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
@@ -22,6 +22,9 @@ public:
 							offset.y = noise::Float(seed++, -0.3f, 0.3f);
 							vec position = positionComponent.position + offset;
 							ecs->addComponent<PositionComponent>({position, positionComponent.realmId}, item);
+							Realm* realm = realmManager.getRealm(positionComponent.realmId);
+							pair chunk = vec::round(position / CHUNK_SIZE);
+							realm->linkChunk(item, chunk);
 							inventoryComponent.inventory.itemContainers[x][y].clear();
 						}
 					}

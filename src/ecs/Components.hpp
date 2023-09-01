@@ -213,5 +213,6 @@ struct MaturityComponent {
 struct DamageAreaComponent {
 	int damage;
 	uint startTime;
-	uint endTime;
+	uint duration;
+	vec force = {0, 0};
 };

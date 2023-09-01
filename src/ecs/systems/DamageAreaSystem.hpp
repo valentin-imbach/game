@@ -17,6 +17,14 @@ public:
 
 				healthComponent.health = std::max(0, healthComponent.health - damageAreaComponent.damage);
 				healthComponent.lastDamage = ticks;
+
+				if (ecs->hasComponent<ForceComponent>(entity)) {
+					ForceComponent& forceComponent = ecs->getComponent<ForceComponent>(entity);
+					forceComponent.force += damageAreaComponent.force;
+				}
+			}
+			if (damageAreaComponent.duration != 0 && damageAreaComponent.startTime + damageAreaComponent.duration < ticks) {
+				ecs->addComponent<DeathComponent>({}, damageArea);
 			}
 		}
 	}
