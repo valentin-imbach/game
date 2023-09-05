@@ -33,7 +33,7 @@ public:
 	static Entity createItem(ItemId::value itemId, uchar count, Realm* realm, vec position);
 
 	static Entity createProjectile(Realm* realm, vec position, vec direction);
-	static Entity createDamageArea(Realm* realm, vec position, Shape shape, uint start, uint duration, vec force = {0,0});
+	static Entity createDamageArea(Realm* realm, vec position, Shape shape, uint start, uint duration, vec force = {0,0}, Entity imune = 0);
 
 	static World* world;
 

@@ -3,6 +3,7 @@
 #include "System.hpp"
 #include "Components.hpp"
 #include "ECS.hpp"
+#include "EntityFactory.hpp"
 
 class AiMeleeSystem : public System {
 public:
@@ -33,9 +34,12 @@ public:
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiMeleeComponent& aiMeleeComponent = ecs->getComponent<AiMeleeComponent>(entity);
+			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
 
 			if (ticks - aiMeleeComponent.lastHit < aiMeleeComponent.cooldown) continue;
-			LOG("HIT!");
+			Realm* realm = realmManager.getRealm(positionComponent.realmId);
+			vec force = vec::normalise(sensorComponent.position - positionComponent.position) / 10;
+			EntityFactory::createDamageArea(realm, sensorComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);
 			aiMeleeComponent.lastHit = ticks;
 
 		}

@@ -87,7 +87,7 @@ struct ItemKindComponent {
 	std::array<uchar, ItemProperty::count> itemProperties;
 };
 
-struct DamageComponent {
+struct MeleeItemComponent {
 	uchar damage;
 };
 
@@ -210,9 +210,10 @@ struct MaturityComponent {
 	ushort maturity = 1;
 };
 
-struct DamageAreaComponent {
+struct DamageComponent {
 	int damage;
 	uint startTime;
 	uint duration;
 	vec force = {0, 0};
+	Entity imune = 0;
 };

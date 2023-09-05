@@ -90,8 +90,8 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 			texts.emplace_back(Text(name, TTF_STYLE_UNDERLINE), pos);
 			pos.y += spacing;
 
-			if (EntityFactory::world->ecs.hasComponent<DamageComponent>(item)) {
-				DamageComponent& damageComponent = EntityFactory::world->ecs.getComponent<DamageComponent>(item);
+			if (EntityFactory::world->ecs.hasComponent<MeleeItemComponent>(item)) {
+				MeleeItemComponent& damageComponent = EntityFactory::world->ecs.getComponent<MeleeItemComponent>(item);
 				texts.emplace_back(Text("  Weapon", TTF_STYLE_BOLD), pos);
 				pos.y += spacing;
 				std::string text = "Damage: " + std::to_string(damageComponent.damage);

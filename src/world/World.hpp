@@ -82,7 +82,6 @@ private:
 	ForageSystem* forageSystem;
 	HealthSystem* healthSystem;
 	LootSystem* lootSystem;
-	DamageSystem* damageSystem;
 	PlayerSystem* playerSystem;
 	ColliderDrawSystem* colliderDrawSystem;
 	GridSystem* gridSystem;
@@ -105,8 +104,8 @@ private:
 	PositionSystem* positionSystem;
 	MaturitySystem* maturitySystem;
 	HitboxDrawSystem* hitboxDrawSystem;
-	DamageAreaSystem* damageAreaSystem;
-	DamageAreaDrawSystem* damageAreaDrawSystem;
+	DamageSystem* damageSystem;
+	HitboxSystem* hitboxSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

@@ -109,7 +109,7 @@ World::World(std::string name, uint seed) : name(name), seed(seed), ticks(0), pa
 	ecs.addComponent<SpriteComponent>({swordSprites, 0.5f}, sword);
 	ecs.getComponent<SpriteComponent>(sword).effects[SpriteEffectId::BOUNCE] = {true, 0};
 	ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, sword);
-	ecs.addComponent<DamageComponent>({1}, sword);
+	ecs.addComponent<MeleeItemComponent>({1}, sword);
 	ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, sword);
 	ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
 	Entity rest3 = ecs.getComponent<InventoryComponent>(player).inventory.add(sword);
@@ -179,7 +179,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ResourceComponent>(ComponentId::RESOURCE);
 	ecs.rosterComponent<LootComponent>(ComponentId::LOOT);
 	ecs.rosterComponent<ItemKindComponent>(ComponentId::ITEM_KIND);
-	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
+	ecs.rosterComponent<MeleeItemComponent>(ComponentId::MELEE_ITEM);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
 	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
 	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
@@ -200,7 +200,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
-	ecs.rosterComponent<DamageAreaComponent>(ComponentId::DAMAGE_AREA);
+	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 
 	LOG("Components rostered");
 }
@@ -224,8 +224,6 @@ void World::rosterSystems() {
 		{ComponentId::HEALTH});
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,
 		{ComponentId::LOOT, ComponentId::DEATH, ComponentId::POSITION});
-	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE,
-		{ComponentId::POSITION, ComponentId::HITBOX, ComponentId::HEALTH});
 	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER,
 		{ComponentId::PLAYER});
 	colliderDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
@@ -270,10 +268,10 @@ void World::rosterSystems() {
 		{ComponentId::MATURITY});
 	hitboxDrawSystem = ecs.rosterSystem<HitboxDrawSystem>(SystemId::HITBOX_DRAW,
 		{ComponentId::HITBOX});
-	damageAreaSystem = ecs.rosterSystem<DamageAreaSystem>(SystemId::DAMAGE_AREA,
-		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::DAMAGE_AREA});
-	damageAreaDrawSystem = ecs.rosterSystem<DamageAreaDrawSystem>(SystemId::DAMAGE_AREA_DRAW,
-		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::DAMAGE_AREA});
+	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE,
+		{ComponentId::POSITION, ComponentId::HITBOX, ComponentId::DAMAGE});
+	hitboxSystem = ecs.rosterSystem<HitboxSystem>(SystemId::HITBOX,
+		{ComponentId::POSITION, ComponentId::HITBOX});
 
 	LOG("Systems rostered")
 }
@@ -324,7 +322,11 @@ void World::update(uint dt) {
 
 	EntityMap collisions;
 	collisionSystem->update(collisions, updateSet);
-	damageAreaSystem->update(collisions, ticks);
+
+	EntityMap hits;
+	hitboxSystem->update(hits, updateSet);
+
+	damageSystem->update(hits, ticks);
 
 	chunkSystem->update(realmManager);
 
@@ -388,7 +390,6 @@ void World::draw() {
 	if (colliderDraw) {
 		colliderDrawSystem->update(camera, ticks, drawSet);
 		hitboxDrawSystem->update(camera, ticks, drawSet);
-		//damageAreaDrawSystem->update(camera, ticks, drawSet);
 	}
 
 	particleSystem.draw(camera);
@@ -493,18 +494,13 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		playerComponent.activeSlot = (playerComponent.activeSlot + 1) % 7;
 	} else if (event.id == InputEventId::PRIMARY) {
 		vec position = camera.worldPosition(event.mousePosition);
-		if (ticks - playerComponent.lastAction > 500) {
-			// if (damageSystem->update(player, position, activeItemContainer.item, ticks, updateSet)) {
-			// 	playerComponent.lastAction = ticks;
-			// 	return true;
-			// }
-			
+		if (ticks - playerComponent.lastAction > 500) {			
 			Entity item = activeItemContainer.item;
-			if (item && ecs.hasComponent<DamageComponent>(item)) {
-				DamageComponent& damageComponent = ecs.getComponent<DamageComponent>(item);
+			if (item && ecs.hasComponent<MeleeItemComponent>(item)) {
+				MeleeItemComponent& damageComponent = ecs.getComponent<MeleeItemComponent>(item);
 				PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 				vec force = vec::normalise(position - positionComponent.position) / 10;
-				EntityFactory::createDamageArea(playerRealm, position, vec(0.2f, 0.2f), ticks, 1, force);
+				EntityFactory::createDamageArea(playerRealm, position, vec(0.2f, 0.2f), ticks, 1, force, player);
 				playerComponent.lastAction = ticks;
 				return true;
 			} else if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {

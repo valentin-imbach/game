@@ -42,6 +42,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	world->ecs.addComponent<MovementComponent>({2}, player);
+	world->ecs.addComponent<ForceComponent>({{0, 0}}, player);
 	world->ecs.addComponent<ControllerComponent>({}, player);
 
 	SpriteStack spriteStack;
@@ -240,11 +241,11 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 	return projectile;
 }
 
-Entity EntityFactory::createDamageArea(Realm* realm, vec position, Shape shape, uint start, uint duration, vec force) {
+Entity EntityFactory::createDamageArea(Realm* realm, vec position, Shape shape, uint start, uint duration, vec force, Entity imune) {
 	Entity damageArea = createDynamicEntity(realm, position);
 	if (!damageArea) return 0;
 
-	world->ecs.addComponent<ColliderComponent>({shape}, damageArea);
-	world->ecs.addComponent<DamageAreaComponent>({1, start, duration, force}, damageArea);
+	world->ecs.addComponent<HitboxComponent>({shape}, damageArea);
+	world->ecs.addComponent<DamageComponent>({1, start, duration, force, imune}, damageArea);
 	return damageArea;
 }
