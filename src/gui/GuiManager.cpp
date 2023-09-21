@@ -6,7 +6,7 @@
 uint GuiManager::scale = 3;
 bool GuiManager::box = true;
 
-void GuiManager::update() {
+void GuiManager::update(uint dt) {
 	for (auto& guiElement : guiElements) guiElement->reposition();
 	for (auto& guiElement : guiElements) guiElement->update(this);
 
@@ -23,20 +23,49 @@ void GuiManager::update() {
 		}
 	}
 
-	if (!primary) return;
-	primary->reposition();
-	primary->update(this);
-	if (!secondary) return;
-	secondary->reposition();
-	secondary->update(this);
+	if (primary) {
+		primary->reposition();
+		primary->update(this);
+	}
+
+	if (secondary) {
+		secondary->reposition();
+		secondary->update(this);
+	}
+
+	if (!banners.empty()) {
+		GuiBanner& banner = banners.front();
+		if (banner.timeLeft < dt) {
+			banners.pop();
+		} else {
+			banner.timeLeft -= dt;
+		}
+	}
 }
 
 void GuiManager::draw() {
 	for (auto& guiElement : guiElements) guiElement->draw();
-	if (!primary) return;
-	if (secondary) secondary->draw();
-	primary->draw();
-	mouseItemContainer.draw(mousePosition, GuiManager::scale);
+
+	if (primary) {
+		if (secondary) secondary->draw();
+		primary->draw();
+		mouseItemContainer.draw(mousePosition, GuiManager::scale);
+	}
+
+	if (!banners.empty()) {
+		GuiBanner& banner = banners.front();
+		int y = 50;
+		if (banner.timeLeft < 200) y -= banner.timeLeft/2;
+		if (banner.timeLeft > 4800) y -= (banner.timeLeft - 4800)/2;
+
+		pair position(Window::instance->size.x - 200, y);
+
+		Sprite sprite(SpriteSheet::BANNER, pair(0,0), pair(6, 2));
+		TextureStyle style;
+		style.centered = true;
+		sprite.draw(position, scale, style);
+		TextManager::drawText(banner.text, position, true, {255, 0, 0, 255});
+	}
 }
 
 bool GuiManager::handleEvent(InputEvent event) {
@@ -101,4 +130,8 @@ bool GuiManager::active() {
 
 void GuiManager::add(std::unique_ptr<GuiElement> guiElement) {
 	guiElements.push_back(std::move(guiElement));
+}
+
+void GuiManager::addBanner(std::string text) {
+	banners.push({text, 5000});
 }

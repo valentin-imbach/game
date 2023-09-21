@@ -277,7 +277,7 @@ void World::rosterSystems() {
 }
 
 void World::update(uint dt) {
-	ticks += dt;
+	ticks += tickSpeed * dt;
 	time.update(dt);
 	player = playerSystem->getPlayer();
 
@@ -289,7 +289,7 @@ void World::update(uint dt) {
 
 	minimap.update(playerRealm);
 
-	guiManager.update();
+	guiManager.update(dt);
 	controllerSystem->update(inputState, state, ticks);
 
 	updateSet.clear();

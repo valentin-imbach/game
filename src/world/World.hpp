@@ -110,7 +110,9 @@ private:
 	GuiManager guiManager;
 	Minimap minimap;
 	std::string name;
+
 	uint ticks;
+	int tickSpeed = 1;
 
 	pair playerChunk;
 

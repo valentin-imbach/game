@@ -41,7 +41,8 @@ RESOURCES_NEW,
 ROCK_WALL,
 HOE,
 SOIL,
-CROPS)
+CROPS,
+BANNER)
 
 class Sprite {
 public:

@@ -181,6 +181,12 @@ bool Console::execute(std::string input) {
 		positionComponent.realmId = realmId;
 		Realm* realm = game->world->realmManager.getRealm(realmId);
 		realm->linkChunk(player, positionComponent.chunk);
+	} else if (inputs[0] == "tickspeed") {
+		if (inputs.size() != 2) return false;
+		game->world->tickSpeed = std::stoi(inputs[1]);
+	} else if (inputs[0] == "banner") {
+		if (inputs.size() != 2) return false;
+		game->world->guiManager.addBanner(inputs[1]);
 	} else {
 		return false;
 	}
