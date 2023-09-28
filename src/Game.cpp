@@ -9,6 +9,8 @@
 #include "utils.hpp"
 #include <filesystem>
 
+#define DEBUG_MODE false
+
 Game::Game() : trackMix(1), console(this) {
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();
@@ -17,6 +19,11 @@ Game::Game() : trackMix(1), console(this) {
 
 	gameState = GameState::MENU;
 	buildMenu();
+
+	if (DEBUG_MODE) {
+		createWorld("Test World", arc4random(), true);
+		return;
+	}
 }
 
 Game::~Game() {
@@ -52,7 +59,6 @@ void Game::buildMenu() {
 }
 
 void Game::createButton() {
-	static int number = 1;
 	if (!nameField || !seedField) return;
 	uint seed;
 	std::string seedString = seedField->getText();
@@ -62,10 +68,9 @@ void Game::createButton() {
 		seed = arc4random();
 	}
 	createWorld(nameField->getText(), seed);
-	number += 1;
 }
 
-void Game::createWorld(std::string name, uint seed) {
+void Game::createWorld(std::string name, uint seed, bool debug) {
 	if (name.empty()) {
 		WARNING("World name can't be empty");
 		return;
@@ -76,7 +81,7 @@ void Game::createWorld(std::string name, uint seed) {
 		return;
 	}
 
-	world = std::make_unique<World>(name, seed);
+	world = std::make_unique<World>(name, seed, debug);
 	LOG("World", name, "created");
 	gameState = GameState::RUNNING;
 }

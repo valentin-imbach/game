@@ -12,8 +12,8 @@ DIRT,
 MUD,
 ROCK,
 GRAVEL,
-SAND,
-WATER)
+WATER,
+SAND)
 
 namespace TileId {
 	bool wall(value tileId);

@@ -43,7 +43,6 @@ void Map::updateStyle(pair position, bool propagate) {
 
 
 
-
 	TileId::value tileId = getTileId(position);
 	TileId::value top = getTileId(position + pair(0, -1));
 	TileId::value bottom = getTileId(position + pair(0, 1));
@@ -118,6 +117,11 @@ void Map::updateStyle(pair position, bool propagate) {
 		TileId::value id = getTileId(position + Direction::taxi[dir]);
 		if (id == TileId::ROCK_WALL) continue;
 		if (id == TileId::NONE || id >= tileId) continue;
+
+		uint frameCount = (id == TileId::WATER) ? 4 : 1;
+		uint frameDuration = 2000;
+		pair animationOffset(6, 0);
+
 		TileId::value left = getTileId(position + Direction::taxi[Direction::rotate(dir, 2)]);
 		TileId::value right = getTileId(position + Direction::taxi[Direction::rotate(dir, -2)]);
 		TileId::value opposite = getTileId(position + Direction::taxi[Direction::rotate(dir, 4)]);
@@ -125,14 +129,14 @@ void Map::updateStyle(pair position, bool propagate) {
 		// Straights
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(s++, variants[dir / 2]));
+			Sprite sprite = Sprite(Tile::spriteSheets[id], noise::choice<pair>(s++, variants[dir / 2]), pair(1,1), frameCount, frameDuration, 0, animationOffset);
 			sprites.emplace_back(id, sprite);
 		}
 
 		// Us
 		if (left == id && right == id && opposite != id) {
 			pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[dir / 2]);
+			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[dir / 2], pair(1,1), frameCount, frameDuration, 0, animationOffset);
 			sprites.emplace_back(id, sprite);
 		}
 	}
@@ -140,24 +144,31 @@ void Map::updateStyle(pair position, bool propagate) {
 	for (int dir = 2; dir < Direction::count; dir += 2) {
 		TileId::value id = getTileId(position + Direction::taxi[dir]);
 		if (!id || TileId::wall(id)) continue;
+
 		TileId::value left = getTileId(position + Direction::taxi[Direction::rotate(dir, 1)]);
 		TileId::value left2 = getTileId(position + Direction::taxi[Direction::rotate(dir, 3)]);
 		TileId::value right = getTileId(position + Direction::taxi[Direction::rotate(dir, -1)]);
 		TileId::value right2 = getTileId(position + Direction::taxi[Direction::rotate(dir, -3)]);
 
+		uint frameCount = (left == TileId::WATER) ? 4 : 1;
+		uint frameDuration = 2000;
+		pair animationOffset(6, 0);
+
 		// Curves
 		TileId::value curve = TileId::MAX;
 		if (!TileId::wall(left) && left < tileId && left == right && left2 != left && right2 != right) {
 			pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
-			Sprite sprite = Sprite(Tile::spriteSheets[left], variants[dir / 2 - 1]);
+			Sprite sprite = Sprite(Tile::spriteSheets[left], variants[dir / 2 - 1], pair(1,1), frameCount, frameDuration, 0, animationOffset);
 			sprites.emplace_back(left, sprite);
 			curve = left;
 		}
 
+		frameCount = (id == TileId::WATER) ? 4 : 1;
+
 		// Corners
 		if (id < tileId && left != id && right != id && id < curve) {
 			pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
-			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[dir / 2 - 1]);
+			Sprite sprite = Sprite(Tile::spriteSheets[id], variants[dir / 2 - 1], pair(1,1), frameCount, frameDuration, 0, animationOffset);
 			sprites.emplace_back(id, sprite);
 		}
 	}
@@ -167,8 +178,13 @@ void Map::updateStyle(pair position, bool propagate) {
 	TileId::value id2 = getTileId(position + Direction::taxi[3]);
 	TileId::value id3 = getTileId(position + Direction::taxi[5]);
 	TileId::value id4 = getTileId(position + Direction::taxi[7]);
+
+	uint frameCount = (id1 == TileId::WATER) ? 4 : 1;
+	uint frameDuration = 2000;
+	pair animationOffset(6, 0);
+
 	if (id1 < tileId && id1 != TileId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
-		Sprite sprite = Sprite(Tile::spriteSheets[id1], {4, 4});
+		Sprite sprite = Sprite(Tile::spriteSheets[id1], {4, 4}, pair(1,1), frameCount, frameDuration, 0, animationOffset);
 		sprites.emplace_back(id1, sprite);
 	}
 

@@ -4,13 +4,13 @@
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::spriteSheets = {};
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::outlineSpriteSheets = {};
 
-Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uchar frameCount, uint frameDuration, uint animationStart) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration), animationStart(animationStart) {}
+Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uchar frameCount, uint frameDuration, uint animationStart, pair animationOffset) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration), animationStart(animationStart), animationOffset(animationOffset) {}
 
 void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	if (!spriteSheet) return;
 	uint past = ticks - animationStart;
 	int frame = frameCount > 1 ? ((past / frameDuration) % frameCount) : 0;
-	pair offset(frame, 0);
+	pair offset = frame * animationOffset;
 	SDL_Texture* texture = style.outline ? outlineSpriteSheets[spriteSheet] : spriteSheets[spriteSheet];
 	pair dsize = vec::round(scale * BIT * vec(size));
 	TextureManager::drawTexture(texture, nullptr, BIT * (source + offset), BIT * size, position, dsize, style);

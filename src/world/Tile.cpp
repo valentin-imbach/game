@@ -17,8 +17,8 @@ std::array<SpriteSheet::value, TileId::count> Tile::spriteSheets = {
 	SpriteSheet::MUD,
 	SpriteSheet::ROCK,
 	SpriteSheet::GRAVEL,
-	SpriteSheet::SAND,
 	SpriteSheet::WATER,
+	SpriteSheet::SAND
 };
 
 std::array<uint, TileId::count> Tile::tileColours = {
@@ -31,8 +31,8 @@ std::array<uint, TileId::count> Tile::tileColours = {
 	0x59462eFF,
     0x635f5aFF,
 	0x75726dFF,
-	0xd9c771FF,
 	0x68c6d9FF,
+	0xd9c771FF
 };
 
 bool TileId::wall(value tileId) {

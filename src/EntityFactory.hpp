@@ -26,7 +26,6 @@ public:
 	static Entity createMonster(CreatureId::value creatureId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
 	static Entity createCrop(CropId::value cropId, Realm* realm, pair position);
-	static Entity createStation(StationId::value stationId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);
 	
 	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1);

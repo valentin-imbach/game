@@ -29,7 +29,7 @@ src/item/Loot.cpp
 src/item/Crafting.cpp
 src/ResourceTemplates.cpp
 src/EntityFactory.cpp
-src/Console.cpp
+src/Gui/Console.cpp
 src/ParticleSystem.cpp
 src/main.cpp)
 

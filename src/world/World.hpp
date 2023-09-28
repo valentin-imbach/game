@@ -13,10 +13,11 @@
 #include "Sprite.hpp"
 #include "RealmManager.hpp"
 #include "Minimap.hpp"
+#include "Time.hpp"
 
 class World {
 public:
-	World(std::string name, uint seed);
+	World(std::string name, uint seed, bool debug = false);
 	World(std::fstream& stream);
 
 	// void linkGrid(Entity entity, GridComponent& gridComponent) {
@@ -70,6 +71,10 @@ private:
 
 	std::unique_ptr<GuiElement> makeInventory();
 	std::unique_ptr<GuiElement> makeMenu();
+	std::unique_ptr<GuiElement> makeDeathScreen();
+
+	bool playerAlive = true;
+	void respawn();
 
 	std::vector<DrawCall> drawQueue;
 

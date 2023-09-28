@@ -40,7 +40,7 @@ private:
 	std::unique_ptr<Widget> pauseMenu;
 
 	void createButton();
-	void createWorld(std::string name, uint seed);
+	void createWorld(std::string name, uint seed, bool debug = false);
 	void removeWorld(std::string name);
 	void loadWorld(std::string name);
 	void saveWorld();

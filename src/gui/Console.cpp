@@ -95,10 +95,19 @@ bool Console::execute(std::string input) {
 		ecs.getComponent<PositionComponent>(player).position = vec(x, y);
 	} else if (inputs[0] == "place") {
 		if (inputs.size() < 2) return false;
-		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
-		if (!player || !resourceId) return false;
+		if (!player) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm, position);
+		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
+		if (resourceId) {
+			Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm, position);
+			return true;
+		}
+		StationId::value stationId = StationId::from_string(inputs[1]);
+		if (stationId) {
+			Entity station = EntityFactory::createStation(stationId, game->world->playerRealm, position);
+			return true;
+		}
+		return false;
 	} else if (inputs[0] == "cows") {
 		if (inputs.size() < 2 || !player) return false;
 		int n = std::stoi(inputs[1]);

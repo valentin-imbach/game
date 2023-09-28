@@ -14,8 +14,8 @@ RESOURCES,
 ITEMS,
 COW,
 ROCK,
-SAND,
 WATER,
+SAND,
 INVENTORY,
 CHEST,
 HOTBAR,
@@ -46,7 +46,7 @@ BANNER)
 
 class Sprite {
 public:
-	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0);
+	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0, pair animationOffset = {1,0});
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	static void loadSpriteSheets();
 	operator bool() {
@@ -60,6 +60,7 @@ private:
 	uchar frameCount;
 	uchar frameDuration;
 	uint animationStart;
+	pair animationOffset;
 	static std::array<SDL_Texture*, SpriteSheet::count> spriteSheets;
 	static std::array<SDL_Texture*, SpriteSheet::count> outlineSpriteSheets;
 
