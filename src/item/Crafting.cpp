@@ -141,7 +141,7 @@ bool CraftingKindIngredient::check(Entity item) {
 	if (EntityFactory::world->ecs.hasComponent<ItemKindComponent>(item)) {
 		return EntityFactory::world->ecs.getComponent<ItemKindComponent>(item).itemKinds[itemKind];
 	}
-	return (itemComponent.itemId && ItemTemplate::templates[itemComponent.itemId]->kinds[itemKind]);
+	return (itemComponent.itemId && ItemTemplate::templates[itemComponent.itemId].kinds[itemKind]);
 }
 
 Entity CraftingKindIngredient::take(Entity item) {

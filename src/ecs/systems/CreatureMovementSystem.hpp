@@ -17,7 +17,8 @@ public:
 
 			vec newPosition = positionComponent.position;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			float speed = movementComponent.speed * TileId::speedMul(realm->map->getTileId(vec::round(positionComponent.position)));
+			TileId::value tileId = realm->map->getTileId(vec::round(positionComponent.position));
+			float speed = movementComponent.speed * TileTemplate::templates[tileId].speed;
 
 			if (creatureStateComponent.state == CreatureState::WALKING) {
 				newPosition += dt * speed * Direction::unit[directionComponent.direction] / 1000;

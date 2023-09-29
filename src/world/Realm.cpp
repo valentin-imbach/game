@@ -35,8 +35,8 @@ void Realm::generateWorld(pair size) {
 			pair position(x, y);
 			Biome::value biome = environment->getBiome(position);
 			int variation = environment->variationMap->get(position);
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
-			map->tiles[x][y] = std::make_unique<Tile>(ground->tileId);
+			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
+			map->tiles[x][y] = std::make_unique<Tile>(ground.tileId);
 		}
 	}
 
@@ -48,8 +48,8 @@ void Realm::generateWorld(pair size) {
 			int variation = environment->variationMap->get(position);
 			int vegetation = environment->vegetationMap->get(position);
 			int choice = noise::Int(s++, 0, 50 + vegetation);
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
-			for (auto& p : ground->resources) {
+			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
+			for (auto& p : ground.resources) {
 				choice -= p.second;
 				if (choice < 0) {
 					Entity resource = EntityFactory::createResource(p.first, this, position);
@@ -154,8 +154,8 @@ void Realm::generateCave(int count, int length) {
 			int variation = environment->variationMap->get(position);
 			int vegetation = environment->vegetationMap->get(position);
 			int choice = noise::Int(s++, 0, 50 + vegetation);
-			BiomeGroundTemplate* ground = BiomeTemplate::templates[biome]->getGround(variation);
-			for (auto& p : ground->resources) {
+			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
+			for (auto& p : ground.resources) {
 				choice -= p.second;
 				if (choice < 0) {
 					Entity resource = EntityFactory::createResource(p.first, this, position);
@@ -221,7 +221,7 @@ bool Realm::free(pair anker, pair size) {
 		for (int y = 0; y < size.y; y++) {
 			pair pos = anker + pair(x, y);
 			if (gridMap.find(pos) != gridMap.end()) return false;
-			if (!map->getTileId(pos) || TileId::wall(map->getTileId(pos))) return false;
+			if (!map->getTileId(pos) || TileTemplate::templates[map->getTileId(pos)].wall) return false;
 		}
 	}
 	return true;
@@ -229,7 +229,7 @@ bool Realm::free(pair anker, pair size) {
 
 bool Realm::walkable(pair position) {
 	TileId::value tileId = map->getTileId(position);
-	if (!TileId::walkable(tileId)) return false;
+	if (!TileTemplate::templates[tileId].walk) return false;
 	if (solidMap.find(position) != solidMap.end()) return false;
 	return true;
 }

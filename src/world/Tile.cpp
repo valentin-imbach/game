@@ -1,57 +1,43 @@
 
 #include "Tile.hpp"
 #include "Sprite.hpp"
+#include "Window.hpp"
+#include "json.hpp"
 
-Tile::Tile(TileId::value tileId)
-	: tileId(tileId) {
+std::array<TileTemplate, TileId::count> TileTemplate::templates = {};
+
+Tile::Tile(TileId::value tileId) : tileId(tileId) {
 	sprites = std::vector<std::pair<TileId::value, Sprite>>();
 }
 
-std::array<SpriteSheet::value, TileId::count> Tile::spriteSheets = {
-	SpriteSheet::NONE,
-	SpriteSheet::ROCK_WALL,
-	SpriteSheet::PLANKS,
-	SpriteSheet::GRASS,
-	SpriteSheet::SOIL,
-	SpriteSheet::DIRT,
-	SpriteSheet::MUD,
-	SpriteSheet::ROCK,
-	SpriteSheet::GRAVEL,
-	SpriteSheet::WATER,
-	SpriteSheet::SAND
-};
+void TileTemplate::setTemplates() {
+	std::ifstream file(Window::instance->root / "json/Tiles.json");
+	if (!file) ERROR("File not found");
+	nlohmann::json data = nlohmann::json::parse(file);
+	file.close();
 
-std::array<uint, TileId::count> Tile::tileColours = {
-	0x00000000,
-	0x000000FF,
-	0xb89b65FF,
-	0x4db349FF,
-	0x605136FF,
-	0x786146FF,
-	0x59462eFF,
-    0x635f5aFF,
-	0x75726dFF,
-	0x68c6d9FF,
-	0xd9c771FF
-};
+	for (auto &[key, value] : data.items()) {
+		TileId::value tileId = TileId::from_string(key);
+		if (!tileId) {
+			WARNING("Unrecognised Tile:", key);
+			continue;
+		}
 
-bool TileId::wall(value tileId) {
-	if (tileId == ROCK_WALL) return true;
-	return false;
-}
-
-bool TileId::liquid(value tileId) {
-	if (tileId == WATER) return true;
-	return false;
-}
-
-float TileId::speedMul(value tileId) {
-	if (tileId == GRASS || tileId == DIRT || tileId == SOIL) return 0.9f;
-	if (tileId == SAND || tileId == GRAVEL) return 0.8f;
-	if (tileId == MUD) return 0.7f;
-	return 1.0f;
-}
-
-bool TileId::walkable(value tileId) {
-	return tileId && !wall(tileId) && !liquid(tileId);
+		if (value.contains("sprite")) templates[tileId].spriteSheet = SpriteSheet::from_string(value["sprite"]);
+		if (value.contains("colour")) {
+			uint r = value["colour"][0];
+			uint g = value["colour"][1];
+			uint b = value["colour"][2];
+			uint a = value["colour"][3];
+			LOG(r,g,b,a);
+			templates[tileId].colour = (r << 24) | (g << 16) | (b << 8) | a;
+			LOG(templates[tileId].colour);
+		}
+		if (value.contains("walk")) templates[tileId].walk = value["walk"];
+		if (value.contains("build")) templates[tileId].build = value["build"];
+		if (value.contains("liquid")) templates[tileId].liquid = value["liquid"];
+		if (value.contains("speed")) templates[tileId].speed = value["speed"];
+		if (value.contains("frames")) templates[tileId].frames = value["frames"];
+		if (value.contains("wall")) templates[tileId].wall = value["wall"];
+	}
 }

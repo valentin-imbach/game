@@ -15,19 +15,25 @@ GRAVEL,
 WATER,
 SAND)
 
-namespace TileId {
-	bool wall(value tileId);
-	bool liquid(value tileId);
-	float speedMul(value tileId);
-	bool walkable(value tileId);
-}
+struct TileTemplate {
+	TileId::value tileId = TileId::NONE;
+	SpriteSheet::value spriteSheet = SpriteSheet::NONE;
+	uint colour = 0;
+	float speed = 1.0f;
+	uint frames = 1;
+	bool build = true;
+	bool walk = true;
+	bool liquid = false;
+	bool wall = false;
+
+	static void setTemplates();
+	static std::array<TileTemplate, TileId::count> templates;
+};
 
 class Tile {
 public:
 	Tile(TileId::value tileId);
 	TileId::value tileId;
 	std::vector<std::pair<TileId::value, Sprite>> sprites;
-	static std::array<SpriteSheet::value, TileId::count> spriteSheets;
-	static std::array<uint, TileId::count> tileColours;
 };
 

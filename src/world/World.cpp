@@ -27,6 +27,7 @@ void World::init() {
 	CraftingKindRecipe::setRecipes();
 	BuildKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
+	TileTemplate::setTemplates();
 
 	guiManager.world = this;
 	EntityFactory::world = this;

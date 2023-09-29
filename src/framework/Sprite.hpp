@@ -58,7 +58,7 @@ private:
 	pair source;
 	pair size;
 	uchar frameCount;
-	uchar frameDuration;
+	ushort frameDuration;
 	uint animationStart;
 	pair animationOffset;
 	static std::array<SDL_Texture*, SpriteSheet::count> spriteSheets;

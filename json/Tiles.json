@@ -1,0 +1,56 @@
+{
+	"rock_wall": {
+		"sprite": "rock_wall",
+		"colour": [0 ,0, 0, 255],
+		"wall": true,
+		"walk": false,
+		"build": false
+	},
+	"planks": {
+		"sprite": "planks",
+		"colour": [184, 155, 101, 255]
+	},
+	"grass": {
+		"sprite": "grass",
+		"colour": [77, 179, 73, 255],
+		"speed": 0.9
+	},
+	"soil": {
+		"sprite": "soil",
+		"colour": [96, 81, 54, 255],
+		"speed": 0.9,
+		"soil": true
+	},
+	"dirt": {
+		"sprite": "dirt",
+		"colour": [120, 97, 70, 255],
+		"speed": 0.9
+	},
+	"mud": {
+		"sprite": "mud",
+		"colour": [89, 70, 46, 255],
+		"speed": 0.7
+	},
+	"rock": {
+		"sprite": "rock",
+		"colour": [99, 95, 90, 255]
+	},
+	"gravel": {
+		"sprite": "gravel",
+		"colour": [117, 114, 109, 255],
+		"speed": 0.8
+	},
+	"water": {
+		"sprite": "water",
+		"colour": [104, 198, 217, 255],
+		"walk": false,
+		"build": false,
+		"frames": 4,
+		"liquid": true
+	},
+	"sand": {
+		"sprite": "sand",
+		"colour": [217, 199, 113, 255],
+		"speed": 0.8
+	}
+}

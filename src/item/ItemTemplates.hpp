@@ -8,28 +8,25 @@ using ItemKindBitset = std::bitset<ItemKind::count>;
 using ItemProperties = std::unordered_map<ItemProperty::value, uchar>;
 
 struct ItemPropertyTemplate {
-	std::string name;
-	ItemPropertyTemplate(std::string name) : name(name) {}
+	std::string name = "?";
 
-	static std::array<std::unique_ptr<ItemPropertyTemplate>, ItemProperty::count> templates;
+	static std::array<ItemPropertyTemplate, ItemProperty::count> templates;
 	static void setTemplates();
 };
 
 struct ItemKindTemplate {
-	std::string name;
+	std::string name = "?";
 	ItemPropertyBitset properties;
-	ItemKindTemplate(std::string name, ItemPropertyBitset properties) : name(name), properties(properties) {}
 
-	static std::array<std::unique_ptr<ItemKindTemplate>, ItemKind::count> templates;
+	static std::array<ItemKindTemplate, ItemKind::count> templates;
 	static void setTemplates();
 };
 
 struct ItemTemplate {
-	std::string name;
+	std::string name = "?";
 	ItemKindBitset kinds;
 	std::unordered_map<ItemProperty::value, int> properties;
-	ItemTemplate(std::string name, ItemKindBitset kinds) : name(name), kinds(kinds) {}
 
-	static std::array<std::unique_ptr<ItemTemplate>, ItemId::count> templates;
+	static std::array<ItemTemplate, ItemId::count> templates;
 	static void setTemplates();
 };

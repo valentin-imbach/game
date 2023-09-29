@@ -103,15 +103,15 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 				for (uint kind = 1; kind <= ItemKind::count; kind++) {
 					if (!itemKindComponent.itemKinds[kind]) continue;
 					icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
-					ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
-					std::string kindText = "   " + itemKindTemplate->name;
+					ItemKindTemplate& itemKindTemplate = ItemKindTemplate::templates[kind];
+					std::string kindText = "   " + itemKindTemplate.name;
 					texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
 					pos.y += spacing;
 					for (uint property = 1; property <= ItemProperty::count; property++) {
-						if (!itemKindTemplate->properties[property]) continue;
-						ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
+						if (!itemKindTemplate.properties[property]) continue;
+						ItemPropertyTemplate& itempPropertyTemplate = ItemPropertyTemplate::templates[property];
 						int value = itemKindComponent.itemProperties[property];
-						std::string propertyText = itempPropertyTemplate->name + ": " + std::to_string(value);
+						std::string propertyText = itempPropertyTemplate.name + ": " + std::to_string(value);
 						texts.emplace_back(Text(propertyText, TTF_STYLE_NORMAL), pos);
 						pos.y += spacing;
 					}
@@ -123,28 +123,28 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 		}
 		
 	} else {
-		ItemTemplate* itemTemplate = ItemTemplate::templates[itemComponent.itemId].get();
+		ItemTemplate& itemTemplate = ItemTemplate::templates[itemComponent.itemId];
 		if (elaborate) {
-			texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_UNDERLINE), pos);
+			texts.emplace_back(Text(itemTemplate.name, TTF_STYLE_UNDERLINE), pos);
 			pos.y += spacing;
 			for (uint kind = 1; kind <= ItemKind::count; kind++) {
-				if (!itemTemplate->kinds[kind]) continue;
+				if (!itemTemplate.kinds[kind]) continue;
 				icons.emplace_back(pair((kind - 1) % 8, (kind - 1) / 8), pos);
-				ItemKindTemplate* itemKindTemplate = ItemKindTemplate::templates[kind].get();
-				std::string kindText = "   " + itemKindTemplate->name;
+				ItemKindTemplate& itemKindTemplate = ItemKindTemplate::templates[kind];
+				std::string kindText = "   " + itemKindTemplate.name;
 				texts.emplace_back(Text(kindText, TTF_STYLE_BOLD), pos);
 				pos.y += spacing;
 				for (uint property = 1; property <= ItemProperty::count; property++) {
-					if (!itemKindTemplate->properties[property]) continue;
-					ItemPropertyTemplate* itempPropertyTemplate = ItemPropertyTemplate::templates[property].get();
-					int value = itemTemplate->properties[ItemProperty::from_int(property)];
-					std::string propertyText = itempPropertyTemplate->name + ": " + std::to_string(value);
+					if (!itemKindTemplate.properties[property]) continue;
+					ItemPropertyTemplate& itempPropertyTemplate = ItemPropertyTemplate::templates[property];
+					int value = itemTemplate.properties[ItemProperty::from_int(property)];
+					std::string propertyText = itempPropertyTemplate.name + ": " + std::to_string(value);
 					texts.emplace_back(Text(propertyText, TTF_STYLE_NORMAL), pos);
 					pos.y += spacing;
 				}
 			}
 		} else {
-			texts.emplace_back(Text(itemTemplate->name, TTF_STYLE_NORMAL), pos);
+			texts.emplace_back(Text(itemTemplate.name, TTF_STYLE_NORMAL), pos);
 		}
 	}
 
@@ -204,7 +204,7 @@ bool hasItemKind(Entity item, ItemKind::value itemKind) {
 	} else if (EntityFactory::world->ecs.hasComponent<ItemComponent>(item)) {
 		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 		if (!itemComponent.itemId) return false;
-		return ItemTemplate::templates[itemComponent.itemId]->kinds[itemKind];
+		return ItemTemplate::templates[itemComponent.itemId].kinds[itemKind];
 	}
 	return false;
 }
@@ -215,7 +215,7 @@ int getItemProperty(Entity item, ItemProperty::value itemProperty) {
 	} else if (EntityFactory::world->ecs.hasComponent<ItemComponent>(item)) {
 		ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 		if (!itemComponent.itemId) return 0;
-		return ItemTemplate::templates[itemComponent.itemId]->properties[itemProperty];
+		return ItemTemplate::templates[itemComponent.itemId].properties[itemProperty];
 	}
 	return 0;
 }

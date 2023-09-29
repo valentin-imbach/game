@@ -72,23 +72,23 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 }
 
 Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm, pair position) {
-	if (!resourceId || !ResourceTemplate::templates[resourceId]) return 0;
-	ResourceTemplate* resourceTemplate = ResourceTemplate::templates[resourceId].get();
+	if (!resourceId) return 0;
+	ResourceTemplate& resourceTemplate = ResourceTemplate::templates[resourceId];
 
-	Entity resource = createStaticEntity(realm, position, resourceTemplate->size, resourceTemplate->solid, resourceTemplate->opaque);
+	Entity resource = createStaticEntity(realm, position, resourceTemplate.size, resourceTemplate.solid, resourceTemplate.opaque);
 	if (!resource) return 0;
 
 	SpriteStack spriteStack;
-	for (SpriteTemplate& sprite : resourceTemplate->spriteTemplates) {
+	for (SpriteTemplate& sprite : resourceTemplate.spriteTemplates) {
 		uint var = noise::Int(seed++, 0, sprite.variations);
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
 		spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, sprite.size}, sprite.offset);
 	}
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, resource);
 
-	world->ecs.addComponent<ResourceComponent>({resourceTemplate->toolId, resourceTemplate->sound, resourceTemplate->level}, resource);
-	world->ecs.addComponent<LootComponent>({resourceTemplate->lootTable}, resource);
-	world->ecs.addComponent<HealthComponent>({resourceTemplate->health, resourceTemplate->health}, resource);
+	world->ecs.addComponent<ResourceComponent>({resourceTemplate.toolId, resourceTemplate.sound, resourceTemplate.level}, resource);
+	world->ecs.addComponent<LootComponent>({resourceTemplate.lootTable}, resource);
+	world->ecs.addComponent<HealthComponent>({resourceTemplate.health, resourceTemplate.health}, resource);
 	// if (6 <= resourceId && resourceId <= 10) {
 	// 	world->ecs.addComponent<MaturityComponent>({world->ticks, 10000, 5}, resource);
 	// }

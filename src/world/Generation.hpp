@@ -16,19 +16,16 @@ RAINFOREST,
 MOUNTAIN)
 
 struct BiomeGroundTemplate {
-	BiomeGroundTemplate(TileId::value tileId);
-	TileId::value tileId;
+	TileId::value tileId = TileId::NONE;
 	std::vector<std::pair<ResourceId::value, int>> resources;
 };
 
-class BiomeTemplate {
-public:
-	BiomeTemplate(std::string name);
-	BiomeGroundTemplate* getGround(int variation);
+struct BiomeTemplate {
+	std::string name = "?";
+	std::vector<BiomeGroundTemplate> grounds;
 
-	static std::array<std::unique_ptr<BiomeTemplate>, Biome::count> templates;
+	BiomeGroundTemplate& getGround(int variation);
+
+	static std::array<BiomeTemplate, Biome::count> templates;
 	static void setTemplates();
-private:
-	std::string name;
-	std::vector<std::unique_ptr<BiomeGroundTemplate>> grounds;
 };
