@@ -53,7 +53,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, player);
-	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, player);
+	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, player);
 
 	world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, player);
 	Inventory equipment({3,4});
@@ -125,7 +125,7 @@ Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, 
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, monster);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, monster);
-	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, monster);
+	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, monster);
 
 	world->ecs.addComponent<SensorComponent>({10}, monster);
 	world->ecs.addComponent<AiComponent>({}, monster);
@@ -155,7 +155,7 @@ Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, v
 
 	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
-	world->ecs.addComponent<ParticleComponent>({ParticleSystem::DIRT}, animal);
+	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, animal);
 
 	world->ecs.addComponent<SensorComponent>({5}, animal);
 	world->ecs.addComponent<AiComponent>({}, animal);
@@ -211,7 +211,7 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 		SpriteStack fireSprites;
 		fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
 		world->ecs.addComponent<SpriteComponent>({fireSprites}, station);
-		world->ecs.addComponent<ParticleComponent>({ParticleSystem::SMOKE}, station);
+		world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::SMOKE]}, station);
 		world->ecs.addComponent<LightComponent>({true, 3, {255, 0, 0, 255}, 3, 0.2f}, station);
 		return station;
 	}

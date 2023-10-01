@@ -57,6 +57,9 @@ public:
 	RealmManager realmManager;
 	Realm* playerRealm;
 
+	Realm* spawnRealm;
+	pair spawn;
+
 	Time time;
 	bool colliderDraw = true;
 

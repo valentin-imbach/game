@@ -36,9 +36,9 @@ void World::init() {
 World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
 	init();
 
-	Realm* realm = realmManager.addRealm(this, noise::UInt(seed + 1));
-	pair spawn = realm->findFree(pair(50,50));
-	Entity player = EntityFactory::createPlayer(realm, spawn);
+	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
+	spawn = spawnRealm->findFree(pair(50,50));
+	Entity player = EntityFactory::createPlayer(spawnRealm, spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -47,18 +47,18 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 		Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2), RealmType::HOUSE);
 		Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3), RealmType::CAVE);
 
-		Entity dam = EntityFactory::createDamageArea(realm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
+		Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
 		
 		//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 
 		// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
 		// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
 
-		EntityFactory::createCrop(CropId::PARSNIP, realm, spawn + pair(1, -1));
+		EntityFactory::createCrop(CropId::PARSNIP, spawnRealm, spawn + pair(1, -1));
 
 		//LOG(ecs.getComponent<PositionComponent>(player).chunk);
 
-		EntityFactory::createMonster(CreatureId::MONSTER, realm, realm->findFree(pair(55,55)));
+		EntityFactory::createMonster(CreatureId::MONSTER, spawnRealm, spawnRealm->findFree(pair(55,55)));
 
 		Entity axe = ecs.createEntity();
 		SpriteStack axeSprites;
@@ -347,7 +347,7 @@ void World::update(uint dt) {
 	creatureAnimationSystem->update(ticks);
 
 	inventoryDeathSystem->update(ticks, realmManager);
-	deathSystem->update(realmManager);
+	deathSystem->update(realmManager, particleSystem);
 
 	creatureParticleSystem->update();
 	particleEmitSystem->update(particleSystem, ticks);
@@ -464,13 +464,12 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 }
 
 void World::respawn() {
-	LOG("respawn");
+	Entity player = EntityFactory::createPlayer(spawnRealm, spawn);
+	LOG("Player Respawned");
 }
 
 std::unique_ptr<GuiElement> World::makeDeathScreen() {
-	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
-	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
-	Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
+	Sprite sprite = Sprite(SpriteSheet::DEATH_SCREEN, {0, 0}, {10, 10});
 	std::unique_ptr<Widget> widget = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 	widget->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(70, 50), std::bind(&World::respawn, this), Sprite(), Sprite(), "Respawn"));
 	return widget;

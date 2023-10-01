@@ -4,26 +4,41 @@
 #include "Sprite.hpp"
 #include "Camera.hpp"
 
+ENUM(ParticleId,
+	DIRT,
+	SMOKE,
+	DEATH
+);
+
 struct ParticleStyle {
-	Sprite sprite;
-	vec positionOffset = {0,0};
-	vec positionVariance = {0,0};
-	vec velocity, velocityVariance = {0,0};
-	vec acceleration = {0,0};
-	float alphaStart = 1, alphaEnd = 1;
-	
-	float scale = 1, scaleVariance = 0;
+	pair source = {0, 0};
+	vec positionOffset = {0, 0};
+	vec positionVariance = {0, 0};
+	vec velocity = {0, 0};
+	vec velocityVariance = {0, 0};
+	vec acceleration = {0, 0};
+	float alphaStart = 1;
+	float alphaEnd = 1;
+	float scale = 1;
+	float scaleVariance = 0;
 	uint lifeSpan = 1000;
+
+	static void setTemplates();
+	static std::array<ParticleStyle, ParticleId::count> templates;
 };
 
 struct Particle {
 	Sprite sprite;
 	float scale;
-	vec position, velocity, acceleration;
+	vec position;
+	vec velocity;
+	vec acceleration;
 	RealmId realmId;
-	uint lifeSpan, age;
+	uint lifeSpan;
+	uint age;
 	bool active = false;
-	float alphaStart, alphaEnd;
+	float alphaStart;
+	float alphaEnd;
 
 	void update(uint dt);
 	void draw(Camera camera);
@@ -37,13 +52,11 @@ public:
 	void draw(Camera camera);
 	void emit(ParticleStyle& style, vec position, RealmId realmId);
 
-	static ParticleStyle DIRT;
-	static ParticleStyle SMOKE;
-
 	int activeCount;
 
 private:
-	int number, index;
+	int number;
+	int index;
 	uint seed;
 	std::vector<Particle> pool;
 };

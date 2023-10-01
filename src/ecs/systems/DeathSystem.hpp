@@ -6,13 +6,19 @@
 
 class DeathSystem : public System {
 public:
-	void update(RealmManager& realmManager) {
+	void update(RealmManager& realmManager, ParticleSystem& particleSystem) {
 		EntitySet copy(entities);
 		for (Entity entity : copy) {
 			if (ecs->hasComponent<PositionComponent>(entity)) {
 				PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 				Realm* realm = realmManager.getRealm(positionComponent.realmId);
 				realm->unlinkChunk(entity, positionComponent.chunk);
+
+				if (ecs->hasComponent<CreatureStateComponent>(entity)) {
+					for (int i = 0; i < 10; i++) {
+						particleSystem.emit(ParticleStyle::templates[ParticleId::DEATH], positionComponent.position, positionComponent.realmId);
+					}
+				}
 			}
 
 			if (ecs->hasComponent<GridComponent>(entity)) {

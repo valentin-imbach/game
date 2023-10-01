@@ -1,0 +1,35 @@
+{
+	"dirt": {
+		"source": [0, 0],
+		"velocity": [0, -1],
+		"scale": 0.5,
+		"positionVariance": [0.2, 0],
+		"velocityVariance": [1, 0.2],
+		"acceleration": [0,3],
+		"lifespan": 500,
+		"alphaEnd": 0
+	},
+
+	"smoke": {
+		"source": [1, 0],
+		"velocity": [0, -1],
+		"scale": 0.5,
+		"scaleVariance": 0.2,
+		"positionVariance": [0.2, 0.1],
+		"velocityVariance": [0, 0.1],
+		"lifespan": 700,
+		"alphaEnd": 0,
+		"positionOffset": [0, -0.5]
+	},
+
+	"death": {
+		"source": [0, 1],
+		"velocity": [0, -1],
+		"scale": 0.5,
+		"scaleVariance": 0.2,
+		"positionVariance": [0.3, 0.1],
+		"velocityVariance": [0, 0.1],
+		"lifespan": 700,
+		"alphaEnd": 0
+	}
+}

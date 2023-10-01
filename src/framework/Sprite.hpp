@@ -42,7 +42,8 @@ ROCK_WALL,
 HOE,
 SOIL,
 CROPS,
-BANNER)
+BANNER,
+DEATH_SCREEN)
 
 class Sprite {
 public:

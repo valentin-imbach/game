@@ -4,9 +4,9 @@
 #include "ECS.hpp"
 #include "Window.hpp"
 #include "random.hpp"
+#include "json.hpp"
 
-ParticleStyle ParticleSystem::DIRT;
-ParticleStyle ParticleSystem::SMOKE;
+std::array<ParticleStyle, ParticleId::count> ParticleStyle::templates = {};
 
 void Particle::update(uint dt) {
 	age += dt;
@@ -25,27 +25,36 @@ void Particle::draw(Camera camera) {
 	sprite.draw(camera.screenPosition(position), camera.zoom * scale, style);
 }
 
+void ParticleStyle::setTemplates() {
+	std::ifstream file(Window::instance->root / "json/Particles.json");
+	if (!file) ERROR("File not found");
+	nlohmann::json data = nlohmann::json::parse(file);
+	file.close();
+
+	for (auto &[key, value] : data.items()) {
+		ParticleId::value particleId = ParticleId::from_string(key);
+		if (!particleId) {
+			WARNING("Unrecognised Resource:", key);
+			continue;
+		}
+
+		if (value.contains("source")) templates[particleId].source = pair(value["source"][0], value["source"][1]);
+		if (value.contains("positionOffset")) templates[particleId].positionOffset = pair(value["positionOffset"][0], value["positionOffset"][1]);
+		if (value.contains("positionVariance")) templates[particleId].positionVariance = pair(value["positionVariance"][0], value["positionVariance"][1]);
+		if (value.contains("velocity")) templates[particleId].velocity = pair(value["velocity"][0], value["velocity"][1]);
+		if (value.contains("velocityVariance")) templates[particleId].velocityVariance = pair(value["velocityVariance"][0], value["velocityVariance"][1]);
+		if (value.contains("acceleration")) templates[particleId].acceleration = pair(value["acceleration"][0], value["acceleration"][1]);
+		if (value.contains("alphaStart")) templates[particleId].alphaStart = value["alphaStart"];
+		if (value.contains("alphaEnd")) templates[particleId].alphaEnd = value["alphaEnd"];
+		if (value.contains("scale")) templates[particleId].scale = value["scale"];
+		if (value.contains("scaleVariance")) templates[particleId].scaleVariance = value["scaleVariance"];
+		if (value.contains("lifeSpan")) templates[particleId].lifeSpan = value["lifeSpan"];
+	}
+}
+
 ParticleSystem::ParticleSystem(int number) : number(number), index(number - 1), seed(123) {
 	pool.resize(number);
-
-	DIRT.sprite = Sprite(SpriteSheet::PARTICLES, {0, 0});
-	DIRT.velocity = {0, -1};
-	DIRT.scale = 0.5f;
-	DIRT.positionVariance = {0.2, 0};
-	DIRT.velocityVariance = {1 , 0.2};
-	DIRT.acceleration.y = 3;
-	DIRT.lifeSpan = 500;
-	DIRT.alphaEnd = 0;
-
-	SMOKE.sprite = Sprite(SpriteSheet::PARTICLES, {1, 0});
-	SMOKE.scale = 0.5f;
-	SMOKE.velocity = {0, -1};
-	SMOKE.positionVariance = {0.2, 0.1};
-	SMOKE.velocityVariance = {0 , 0.1};
-	SMOKE.lifeSpan = 700;
-	SMOKE.positionOffset = {0, -0.5f};
-	SMOKE.alphaEnd = 0;
-	SMOKE.scaleVariance = 0.2;
+	ParticleStyle::setTemplates();
 }
 
 void ParticleSystem::update(uint dt) {
@@ -68,7 +77,7 @@ void ParticleSystem::emit(ParticleStyle& style, vec position, RealmId realmId) {
 	Particle& particle = pool[index];
 	index = (index == 0) ? (number - 1) : index - 1;
 
-	particle.sprite = style.sprite;
+	particle.sprite = Sprite(SpriteSheet::PARTICLES, style.source);
 	particle.scale = style.scale + noise::Float(seed++, -style.scaleVariance, style.scaleVariance);
 
 	particle.realmId = realmId;

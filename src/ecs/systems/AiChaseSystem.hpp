@@ -40,20 +40,28 @@ public:
 			pair start = vec::round(positionComponent.position);
 			pair end = vec::round(aiChaseComponent.target);
 			vec offset = positionComponent.position - start;
-			//LOG(start, end);
-			auto lambda = [realm](pair pos){ return realm->walkable(pos); };
-			Direction::value dir = ai::find_direction(start, end, lambda, true);
-	
-			if (dir) {
-				pair step = start + Direction::taxi[dir];
-				pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
-				pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
-				if (!realm->walkable(left) && vec::dot(left-step, offset) > 0.1) {
-					directionComponent.direction = Direction::rotate(dir, 7);
-				} else if (!realm->walkable(right) && vec::dot(right - step, offset) > 0.1) {
-					directionComponent.direction = Direction::rotate(dir, 1);
-				} else {
-					directionComponent.direction = dir;
+
+			Direction::value dir;
+			if (start == end) {
+				vec v = aiChaseComponent.target - positionComponent.position;
+				if (vec::norm(v) > 0.1f) {
+					dir = Direction::from_vec(v);
+				}
+			} else {
+				auto lambda = [realm](pair pos){ return realm->walkable(pos); };
+				dir = ai::find_direction(start, end, lambda, true);
+		
+				if (dir) {
+					pair step = start + Direction::taxi[dir];
+					pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
+					pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
+					if (!realm->walkable(left) && vec::dot(left-step, offset) > 0.1) {
+						directionComponent.direction = Direction::rotate(dir, 7);
+					} else if (!realm->walkable(right) && vec::dot(right - step, offset) > 0.1) {
+						directionComponent.direction = Direction::rotate(dir, 1);
+					} else {
+						directionComponent.direction = dir;
+					}
 				}
 			}
 

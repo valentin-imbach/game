@@ -13,7 +13,6 @@ public:
 
 			if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
 				particleComponent.active = true;
-				particleComponent.style = ParticleSystem::DIRT;
 			} else {
 				particleComponent.active = false;
 			}
