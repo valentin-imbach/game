@@ -4,14 +4,17 @@
 #include "Window.hpp"
 #include <fstream>
 
-std::array<ItemPropertyTemplate, ItemProperty::count> ItemPropertyTemplate::templates;
-std::array<ItemKindTemplate, ItemKind::count> ItemKindTemplate::templates;
-std::array<ItemTemplate, ItemId::count> ItemTemplate::templates;
+std::array<ItemPropertyTemplate, ItemProperty::count> ItemPropertyTemplate::templates = {};
+std::array<ItemKindTemplate, ItemKind::count> ItemKindTemplate::templates = {};
+std::array<ItemTemplate, ItemId::count> ItemTemplate::templates = {};
 
 void ItemPropertyTemplate::setTemplates() {
 	std::ifstream file(Window::instance->root / "json/ItemProperties.json");
 	if (!file) ERROR("File not found");
 	nlohmann::json data = nlohmann::json::parse(file);
+    file.close();
+
+    ItemPropertyTemplate::templates = {};
 
 	for (auto& [key, value] : data.items()) {
         ItemProperty::value property = ItemProperty::from_string(key);
@@ -29,6 +32,8 @@ void ItemKindTemplate::setTemplates() {
 	if (!file) ERROR("File not found");
 	nlohmann::json data = nlohmann::json::parse(file);
     file.close();
+
+    ItemKindTemplate::templates = {};
 
 	for (auto& [key, value] : data.items()) {
         ItemKind::value kind = ItemKind::from_string(key);
@@ -54,6 +59,8 @@ void ItemTemplate::setTemplates() {
 	if (!file) ERROR("File not found");
 	nlohmann::json data = nlohmann::json::parse(file);
     file.close();
+
+    ItemTemplate::templates = {};
 
 	for (auto& [key, value] : data.items()) {
         ItemId::value id = ItemId::from_string(key);

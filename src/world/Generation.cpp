@@ -16,6 +16,8 @@ void BiomeTemplate::setTemplates() {
 	nlohmann::json data = nlohmann::json::parse(file);
 	file.close();
 
+	BiomeTemplate::templates = {};
+
 	for (auto& [biome_key, biome_value] : data.items()) {
         Biome::value biome = Biome::from_string(biome_key);
         if (!biome) {

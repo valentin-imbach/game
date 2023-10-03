@@ -143,8 +143,13 @@ struct LightComponent {
 	float flickerAmplitude = 0;
 };
 
+struct TagComponent {
+	std::bitset<EntityTag::count> tags;
+};
+
 struct SensorComponent {
 	int radius;
+	EntityTag::value tag;
 	bool engaged = false;
 	vec position = {0, 0};
 	uint lastSeen = 0;

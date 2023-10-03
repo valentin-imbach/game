@@ -16,6 +16,8 @@ void TileTemplate::setTemplates() {
 	nlohmann::json data = nlohmann::json::parse(file);
 	file.close();
 
+	TileTemplate::templates = {};
+
 	for (auto &[key, value] : data.items()) {
 		TileId::value tileId = TileId::from_string(key);
 		if (!tileId) {

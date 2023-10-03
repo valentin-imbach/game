@@ -68,6 +68,10 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	world->ecs.addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
 
+	TagComponent tagComponent = {};
+	tagComponent.tags.set(EntityTag::PLAYER);
+	world->ecs.addComponent<TagComponent>(tagComponent, player);
+
 	return player;
 }
 
@@ -128,7 +132,7 @@ Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, 
 	world->ecs.addComponent<HealthComponent>({20, 20}, monster);
 	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, monster);
 
-	world->ecs.addComponent<SensorComponent>({10}, monster);
+	world->ecs.addComponent<SensorComponent>({10, EntityTag::PLAYER}, monster);
 	world->ecs.addComponent<AiComponent>({}, monster);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, monster);
 	world->ecs.addComponent<AiChaseComponent>({}, monster);
@@ -162,6 +166,10 @@ Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, v
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
 	world->ecs.addComponent<AiFleeComponent>({}, animal);
+
+	TagComponent tagComponent = {};
+	tagComponent.tags.set(EntityTag::ANIMAL);
+	world->ecs.addComponent<TagComponent>(tagComponent, animal);
 
 	return animal;
 }

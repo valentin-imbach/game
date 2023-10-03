@@ -203,6 +203,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
+	ecs.rosterComponent<TagComponent>(ComponentId::TAG);
 
 	LOG("Components rostered");
 }
@@ -309,7 +310,7 @@ void World::update(uint dt) {
 		}
 	}
 
-	sensorSystem->update(player, ticks, realmManager);
+	sensorSystem->update(updateSet, ticks, realmManager);
 
 	//aiMoveSystem->update(ticks, realmManager);
 	aiWanderSystem->score(ticks);

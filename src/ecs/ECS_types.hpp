@@ -10,6 +10,7 @@ LOOT,
 NAME,
 HEALTH,
 DEATH,
+TAG,
 
 // Rendering
 SPRITE,

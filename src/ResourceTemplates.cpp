@@ -11,6 +11,8 @@ void ResourceTemplate::setTemplates() {
 	nlohmann::json data = nlohmann::json::parse(file);
 	file.close();
 
+	ResourceTemplate::templates = {};
+
 	for (auto &[key, value] : data.items()) {
 		ResourceId::value resourceId = ResourceId::from_string(key);
 		if (!resourceId) {

@@ -31,6 +31,8 @@ void ParticleStyle::setTemplates() {
 	nlohmann::json data = nlohmann::json::parse(file);
 	file.close();
 
+	ParticleStyle::templates = {};
+
 	for (auto &[key, value] : data.items()) {
 		ParticleId::value particleId = ParticleId::from_string(key);
 		if (!particleId) {

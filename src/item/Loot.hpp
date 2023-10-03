@@ -4,7 +4,7 @@
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
 
-#define LOOT_SIZE 3
+#define LOOT_SIZE 5
 class Realm;
 
 struct Loot {
