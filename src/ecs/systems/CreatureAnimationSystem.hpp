@@ -12,7 +12,7 @@ public:
 			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
 
 			for (auto& layer : spriteComponent.spriteStack.stack) {
-				Sprite& sprite = layer.first;
+				Sprite& sprite = layer.sprite;
 				if (creatureStateComponent.state == CreatureState::IDLE) {
 					sprite.frameCount = 1;
 				} else if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {

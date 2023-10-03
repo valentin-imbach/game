@@ -31,17 +31,25 @@ void Sprite::loadSpriteSheets() {
 
 //* SpriteStack
 
-void SpriteStack::addSprite(Sprite sprite, pair offset) {
-	assert(depth < SPRITE_LAYERS);
-	stack[depth] = std::make_pair(sprite, offset);
+void SpriteStack::sort() {
+	auto lambda = [](const SpriteLayer& l, const SpriteLayer& r) {
+		return l.priority > r.priority;
+	};
+	std::sort(std::begin(stack), std::end(stack), lambda);
+};
+
+void SpriteStack::addSprite(Sprite sprite, uchar priority, pair offset) {
+	assert(depth < SPRITE_LAYER_COUNT);
+	stack[depth] = {sprite, offset, priority};
 	depth += 1;
+	sort();
 }
 
 void SpriteStack::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	for (int layer = 0; layer < depth; layer++) {
-		pair offset = vec::round(scale * BIT * vec(stack[layer].second));
+		pair offset = vec::round(scale * BIT * vec(stack[layer].offset));
 		if (style.centered) offset /= 2;
-		stack[layer].first.draw(position + offset, scale, style, ticks);
+		stack[layer].sprite.draw(position + offset, scale, style, ticks);
 	}
 }
 
@@ -53,10 +61,10 @@ std::pair<pair, pair> SpriteStack::bounds() {
 	pair tl(0, 0);
 	pair br(0, 0);
 	for (int layer = 0; layer < depth; layer++) {
-		tl.y = std::min(tl.y, stack[layer].second.y);
-		tl.x = std::min(tl.x, stack[layer].second.x);
-		br.y = std::max(br.y, stack[layer].second.y + stack[layer].first.size.y);
-		br.x = std::max(br.x, stack[layer].second.x + stack[layer].first.size.x);
+		tl.y = std::min(tl.y, stack[layer].offset.y);
+		tl.x = std::min(tl.x, stack[layer].offset.x);
+		br.y = std::max(br.y, stack[layer].offset.y + stack[layer].sprite.size.y);
+		br.x = std::max(br.x, stack[layer].offset.x + stack[layer].sprite.size.x);
 	}
 	return {tl, br};
 }

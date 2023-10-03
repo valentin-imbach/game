@@ -3,7 +3,7 @@
 #include "utils.hpp"
 #include "TextureManager.hpp"
 
-#define SPRITE_LAYERS 3
+#define SPRITE_LAYER_COUNT 10
 
 ENUM(SpriteSheet,
 HOLE,
@@ -50,16 +50,16 @@ public:
 	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0, pair animationOffset = {1,0});
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	static void loadSpriteSheets();
-	operator bool() {
-		return spriteSheet;
-	}
-private:
-	void animationReset(uint ticks);
+
 	SpriteSheet::value spriteSheet;
-	pair source;
-	pair size;
 	uchar frameCount;
 	ushort frameDuration;
+
+private:
+	void animationReset(uint ticks);
+	pair source;
+	pair size;
+	
 	uint animationStart;
 	pair animationOffset;
 	static std::array<SDL_Texture*, SpriteSheet::count> spriteSheets;
@@ -70,15 +70,22 @@ private:
 	friend class SpriteStack;
 };
 
+struct SpriteLayer {
+	Sprite sprite;
+	pair offset = {0, 0};
+	uchar priority = 0;
+};
+
 class SpriteStack {
 public:
-	void addSprite(Sprite sprite, pair offset = {0, 0});
+	void addSprite(Sprite sprite, uchar priority = 0, pair offset = {0, 0});
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	void clear();
 	std::pair<pair, pair> bounds();
 
 private:
-	std::array<std::pair<Sprite, pair>, SPRITE_LAYERS> stack;
+	void sort();
+	std::array<SpriteLayer, SPRITE_LAYER_COUNT> stack;
 	uchar depth = 0;
 
 	friend class CreatureAnimationSystem;

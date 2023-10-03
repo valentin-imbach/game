@@ -7,7 +7,7 @@
 std::array<TileTemplate, TileId::count> TileTemplate::templates = {};
 
 Tile::Tile(TileId::value tileId) : tileId(tileId) {
-	sprites = std::vector<std::pair<TileId::value, Sprite>>();
+	sprites = {};
 }
 
 void TileTemplate::setTemplates() {
@@ -29,9 +29,8 @@ void TileTemplate::setTemplates() {
 			uint g = value["colour"][1];
 			uint b = value["colour"][2];
 			uint a = value["colour"][3];
-			LOG(r,g,b,a);
+			
 			templates[tileId].colour = (r << 24) | (g << 16) | (b << 8) | a;
-			LOG(templates[tileId].colour);
 		}
 		if (value.contains("walk")) templates[tileId].walk = value["walk"];
 		if (value.contains("build")) templates[tileId].build = value["build"];

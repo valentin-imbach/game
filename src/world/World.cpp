@@ -424,10 +424,12 @@ void World::drawTiles() {
 	for (int x = x1; x <= x2; x++) {
 		for (int y = y1; y <= y2; y++) {
 			if (!playerRealm->map->tiles[x][y]) continue;
-			for (auto& layer : playerRealm->map->tiles[x][y]->sprites) {
-				pair screenPosition = camera.screenPosition(vec(x, y));
-				layer.second.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
-			}
+			pair screenPosition = camera.screenPosition(vec(x, y));
+			// for (auto& layer : playerRealm->map->tiles[x][y]->sprites) {
+			// 	
+			// 	layer.second.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
+			// }
+			playerRealm->map->tiles[x][y]->sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
 		}
 	}
 }

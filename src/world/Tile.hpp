@@ -34,6 +34,6 @@ class Tile {
 public:
 	Tile(TileId::value tileId);
 	TileId::value tileId;
-	std::vector<std::pair<TileId::value, Sprite>> sprites;
+	SpriteStack sprites;
 };
 

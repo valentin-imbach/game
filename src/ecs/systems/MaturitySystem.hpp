@@ -23,7 +23,7 @@ public:
 		if (!ecs->hasComponent<SpriteComponent>(entity)) return;
 		SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 		for (auto& layer : spriteComponent.spriteStack.stack) {
-			layer.first.source.x += layer.first.size.x * layer.first.frameCount;
+			layer.sprite.source.x += layer.sprite.size.x * layer.sprite.frameCount;
 		}
 		
 	}
