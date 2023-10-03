@@ -46,7 +46,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	world->ecs.addComponent<ControllerComponent>({}, player);
 
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100}, 0, pair(0, -1));
+	spriteStack.setSprite(0, Sprite(SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100), pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, player);
 
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, player);
@@ -79,10 +79,11 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	if (!resource) return 0;
 
 	SpriteStack spriteStack;
-	for (SpriteTemplate& sprite : resourceTemplate.spriteTemplates) {
+	for (int i = 0; i < resourceTemplate.spriteTemplates.size(); i++) {
+		SpriteTemplate& sprite = resourceTemplate.spriteTemplates[i];
 		uint var = noise::Int(seed++, 0, sprite.variations);
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
-		spriteStack.addSprite({SpriteSheet::RESOURCES, spritePosition, sprite.size}, 0, sprite.offset);
+		spriteStack.setSprite(i, Sprite(SpriteSheet::RESOURCES, spritePosition, sprite.size), sprite.offset);
 	}
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, resource);
 
@@ -102,7 +103,7 @@ Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair positi
 	if (!crop) return 0;
 
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::CROPS, pair(0, 2 * (cropId - 1)), pair(1, 2)}, 0, pair(0, -1));
+	spriteStack.setSprite(0, Sprite(SpriteSheet::CROPS, pair(0, 2 * (cropId - 1)), pair(1, 2)), pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, crop);
 	world->ecs.addComponent<MaturityComponent>({world->ticks, 5000, 5}, crop);
 	return crop;
@@ -118,7 +119,7 @@ Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, 
 	world->ecs.addComponent<MovementComponent>({0.5f}, monster);
 
 	SpriteStack monsterSprites;
-	monsterSprites.addSprite({SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100}, 0, pair(0, -1));
+	monsterSprites.setSprite(0, Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100), pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({monsterSprites}, monster);
 
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, monster);
@@ -147,7 +148,7 @@ Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, v
 	world->ecs.addComponent<MovementComponent>({0.5f}, animal);
 
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100}, 0, pair(0, -1));
+	spriteStack.setSprite(0, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100), pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
 	
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f), vec(0, -0.2f))}, animal);	
@@ -171,7 +172,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 
 	if (itemId) {
 		SpriteStack spriteStack;
-		spriteStack.addSprite(Sprite(SpriteSheet::ITEMS, pair((itemId - 1) % 6, (itemId - 1) / 6)));
+		spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, pair((itemId - 1) % 6, (itemId - 1) / 6)));
 		SpriteComponent spriteComponent = {spriteStack, 0.5f};
 		spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
 		world->ecs.addComponent<SpriteComponent>(spriteComponent, item);
@@ -209,7 +210,7 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 
 	if (stationId == StationId::CAMP_FIRE) {
 		SpriteStack fireSprites;
-		fireSprites.addSprite({SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200});
+		fireSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200));
 		world->ecs.addComponent<SpriteComponent>({fireSprites}, station);
 		world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::SMOKE]}, station);
 		world->ecs.addComponent<LightComponent>({true, 3, {255, 0, 0, 255}, 3, 0.2f}, station);
@@ -217,7 +218,7 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 	}
 
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::STATIONS, {int(stationId) - 1, 0}, {1,2}}, 0, {0, -1});
+	spriteStack.setSprite(0, Sprite(SpriteSheet::STATIONS, pair(int(stationId) - 1, 0), pair(1, 2)), pair(0, -1));
 	world->ecs.addComponent<SpriteComponent>({spriteStack}, station);
 
 	if (stationId == StationId::CHEST) {
@@ -231,7 +232,7 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 	if (!projectile) return 0;
 
 	SpriteStack spriteStack;
-	spriteStack.addSprite({SpriteSheet::ITEMS, {5, 0}, {1, 1}});
+	spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, {5, 0}, {1, 1}));
 	SpriteComponent spriteComponent = {spriteStack};
 	spriteComponent.angle = 45 - vec::angle(direction) * 180/M_PI;
 	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);

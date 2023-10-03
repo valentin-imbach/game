@@ -282,7 +282,7 @@ CraftingGui::CraftingGui(pair position, Inventory* link)
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&CraftingGui::select, this, std::placeholders::_1), 3, Direction::WEST);
 	for (uint n = 1; n < CraftingRecipeId::count; n++) {
 		SpriteStack sprites;
-		sprites.addSprite({SpriteSheet::CRAFTING_ICONS, pair(n - 1, 0), pair(1, 1)}, 0, pair(0, 0));
+		sprites.setSprite(0, Sprite(SpriteSheet::CRAFTING_ICONS, pair(n - 1, 0), pair(1, 1)), pair(0, 0));
 		selector->addSelection(sprites);
 	}
 	addGuiElement(std::move(selector));
@@ -344,7 +344,7 @@ void CraftingGrid::craft() {
 	for (SpriteTemplate& sprite : recipe.product.spriteTemplates) {
 		uint var = noise::Int(seed++, 0, sprite.variations);
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
-		spriteStack.addSprite({SpriteSheet::ITEMS, spritePosition, sprite.size}, 0, sprite.offset);
+		spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, spritePosition, sprite.size), sprite.offset);
 	}
 	EntityFactory::world->ecs.addComponent<SpriteComponent>({spriteStack, 0.5f}, item);
 	EntityFactory::world->ecs.getComponent<SpriteComponent>(item).effects[SpriteEffectId::BOUNCE] = {true, 0};
@@ -386,7 +386,7 @@ BuildGui::BuildGui(pair position, Inventory* link)
 
 	for (uint n = 1; n < BuildRecipeId::count; n++) {
 		SpriteStack sprites;
-		sprites.addSprite({SpriteSheet::STATION_ICONS, pair(n - 1, 0), pair(1, 1)}, 0, pair(0, 0));
+		sprites.setSprite(0, Sprite(SpriteSheet::STATION_ICONS, pair(n - 1, 0), pair(1, 1)), pair(0, 0));
 		selector->addSelection(sprites);
 	}
 	addGuiElement(std::move(selector));

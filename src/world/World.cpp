@@ -62,7 +62,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		Entity axe = ecs.createEntity();
 		SpriteStack axeSprites;
-		axeSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(2, 0)));
+		axeSprites.setSprite(0, Sprite(SpriteSheet::ITEMS, pair(2, 0)));
 		ecs.addComponent<SpriteComponent>({axeSprites, 0.5f}, axe);
 		ecs.getComponent<SpriteComponent>(axe).effects[SpriteEffectId::BOUNCE] = {true, 0};
 		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, axe);
@@ -77,7 +77,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		Entity hoe = ecs.createEntity();
 		SpriteStack hoeSprites;
-		hoeSprites.addSprite(Sprite(SpriteSheet::HOE, pair(0, 0)));
+		hoeSprites.setSprite(0, Sprite(SpriteSheet::HOE, pair(0, 0)));
 		ecs.addComponent<SpriteComponent>({hoeSprites, 0.5f}, hoe);
 		ecs.getComponent<SpriteComponent>(hoe).effects[SpriteEffectId::BOUNCE] = {true, 0};
 		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, hoe);
@@ -92,7 +92,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		Entity pick = ecs.createEntity();
 		SpriteStack pickSprites;
-		pickSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(1, 0)));
+		pickSprites.setSprite(0, Sprite(SpriteSheet::ITEMS, pair(1, 0)));
 		ecs.addComponent<SpriteComponent>({pickSprites, 0.5f}, pick);
 		ecs.getComponent<SpriteComponent>(pick).effects[SpriteEffectId::BOUNCE] = {true, 0};
 		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, pick);
@@ -107,7 +107,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		Entity sword = ecs.createEntity();
 		SpriteStack swordSprites;
-		swordSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(0, 0)));
+		swordSprites.setSprite(0, Sprite(SpriteSheet::ITEMS, pair(0, 0)));
 		ecs.addComponent<SpriteComponent>({swordSprites, 0.5f}, sword);
 		ecs.getComponent<SpriteComponent>(sword).effects[SpriteEffectId::BOUNCE] = {true, 0};
 		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, sword);
@@ -118,7 +118,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		Entity bow = ecs.createEntity();
 		SpriteStack bowSprites;
-		bowSprites.addSprite(Sprite(SpriteSheet::ITEMS, pair(4, 0)));
+		bowSprites.setSprite(0, Sprite(SpriteSheet::ITEMS, pair(4, 0)));
 		ecs.addComponent<SpriteComponent>({bowSprites, 0.5f}, bow);
 		ecs.getComponent<SpriteComponent>(bow).effects[SpriteEffectId::BOUNCE] = {true, 0};
 		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, bow);

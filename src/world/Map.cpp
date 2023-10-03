@@ -40,9 +40,8 @@ TileId::value Map::getTileId(pair position) {
 void Map::updateStyle(pair position, bool propagate) {
 	if (!getTileId(position)) return;
 	uint s = seed + hash(position);
-	SpriteStack& sprites = tiles[position.x][position.y]->sprites;
-	sprites.clear();
 
+	std::vector<std::pair<Sprite, int>> sprites;
 
 	TileId::value tileId = getTileId(position);
 	TileId::value top = getTileId(position + pair(0, -1));
@@ -57,35 +56,35 @@ void Map::updateStyle(pair position, bool propagate) {
 	if (tileId == TileId::ROCK_WALL) {
 		if ((top && top != TileId::ROCK_WALL) || (bottom && bottom != TileId::ROCK_WALL)) {
 			Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(1, 4));
-			sprites.addSprite(sprite, tileId);
+			sprites.emplace_back(sprite, tileId);
 		} else {
 			if (right == TileId::ROCK_WALL && bottom == TileId::ROCK_WALL && br != TileId::ROCK_WALL && br) {
 				Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(1, 2));
-				sprites.addSprite(sprite, tileId);
+				sprites.emplace_back(sprite, tileId);
 			}
 			if (left == TileId::ROCK_WALL && bottom == TileId::ROCK_WALL && bl != TileId::ROCK_WALL && bl) {
 				Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(4, 2));
-				sprites.addSprite(sprite, tileId);
+				sprites.emplace_back(sprite, tileId);
 			}
 
 			if (right == TileId::ROCK_WALL && top == TileId::ROCK_WALL && tr != TileId::ROCK_WALL && tr) {
 				Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(3, 4));
-				sprites.addSprite(sprite, tileId);
+				sprites.emplace_back(sprite, tileId);
 			}
 			if (left == TileId::ROCK_WALL && top == TileId::ROCK_WALL && tl != TileId::ROCK_WALL && tl) {
 				Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(5, 4));
-				sprites.addSprite(sprite, tileId);
+				sprites.emplace_back(sprite, tileId);
 			}
 		}
 
 		if (bottom == TileId::ROCK_WALL && right && right != TileId::ROCK_WALL) {
 			Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(1, 2));
-			sprites.addSprite(sprite, tileId);
+			sprites.emplace_back(sprite, tileId);
 		}
 
 		if (bottom == TileId::ROCK_WALL && left && left != TileId::ROCK_WALL) {
 			Sprite sprite = Sprite(TileTemplate::templates[tileId].spriteSheet, pair(4, 2));
-			sprites.addSprite(sprite, tileId);
+			sprites.emplace_back(sprite, tileId);
 		}
 		
 		return;
@@ -93,21 +92,21 @@ void Map::updateStyle(pair position, bool propagate) {
 
 	pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
 	Sprite baseSprite = Sprite(TileTemplate::templates[tileId].spriteSheet, baseVariant, pair(1,1), TileTemplate::templates[tileId].frames, TILE_FRAME_TIME, 0, pair(6,0));
-	sprites.addSprite(baseSprite, tileId);
+	sprites.emplace_back(baseSprite, tileId);
 
 	if (left == TileId::ROCK_WALL) {
 		if (bl == TileId::ROCK_WALL) {
 			Sprite sprite = Sprite(TileTemplate::templates[TileId::ROCK_WALL].spriteSheet, pair(2, 2));
-			sprites.addSprite(sprite, TileId::ROCK_WALL);
+			sprites.emplace_back(sprite, TileId::ROCK_WALL);
 		} else if (tileId != TileId::ROCK_WALL) {
 			Sprite sprite = Sprite(TileTemplate::templates[TileId::ROCK_WALL].spriteSheet, pair(2, 4));
-			sprites.addSprite(sprite, TileId::ROCK_WALL);
+			sprites.emplace_back(sprite, TileId::ROCK_WALL);
 		}
 	}
 
 	if (bottom == TileId::ROCK_WALL) {
 		Sprite sprite = Sprite(TileTemplate::templates[TileId::ROCK_WALL].spriteSheet, pair(1, 3));
-		sprites.addSprite(sprite, TileId::ROCK_WALL);
+		sprites.emplace_back(sprite, TileId::ROCK_WALL);
 	}
 
 
@@ -127,14 +126,14 @@ void Map::updateStyle(pair position, bool propagate) {
 		if (left != id && right != id) {
 			std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
 			Sprite sprite = Sprite(TileTemplate::templates[id].spriteSheet, noise::choice<pair>(s++, variants[dir / 2]), pair(1,1), TileTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
-			sprites.addSprite(sprite, id);
+			sprites.emplace_back(sprite, id);
 		}
 
 		// Us
 		if (left == id && right == id && opposite != id) {
 			pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
 			Sprite sprite = Sprite(TileTemplate::templates[id].spriteSheet, variants[dir / 2], pair(1,1), TileTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
-			sprites.addSprite(sprite, id);
+			sprites.emplace_back(sprite, id);
 		}
 	}
 
@@ -152,7 +151,7 @@ void Map::updateStyle(pair position, bool propagate) {
 		if (!TileTemplate::templates[left].wall && left < tileId && left == right && left2 != left && right2 != right) {
 			pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
 			Sprite sprite = Sprite(TileTemplate::templates[left].spriteSheet, variants[dir / 2 - 1], pair(1,1), TileTemplate::templates[left].frames, TILE_FRAME_TIME, 0, pair(6,0));
-			sprites.addSprite(sprite, left);
+			sprites.emplace_back(sprite, left);
 			curve = left;
 		}
 
@@ -160,7 +159,7 @@ void Map::updateStyle(pair position, bool propagate) {
 		if (id < tileId && left != id && right != id && id < curve) {
 			pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
 			Sprite sprite = Sprite(TileTemplate::templates[id].spriteSheet, variants[dir / 2 - 1], pair(1,1), TileTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
-			sprites.addSprite(sprite, id);
+			sprites.emplace_back(sprite, id);
 		}
 	}
 
@@ -172,10 +171,19 @@ void Map::updateStyle(pair position, bool propagate) {
 
 	if (id1 < tileId && id1 != TileId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
 		Sprite sprite = Sprite(TileTemplate::templates[id1].spriteSheet, {4, 4}, pair(1,1), TileTemplate::templates[id1].frames, TILE_FRAME_TIME, 0, pair(6,0));
-		sprites.addSprite(sprite, id1);
+		sprites.emplace_back(sprite, id1);
 	}
 
-	//std::sort(sprites.begin(), sprites.end(), [](const auto left, const auto right) { return left.first >= right.first; });
+	auto lambda = [](const auto left, const auto right) {
+		return left.second > right.second;
+	};
+	std::sort(sprites.begin(), sprites.end(), lambda);
+
+	assert(sprites.size() <= SPRITE_LAYER_COUNT);
+	tiles[position.x][position.y]->sprites.clear();
+	for (int i = 0; i < sprites.size(); i++) {
+		tiles[position.x][position.y]->sprites.setSprite(i, sprites[i].first);
+	}
 
 	if (propagate) {
 		for (int dir = 1; dir < Direction::count; dir++) {

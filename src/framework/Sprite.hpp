@@ -73,21 +73,18 @@ private:
 struct SpriteLayer {
 	Sprite sprite;
 	pair offset = {0, 0};
-	uchar priority = 0;
 };
 
 class SpriteStack {
 public:
-	void addSprite(Sprite sprite, uchar priority = 0, pair offset = {0, 0});
+	void setSprite(uchar index, Sprite sprite, pair offset = {0, 0});
 	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	void clear();
 	std::pair<pair, pair> bounds();
 
 private:
-	void sort();
 	std::array<SpriteLayer, SPRITE_LAYER_COUNT> stack;
-	uchar depth = 0;
-
+	
 	friend class CreatureAnimationSystem;
 	friend class MaturitySystem;
 };
