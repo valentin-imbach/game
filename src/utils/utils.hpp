@@ -27,3 +27,4 @@
 #include "direction.hpp"
 #include "shape.hpp"
 #include "serialiser.hpp"
+#include "definitions.hpp"

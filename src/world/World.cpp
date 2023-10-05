@@ -28,6 +28,7 @@ void World::init() {
 	BuildKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
 	TileTemplate::setTemplates();
+	AnimalTemplate::setTemplates();
 
 	guiManager.world = this;
 	EntityFactory::world = this;
@@ -58,7 +59,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		//LOG(ecs.getComponent<PositionComponent>(player).chunk);
 
-		EntityFactory::createMonster(CreatureId::MONSTER, spawnRealm, spawnRealm->findFree(pair(55,55)));
+		EntityFactory::createMonster(AnimalId::COW, spawnRealm, spawnRealm->findFree(pair(55,55)));
 
 		Entity axe = ecs.createEntity();
 		SpriteStack axeSprites;

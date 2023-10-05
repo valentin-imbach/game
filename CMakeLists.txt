@@ -27,7 +27,8 @@ src/item/Item.cpp
 src/item/ItemTemplates.cpp
 src/item/Loot.cpp
 src/item/Crafting.cpp
-src/ResourceTemplates.cpp
+src/templates/ResourceTemplates.cpp
+src/templates/AnimalTemplates.cpp
 src/EntityFactory.cpp
 src/Gui/Console.cpp
 src/ParticleSystem.cpp
@@ -56,4 +57,4 @@ target_link_libraries(Game ${LIBRARIES})
 #target_link_libraries(Game PRIVATE SDL2::SDL_image)
 
 target_compile_options(Game PRIVATE)
-target_include_directories(Game PRIVATE src src/utils src/gui src/framework src/ecs src/ecs/systems src/world src/item)
+target_include_directories(Game PRIVATE src src/utils src/gui src/framework src/ecs src/ecs/systems src/world src/item src/templates)

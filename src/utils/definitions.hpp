@@ -1,5 +1,6 @@
 
-#include "utils.hpp"
+#pragma once
+#include "enum.hpp"
 
 ENUM(CreatureState,
 IDLE,

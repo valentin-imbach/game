@@ -5,6 +5,7 @@
 #include "Item.hpp"
 #include "Components.hpp"
 #include "World.hpp"
+#include "AnimalTemplates.hpp"
 
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;
@@ -117,7 +118,7 @@ Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair positi
 	return crop;
 }
 
-Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, vec position) {
+Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec position) {
 	Entity monster = createDynamicEntity(realm, position);
 	if (!monster) return 0;
 	
@@ -152,40 +153,32 @@ Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, 
 }
 
 
-Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, vec position) {
+Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec position) {
 	Entity animal = createDynamicEntity(realm, position);
 	if (!animal) return 0;
 	
 	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
-	world->ecs.addComponent<MovementComponent>({0.5f}, animal);
-	
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f), vec(0, -0.2f))}, animal);	
-	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 0.8f), vec(0, -0.3))}, animal);
-
-	//world->ecs.addComponent<LootComponent>({ItemId::APPLE, {1,3}, 1.0f}, animal);
-	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, animal);
-
 	world->ecs.addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
 	world->ecs.addComponent<AiFleeComponent>({}, animal);
+	world->ecs.addComponent<SpriteComponent>({}, animal);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::ANIMAL);
 	world->ecs.addComponent<TagComponent>(tagComponent, animal);
 
-	world->ecs.addComponent<SpriteComponent>({}, animal);
-	CreatureAnimationComponent creatureAnimationComponent = {};
-	creatureAnimationComponent.sprites[CreatureState::IDLE].first = Sprite(SpriteSheet::COW, {3, 0}, {1, 2});
-	creatureAnimationComponent.sprites[CreatureState::IDLE].second = Sprite(SpriteSheet::COW, {3, 2}, {1, 2});
-	creatureAnimationComponent.sprites[CreatureState::WALKING].first = Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::WALKING].second = Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::RUNNING].first = Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::RUNNING].second = Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100);
-	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, animal);
+	AnimalTemplate& animalTemplate = AnimalTemplate::templates[animalId];
+
+	world->ecs.addComponent<MovementComponent>({animalTemplate.speed.x}, animal);
+	world->ecs.addComponent<ColliderComponent>({animalTemplate.collider}, animal);	
+	world->ecs.addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
+	world->ecs.addComponent<LootComponent>({animalTemplate.lootTable}, animal);
+	world->ecs.addComponent<HealthComponent>({animalTemplate.health, animalTemplate.health}, animal);
+	world->ecs.addComponent<CreatureAnimationComponent>({animalTemplate.sprites}, animal);
 
 	return animal;
 }

@@ -4,16 +4,11 @@
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
 #include "ResourceTemplates.hpp"
+#include "AnimalTemplates.hpp"
 #include "Components.hpp"
 
 class World;
 class Realm;
-
-ENUM(CreatureId,
-COW,
-PIG,
-HORSE,
-MONSTER)
 
 ENUM(CropId,
 PARSNIP)
@@ -22,8 +17,8 @@ class EntityFactory {
 public:
 	EntityFactory() = delete;
 	static Entity createPlayer(Realm* realm, vec position);
-	static Entity createAnimal(CreatureId::value creatureId, Realm* realm, vec position);
-	static Entity createMonster(CreatureId::value creatureId, Realm* realm, vec position);
+	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
+	static Entity createMonster(AnimalId::value animalId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
 	static Entity createCrop(CropId::value cropId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);

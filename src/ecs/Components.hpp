@@ -1,7 +1,6 @@
 
 #pragma once
 #include "utils.hpp"
-#include "definitions.hpp"
 #include "ECS_types.hpp"
 #include "Sprite.hpp"
 #include "Item.hpp"
