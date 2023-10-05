@@ -45,10 +45,6 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, player);
 	world->ecs.addComponent<ControllerComponent>({}, player);
 
-	SpriteStack spriteStack;
-	spriteStack.setSprite(0, Sprite(SpriteSheet::PLAYER, {0, 0}, {1, 2}, 1, 100), pair(0, -1));
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, player);
-
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, player);
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
 
@@ -71,6 +67,14 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::PLAYER);
 	world->ecs.addComponent<TagComponent>(tagComponent, player);
+
+	world->ecs.addComponent<SpriteComponent>({}, player);
+	CreatureAnimationComponent creatureAnimationComponent = {};
+	creatureAnimationComponent.sprites[CreatureState::IDLE].first = Sprite(SpriteSheet::PLAYER, {3, 0}, {1, 2});
+	creatureAnimationComponent.sprites[CreatureState::IDLE].second = Sprite(SpriteSheet::PLAYER, {3, 2}, {1, 2});
+	creatureAnimationComponent.sprites[CreatureState::WALKING].first = Sprite(SpriteSheet::PLAYER, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::WALKING].second = Sprite(SpriteSheet::PLAYER, {0, 2}, {1, 2}, 8, 100);
+	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);
 
 	return player;
 }
@@ -122,21 +126,27 @@ Entity EntityFactory::createMonster(CreatureId::value creatureId, Realm* realm, 
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, monster);
 	world->ecs.addComponent<MovementComponent>({0.5f}, monster);
 
-	SpriteStack monsterSprites;
-	monsterSprites.setSprite(0, Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 1, 100), pair(0, -1));
-	world->ecs.addComponent<SpriteComponent>({monsterSprites}, monster);
-
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, monster);
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, monster);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, monster);
 	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, monster);
 
-	world->ecs.addComponent<SensorComponent>({10, EntityTag::PLAYER}, monster);
+	world->ecs.addComponent<SensorComponent>({10, EntityTag::ANIMAL}, monster);
 	world->ecs.addComponent<AiComponent>({}, monster);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, monster);
 	world->ecs.addComponent<AiChaseComponent>({}, monster);
 	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, monster);
+
+	world->ecs.addComponent<SpriteComponent>({}, monster);
+	CreatureAnimationComponent creatureAnimationComponent = {};
+	creatureAnimationComponent.sprites[CreatureState::IDLE].first = Sprite(SpriteSheet::MONSTER, {3, 0}, {1, 2});
+	creatureAnimationComponent.sprites[CreatureState::IDLE].second = Sprite(SpriteSheet::MONSTER, {3, 2}, {1, 2});
+	creatureAnimationComponent.sprites[CreatureState::WALKING].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::WALKING].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::RUNNING].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::RUNNING].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
+	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, monster);
 
 	return monster;
 }
@@ -150,10 +160,6 @@ Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, v
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
 	world->ecs.addComponent<MovementComponent>({0.5f}, animal);
-
-	SpriteStack spriteStack;
-	spriteStack.setSprite(0, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 1, 100), pair(0, -1));
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, animal);
 	
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f), vec(0, -0.2f))}, animal);	
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 0.8f), vec(0, -0.3))}, animal);
@@ -162,7 +168,7 @@ Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, v
 	world->ecs.addComponent<HealthComponent>({10, 10}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, animal);
 
-	world->ecs.addComponent<SensorComponent>({5}, animal);
+	world->ecs.addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
 	world->ecs.addComponent<AiFleeComponent>({}, animal);
@@ -170,6 +176,16 @@ Entity EntityFactory::createAnimal(CreatureId::value creatureId, Realm* realm, v
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::ANIMAL);
 	world->ecs.addComponent<TagComponent>(tagComponent, animal);
+
+	world->ecs.addComponent<SpriteComponent>({}, animal);
+	CreatureAnimationComponent creatureAnimationComponent = {};
+	creatureAnimationComponent.sprites[CreatureState::IDLE].first = Sprite(SpriteSheet::COW, {3, 0}, {1, 2});
+	creatureAnimationComponent.sprites[CreatureState::IDLE].second = Sprite(SpriteSheet::COW, {3, 2}, {1, 2});
+	creatureAnimationComponent.sprites[CreatureState::WALKING].first = Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::WALKING].second = Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::RUNNING].first = Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[CreatureState::RUNNING].second = Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100);
+	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, animal);
 
 	return animal;
 }

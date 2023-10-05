@@ -31,6 +31,10 @@ struct CreatureStateComponent {
 	uint lastChange = 0;
 };
 
+struct CreatureAnimationComponent {
+	std::array<std::pair<Sprite, Sprite>, CreatureState::count> sprites;
+};
+
 struct MovementComponent {
 	float speed;
 };

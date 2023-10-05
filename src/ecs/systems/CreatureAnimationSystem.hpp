@@ -9,19 +9,25 @@ public:
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			CreatureStateComponent& creatureStateComponent = ecs -> getComponent<CreatureStateComponent>(entity);
+			CreatureAnimationComponent& creatureAnimationComponent = ecs -> getComponent<CreatureAnimationComponent>(entity);
 			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
 
-			for (auto& layer : spriteComponent.spriteStack.stack) {
-				Sprite& sprite = layer.sprite;
-				if (creatureStateComponent.state == CreatureState::IDLE) {
-					sprite.frameCount = 1;
-				} else if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
-					sprite.frameCount = 8;
-				}
+			auto spritePair = creatureAnimationComponent.sprites[creatureStateComponent.state];
+			Sprite sprite = (creatureStateComponent.facing == Direction::EAST) ? spritePair.first : spritePair.second;
+			sprite.animationStart = creatureStateComponent.lastChange;
+			spriteComponent.spriteStack.setSprite(0, sprite, {0, -1});
 
-				sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
-				if (creatureStateComponent.lastChange == ticks) sprite.animationReset(ticks - sprite.frameDuration);
-			}
+			// for (auto& layer : spriteComponent.spriteStack.stack) {
+			// 	Sprite& sprite = layer.sprite;
+			// 	if (creatureStateComponent.state == CreatureState::IDLE) {
+			// 		sprite.frameCount = 1;
+			// 	} else if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
+			// 		sprite.frameCount = 8;
+			// 	}
+
+			// 	sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
+			// 	if (creatureStateComponent.lastChange == ticks) sprite.animationReset(ticks - sprite.frameDuration);
+			// }
 		}
 	}
 };

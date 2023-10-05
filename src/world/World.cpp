@@ -204,6 +204,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<TagComponent>(ComponentId::TAG);
+	ecs.rosterComponent<CreatureAnimationComponent>(ComponentId::CREATURE_ANIMATION);
 
 	LOG("Components rostered");
 }
@@ -216,7 +217,7 @@ void World::rosterSystems() {
 	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER,
 		{ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION,
-		{ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION});
+		{ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION, ComponentId::CREATURE_ANIMATION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION,
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,

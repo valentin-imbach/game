@@ -17,7 +17,7 @@ public:
 				aiComponent.change = true;
 				aiComponent.lastChange = ticks;
 				aiComponent.state = newState;
-				//LOG(AiState::to_string(newState));
+				// LOG(AiState::to_string(newState));
 			} else {
 				aiComponent.change = false;
 			}
