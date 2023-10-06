@@ -31,5 +31,39 @@
 		"loot": {
 			"parsnip_seeds": [1, 3]
 		}
+	},
+
+	"chicken": {
+		"sheet": "chicken",
+		"sprites": {
+			"idle": {
+				"source": [[1, 0], [1, 2]],
+				"size": [1, 2],
+				"frames": 1
+			},
+			"walking": {
+				"source": [[0, 0], [0, 2]],
+				"size": [1, 2],
+				"frames": 4
+			},
+			"running": {
+				"source": [[0, 0], [0, 2]],
+				"size": [1, 2],
+				"frames": 4
+			}
+		},
+		"collider": {
+			"size": [0.6, 0.6],
+			"offset": [0, -0.2]
+		},
+		"hitbox": {
+			"size": [0.8, 0.8],
+			"offset": [0, -0.3]
+		},
+		"speed": [0.3, 0.5],
+		"health": 2,
+		"loot": {
+			"apple": [1, 3]
+		}
 	}
 }

@@ -7,8 +7,7 @@
 
 ENUM(AnimalId,
 COW,
-PIG,
-HORSE)
+CHICKEN)
 
 struct AnimalTemplate {
 	std::array<std::pair<Sprite, Sprite>, CreatureState::count> sprites;

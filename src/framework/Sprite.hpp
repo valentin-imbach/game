@@ -43,7 +43,8 @@ HOE,
 SOIL,
 CROPS,
 BANNER,
-DEATH_SCREEN)
+DEATH_SCREEN,
+CHICKEN)
 
 class Sprite {
 public:
