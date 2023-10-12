@@ -101,6 +101,7 @@ bool Console::execute(std::string input) {
 		if (resourceId) {
 			Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm, position);
 			return true;
+			
 		}
 		StationId::value stationId = StationId::from_string(inputs[1]);
 		if (stationId) {

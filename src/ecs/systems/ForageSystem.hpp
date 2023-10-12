@@ -31,6 +31,10 @@ public:
 					healthComponent.health -= damage;
 					spriteComponent.effects[SpriteEffectId::SHAKE] = {true, ticks};
 					SoundManager::playSound(resourceComponent.soundId);
+					if (ecs->hasComponent<DurabilityComponent>(item)) {
+						DurabilityComponent& durabilityComponent = ecs->getComponent<DurabilityComponent>(item);
+						durabilityComponent.durability -= 1;
+					}
 					return true;
 				}
 			}

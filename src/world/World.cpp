@@ -63,14 +63,17 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		Entity axe = ecs.createEntity();
 		SpriteStack axeSprites;
-		axeSprites.setSprite(0, Sprite(SpriteSheet::ITEMS, pair(2, 0)));
+		axeSprites.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(4, 0)));
+		axeSprites.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(2, 0)));
+		axeSprites.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(6, 3)));
 		ecs.addComponent<SpriteComponent>({axeSprites, 0.5f}, axe);
 		ecs.getComponent<SpriteComponent>(axe).effects[SpriteEffectId::BOUNCE] = {true, 0};
 		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, axe);
+		ecs.addComponent<DurabilityComponent>({255,255}, axe);
 		ItemKindComponent axeKindComponent = {};
 		axeKindComponent.itemKinds[ItemKind::AXE] = true;
 		axeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
-		axeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
+		axeKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
 		ecs.addComponent<ItemKindComponent>(axeKindComponent, axe);
 		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, axe);
 		ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
@@ -206,6 +209,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<DamageComponent>(ComponentId::DAMAGE);
 	ecs.rosterComponent<TagComponent>(ComponentId::TAG);
 	ecs.rosterComponent<CreatureAnimationComponent>(ComponentId::CREATURE_ANIMATION);
+	ecs.rosterComponent<DurabilityComponent>(ComponentId::DURABILITY);
 
 	LOG("Components rostered");
 }

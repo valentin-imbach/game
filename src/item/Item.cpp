@@ -90,6 +90,12 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 			texts.emplace_back(Text(name, TTF_STYLE_UNDERLINE), pos);
 			pos.y += spacing;
 
+			if (EntityFactory::world->ecs.hasComponent<DurabilityComponent>(item)) {
+				DurabilityComponent& durabilityComponent = EntityFactory::world->ecs.getComponent<DurabilityComponent>(item);
+				std::string text = "Durability: " + std::to_string(durabilityComponent.durability) + "/" +  std::to_string(durabilityComponent.maxDurability);
+				texts.emplace_back(Text(text), pos);
+				pos.y += spacing;
+			}
 			if (EntityFactory::world->ecs.hasComponent<MeleeItemComponent>(item)) {
 				MeleeItemComponent& damageComponent = EntityFactory::world->ecs.getComponent<MeleeItemComponent>(item);
 				texts.emplace_back(Text("  Weapon", TTF_STYLE_BOLD), pos);

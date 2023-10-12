@@ -225,3 +225,8 @@ struct DamageComponent {
 	vec force = {0, 0};
 	Entity imune = 0;
 };
+
+struct DurabilityComponent {
+	ushort durability;
+	ushort maxDurability;
+};

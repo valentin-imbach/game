@@ -13,14 +13,14 @@
 				"tile": "sand",
 				"resources": {
 					"sandstone_rock": 4,
-					"pebble": 6
+					"sandstone_pebble": 6
 				}
 			},
 			{
 				"tile": "rock",
 				"resources": {
 					"basalt_rock": 6,
-					"pebble": 4
+					"basalt_pebble": 4
 				}
 			}
 		]
@@ -31,8 +31,8 @@
 				"tile": "grass",
 				"resources": {
 					"spruce_tree": 4,
-					"branch": 6,
-					"pebble": 4,
+					"spruce_branch": 6,
+					"granite_pebble": 4,
 					"grass": 6
 				}
 			},
@@ -40,7 +40,7 @@
 				"tile": "rock",
 				"resources": {
 					"granite_rock": 6,
-					"pebble": 6
+					"granite_pebble": 6
 				}
 			}
 		]
@@ -51,8 +51,8 @@
 				"tile": "grass",
 				"resources": {
 					"spruce_tree": 6,
-					"branch": 6,
-					"pebble": 4,
+					"spruce_branch": 6,
+					"chalk_pebble": 4,
 					"grass": 4,
 					"mushroom": 2
 				}
@@ -61,7 +61,7 @@
 				"tile": "dirt",
 				"resources": {
 					"granite_rock": 4,
-					"pebble": 6
+					"granite_pebble": 6
 				}
 			}
 		]
@@ -71,7 +71,7 @@
 			{
 				"tile": "mud",
 				"resources": {
-					"pebble": 4,
+					"sandstone_pebble": 4,
 					"grass": 6,
 					"mushroom": 6
 				}
@@ -79,9 +79,9 @@
 			{
 				"tile": "grass",
 				"resources": {
-					"ashwood_tree": 4,
-					"branch": 6,
-					"pebble": 4,
+					"birch_tree": 4,
+					"birch_branch": 6,
+					"sandstone_pebble": 4,
 					"grass": 6,
 					"mushroom": 4
 				}
@@ -94,8 +94,8 @@
 				"tile": "grass",
 				"resources": {
 					"oak_tree": 4,
-					"branch": 6,
-					"pebble": 4,
+					"oak_branch": 6,
+					"granite_pebble": 4,
 					"grass": 6
 				}
 			},
@@ -103,7 +103,7 @@
 				"tile": "dirt",
 				"resources": {
 					"chalk_rock": 4,
-					"pebble": 6
+					"chalk_pebble": 6
 				}
 			}
 		]
@@ -115,8 +115,8 @@
 				"resources": {
 					"oak_tree": 6,
 					"granite_rock": 2,
-					"branch": 6,
-					"pebble": 2,
+					"oak_branch": 6,
+					"granite_pebble": 2,
 					"grass": 4,
 					"bush": 2
 				}
@@ -125,7 +125,7 @@
 				"tile": "dirt",
 				"resources": {
 					"granite_rock": 4,
-					"pebble": 4,
+					"granite_pebble": 4,
 					"mushroom": 2
 				}
 			}
@@ -136,8 +136,8 @@
 			{
 				"tile": "grass",
 				"resources": {
-					"rosewood_tree": 6,
-					"pebble": 4,
+					"oak_tree": 6,
+					"sandstone_pebble": 4,
 					"grass": 6,
 					"bush": 4
 				}
@@ -146,7 +146,7 @@
 				"tile": "sand",
 				"resources": {
 					"sandstone_rock": 6,
-					"pebble": 4,
+					"sandstone_pebble": 4,
 					"grass": 2
 				}
 			}
@@ -157,10 +157,10 @@
 			{
 				"tile": "grass",
 				"resources": {
-					"pine_tree": 8,
+					"maple_tree": 8,
 					"granite_rock": 2,
-					"branch": 6,
-					"pebble": 4,
+					"maple_branch": 6,
+					"granite_pebble": 4,
 					"grass": 4,
 					"bush": 6,
 					"mushroom": 4
@@ -170,7 +170,7 @@
 				"tile": "dirt",
 				"resources": {
 					"granite_rock": 4,
-					"pebble": 6,
+					"granite_pebble": 6,
 					"mushroom": 4
 				}
 			}
@@ -183,7 +183,8 @@
 				"resources": {
 					"basalt_rock": 8,
 					"obsidian_rock": 4,
-					"pebble": 6
+					"basalt_pebble": 6,
+					"obsidian_pebble": 6
 				}
 			},
 			{
@@ -191,7 +192,8 @@
 				"resources": {
 					"basalt_rock": 8,
 					"obsidian_rock": 4,
-					"pebble": 6
+					"basalt_pebble": 6,
+					"obsidian_pebble": 6
 				}
 			}
 		]
