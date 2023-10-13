@@ -189,7 +189,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 
 	if (itemId) {
 		SpriteStack spriteStack;
-		spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, pair((itemId - 1) % 6, (itemId - 1) / 6)));
+		spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, pair((itemId - 1) % 5, (itemId - 1) / 5)));
 		SpriteComponent spriteComponent = {spriteStack, 0.5f};
 		spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
 		world->ecs.addComponent<SpriteComponent>(spriteComponent, item);

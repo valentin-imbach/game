@@ -217,7 +217,8 @@
 		"health": 5,
 		"sound": "tree",
 		"loot": {
-			"oak_log": [3, 6]
+			"oak_log": [3, 6],
+			"oak_branch": [2, 4]
 		}
 	},
 	"maple_tree": {
@@ -230,7 +231,8 @@
 		"health": 5,
 		"sound": "tree",
 		"loot": {
-			"oak_log": [3, 6]
+			"maple_log": [3, 6],
+			"maple_branch": [2, 4]
 		}
 	},
 	"spruce_tree": {
@@ -243,7 +245,8 @@
 		"health": 5,
 		"sound": "tree",
 		"loot": {
-			"oak_log": [3, 6]
+			"spruce_log": [3, 6],
+			"spruce_branch": [2, 4]
 		}
 	},
 	"birch_tree": {
@@ -256,7 +259,8 @@
 		"health": 5,
 		"sound": "tree",
 		"loot": {
-			"oak_log": [3, 6]
+			"birch_log": [3, 6],
+			"birch_branch": [2, 4]
 		}
 	},
 
@@ -270,7 +274,7 @@
 		"solid" : false,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"oak_branch": [1, 2]
 		}
 	},
 	"maple_branch": {
@@ -281,7 +285,7 @@
 		"solid" : false,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"maple_branch": [1, 2]
 		}
 	},
 	"spruce_branch": {
@@ -292,7 +296,7 @@
 		"solid" : false,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"spruce_branch": [1, 2]
 		}
 	},
 	"birch_branch": {
@@ -303,7 +307,7 @@
 		"solid" : false,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"birch_branch": [1, 2]
 		}
 	},
 
@@ -314,12 +318,11 @@
 			{"anker": [2, 5], "size": [1, 1], "offset": [0, 0], "variations" : 2}
 		],
 		"opaque": false,
-		"tool": "axe",
 		"level": 1,
 		"health": 3,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"oak_log": [1, 3]
 		}
 	},
 	"maple_log": {
@@ -327,12 +330,11 @@
 			{"anker": [7, 5], "size": [1, 1], "offset": [0, 0], "variations" : 2}
 		],
 		"opaque": false,
-		"tool": "axe",
 		"level": 1,
 		"health": 3,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"maple_log": [1, 3]
 		}
 	},
 	"spruce_log": {
@@ -340,12 +342,11 @@
 			{"anker": [12, 5], "size": [1, 1], "offset": [0, 0], "variations" : 2}
 		],
 		"opaque": false,
-		"tool": "axe",
 		"level": 1,
 		"health": 3,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"spruce_log": [1, 3]
 		}
 	},
 	"birch_log": {
@@ -353,12 +354,11 @@
 			{"anker": [17, 5], "size": [1, 1], "offset": [0, 0], "variations" : 2}
 		],
 		"opaque": false,
-		"tool": "axe",
 		"level": 1,
 		"health": 3,
 		"sound": "pickup",
 		"loot": {
-			"oak_stick": [1, 2]
+			"birch_log": [1, 3]
 		}
 	},
 
@@ -399,7 +399,7 @@
 		"solid" : false,
 		"sound": "bush",
 		"loot": {
-			"potion": [1, 2]
+			"apple": [1, 2]
 		}
 	},
 
@@ -411,7 +411,7 @@
 		"solid" : false,
 		"sound": "bush",
 		"loot": {
-			"potion": [1, 2]
+			"apple": [1, 2]
 		}
 	},
 
@@ -423,7 +423,7 @@
 		"solid" : false,
 		"sound": "bush",
 		"loot": {
-			"potion": [1, 2]
+			"apple": [1, 2]
 		}
 	}
 }

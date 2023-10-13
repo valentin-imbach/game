@@ -44,6 +44,7 @@ void Realm::generateWorld(pair size) {
 	for (int x = 0; x < map->size.x; x++) {
 		for (int y = 0; y < map->size.y; y++) {
 			pair position(x, y);
+			if (!free(position)) continue;
 			Biome::value biome = environment->getBiome(position);
 			int variation = environment->variationMap->get(position);
 			int vegetation = environment->vegetationMap->get(position);

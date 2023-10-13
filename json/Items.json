@@ -1,16 +1,4 @@
 {
-    "pine_log": {
-        "name": "Pine Log",
-        "kinds": [
-            "log",
-            "fuel"
-        ],
-        "properties": {
-            "hardness": 3,
-            "burn_time": 5,
-            "heat": 4
-        }
-    },
     "oak_log": {
         "name": "Oak Log",
         "kinds": [
@@ -23,28 +11,16 @@
             "heat": 5
         }
     },
-    "rosewood_log": {
-        "name": "Rosewood Log",
+    "maple_log": {
+        "name": "Maple Log",
         "kinds": [
             "log",
             "fuel"
         ],
         "properties": {
-            "hardness": 9,
-            "burn_time": 8,
-            "heat": 6
-        }
-    },
-    "ashwood_log": {
-        "name": "Ashwood Log",
-        "kinds": [
-            "log",
-            "fuel"
-        ],
-        "properties": {
-            "hardness": 7,
+            "hardness": 3,
             "burn_time": 5,
-            "heat": 9
+            "heat": 4
         }
     },
     "spruce_log": {
@@ -59,15 +35,66 @@
             "heat": 5
         }
     },
-    "pine_plank": {
-        "name": "Pine Plank",
+    "birch_log": {
+        "name": "Birch Log",
         "kinds": [
-            "plate",
+            "log",
             "fuel"
         ],
         "properties": {
-            "flexibility": 7,
-            "strength": 3,
+            "hardness": 3,
+            "burn_time": 5,
+            "heat": 4
+        }
+    },
+    "oak_branch": {
+        "name": "Oak Branch",
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 6,
+            "burn_time": 8,
+            "heat": 5
+        }
+    },
+    "maple_branch": {
+        "name": "Maple Branch",
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 6,
+            "burn_time": 5,
+            "heat": 4
+        }
+    },
+    "spruce_branch": {
+        "name": "Spruce Branch",
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 6,
+            "burn_time": 6,
+            "heat": 5
+        }
+    },
+    "birch_branch": {
+        "name": "Birch Branch",
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 3,
+            "strength": 6,
             "burn_time": 5,
             "heat": 4
         }
@@ -85,21 +112,8 @@
             "heat": 5
         }
     },
-    "rosewood_plank": {
-        "name": "Rosewood Plank",
-        "kinds": [
-            "plate",
-            "fuel"
-        ],
-        "properties": {
-            "flexibility": 3,
-            "strength": 9,
-            "burn_time": 8,
-            "heat": 6
-        }
-    },
-    "ashwood_plank": {
-        "name": "Ashwood Plank",
+    "maple_plank": {
+        "name": "Maple Plank",
         "kinds": [
             "plate",
             "fuel"
@@ -124,16 +138,16 @@
             "heat": 5
         }
     },
-    "pine_stick": {
-        "name": "Pine Stick",
+    "birch_plank": {
+        "name": "Birch Plank",
         "kinds": [
-            "rod",
+            "plate",
             "fuel"
         ],
         "properties": {
             "flexibility": 7,
             "strength": 3,
-            "burn_time": 2,
+            "burn_time": 5,
             "heat": 4
         }
     },
@@ -150,21 +164,8 @@
             "heat": 5
         }
     },
-    "rosewood_stick": {
-        "name": "Rosewood Stick",
-        "kinds": [
-            "rod",
-            "fuel"
-        ],
-        "properties": {
-            "flexibility": 3,
-            "strength": 9,
-            "burn_time": 2,
-            "heat": 6
-        }
-    },
-    "ashwood_stick": {
-        "name": "Ashwood Stick",
+    "maple_stick": {
+        "name": "Maple Stick",
         "kinds": [
             "rod",
             "fuel"
@@ -187,6 +188,19 @@
             "strength": 7,
             "burn_time": 2,
             "heat": 5
+        }
+    },
+    "birch_stick": {
+        "name": "Birch Stick",
+        "kinds": [
+            "rod",
+            "fuel"
+        ],
+        "properties": {
+            "flexibility": 7,
+            "strength": 3,
+            "burn_time": 2,
+            "heat": 4
         }
     },
     "granite_cobble": {
@@ -292,15 +306,6 @@
         "name": "Apple",
         "kinds": [
             "food"
-        ],
-        "properties": {
-            "nutrition": 3
-        }
-    },
-    "potion": {
-        "name": "Potion",
-        "kinds": [
-            "potion"
         ],
         "properties": {
             "nutrition": 3
