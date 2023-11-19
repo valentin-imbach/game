@@ -36,8 +36,10 @@ private:
 	TextField* seedField = nullptr;
 	void buildMenu();
 	
+	SDL_Texture* parallax[4];
 	std::unique_ptr<Widget> mainMenu;
 	std::unique_ptr<Widget> pauseMenu;
+	uint ticks;
 
 	void createButton();
 	void createWorld(std::string name, uint seed, bool debug = false);

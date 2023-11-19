@@ -9,7 +9,7 @@
 #include "utils.hpp"
 #include <filesystem>
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 Game::Game() : trackMix(1), console(this) {
 	framesPerSecond = 0;
@@ -38,6 +38,10 @@ void Game::buildMenu() {
 		if (dir.is_directory()) worldNames.push_back(dir.path().filename().string());
 	}
 
+	parallax[0] = TextureManager::loadTexture("background/1.png");
+	parallax[1] = TextureManager::loadTexture("background/2.png");
+	parallax[2] = TextureManager::loadTexture("background/3.png");
+	parallax[3] = TextureManager::loadTexture("background/4.png");
 	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
 	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), Sprite(), "New World"));
 	std::unique_ptr<TextField> nameTextField = std::make_unique<TextField>(pair(-50, -90), pair(80, 15));
@@ -120,6 +124,7 @@ void Game::saveWorld() {
 }
 
 void Game::update(uint dt) {
+	ticks += dt;
 	Window::instance->update();
 	//trackMix.update();
 	if (gameState == GameState::MENU) {
@@ -138,6 +143,12 @@ void Game::update(uint dt) {
 void Game::draw() {
 	Window::instance->clear();
 	if (gameState == GameState::MENU) {
+		TextureStyle style;
+		style.centered = false;
+		TextureManager::drawTexture(parallax[0], nullptr, {0, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
+		TextureManager::drawTexture(parallax[1], nullptr, {int(ticks / 140) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
+		TextureManager::drawTexture(parallax[2], nullptr, {int(ticks / 60) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
+		TextureManager::drawTexture(parallax[3], nullptr, {int(ticks/ 20) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
 		mainMenu->draw();
 	} else if (gameState == GameState::RUNNING) {
 		world->draw();
