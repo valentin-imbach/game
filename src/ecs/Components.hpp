@@ -25,13 +25,14 @@ struct SpriteComponent {
 };
 
 struct CreatureStateComponent {
-	CreatureState::value state;
-	Direction::value facing;
+	MovementState::value movementState = MovementState::IDLE;
+	ActionState::value actionState = ActionState::IDLE;
+	Direction::value facing = Direction::EAST;
 	uint lastChange = 0;
 };
 
 struct CreatureAnimationComponent {
-	std::array<std::pair<Sprite, Sprite>, CreatureState::count> sprites;
+	std::array<std::pair<Sprite, Sprite>, MovementState::count> sprites;
 };
 
 struct MovementComponent {

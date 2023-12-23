@@ -12,16 +12,16 @@ public:
 			CreatureAnimationComponent& creatureAnimationComponent = ecs -> getComponent<CreatureAnimationComponent>(entity);
 			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
 
-			auto spritePair = creatureAnimationComponent.sprites[creatureStateComponent.state];
+			auto spritePair = creatureAnimationComponent.sprites[creatureStateComponent.movementState];
 			Sprite sprite = (creatureStateComponent.facing == Direction::EAST) ? spritePair.first : spritePair.second;
 			sprite.animationStart = creatureStateComponent.lastChange;
 			spriteComponent.spriteStack.setSprite(0, sprite, {0, -1});
 
 			// for (auto& layer : spriteComponent.spriteStack.stack) {
 			// 	Sprite& sprite = layer.sprite;
-			// 	if (creatureStateComponent.state == CreatureState::IDLE) {
+			// 	if (creatureStateComponent.movementState == MovementState::IDLE) {
 			// 		sprite.frameCount = 1;
-			// 	} else if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
+			// 	} else if (creatureStateComponent.movementState == MovementState::WALK || creatureStateComponent.movementState == MovementState::RUN) {
 			// 		sprite.frameCount = 8;
 			// 	}
 

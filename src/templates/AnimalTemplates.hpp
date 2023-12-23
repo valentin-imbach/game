@@ -10,7 +10,7 @@ COW,
 CHICKEN)
 
 struct AnimalTemplate {
-	std::array<std::pair<Sprite, Sprite>, CreatureState::count> sprites;
+	std::array<std::pair<Sprite, Sprite>, MovementState::count> sprites;
 	Shape collider;
 	Shape hitbox;
 	SoundId::value sound = SoundId::NONE;

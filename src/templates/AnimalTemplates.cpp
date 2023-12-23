@@ -23,17 +23,17 @@ void AnimalTemplate::setTemplates() {
 		SpriteSheet::value spriteSheet = SpriteSheet::from_string(value["sheet"]);
 		
 		for (auto &[key, value] : value["sprites"].items()) {
-			CreatureState::value creatureState = CreatureState::from_string(key);
-			if (!creatureState) {
-				WARNING("Unrecognised CreatureState:", key);
+			MovementState::value movementState = MovementState::from_string(key);
+			if (!movementState) {
+				WARNING("Unrecognised MovementState:", key);
 				continue;
 			}
 			pair source1(value["source"][0][0], value["source"][0][1]);
 			pair source2(value["source"][1][0], value["source"][1][1]);
 			pair size(value["size"][0], value["size"][1]);
 			uchar frames = value["frames"];
-			templates[animalId].sprites[creatureState].first = Sprite(spriteSheet, source1, size, frames, 100);
-			templates[animalId].sprites[creatureState].second = Sprite(spriteSheet, source2, size, frames, 100);
+			templates[animalId].sprites[movementState].first = Sprite(spriteSheet, source1, size, frames, 100);
+			templates[animalId].sprites[movementState].second = Sprite(spriteSheet, source2, size, frames, 100);
 		}
 
 		auto col = value["collider"];

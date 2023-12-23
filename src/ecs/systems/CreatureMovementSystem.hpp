@@ -20,9 +20,9 @@ public:
 			TileId::value tileId = realm->map->getTileId(vec::round(positionComponent.position));
 			float speed = movementComponent.speed * TileTemplate::templates[tileId].speed;
 
-			if (creatureStateComponent.state == CreatureState::WALKING) {
+			if (creatureStateComponent.movementState == MovementState::WALK) {
 				newPosition += dt * speed * Direction::unit[directionComponent.direction] / 1000;
-			} else if (creatureStateComponent.state == CreatureState::RUNNING) {
+			} else if (creatureStateComponent.movementState == MovementState::RUN) {
 				newPosition += dt * 2 * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 

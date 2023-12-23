@@ -11,7 +11,7 @@ public:
 			ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 
-			if (creatureStateComponent.state == CreatureState::WALKING || creatureStateComponent.state == CreatureState::RUNNING) {
+			if (creatureStateComponent.movementState == MovementState::WALK || creatureStateComponent.movementState == MovementState::RUN) {
 				particleComponent.active = true;
 			} else {
 				particleComponent.active = false;

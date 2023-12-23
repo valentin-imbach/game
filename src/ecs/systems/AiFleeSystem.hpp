@@ -32,7 +32,7 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiFleeComponent& aiFleeComponent = ecs->getComponent<AiFleeComponent>(entity);
 
-			CreatureState::value oldState = creatureStateComponent.state;
+			MovementState::value oldState = creatureStateComponent.movementState;
 			Direction::value oldFacing = creatureStateComponent.facing;
 
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
@@ -73,9 +73,9 @@ public:
 			} else if (Direction::taxi[directionComponent.direction].x == -1) {
 				creatureStateComponent.facing = Direction::WEST;
 			}
-			creatureStateComponent.state = dir ? CreatureState::RUNNING : CreatureState::IDLE;
+			creatureStateComponent.movementState = dir ? MovementState::RUN : MovementState::IDLE;
 			
-			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {
+			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.movementState != oldState) {
 				creatureStateComponent.lastChange = ticks;
 			}	
 

@@ -44,8 +44,11 @@ public:
 				pair playerChunk = vec::round(world->ecs.getComponent<PositionComponent>(world->player).chunk);
 				text += "Player Chunk: " + std::to_string(playerChunk.x) + ", " + std::to_string(playerChunk.y) + '\n';
 
-				CreatureState::value playerState = world->ecs.getComponent<CreatureStateComponent>(world->player).state;
-				text += "Player State: " + CreatureState::to_string(playerState) + '\n';
+				MovementState::value movementState = world->ecs.getComponent<CreatureStateComponent>(world->player).movementState;
+				text += "Player Movement State: " + MovementState::to_string(movementState) + '\n';
+
+				ActionState::value actionState = world->ecs.getComponent<CreatureStateComponent>(world->player).actionState;
+				text += "Player Action State: " + ActionState::to_string(actionState) + '\n';
 
 				Biome::value biome = world->playerRealm->environment->getBiome(playerPosition);
 				text += "Biome: " + Biome::to_string(biome) + '\n';

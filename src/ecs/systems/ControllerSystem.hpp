@@ -37,14 +37,14 @@ public:
 			if (sum.x == 1 && sum.y == 2) directionComponent.direction = Direction::from_int(7);
 			if (sum.x == 2 && sum.y == 2) directionComponent.direction = Direction::from_int(8);
 
-			CreatureState::value oldState = creatureStateComponent.state;
+			MovementState::value oldState = creatureStateComponent.movementState;
 			if (sum.x == 1 && sum.y == 1) {
-				creatureStateComponent.state = CreatureState::IDLE;
+				creatureStateComponent.movementState = MovementState::IDLE;
 			} else {
-				creatureStateComponent.state = CreatureState::WALKING;
+				creatureStateComponent.movementState = MovementState::WALK;
 			}
 
-			if (creatureStateComponent.state != oldState) creatureStateComponent.lastChange = ticks;
+			if (creatureStateComponent.movementState != oldState) creatureStateComponent.lastChange = ticks;
 		}
 	}
 };

@@ -41,7 +41,7 @@ public:
 				if (timePassed < 300) style.angle = 90 - std::sin((M_PI * timePassed) / 300) * 90;
 			}
 			
-			// if (creatureStateComponent.state == CreatureState::WALKING) {
+			// if (creatureStateComponent.movementState == MovementState::WALK) {
 			// 	uint past = ticks - creatureStateComponent.lastChange;
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }

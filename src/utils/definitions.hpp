@@ -2,13 +2,17 @@
 #pragma once
 #include "enum.hpp"
 
-ENUM(CreatureState,
+ENUM(MovementState,
 IDLE,
-WALKING,
-RUNNING,
-SITTING,
-EATING,
-JUMPING)
+WALK,
+RUN,
+SIT)
+
+ENUM(ActionState,
+IDLE,
+EAT,
+ATTACK,
+USE)
 
 ENUM(StationId,
 ANVIL,

@@ -9,7 +9,7 @@
 #include "utils.hpp"
 #include <filesystem>
 
-#define DEBUG_MODE false
+#define DEBUG_MODE true
 
 Game::Game() : trackMix(1), console(this) {
 	framesPerSecond = 0;

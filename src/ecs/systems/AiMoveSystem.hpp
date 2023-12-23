@@ -52,8 +52,8 @@ public:
 
 			if (score < 0.2) continue;
 
-			CreatureState::value oldState = creatureStateComponent.state;
-			creatureStateComponent.state = CreatureState::WALKING;
+			MovementState::value oldState = creatureStateComponent.movementState;
+			creatureStateComponent.movementState = MovementState::WALK;
 			directionComponent.direction = direction;
 			//LOG(Direction::to_string(direction));
 
@@ -65,7 +65,7 @@ public:
 				creatureStateComponent.facing = Direction::WEST;
 			}
 
-			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.state != oldState) {
+			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.movementState != oldState) {
 				creatureStateComponent.lastChange = ticks;
 			}
 		}

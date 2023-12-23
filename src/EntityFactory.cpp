@@ -40,7 +40,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	Entity player = createDynamicEntity(realm, position);
 	if (!player) return 0;
 
-	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, player);
+	world->ecs.addComponent<CreatureStateComponent>({}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	world->ecs.addComponent<MovementComponent>({2}, player);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, player);
@@ -71,10 +71,10 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 
 	world->ecs.addComponent<SpriteComponent>({}, player);
 	CreatureAnimationComponent creatureAnimationComponent = {};
-	creatureAnimationComponent.sprites[CreatureState::IDLE].first = Sprite(SpriteSheet::PLAYER, {3, 0}, {1, 2});
-	creatureAnimationComponent.sprites[CreatureState::IDLE].second = Sprite(SpriteSheet::PLAYER, {3, 2}, {1, 2});
-	creatureAnimationComponent.sprites[CreatureState::WALKING].first = Sprite(SpriteSheet::PLAYER, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::WALKING].second = Sprite(SpriteSheet::PLAYER, {0, 2}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[MovementState::IDLE].first = Sprite(SpriteSheet::PLAYER, {3, 0}, {1, 2});
+	creatureAnimationComponent.sprites[MovementState::IDLE].second = Sprite(SpriteSheet::PLAYER, {3, 2}, {1, 2});
+	creatureAnimationComponent.sprites[MovementState::WALK].first = Sprite(SpriteSheet::PLAYER, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[MovementState::WALK].second = Sprite(SpriteSheet::PLAYER, {0, 2}, {1, 2}, 8, 100);
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);
 
 	return player;
@@ -122,7 +122,7 @@ Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec 
 	Entity monster = createDynamicEntity(realm, position);
 	if (!monster) return 0;
 	
-	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, monster);
+	world->ecs.addComponent<CreatureStateComponent>({}, monster);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, monster);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, monster);
 	world->ecs.addComponent<MovementComponent>({0.5f}, monster);
@@ -141,12 +141,12 @@ Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec 
 
 	world->ecs.addComponent<SpriteComponent>({}, monster);
 	CreatureAnimationComponent creatureAnimationComponent = {};
-	creatureAnimationComponent.sprites[CreatureState::IDLE].first = Sprite(SpriteSheet::MONSTER, {3, 0}, {1, 2});
-	creatureAnimationComponent.sprites[CreatureState::IDLE].second = Sprite(SpriteSheet::MONSTER, {3, 2}, {1, 2});
-	creatureAnimationComponent.sprites[CreatureState::WALKING].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::WALKING].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::RUNNING].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[CreatureState::RUNNING].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[MovementState::IDLE].first = Sprite(SpriteSheet::MONSTER, {3, 0}, {1, 2});
+	creatureAnimationComponent.sprites[MovementState::IDLE].second = Sprite(SpriteSheet::MONSTER, {3, 2}, {1, 2});
+	creatureAnimationComponent.sprites[MovementState::WALK].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[MovementState::WALK].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[MovementState::RUN].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
+	creatureAnimationComponent.sprites[MovementState::RUN].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, monster);
 
 	return monster;
@@ -157,7 +157,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	Entity animal = createDynamicEntity(realm, position);
 	if (!animal) return 0;
 	
-	world->ecs.addComponent<CreatureStateComponent>({CreatureState::IDLE, Direction::EAST}, animal);
+	world->ecs.addComponent<CreatureStateComponent>({}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, animal);
