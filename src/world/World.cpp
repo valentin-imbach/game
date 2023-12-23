@@ -288,6 +288,8 @@ void World::rosterSystems() {
 		{ComponentId::POSITION, ComponentId::HITBOX, ComponentId::DAMAGE});
 	hitboxSystem = ecs.rosterSystem<HitboxSystem>(SystemId::HITBOX,
 		{ComponentId::POSITION, ComponentId::HITBOX});
+	creatureActionSystem = ecs.rosterSystem<CreatureActionSystem>(SystemId::CREATURE_ACTION,
+		{ComponentId::CREATURE_STATE});
 
 	LOG("Systems rostered")
 }
@@ -337,6 +339,8 @@ void World::update(uint dt) {
 	aiFleeSystem->update(ticks, realmManager);
 	aiChaseSystem->update(ticks, realmManager);
 	aiMeleeSystem->update(ticks, realmManager);
+
+	creatureActionSystem->update(ticks, realmManager, forageSystem, updateSet);
 
 	projectileSystem->update(ticks, dt);
 	creatureMovementSystem->update(dt, realmManager);
@@ -529,20 +533,15 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		playerComponent.activeSlot = (playerComponent.activeSlot + 1) % 7;
 	} else if (event.id == InputEventId::PRIMARY) {
 		vec position = camera.worldPosition(event.mousePosition);
-		if (ticks - playerComponent.lastAction > 500) {			
-			Entity item = activeItemContainer.item;
-			if (item && ecs.hasComponent<MeleeItemComponent>(item)) {
-				MeleeItemComponent& damageComponent = ecs.getComponent<MeleeItemComponent>(item);
-				PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-				vec force = vec::normalise(position - positionComponent.position) / 10;
-				EntityFactory::createDamageArea(playerRealm, position, vec(0.2f, 0.2f), ticks, 1, force, player);
-				playerComponent.lastAction = ticks;
-				return true;
-			} else if (forageSystem->update(position, activeItemContainer.item, ticks, updateSet)) {
-				playerComponent.lastAction = ticks;
-				return true;
-			}
+
+		CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
+		if (creatureStateComponent.actionState == ActionState::IDLE) {
+			creatureStateComponent.actionState = ActionState::ATTACK;
+			creatureStateComponent.actionPosition = position;
+			creatureStateComponent.actionStart = ticks;
+			creatureStateComponent.actionEnd = ticks + 500;
 		}
+
 	} else if (event.id == InputEventId::SECONDARY) {
 		vec position = camera.worldPosition(event.mousePosition);
 		pair gridPos = vec::round(position);

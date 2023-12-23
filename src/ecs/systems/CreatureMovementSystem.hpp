@@ -15,29 +15,45 @@ public:
 			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 
-			vec newPosition = positionComponent.position;
+			vec offset;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 			TileId::value tileId = realm->map->getTileId(vec::round(positionComponent.position));
 			float speed = movementComponent.speed * TileTemplate::templates[tileId].speed;
 
 			if (creatureStateComponent.movementState == MovementState::WALK) {
-				newPosition += dt * speed * Direction::unit[directionComponent.direction] / 1000;
+				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			} else if (creatureStateComponent.movementState == MovementState::RUN) {
-				newPosition += dt * 2 * speed * Direction::unit[directionComponent.direction] / 1000;
+				offset += dt * 2 * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
 			if (ecs->hasComponent<ForceComponent>(entity)) {
 				ForceComponent& forceComponent = ecs->getComponent<ForceComponent>(entity);
-				newPosition += forceComponent.force;
+				offset += forceComponent.force;
 				forceComponent.force *= 0.9f;
 			}
 
-			if (!isColliding(colliderComponent.collider, newPosition, realm) || isColliding(colliderComponent.collider, positionComponent.position, realm)) {
+			vec xOffset(offset.x, 0);
+			vec yOffset(0, offset.y);
+
+			bool collision = isColliding(colliderComponent.collider, positionComponent.position, realm);
+			bool xCollision = isColliding(colliderComponent.collider, positionComponent.position + xOffset, realm);
+			bool yCollision = isColliding(colliderComponent.collider, positionComponent.position + yOffset, realm);
+			bool xyCollision = isColliding(colliderComponent.collider, positionComponent.position + offset, realm);
+			
+			vec newPosition = positionComponent.position;
+
+			if (collision || !xyCollision) {
+				newPosition += offset;
+			} else if (!xCollision) {
+				newPosition += xOffset;
+			} else if (!yCollision) {
+				newPosition += yOffset;
+			}
+
+			if (vec::dist(positionComponent.position, newPosition) > 0.01f) {
 				positionComponent.position = newPosition;
-			} else if (!isColliding(colliderComponent.collider, {newPosition.x, positionComponent.position.y}, realm)) {
-				positionComponent.position.x = newPosition.x;
-			} else if (!isColliding(colliderComponent.collider, {positionComponent.position.x, newPosition.y}, realm)) {
-				positionComponent.position.y = newPosition.y;
+			} else {
+				creatureStateComponent.movementState = MovementState::IDLE;
 			}
 		}
 	}

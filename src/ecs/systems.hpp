@@ -33,3 +33,4 @@
 #include "HitboxDrawSystem.hpp"
 #include "DamageSystem.hpp"
 #include "HitboxSystem.hpp"
+#include "CreatureActionSystem.hpp"

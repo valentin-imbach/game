@@ -114,6 +114,7 @@ private:
 	HitboxDrawSystem* hitboxDrawSystem;
 	DamageSystem* damageSystem;
 	HitboxSystem* hitboxSystem;
+	CreatureActionSystem* creatureActionSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

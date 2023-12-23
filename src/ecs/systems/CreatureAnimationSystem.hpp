@@ -14,7 +14,7 @@ public:
 
 			auto spritePair = creatureAnimationComponent.sprites[creatureStateComponent.movementState];
 			Sprite sprite = (creatureStateComponent.facing == Direction::EAST) ? spritePair.first : spritePair.second;
-			sprite.animationStart = creatureStateComponent.lastChange;
+			sprite.animationStart = creatureStateComponent.movementStart;
 			spriteComponent.spriteStack.setSprite(0, sprite, {0, -1});
 
 			// for (auto& layer : spriteComponent.spriteStack.stack) {
@@ -26,7 +26,7 @@ public:
 			// 	}
 
 			// 	sprite.source.y = (creatureStateComponent.facing == Direction::EAST ? 0 : 2);
-			// 	if (creatureStateComponent.lastChange == ticks) sprite.animationReset(ticks - sprite.frameDuration);
+			// 	if (creatureStateComponent.movementStart == ticks) sprite.animationReset(ticks - sprite.frameDuration);
 			// }
 		}
 	}

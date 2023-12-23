@@ -44,7 +44,7 @@ public:
 				creatureStateComponent.movementState = MovementState::WALK;
 			}
 
-			if (creatureStateComponent.movementState != oldState) creatureStateComponent.lastChange = ticks;
+			if (creatureStateComponent.movementState != oldState) creatureStateComponent.movementStart = ticks;
 		}
 	}
 };

@@ -66,7 +66,7 @@ public:
 			}
 
 			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.movementState != oldState) {
-				creatureStateComponent.lastChange = ticks;
+				creatureStateComponent.movementStart = ticks;
 			}
 		}
 	}

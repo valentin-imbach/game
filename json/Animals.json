@@ -7,12 +7,12 @@
 				"size": [1, 2],
 				"frames": 1
 			},
-			"walking": {
+			"walk": {
 				"source": [[0, 0], [0, 2]],
 				"size": [1, 2],
 				"frames": 8
 			},
-			"running": {
+			"run": {
 				"source": [[0, 0], [0, 2]],
 				"size": [1, 2],
 				"frames": 8
@@ -41,12 +41,12 @@
 				"size": [1, 2],
 				"frames": 1
 			},
-			"walking": {
+			"walk": {
 				"source": [[0, 0], [0, 2]],
 				"size": [1, 2],
 				"frames": 4
 			},
-			"running": {
+			"run": {
 				"source": [[0, 0], [0, 2]],
 				"size": [1, 2],
 				"frames": 4

@@ -26,7 +26,10 @@ public:
 			TextureStyle style;
 
 			entityPosition.y -= 0.5;
-			uint timePassed = ticks - playerComponent.lastAction;
+
+			if (creatureStateComponent.actionState != ActionState::ATTACK) continue;
+
+			uint timePassed = ticks - creatureStateComponent.actionStart;
 
 			if (creatureStateComponent.facing == Direction::EAST) {
 				entityPosition.x += 0.625;
@@ -42,7 +45,7 @@ public:
 			}
 			
 			// if (creatureStateComponent.movementState == MovementState::WALK) {
-			// 	uint past = ticks - creatureStateComponent.lastChange;
+			// 	uint past = ticks - creatureStateComponent.movementStart;
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 

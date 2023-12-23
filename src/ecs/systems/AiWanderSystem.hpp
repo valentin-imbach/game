@@ -64,7 +64,7 @@ public:
 			creatureStateComponent.movementState = dir ? MovementState::WALK : MovementState::IDLE;
 			
 			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.movementState != oldState) {
-				creatureStateComponent.lastChange = ticks;
+				creatureStateComponent.movementStart = ticks;
 			}	
 
 		}

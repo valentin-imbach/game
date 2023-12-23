@@ -27,8 +27,12 @@ struct SpriteComponent {
 struct CreatureStateComponent {
 	MovementState::value movementState = MovementState::IDLE;
 	ActionState::value actionState = ActionState::IDLE;
+	vec actionPosition;
+	uint movementStart;
+	uint movementEnd;
+	uint actionStart;
+	uint actionEnd;
 	Direction::value facing = Direction::EAST;
-	uint lastChange = 0;
 };
 
 struct CreatureAnimationComponent {
