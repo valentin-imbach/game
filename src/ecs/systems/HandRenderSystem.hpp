@@ -12,7 +12,8 @@ public:
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
-			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
+			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 
 			Entity item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
 
@@ -27,16 +28,16 @@ public:
 
 			entityPosition.y -= 0.5;
 
-			if (creatureStateComponent.actionState != ActionState::ATTACK) continue;
+			if (actionComponent.actionState != ActionState::ATTACK) continue;
 
-			uint timePassed = ticks - creatureStateComponent.actionStart;
+			uint timePassed = ticks - actionComponent.actionStart;
 
-			if (creatureStateComponent.facing == Direction::EAST) {
+			if (movementComponent.facing == Direction::EAST) {
 				entityPosition.x += 0.625;
 				style.pivot = pair(-8 * camera.zoom, 8 * camera.zoom);
 				style.angle = -90;
 				if (timePassed < 300) style.angle = -90 + std::sin((M_PI * timePassed) / 300) * 90;
-			} else if (creatureStateComponent.facing == Direction::WEST) {
+			} else if (movementComponent.facing == Direction::WEST) {
 				entityPosition.x -= 0.625;
 				style.flip = SDL_FLIP_HORIZONTAL;
 				style.pivot = pair(8 * camera.zoom, 8 * camera.zoom);
@@ -44,8 +45,8 @@ public:
 				if (timePassed < 300) style.angle = 90 - std::sin((M_PI * timePassed) / 300) * 90;
 			}
 			
-			// if (creatureStateComponent.movementState == MovementState::WALK) {
-			// 	uint past = ticks - creatureStateComponent.movementStart;
+			// if (movementComponent.movementState == MovementState::WALK) {
+			// 	uint past = ticks - movementComponent.movementStart;
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 

@@ -37,7 +37,7 @@ public:
 			AiMoveComponent& aiMoveComponent = ecs->getComponent<AiMoveComponent>(entity);
 			if (!aiMoveComponent.move) continue;
 
-			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 
 			Direction::value direction;
@@ -52,21 +52,21 @@ public:
 
 			if (score < 0.2) continue;
 
-			MovementState::value oldState = creatureStateComponent.movementState;
-			creatureStateComponent.movementState = MovementState::WALK;
+			MovementState::value oldState = movementComponent.movementState;
+			movementComponent.movementState = MovementState::WALK;
 			directionComponent.direction = direction;
 			//LOG(Direction::to_string(direction));
 
-			Direction::value oldFacing = creatureStateComponent.facing;
+			Direction::value oldFacing = movementComponent.facing;
 			pair taxi = Direction::taxi[directionComponent.direction];
 			if (taxi.x == 1) {
-				creatureStateComponent.facing = Direction::EAST;
+				movementComponent.facing = Direction::EAST;
 			} else if (taxi.x == -1) {
-				creatureStateComponent.facing = Direction::WEST;
+				movementComponent.facing = Direction::WEST;
 			}
 
-			if (creatureStateComponent.facing != oldFacing || creatureStateComponent.movementState != oldState) {
-				creatureStateComponent.movementStart = ticks;
+			if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
+				movementComponent.movementStart = ticks;
 			}
 		}
 	}

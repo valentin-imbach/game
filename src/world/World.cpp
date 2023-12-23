@@ -180,7 +180,7 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 void World::rosterComponents() {
 	ecs.rosterComponent<PositionComponent>(ComponentId::POSITION);
 	ecs.rosterComponent<SpriteComponent>(ComponentId::SPRITE);
-	ecs.rosterComponent<CreatureStateComponent>(ComponentId::CREATURE_STATE);
+	ecs.rosterComponent<ActionComponent>(ComponentId::ACTION);
 	ecs.rosterComponent<ControllerComponent>(ComponentId::CONTROLLER);
 	ecs.rosterComponent<DirectionComponent>(ComponentId::DIRECTION);
 	ecs.rosterComponent<MovementComponent>(ComponentId::MOVEMENT);
@@ -225,11 +225,11 @@ void World::rosterSystems() {
 	entityDrawSystem = ecs.rosterSystem<EntityDrawSystem>(SystemId::ENTITY_DRAW,
 		{ComponentId::SPRITE, ComponentId::POSITION});
 	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT,
-		{ComponentId::MOVEMENT, ComponentId::CREATURE_STATE, ComponentId::POSITION, ComponentId::COLLIDER});
+		{ComponentId::MOVEMENT, ComponentId::POSITION, ComponentId::COLLIDER});
 	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER,
-		{ComponentId::CONTROLLER, ComponentId::CREATURE_STATE, ComponentId::DIRECTION});
+		{ComponentId::CONTROLLER, ComponentId::MOVEMENT, ComponentId::DIRECTION});
 	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION,
-		{ComponentId::CREATURE_STATE, ComponentId::SPRITE, ComponentId::DIRECTION, ComponentId::CREATURE_ANIMATION});
+		{ComponentId::MOVEMENT, ComponentId::SPRITE, ComponentId::DIRECTION, ComponentId::CREATURE_ANIMATION});
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION,
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,
@@ -255,9 +255,9 @@ void World::rosterSystems() {
 	particleEmitSystem = ecs.rosterSystem<ParticleEmitSystem>(SystemId::PARTICLE_EMIT,
 		{ComponentId::PARTICLE, ComponentId::POSITION});
 	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
-		{ComponentId::PARTICLE, ComponentId::CREATURE_STATE});
+		{ComponentId::PARTICLE, ComponentId::MOVEMENT});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
-		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::CREATURE_STATE});
+		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::MOVEMENT});
 	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
 		{ComponentId::POSITION, ComponentId::CHUNK});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
@@ -289,7 +289,7 @@ void World::rosterSystems() {
 	hitboxSystem = ecs.rosterSystem<HitboxSystem>(SystemId::HITBOX,
 		{ComponentId::POSITION, ComponentId::HITBOX});
 	creatureActionSystem = ecs.rosterSystem<CreatureActionSystem>(SystemId::CREATURE_ACTION,
-		{ComponentId::CREATURE_STATE});
+		{ComponentId::ACTION});
 
 	LOG("Systems rostered")
 }
@@ -507,8 +507,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		guiManager.open(makeInventory(), makeMenu());
 	} else if (event.id == InputEventId::THROW) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-		CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
-		vec position = positionComponent.position + Direction::unit[creatureStateComponent.facing];
+		MovementComponent& movementComponent = ecs.getComponent<MovementComponent>(player);
+		vec position = positionComponent.position + Direction::unit[movementComponent.facing];
 		ecs.addComponent<PositionComponent>({position, positionComponent.realmId}, activeItemContainer.item);
 		pair chunk = vec::round(position / CHUNK_SIZE);
 		playerRealm->linkChunk(activeItemContainer.item, chunk);
@@ -534,12 +534,12 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	} else if (event.id == InputEventId::PRIMARY) {
 		vec position = camera.worldPosition(event.mousePosition);
 
-		CreatureStateComponent& creatureStateComponent = ecs.getComponent<CreatureStateComponent>(player);
-		if (creatureStateComponent.actionState == ActionState::IDLE) {
-			creatureStateComponent.actionState = ActionState::ATTACK;
-			creatureStateComponent.actionPosition = position;
-			creatureStateComponent.actionStart = ticks;
-			creatureStateComponent.actionEnd = ticks + 500;
+		ActionComponent& actionComponent = ecs.getComponent<ActionComponent>(player);
+		if (actionComponent.actionState == ActionState::IDLE) {
+			actionComponent.actionState = ActionState::ATTACK;
+			actionComponent.actionPosition = position;
+			actionComponent.actionStart = ticks;
+			actionComponent.actionEnd = ticks + 500;
 		}
 
 	} else if (event.id == InputEventId::SECONDARY) {

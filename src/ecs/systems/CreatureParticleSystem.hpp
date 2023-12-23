@@ -9,9 +9,9 @@ public:
 	void update() {
 		for (Entity entity : entities) {
 			ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);
-			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 
-			if (creatureStateComponent.movementState == MovementState::WALK || creatureStateComponent.movementState == MovementState::RUN) {
+			if (movementComponent.movementState == MovementState::WALK || movementComponent.movementState == MovementState::RUN) {
 				particleComponent.active = true;
 			} else {
 				particleComponent.active = false;

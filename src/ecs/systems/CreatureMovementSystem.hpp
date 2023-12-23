@@ -12,18 +12,18 @@ public:
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
 			ColliderComponent& colliderComponent = ecs->getComponent<ColliderComponent>(entity);
 
 			vec offset;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 			TileId::value tileId = realm->map->getTileId(vec::round(positionComponent.position));
-			float speed = movementComponent.speed * TileTemplate::templates[tileId].speed;
 
-			if (creatureStateComponent.movementState == MovementState::WALK) {
+			if (movementComponent.movementState == MovementState::WALK) {
+				float speed = movementComponent.walkingSpeed * TileTemplate::templates[tileId].speed;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
-			} else if (creatureStateComponent.movementState == MovementState::RUN) {
-				offset += dt * 2 * speed * Direction::unit[directionComponent.direction] / 1000;
+			} else if (movementComponent.movementState == MovementState::RUN) {
+				float speed = movementComponent.runningSpeed * TileTemplate::templates[tileId].speed;
+				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
 			if (ecs->hasComponent<ForceComponent>(entity)) {
@@ -53,7 +53,7 @@ public:
 			if (vec::dist(positionComponent.position, newPosition) > 0.01f) {
 				positionComponent.position = newPosition;
 			} else {
-				creatureStateComponent.movementState = MovementState::IDLE;
+				movementComponent.movementState = MovementState::IDLE;
 			}
 		}
 	}

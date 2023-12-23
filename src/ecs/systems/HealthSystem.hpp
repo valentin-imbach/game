@@ -10,7 +10,7 @@ public:
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
-			if (ecs->hasComponent<CreatureStateComponent>(entity)) {
+			if (ecs->hasComponent<ActionComponent>(entity)) {
 				SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 				if (ticks < healthComponent.lastDamage + 200) {
 					spriteComponent.effects[SpriteEffectId::HURT] = {true, ticks};

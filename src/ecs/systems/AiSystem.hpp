@@ -32,7 +32,7 @@ public:
 	// 	AiWanderComponent& aiWanderComponent = ecs->getComponent<AiWanderComponent>(entity);
 	// 	PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 	// 	AiMoveComponent& aiMoveComponent = ecs->getComponent<AiMoveComponent>(entity);
-	// 	CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
+	// 	ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 	// 	DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 
 	// 	if (change) aiWanderComponent.position = positionComponent.position;

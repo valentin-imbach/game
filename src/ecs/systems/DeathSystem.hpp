@@ -14,7 +14,7 @@ public:
 				Realm* realm = realmManager.getRealm(positionComponent.realmId);
 				realm->unlinkChunk(entity, positionComponent.chunk);
 
-				if (ecs->hasComponent<CreatureStateComponent>(entity)) {
+				if (ecs->hasComponent<ActionComponent>(entity)) {
 					for (int i = 0; i < 10; i++) {
 						particleSystem.emit(ParticleStyle::templates[ParticleId::DEATH], positionComponent.position, positionComponent.realmId);
 					}

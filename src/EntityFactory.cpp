@@ -40,9 +40,9 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	Entity player = createDynamicEntity(realm, position);
 	if (!player) return 0;
 
-	world->ecs.addComponent<CreatureStateComponent>({}, player);
+	world->ecs.addComponent<ActionComponent>({}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
-	world->ecs.addComponent<MovementComponent>({2}, player);
+	world->ecs.addComponent<MovementComponent>({2, 3}, player);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, player);
 	world->ecs.addComponent<ControllerComponent>({}, player);
 
@@ -122,10 +122,10 @@ Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec 
 	Entity monster = createDynamicEntity(realm, position);
 	if (!monster) return 0;
 	
-	world->ecs.addComponent<CreatureStateComponent>({}, monster);
+	world->ecs.addComponent<ActionComponent>({}, monster);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, monster);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, monster);
-	world->ecs.addComponent<MovementComponent>({0.5f}, monster);
+	world->ecs.addComponent<MovementComponent>({0.5f, 1}, monster);
 
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, monster);
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, monster);
@@ -157,7 +157,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	Entity animal = createDynamicEntity(realm, position);
 	if (!animal) return 0;
 	
-	world->ecs.addComponent<CreatureStateComponent>({}, animal);
+	world->ecs.addComponent<ActionComponent>({}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
 	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, animal);
@@ -173,7 +173,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 
 	AnimalTemplate& animalTemplate = AnimalTemplate::templates[animalId];
 
-	world->ecs.addComponent<MovementComponent>({animalTemplate.speed.x}, animal);
+	world->ecs.addComponent<MovementComponent>({animalTemplate.speed.x, animalTemplate.speed.y}, animal);
 	world->ecs.addComponent<ColliderComponent>({animalTemplate.collider}, animal);	
 	world->ecs.addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
 	world->ecs.addComponent<LootComponent>({animalTemplate.lootTable}, animal);

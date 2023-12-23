@@ -24,23 +24,23 @@ struct SpriteComponent {
 	std::array<std::pair<bool, uint>, SpriteEffectId::count> effects = {};
 };
 
-struct CreatureStateComponent {
+struct MovementComponent {
+	float walkingSpeed;
+	float runningSpeed;
 	MovementState::value movementState = MovementState::IDLE;
+	Direction::value facing = Direction::EAST;
+	uint movementStart = 0;
+};
+
+struct ActionComponent {
 	ActionState::value actionState = ActionState::IDLE;
 	vec actionPosition;
-	uint movementStart;
-	uint movementEnd;
 	uint actionStart;
 	uint actionEnd;
-	Direction::value facing = Direction::EAST;
 };
 
 struct CreatureAnimationComponent {
 	std::array<std::pair<Sprite, Sprite>, MovementState::count> sprites;
-};
-
-struct MovementComponent {
-	float speed;
 };
 
 struct ControllerComponent {};

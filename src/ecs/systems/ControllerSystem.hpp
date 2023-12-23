@@ -10,7 +10,7 @@ class ControllerSystem : public System {
 public:
 	void update(InputState& inputState, bool active, uint ticks) {
 		for (Entity entity : entities) {
-			CreatureStateComponent& creatureStateComponent = ecs -> getComponent<CreatureStateComponent>(entity);
+			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 			DirectionComponent& directionComponent = ecs -> getComponent<DirectionComponent>(entity);
 
 			pair sum(1, 1);
@@ -22,9 +22,9 @@ public:
 
 				pair mpos = Window::instance->mousePosition;
 				if (mpos.x > Window::instance->size.x / 2) {
-					creatureStateComponent.facing = Direction::EAST;
+					movementComponent.facing = Direction::EAST;
 				} else {
-					creatureStateComponent.facing = Direction::WEST;
+					movementComponent.facing = Direction::WEST;
 				}
 			}
 
@@ -37,14 +37,14 @@ public:
 			if (sum.x == 1 && sum.y == 2) directionComponent.direction = Direction::from_int(7);
 			if (sum.x == 2 && sum.y == 2) directionComponent.direction = Direction::from_int(8);
 
-			MovementState::value oldState = creatureStateComponent.movementState;
+			MovementState::value oldState = movementComponent.movementState;
 			if (sum.x == 1 && sum.y == 1) {
-				creatureStateComponent.movementState = MovementState::IDLE;
+				movementComponent.movementState = MovementState::IDLE;
 			} else {
-				creatureStateComponent.movementState = MovementState::WALK;
+				movementComponent.movementState = MovementState::WALK;
 			}
 
-			if (creatureStateComponent.movementState != oldState) creatureStateComponent.movementStart = ticks;
+			if (movementComponent.movementState != oldState) movementComponent.movementStart = ticks;
 		}
 	}
 };

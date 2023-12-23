@@ -30,8 +30,6 @@ public:
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);
 			if (aiComponent.state != AiState::MELEE) continue;
 			
-			CreatureStateComponent& creatureStateComponent = ecs->getComponent<CreatureStateComponent>(entity);
-			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiMeleeComponent& aiMeleeComponent = ecs->getComponent<AiMeleeComponent>(entity);
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
