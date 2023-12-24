@@ -539,7 +539,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			actionComponent.actionState = ActionState::ATTACK;
 			actionComponent.actionPosition = position;
 			actionComponent.actionStart = ticks;
-			actionComponent.actionEnd = ticks + 500;
+			actionComponent.actionEvent = ticks + 150;
+			actionComponent.actionEnd = ticks + 300;
 		}
 
 	} else if (event.id == InputEventId::SECONDARY) {

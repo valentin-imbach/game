@@ -34,9 +34,11 @@ struct MovementComponent {
 
 struct ActionComponent {
 	ActionState::value actionState = ActionState::IDLE;
-	vec actionPosition;
-	uint actionStart;
-	uint actionEnd;
+	vec actionPosition = {};
+	uint actionStart = 0;
+	uint actionEvent = 0;
+	uint actionEnd = 0;
+	bool done = false;
 };
 
 struct CreatureAnimationComponent {
