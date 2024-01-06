@@ -68,8 +68,8 @@ public:
 				int variation = world->playerRealm->environment->variationMap->get(playerPosition);
 				text += "Variation: " + std::to_string(variation) + '\n';
 
-				TileId::value tileId = world->playerRealm->map->getTileId(playerPosition);
-				text += "Tile: " + TileId::to_string(tileId) + '\n';
+				GroundId::value groundId = world->playerRealm->map->getGroundId(playerPosition);
+				text += "Tile: " + GroundId::to_string(groundId) + '\n';
 			}
 		}
 

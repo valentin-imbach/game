@@ -16,7 +16,7 @@ RAINFOREST,
 MOUNTAIN)
 
 struct BiomeGroundTemplate {
-	TileId::value tileId = TileId::NONE;
+	GroundId::value groundId = GroundId::NONE;
 	std::vector<std::pair<ResourceId::value, int>> resources;
 };
 

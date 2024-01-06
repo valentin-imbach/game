@@ -3,7 +3,7 @@
 #include "utils.hpp"
 #include "Sprite.hpp"
 
-ENUM(TileId,
+ENUM(GroundId,
 ROCK_WALL,
 PLANKS,
 GRASS,
@@ -11,12 +11,13 @@ SOIL,
 DIRT,
 MUD,
 ROCK,
+MUD_WALL,
 GRAVEL,
 WATER,
 SAND)
 
-struct TileTemplate {
-	TileId::value tileId = TileId::NONE;
+struct GroundTemplate {
+	GroundId::value groundId = GroundId::NONE;
 	SpriteSheet::value spriteSheet = SpriteSheet::NONE;
 	uint colour = 0;
 	float speed = 1.0f;
@@ -27,13 +28,14 @@ struct TileTemplate {
 	bool wall = false;
 
 	static void setTemplates();
-	static std::array<TileTemplate, TileId::count> templates;
+	static std::array<GroundTemplate, GroundId::count> templates;
 };
 
 class Tile {
 public:
-	Tile(TileId::value tileId);
-	TileId::value tileId;
+	Tile(GroundId::value groundId, GroundId::value wallId = GroundId::NONE);
+	GroundId::value groundId;
+	GroundId::value wallId;
 	SpriteStack sprites;
 };
 

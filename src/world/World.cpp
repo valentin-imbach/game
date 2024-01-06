@@ -27,7 +27,7 @@ void World::init() {
 	CraftingKindRecipe::setRecipes();
 	BuildKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
-	TileTemplate::setTemplates();
+	GroundTemplate::setTemplates();
 	AnimalTemplate::setTemplates();
 
 	guiManager.world = this;
@@ -37,6 +37,7 @@ void World::init() {
 World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
 	init();
 
+	if (debug) seed = 4;
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
 	spawn = spawnRealm->findFree(pair(50,50));
 	Entity player = EntityFactory::createPlayer(spawnRealm, spawn);
@@ -48,18 +49,27 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 		Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2), RealmType::HOUSE);
 		Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3), RealmType::CAVE);
 
-		Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
+		//Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
+
+		for (int x = 0; x < 4; x++) {
+			spawnRealm->map->tiles[spawn.x + x][spawn.y]->wallId = GroundId::MUD_WALL;
+		}
+
+		spawnRealm->map->tiles[spawn.x + 2][spawn.y - 1]->wallId = GroundId::MUD_WALL;
+		spawnRealm->map->tiles[spawn.x + 3][spawn.y - 1]->wallId = GroundId::MUD_WALL;
+
+		spawnRealm->map->updateStyle();
 		
 		//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 
 		// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
 		// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
 
-		EntityFactory::createCrop(CropId::PARSNIP, spawnRealm, spawn + pair(1, -1));
+		//EntityFactory::createCrop(CropId::PARSNIP, spawnRealm, spawn + pair(1, -1));
 
 		//LOG(ecs.getComponent<PositionComponent>(player).chunk);
 
-		EntityFactory::createMonster(AnimalId::COW, spawnRealm, spawnRealm->findFree(pair(55,55)));
+		//EntityFactory::createMonster(AnimalId::COW, spawnRealm, spawnRealm->findFree(pair(55,55)));
 
 		Entity axe = ecs.createEntity();
 		SpriteStack axeSprites;
@@ -563,9 +573,9 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			}
 		} else {
 			if (hasItemKind(activeItemContainer.item, ItemKind::HOE)) {
-				TileId:: value tileId = playerRealm->map->getTileId(gridPos);
-				if (tileId == TileId::DIRT || tileId == TileId::GRASS) {
-					playerRealm->map->tiles[gridPos.x][gridPos.y]->tileId = TileId::SOIL;
+				GroundId:: value groundId = playerRealm->map->getGroundId(gridPos);
+				if (groundId == GroundId::DIRT || groundId == GroundId::GRASS) {
+					playerRealm->map->tiles[gridPos.x][gridPos.y]->groundId = GroundId::SOIL;
 					playerRealm->map->updateStyle(gridPos, true);
 					return true;
 				}

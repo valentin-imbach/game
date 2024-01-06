@@ -138,10 +138,10 @@ bool Console::execute(std::string input) {
 		ecs.getComponent<InventoryComponent>(player).inventory.clear(true);
 	} else if (inputs[0] == "tile") {
 		if (inputs.size() != 2 || !game->world || !player) return false;
-		TileId::value tileId = TileId::from_string(inputs[1]);
-		if (!tileId) return false;
+		GroundId::value groundId = GroundId::from_string(inputs[1]);
+		if (!groundId) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		game->world->playerRealm->map->tiles[position.x][position.y]->tileId = tileId;
+		game->world->playerRealm->map->tiles[position.x][position.y]->groundId = groundId;
 		game->world->playerRealm->map->updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
 		WeatherId::value weatherId = WeatherId::from_string(inputs[1]);

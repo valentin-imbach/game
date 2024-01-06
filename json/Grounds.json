@@ -1,7 +1,14 @@
 {
 	"rock_wall": {
 		"sprite": "rock_wall",
-		"colour": [0 ,0, 0, 255],
+		"colour": [0, 0, 0, 255],
+		"wall": true,
+		"walk": false,
+		"build": false
+	},
+	"mud_wall": {
+		"sprite": "wall3",
+		"colour": [0, 0, 0, 255],
 		"wall": true,
 		"walk": false,
 		"build": false

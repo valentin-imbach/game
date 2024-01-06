@@ -26,14 +26,14 @@ void BiomeTemplate::setTemplates() {
         }
 
 		for (auto& ground : biome_value["grounds"]) {
-			TileId::value tileId = TileId::from_string(ground["tile"]);
-			if (!tileId) {
-				WARNING("Unrecognised TileId:", ground["tile"]);
+			GroundId::value groundId = GroundId::from_string(ground["tile"]);
+			if (!groundId) {
+				WARNING("Unrecognised GroundId:", ground["tile"]);
 				continue;
 			}
 
 			BiomeGroundTemplate biomeGround;
-			biomeGround.tileId = tileId;
+			biomeGround.groundId = groundId;
 
 			for (auto& [resource_key, resource_value] : ground["resources"].items()) {
 				ResourceId::value resourceId = ResourceId::from_string(resource_key);

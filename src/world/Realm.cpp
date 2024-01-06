@@ -36,7 +36,7 @@ void Realm::generateWorld(pair size) {
 			Biome::value biome = environment->getBiome(position);
 			int variation = environment->variationMap->get(position);
 			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
-			map->tiles[x][y] = std::make_unique<Tile>(ground.tileId);
+			map->tiles[x][y] = std::make_unique<Tile>(ground.groundId);
 		}
 	}
 
@@ -67,7 +67,7 @@ void Realm::generateHouse(pair size) {
 
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
-			map->tiles[x][y] = std::make_unique<Tile>(TileId::PLANKS);
+			map->tiles[x][y] = std::make_unique<Tile>(GroundId::PLANKS);
 		}
 	}
 }
@@ -125,7 +125,7 @@ void Realm::generateCave(int count, int length) {
 				}
 			}
 			if (c > 4) {
-				map->tiles[x][y] = std::make_unique<Tile>(TileId::ROCK);
+				map->tiles[x][y] = std::make_unique<Tile>(GroundId::ROCK);
 			}
 		}
 	}
@@ -134,15 +134,15 @@ void Realm::generateCave(int count, int length) {
 	for (int x = 1; x < size.x - 1; x++) {
 		for (int y = 1; y < size.y - 1; y++) {
 			pair pos(x, y);
-			if (map->getTileId(pos)) continue;
+			if (map->getGroundId(pos)) continue;
 			bool wall = false;
 			for (int dx = -1; dx <= 1; dx++) {
 				for (int dy = -1; dy <= 1; dy++) {
 					pair neig(x + dx, y + dy);
-					if (map->getTileId(neig) == TileId::ROCK) wall = true;
+					if (map->getGroundId(neig) == GroundId::ROCK) wall = true;
 				}
 			}
-			if (wall) map->tiles[x][y] = std::make_unique<Tile>(TileId::ROCK_WALL);
+			if (wall) map->tiles[x][y] = std::make_unique<Tile>(GroundId::ROCK_WALL);
 		}
 	}
 
@@ -222,15 +222,16 @@ bool Realm::free(pair anker, pair size) {
 		for (int y = 0; y < size.y; y++) {
 			pair pos = anker + pair(x, y);
 			if (gridMap.find(pos) != gridMap.end()) return false;
-			if (!map->getTileId(pos) || TileTemplate::templates[map->getTileId(pos)].wall) return false;
+			if (!map->getGroundId(pos) || GroundTemplate::templates[map->getGroundId(pos)].wall) return false;
 		}
 	}
 	return true;
 }
 
 bool Realm::walkable(pair position) {
-	TileId::value tileId = map->getTileId(position);
-	if (!TileTemplate::templates[tileId].walk) return false;
+	GroundId::value groundId = map->getGroundId(position);
+	if (map->getWallId(position)) return false;
+	if (!GroundTemplate::templates[groundId].walk) return false;
 	if (solidMap.find(position) != solidMap.end()) return false;
 	return true;
 }

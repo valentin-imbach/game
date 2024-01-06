@@ -16,13 +16,13 @@ public:
 
 			vec offset;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			TileId::value tileId = realm->map->getTileId(vec::round(positionComponent.position));
+			GroundId::value groundId = realm->map->getGroundId(vec::round(positionComponent.position));
 
 			if (movementComponent.movementState == MovementState::WALK) {
-				float speed = movementComponent.walkingSpeed * TileTemplate::templates[tileId].speed;
+				float speed = movementComponent.walkingSpeed * GroundTemplate::templates[groundId].speed;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			} else if (movementComponent.movementState == MovementState::RUN) {
-				float speed = movementComponent.runningSpeed * TileTemplate::templates[tileId].speed;
+				float speed = movementComponent.runningSpeed * GroundTemplate::templates[groundId].speed;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
