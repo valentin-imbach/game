@@ -42,7 +42,7 @@ struct ActionComponent {
 };
 
 struct CreatureAnimationComponent {
-	std::array<std::pair<Sprite, Sprite>, MovementState::count> sprites;
+	std::array<std::pair<SpriteStack, SpriteStack>, MovementState::count> sprites;
 };
 
 struct ControllerComponent {};

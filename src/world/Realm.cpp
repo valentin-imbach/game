@@ -2,11 +2,13 @@
 #include "Realm.hpp"
 #include "World.hpp"
 #include "EntityFactory.hpp"
+#include "Dungeon.hpp"
 
 Realm::Realm(RealmId realmId, uint seed, RealmType::value realmType) : realmId(realmId), seed(seed) {
 	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100));
 	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
 	if (realmType == RealmType::CAVE) generateCave(3, 500);
+	if (realmType == RealmType::DUNGEON) generateDungeon();
 
 	map->updateStyle();
 
@@ -59,6 +61,44 @@ void Realm::generateWorld(pair size) {
 			}
 		}
 	}
+
+	spawn = pair(0, 0);
+}
+
+void Realm::generateDungeon() {
+
+	std::unique_ptr<dungeon::Node> dungeon = std::make_unique<dungeon::EntryNode>(seed);
+	dungeon->build();
+
+	int u = 0;
+	int d = 0;
+	int l = 0;
+	int r = 0;
+
+	for (pair p : dungeon->layout.grid) {
+		r = std::max(r, p.x);
+		l = std::min(l, p.x);
+		u = std::min(u, p.y);
+		d = std::max(d, p.y);
+	}
+
+	int padding = 2;
+	pair size(r - l + 1 + 2 * padding, d - u + 1 + 2 * padding);
+	pair offset(l - padding, u - padding);
+
+	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), RealmType::CAVE);
+
+	for (int x = 0; x < map->size.x; x++) {
+		for (int y = 0; y < map->size.y; y++) {
+			pair pos(x,y);
+			if (dungeon->layout.grid.find(pos + offset) != dungeon->layout.grid.end()) {
+				map->tiles[x][y] = std::make_unique<Tile>(GroundId::ROCK);
+			}
+		}
+	}
+
+	spawn = -offset;
 }
 
 void Realm::generateHouse(pair size) {
@@ -70,6 +110,8 @@ void Realm::generateHouse(pair size) {
 			map->tiles[x][y] = std::make_unique<Tile>(GroundId::PLANKS);
 		}
 	}
+
+	spawn = pair(0, 0);
 }
 
 void Realm::generateCave(int count, int length) {
@@ -165,6 +207,8 @@ void Realm::generateCave(int count, int length) {
 			}
 		}
 	}
+
+	spawn = entry;
 }
 
 void Realm::linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque) {

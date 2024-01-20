@@ -5,7 +5,6 @@
 #include "Item.hpp"
 #include "Components.hpp"
 #include "World.hpp"
-#include "AnimalTemplates.hpp"
 
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;
@@ -71,10 +70,17 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 
 	world->ecs.addComponent<SpriteComponent>({}, player);
 	CreatureAnimationComponent creatureAnimationComponent = {};
-	creatureAnimationComponent.sprites[MovementState::IDLE].first = Sprite(SpriteSheet::PLAYER, {3, 0}, {1, 2});
-	creatureAnimationComponent.sprites[MovementState::IDLE].second = Sprite(SpriteSheet::PLAYER, {3, 2}, {1, 2});
-	creatureAnimationComponent.sprites[MovementState::WALK].first = Sprite(SpriteSheet::PLAYER, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[MovementState::WALK].second = Sprite(SpriteSheet::PLAYER, {0, 2}, {1, 2}, 8, 100);
+
+	for (int i = 0; i < CreatureLayer::count - 1; i++) {
+		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {3, 2*i}, {1, 2}), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {3, 16 + 2*i}, {1, 2}), {0, -1});
+	}
+
+	for (int i = 0; i < CreatureLayer::count - 1; i++) {
+		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {0, 2*i}, {1, 2}, 8, 100), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {0, 16 + 2*i}, {1, 2}, 8, 100), {0, -1});
+	}
+
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);
 
 	return player;
@@ -104,6 +110,24 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	// }
 
 	return resource;
+}
+
+Entity EntityFactory::createStructure(StructureId::value structureId, Realm* realm, pair position) {
+	if (!structureId) return 0;
+	StructureTemplate& structureTemplate = StructureTemplate::templates[structureId];
+
+	Entity structure = createStaticEntity(realm, position, structureTemplate.size, true, true);
+	if (!structure) return 0;
+
+	SpriteStack spriteStack;
+	for (int i = 0; i < structureTemplate.spriteTemplates.size(); i++) {
+		SpriteTemplate& sprite = structureTemplate.spriteTemplates[i];
+		uint var = noise::Int(seed++, 0, sprite.variations);
+		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
+		spriteStack.setSprite(i, Sprite(structureTemplate.spriteSheet, spritePosition, sprite.size), sprite.offset);
+	}
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, structure);
+	return structure;
 }
 
 Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair position) {
@@ -139,15 +163,15 @@ Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec 
 	world->ecs.addComponent<AiChaseComponent>({}, monster);
 	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, monster);
 
-	world->ecs.addComponent<SpriteComponent>({}, monster);
-	CreatureAnimationComponent creatureAnimationComponent = {};
-	creatureAnimationComponent.sprites[MovementState::IDLE].first = Sprite(SpriteSheet::MONSTER, {3, 0}, {1, 2});
-	creatureAnimationComponent.sprites[MovementState::IDLE].second = Sprite(SpriteSheet::MONSTER, {3, 2}, {1, 2});
-	creatureAnimationComponent.sprites[MovementState::WALK].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[MovementState::WALK].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[MovementState::RUN].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
-	creatureAnimationComponent.sprites[MovementState::RUN].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
-	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, monster);
+	// world->ecs.addComponent<SpriteComponent>({}, monster);
+	// CreatureAnimationComponent creatureAnimationComponent = {};
+	// creatureAnimationComponent.sprites[MovementState::IDLE].first = Sprite(SpriteSheet::MONSTER, {3, 0}, {1, 2});
+	// creatureAnimationComponent.sprites[MovementState::IDLE].second = Sprite(SpriteSheet::MONSTER, {3, 2}, {1, 2});
+	// creatureAnimationComponent.sprites[MovementState::WALK].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
+	// creatureAnimationComponent.sprites[MovementState::WALK].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
+	// creatureAnimationComponent.sprites[MovementState::RUN].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
+	// creatureAnimationComponent.sprites[MovementState::RUN].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
+	// world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, monster);
 
 	return monster;
 }
@@ -178,7 +202,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	world->ecs.addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
 	world->ecs.addComponent<LootComponent>({animalTemplate.lootTable}, animal);
 	world->ecs.addComponent<HealthComponent>({animalTemplate.health, animalTemplate.health}, animal);
-	world->ecs.addComponent<CreatureAnimationComponent>({animalTemplate.sprites}, animal);
+	// world->ecs.addComponent<CreatureAnimationComponent>({animalTemplate.sprites}, animal);
 
 	return animal;
 }
@@ -266,4 +290,13 @@ Entity EntityFactory::createDamageArea(Realm* realm, vec position, Shape shape, 
 	world->ecs.addComponent<HitboxComponent>({shape}, damageArea);
 	world->ecs.addComponent<DamageComponent>({1, start, duration, force, imune}, damageArea);
 	return damageArea;
+}
+
+Entity EntityFactory::createPortal(Realm* realm, pair position, Realm* otherRealm, pair entry) {
+	Entity portal = createStaticEntity(realm, position, {1, 1}, true, true);
+	SpriteStack portalSprites;
+	portalSprites.setSprite(0, Sprite(SpriteSheet::CAVE, pair(0, 0), pair(1, 1)));
+	world->ecs.addComponent<SpriteComponent>({portalSprites}, portal);
+	world->ecs.addComponent<PortalComponent>({otherRealm->realmId, entry}, portal);
+	return portal;
 }

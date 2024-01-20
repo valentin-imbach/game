@@ -66,6 +66,8 @@ void Map::updateStyle(pair position, bool propagate) {
 	GroundId::value wallId = getWallId(position);
 	GroundId::value lw = getWallId(position + pair(-1, 0));
 	GroundId::value rw = getWallId(position + pair(1, 0));
+	GroundId::value tw = getWallId(position + pair(0, -1));
+	GroundId::value bw = getWallId(position + pair(0, 1));
 
 
 	if (groundId == GroundId::ROCK_WALL) {
@@ -106,15 +108,18 @@ void Map::updateStyle(pair position, bool propagate) {
 
 		if (wallId == GroundId::MUD_WALL) {
 			if (lw != GroundId::MUD_WALL) {
-				sprites.emplace_back(Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(0, 1)), 0);
+				sprites.emplace_back(Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(0, 2)), 0);
 			} else if (rw != GroundId::MUD_WALL) {
-				sprites.emplace_back(Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(2, 1)), 0);
+				sprites.emplace_back(Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(4, 2)), 0);
+			} else if (bw == GroundId::MUD_WALL) {
+				Sprite baseSprite = Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(2, 2), pair(1, 1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
+				sprites.emplace_back(baseSprite, 0);
 			} else {
-				Sprite baseSprite = Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(1,1), pair(1,1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
+				Sprite baseSprite = Sprite(GroundTemplate::templates[wallId].spriteSheet, pair(2, 3), pair(1, 1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
 				sprites.emplace_back(baseSprite, 0);
 			}
 
-			if (top < GroundId::MUD_WALL) {
+			if (!tw && top < GroundId::MUD_WALL) {
 				Sprite sprite = Sprite(GroundTemplate::templates[top].spriteSheet, pair(1, 5), pair(1,1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
 				sprites.emplace_back(sprite, top - 100);
 				if (tr < top) {

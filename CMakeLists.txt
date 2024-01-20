@@ -29,6 +29,7 @@ src/item/Loot.cpp
 src/item/Crafting.cpp
 src/templates/ResourceTemplates.cpp
 src/templates/AnimalTemplates.cpp
+src/templates/StructureTemplates.cpp
 src/EntityFactory.cpp
 src/Gui/Console.cpp
 src/ParticleSystem.cpp

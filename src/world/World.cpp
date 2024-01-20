@@ -14,6 +14,7 @@
 #include "Tile.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
+#include "StructureTemplates.hpp"
 
 void World::init() {
 	rosterComponents();
@@ -29,6 +30,7 @@ void World::init() {
 	BiomeTemplate::setTemplates();
 	GroundTemplate::setTemplates();
 	AnimalTemplate::setTemplates();
+	StructureTemplate::setTemplates();
 
 	guiManager.world = this;
 	EntityFactory::world = this;
@@ -48,17 +50,23 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 	if (debug) {
 		Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2), RealmType::HOUSE);
 		Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3), RealmType::CAVE);
+		Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + rand()), RealmType::DUNGEON);
 
 		//Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
 
-		for (int x = 0; x < 4; x++) {
+		for (int x = 0; x < 6; x++) {
 			spawnRealm->map->tiles[spawn.x + x][spawn.y]->wallId = GroundId::MUD_WALL;
 		}
 
-		spawnRealm->map->tiles[spawn.x + 2][spawn.y - 1]->wallId = GroundId::MUD_WALL;
-		spawnRealm->map->tiles[spawn.x + 3][spawn.y - 1]->wallId = GroundId::MUD_WALL;
+		for (int x = 1; x < 5; x++) {
+			spawnRealm->map->tiles[spawn.x + x][spawn.y + 1]->wallId = GroundId::MUD_WALL;
+		}
 
 		spawnRealm->map->updateStyle();
+
+		EntityFactory::createPortal(spawnRealm, spawn + pair(3, 1), dungeon, dungeon->spawn);
+
+		EntityFactory::createStructure(StructureId::TENT, spawnRealm, spawn + pair(0, 3));
 		
 		//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 

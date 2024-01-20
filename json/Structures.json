@@ -1,0 +1,9 @@
+{
+	"tent": {
+		"sheet": "small_tent",
+		"sprites": [
+			{"anker": [0, 0], "size": [3, 4], "offset": [0, -1], "variations" : 1}
+		],
+		"size": [3, 3]
+	}
+}

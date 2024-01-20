@@ -6,6 +6,7 @@
 #include "ResourceTemplates.hpp"
 #include "AnimalTemplates.hpp"
 #include "Components.hpp"
+#include "StructureTemplates.hpp"
 
 class World;
 class Realm;
@@ -20,8 +21,10 @@ public:
 	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
 	static Entity createMonster(AnimalId::value animalId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
+	static Entity createStructure(StructureId::value structurId, Realm* realm, pair position);
 	static Entity createCrop(CropId::value cropId, Realm* realm, pair position);
 	static Entity createStation(StationId::value stationId, Realm* realm, pair position, bool link = true);
+	static Entity createPortal(Realm* realm, pair position, Realm* otherRealm, pair entry);
 	
 	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1);
 	static Entity createItem(ItemId::value itemId, uchar count, Realm* realm, vec position);

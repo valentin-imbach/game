@@ -11,7 +11,8 @@ SNOW)
 ENUM(RealmType,
 WORLD,
 HOUSE,
-CAVE)
+CAVE,
+DUNGEON)
 
 class Environment {
 public:

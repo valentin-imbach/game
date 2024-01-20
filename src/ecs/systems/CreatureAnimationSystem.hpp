@@ -13,9 +13,11 @@ public:
 			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
 
 			auto spritePair = creatureAnimationComponent.sprites[movementComponent.movementState];
-			Sprite sprite = (movementComponent.facing == Direction::EAST) ? spritePair.first : spritePair.second;
-			sprite.animationStart = movementComponent.movementStart;
-			spriteComponent.spriteStack.setSprite(0, sprite, {0, -1});
+			SpriteStack spriteStack = (movementComponent.facing == Direction::EAST) ? spritePair.first : spritePair.second;
+			for (int i = 0; i < SPRITE_LAYER_COUNT; i++) {
+				spriteStack.stack[i].sprite.animationStart = movementComponent.movementStart;
+			}
+			spriteComponent.spriteStack = spriteStack;
 
 			// for (auto& layer : spriteComponent.spriteStack.stack) {
 			// 	Sprite& sprite = layer.sprite;

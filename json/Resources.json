@@ -319,7 +319,7 @@
 		],
 		"opaque": false,
 		"level": 1,
-		"health": 3,
+		"health": 1,
 		"sound": "pickup",
 		"loot": {
 			"oak_log": [1, 3]
@@ -331,7 +331,7 @@
 		],
 		"opaque": false,
 		"level": 1,
-		"health": 3,
+		"health": 1,
 		"sound": "pickup",
 		"loot": {
 			"maple_log": [1, 3]
@@ -343,7 +343,7 @@
 		],
 		"opaque": false,
 		"level": 1,
-		"health": 3,
+		"health": 1,
 		"sound": "pickup",
 		"loot": {
 			"spruce_log": [1, 3]
@@ -355,7 +355,7 @@
 		],
 		"opaque": false,
 		"level": 1,
-		"health": 3,
+		"health": 1,
 		"sound": "pickup",
 		"loot": {
 			"birch_log": [1, 3]

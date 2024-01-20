@@ -19,8 +19,11 @@ public:
 	void generateWorld(pair size);
 	void generateHouse(pair size);
 	void generateCave(int count, int length);
+	void generateDungeon();
 
 	// std::unordered_map<pair, Chunk> chunks;
+
+	pair spawn;
 
 	RealmId realmId;
 	SDL_Texture* minimap;
