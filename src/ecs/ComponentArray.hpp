@@ -17,7 +17,6 @@ public:
 protected:
 	std::unordered_map<Entity, uint> entityToIndex;
 	std::unordered_map<uint, Entity> indexToEntity;
-	uint size;
 };
 
 template <typename T>
@@ -33,10 +32,10 @@ public:
 			return;
 		}
 
+		uint size = components.size();
 		entityToIndex[entity] = size;
 		indexToEntity[size] = entity;
-		components[size] = component;
-		size += 1;
+		components.push_back(component);
 
 		if (start) start(entity, component);
 	}
@@ -49,6 +48,8 @@ public:
 
 		uint index = entityToIndex[entity];
 		if (end) end(entity, components[index]);
+
+		uint size = components.size();
 		components[index] = components[size - 1];
 
 		Entity lastEntity = indexToEntity[size - 1];
@@ -57,7 +58,7 @@ public:
 
 		entityToIndex.erase(entity);
 		indexToEntity.erase(size - 1);
-		size -= 1;
+		components.pop_back();
 	}
 
 	T& getComponent(Entity entity) {
@@ -69,6 +70,7 @@ public:
 	}
 
 	void serialise(std::fstream& stream) override {
+		uint size = components.size();
 		serialise_object(stream, size);
 		for (int index = 0; index < size; index++) {
 			Entity entity = indexToEntity[index];
@@ -80,12 +82,15 @@ public:
 	void deserialise(std::fstream& stream) override {
 		entityToIndex.clear();
 		indexToEntity.clear();
+		components.clear();
+		uint size = components.size();
 		deserialise_object(stream, size);
 		for (int index = 0; index < size; index++) {
 			Entity entity;
 			deserialise_object(stream, entity);
 			indexToEntity[index] = entity;
 			entityToIndex[entity] = index;
+			components.emplace_back();
 			deserialise_object(stream, components[index]);
 			if (start) start(entity, components[index]);
 		}
@@ -97,7 +102,7 @@ public:
 	}
 
 private:
-	std::array<T, MAX_ENTITIES> components;
+	std::vector<T> components;
 	std::function<void(Entity, T&)> start;
 	std::function<void(Entity, T&)> end;
 };

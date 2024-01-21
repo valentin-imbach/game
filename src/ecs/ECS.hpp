@@ -12,7 +12,7 @@ public:
 	}
 
 	int entityCount() {
-		return entityManager.entityCount();
+		return entityManager.entityCount;
 	}
 
 	void destroyEntity(Entity entity) {
@@ -30,7 +30,8 @@ public:
 	void deserialise(std::fstream& stream) {
 		entityManager.deserialise(stream);
 		componentManager.deserialise(stream);
-		for (Entity entity = 1; entity <= MAX_ENTITIES; entity++) {
+		for (auto& iter : entityManager.signatures) {
+			Entity entity = iter.first;
 			for (int comp = 1; comp < ComponentId::count; comp++) {
 				if (componentManager.has(entity, ComponentId::from_int(comp))) {
 					entityManager.signatures[entity].set(comp, true);
