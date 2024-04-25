@@ -28,3 +28,4 @@
 #include "shape.hpp"
 #include "serialiser.hpp"
 #include "definitions.hpp"
+#include "colour.hpp"

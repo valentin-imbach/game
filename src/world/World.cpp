@@ -235,6 +235,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<TagComponent>(ComponentId::TAG);
 	ecs.rosterComponent<CreatureAnimationComponent>(ComponentId::CREATURE_ANIMATION);
 	ecs.rosterComponent<DurabilityComponent>(ComponentId::DURABILITY);
+	ecs.rosterComponent<EffectComponent>(ComponentId::EFFECT);
 
 	LOG("Components rostered");
 }
@@ -308,6 +309,8 @@ void World::rosterSystems() {
 		{ComponentId::POSITION, ComponentId::HITBOX});
 	creatureActionSystem = ecs.rosterSystem<CreatureActionSystem>(SystemId::CREATURE_ACTION,
 		{ComponentId::ACTION});
+	effectSystem = ecs.rosterSystem<EffectSystem>(SystemId::EFFECT,
+		{ComponentId::EFFECT});
 
 	LOG("Systems rostered")
 }
@@ -361,6 +364,7 @@ void World::update(uint dt) {
 	creatureActionSystem->update(ticks, realmManager, forageSystem, updateSet);
 
 	projectileSystem->update(ticks, dt);
+	effectSystem->update(ticks);
 	creatureMovementSystem->update(dt, realmManager);
 
 	EntityMap collisions;

@@ -56,7 +56,8 @@ PORTAL,
 MATURITY,
 LAUNCHER,
 PROJECTILE,
-DAMAGE)
+DAMAGE,
+EFFECT)
 
 ENUM(SystemId,
 // Basic
@@ -106,7 +107,8 @@ AI_MELEE,
 // Misc
 PROJECTILE,
 MATURITY,
-DAMAGE)
+DAMAGE,
+EFFECT)
 
 using Entity = uint;
 

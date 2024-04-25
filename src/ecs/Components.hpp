@@ -148,7 +148,7 @@ struct ParticleComponent {
 struct LightComponent {
 	bool active = true;
 	float intensity = 3;
-	SDL_Color tint = {255, 255, 255, 255};
+	Colour tint = {255, 255, 255, 255};
 	float flickerSpeed = 1;
 	float flickerAmplitude = 0;
 };
@@ -236,4 +236,9 @@ struct DamageComponent {
 struct DurabilityComponent {
 	ushort durability;
 	ushort maxDurability;
+};
+
+struct EffectComponent {
+	std::bitset<Effect::count> applicable = {};
+	std::array<uint, Effect::count> effects = {};
 };

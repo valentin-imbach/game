@@ -200,6 +200,13 @@ bool Console::execute(std::string input) {
 	} else if (inputs[0] == "banner") {
 		if (inputs.size() != 2) return false;
 		game->world->guiManager.addBanner(inputs[1]);
+	} else if (inputs[0] == "effect") {
+		if (inputs.size() < 2) return false;
+		Effect::value effect = Effect::from_string(inputs[1]);
+		if (!effect) return false;
+		uint time = 5000;
+		if (inputs.size() > 2) time = std::stoi(inputs[2]);
+		ecs.getComponent<EffectComponent>(player).effects[effect] = game->world->ticks + time;
 	} else {
 		return false;
 	}

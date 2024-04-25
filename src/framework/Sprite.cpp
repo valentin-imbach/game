@@ -13,6 +13,7 @@ void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	pair offset = frame * animationOffset;
 	SDL_Texture* texture = style.outline ? outlineSpriteSheets[spriteSheet] : spriteSheets[spriteSheet];
 	pair dsize = vec::round(scale * BIT * vec(size));
+	style.tint = style.tint.mult(tint);
 	TextureManager::drawTexture(texture, nullptr, BIT * (source + offset), BIT * size, position, dsize, style);
 }
 

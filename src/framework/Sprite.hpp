@@ -70,6 +70,7 @@ public:
 	SpriteSheet::value spriteSheet;
 	uchar frameCount;
 	ushort frameDuration;
+	Colour tint;
 
 private:
 	void animationReset(uint ticks);
@@ -98,7 +99,6 @@ public:
 	void clear();
 	std::pair<pair, pair> bounds();
 
-private:
 	std::array<SpriteLayer, SPRITE_LAYER_COUNT> stack;
 	
 	friend class CreatureAnimationSystem;

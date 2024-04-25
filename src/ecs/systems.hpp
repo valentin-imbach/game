@@ -34,3 +34,4 @@
 #include "DamageSystem.hpp"
 #include "HitboxSystem.hpp"
 #include "CreatureActionSystem.hpp"
+#include "EffectSystem.hpp"

@@ -30,7 +30,7 @@ void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, 
 	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, style.angle, &pivot, style.flip);
 }
 
-void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool centered, bool filled) {
+void TextureManager::drawRect(pair position, pair size, Colour colour, bool centered, bool filled) {
 	if (centered) position -= size / 2;
 	SDL_Rect rect = {position.x, position.y, size.x, size.y};
 	SDL_SetRenderTarget(Window::instance->renderer, NULL);
@@ -39,7 +39,7 @@ void TextureManager::drawRect(pair position, pair size, SDL_Colour colour, bool 
 	filled ? SDL_RenderFillRect(Window::instance->renderer, &rect) : SDL_RenderDrawRect(Window::instance->renderer, &rect);
 }
 
-void TextureManager::drawCirc(pair position, int radius, SDL_Colour colour) {
+void TextureManager::drawCirc(pair position, int radius, Colour colour) {
 	SDL_SetRenderTarget(Window::instance->renderer, NULL);
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
@@ -74,7 +74,7 @@ void TextureManager::drawCirc(pair position, int radius, SDL_Colour colour) {
 	}
 }
 
-SDL_Texture* TextureManager::createTexture(pair size, SDL_Colour colour) {
+SDL_Texture* TextureManager::createTexture(pair size, Colour colour) {
 	SDL_Texture* texture = SDL_CreateTexture(Window::instance->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size.x, size.y);
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderTarget(Window::instance->renderer, texture);

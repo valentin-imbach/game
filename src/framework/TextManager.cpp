@@ -5,7 +5,7 @@
 
 TTF_Font* TextManager::font = nullptr;
 
-Text::Text(std::string text, int style, SDL_Color colour)
+Text::Text(std::string text, int style, Colour colour)
 	: text(text), style(style), colour(colour) {}
 
 void TextManager::Init() {
@@ -41,7 +41,7 @@ pair TextManager::textSize(std::string& text) {
 	return size;
 }
 
-void TextManager::drawText(std::string& text, pair position, bool centred, SDL_Color colour) {
+void TextManager::drawText(std::string& text, pair position, bool centred, Colour colour) {
 	if (!font || text.empty()) return;
 	std::vector<std::string> lines;
 	std::istringstream iss(text);
@@ -61,12 +61,12 @@ void TextManager::drawText(std::string& text, pair position, bool centred, SDL_C
 		return;
 	}
 
-	Uint32 colorKey = SDL_MapRGBA(surface->format, 0, 0, 0, 0);
-    SDL_SetColorKey(surface, SDL_TRUE, colorKey);
+	Uint32 colourKey = SDL_MapRGBA(surface->format, 0, 0, 0, 0);
+    SDL_SetColorKey(surface, SDL_TRUE, colourKey);
 
 	SDL_Rect textRect = {0, 0, 0, 0};
 	for (const auto& line : lines) {
-		SDL_Surface* textSurface = TTF_RenderText_Solid(font, line.c_str(), colour);
+		SDL_Surface* textSurface = TTF_RenderText_Solid(font, line.c_str(), {colour.r, colour.g, colour.b, colour.a});
 		if (!textSurface) {
 			ERROR("Failed to render text:", TTF_GetError());
 			continue;
