@@ -134,9 +134,11 @@ void Game::update(uint dt) {
 		pauseMenu->reposition();
 		pauseMenu->update(nullptr);
 		debugScreen.update(world.get(), framesPerSecond, updatesPerSecond);
+		debugScreen.entity = world->inspect;
 	} else if (gameState == GameState::RUNNING) {
 		world->update(dt);
 		debugScreen.update(world.get(), framesPerSecond, updatesPerSecond);
+		debugScreen.entity = world->inspect;
 	}
 }
 
@@ -232,7 +234,11 @@ void Game::pollEvents(uint dt) {
 				continue;
 			}
 		} else if (event.type == SDL_KEYDOWN) {
-			if (event.key.repeat) continue;
+
+			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
+				inputEvent.id = InputEventId::BACKSPACE;
+			} else if (event.key.repeat) continue;
+
 			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
 				inputEvent.id = InputEventId::ESCAPE;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_E) {
@@ -261,6 +267,8 @@ void Game::pollEvents(uint dt) {
 				inputEvent.id = InputEventId::BACKSPACE;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_F1) {
 				inputEvent.id = InputEventId::DEBUG;
+			} else if (event.key.keysym.scancode == SDL_SCANCODE_I) {
+				inputEvent.id = InputEventId::INSPECT;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
 				inputEvent.id = InputEventId::UP;
 			} else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN) {

@@ -46,13 +46,13 @@ public:
 			if (spriteComponent.effects[SpriteEffectId::HURT].first) style.tint = {255, 50, 50};
 			if (spriteComponent.effects[SpriteEffectId::OUTLINE].first) style.outline = true;
 
-			if (active && ecs->hasComponent<GridComponent>(entity)) {
-				GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
-				vec mpos = camera.worldPosition(Window::instance->mousePosition);
-				if (vec::inside(mpos, vec(gridComponent.anker) - vec(0.5f, 0.5f), gridComponent.size, false)) {
-					style.outline = true;
-				}
-			}
+			// if (active && ecs->hasComponent<GridComponent>(entity)) {
+			// 	GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
+			// 	vec mpos = camera.worldPosition(Window::instance->mousePosition);
+			// 	if (vec::inside(mpos, vec(gridComponent.anker) - vec(0.5f, 0.5f), gridComponent.size, false)) {
+			// 		style.outline = true;
+			// 	}
+			// }
 
 			auto bounds = spriteComponent.spriteStack.bounds();
 			vec size = vec(bounds.second - bounds.first) - vec(1, 1.5f);

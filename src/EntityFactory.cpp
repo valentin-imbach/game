@@ -146,38 +146,48 @@ Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair positi
 	return crop;
 }
 
-Entity EntityFactory::createMonster(AnimalId::value animalId, Realm* realm, vec position) {
-	Entity monster = createDynamicEntity(realm, position);
-	if (!monster) return 0;
+Entity EntityFactory::createEnemy(EnemyId::value enemyId, Realm* realm, vec position) {
+	Entity enemy = createDynamicEntity(realm, position);
+	if (!enemy) return 0;
 	
-	world->ecs.addComponent<ActionComponent>({}, monster);
-	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, monster);
-	world->ecs.addComponent<ForceComponent>({{0, 0}}, monster);
-	world->ecs.addComponent<MovementComponent>({0.5f, 1}, monster);
+	world->ecs.addComponent<ActionComponent>({}, enemy);
+	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, enemy);
+	world->ecs.addComponent<ForceComponent>({{0, 0}}, enemy);
+	world->ecs.addComponent<MovementComponent>({0.5f, 1}, enemy);
 
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, monster);
-	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, monster);
+	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, enemy);
+	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, enemy);
 
-	world->ecs.addComponent<HealthComponent>({20, 20}, monster);
-	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, monster);
+	world->ecs.addComponent<HealthComponent>({20, 20}, enemy);
+	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, enemy);
 
-	world->ecs.addComponent<SensorComponent>({10, EntityTag::ANIMAL}, monster);
-	world->ecs.addComponent<AiComponent>({}, monster);
-	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, monster);
-	world->ecs.addComponent<AiChaseComponent>({}, monster);
-	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, monster);
+	world->ecs.addComponent<SensorComponent>({10, EntityTag::PLAYER}, enemy);
+	world->ecs.addComponent<AiComponent>({}, enemy);
+	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, enemy);
+	world->ecs.addComponent<AiChaseComponent>({}, enemy);
+	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, enemy);
 
-	// world->ecs.addComponent<SpriteComponent>({}, monster);
-	// CreatureAnimationComponent creatureAnimationComponent = {};
-	// creatureAnimationComponent.sprites[MovementState::IDLE].first = Sprite(SpriteSheet::MONSTER, {3, 0}, {1, 2});
-	// creatureAnimationComponent.sprites[MovementState::IDLE].second = Sprite(SpriteSheet::MONSTER, {3, 2}, {1, 2});
-	// creatureAnimationComponent.sprites[MovementState::WALK].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
-	// creatureAnimationComponent.sprites[MovementState::WALK].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
-	// creatureAnimationComponent.sprites[MovementState::RUN].first = Sprite(SpriteSheet::MONSTER, {0, 0}, {1, 2}, 8, 100);
-	// creatureAnimationComponent.sprites[MovementState::RUN].second = Sprite(SpriteSheet::MONSTER, {0, 2}, {1, 2}, 8, 100);
-	// world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, monster);
+	world->ecs.addComponent<SpriteComponent>({}, enemy);
+	CreatureAnimationComponent creatureAnimationComponent = {};
 
-	return monster;
+	for (int i = 1; i < CreatureLayer::count; i++) {
+		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {3, 2*i-2}, {1, 2}), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {3, 16 + 2*i-2}, {1, 2}), {0, -1});
+	}
+
+	for (int i = 1; i < CreatureLayer::count; i++) {
+		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
+	}
+
+	for (int i = 1; i < CreatureLayer::count; i++) {
+		creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
+	}
+
+	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, enemy);
+
+	return enemy;
 }
 
 

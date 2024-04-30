@@ -36,7 +36,10 @@ public:
 
 			if (ticks - aiMeleeComponent.lastHit < aiMeleeComponent.cooldown) continue;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			vec force = vec::normalise(sensorComponent.position - positionComponent.position) / 10;
+			vec force = {0,0.1};
+			if (vec::dist(sensorComponent.position, positionComponent.position) > 0.001f) {
+				force = vec::normalise(sensorComponent.position - positionComponent.position) / 10;
+			}
 			EntityFactory::createDamageArea(realm, sensorComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);
 			aiMeleeComponent.lastHit = ticks;
 

@@ -30,6 +30,7 @@ struct MovementComponent {
 	MovementState::value movementState = MovementState::IDLE;
 	Direction::value facing = Direction::EAST;
 	uint movementStart = 0;
+	float speedBonus = 0;
 };
 
 struct ActionComponent {
@@ -238,7 +239,13 @@ struct DurabilityComponent {
 	ushort maxDurability;
 };
 
+struct EffectInstance {
+	uint level = 1;
+	uint end = 0;
+	uint lastEvent = 0;
+};
+
 struct EffectComponent {
 	std::bitset<Effect::count> applicable = {};
-	std::array<uint, Effect::count> effects = {};
+	std::array<EffectInstance, Effect::count> effects = {};
 };

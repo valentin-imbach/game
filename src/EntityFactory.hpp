@@ -19,7 +19,7 @@ public:
 	EntityFactory() = delete;
 	static Entity createPlayer(Realm* realm, vec position);
 	static Entity createAnimal(AnimalId::value animalId, Realm* realm, vec position);
-	static Entity createMonster(AnimalId::value animalId, Realm* realm, vec position);
+	static Entity createEnemy(EnemyId::value enemyId, Realm* realm, vec position);
 	static Entity createResource(ResourceId::value resourceId, Realm* realm, pair position);
 	static Entity createStructure(StructureId::value structurId, Realm* realm, pair position);
 	static Entity createCrop(CropId::value cropId, Realm* realm, pair position);

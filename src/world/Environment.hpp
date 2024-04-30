@@ -4,6 +4,7 @@
 #include "Generation.hpp"
 
 ENUM(WeatherId,
+CLEAR,
 RAIN,
 FOG,
 SNOW)

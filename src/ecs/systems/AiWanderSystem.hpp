@@ -61,11 +61,12 @@ public:
 			} else if (Direction::taxi[directionComponent.direction].x == -1) {
 				movementComponent.facing = Direction::WEST;
 			}
+			
 			movementComponent.movementState = dir ? MovementState::WALK : MovementState::IDLE;
 			
 			if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
 				movementComponent.movementStart = ticks;
-			}	
+			}
 
 		}
 	}

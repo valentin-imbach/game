@@ -2,6 +2,7 @@
 #pragma once
 #include "utils.hpp"
 #include "TextureManager.hpp"
+#include "ECS_types.hpp"
 
 #define SPRITE_LAYER_COUNT 10
 
@@ -49,7 +50,8 @@ CHICKEN,
 TOOLS,
 SMALL_TENT,
 CAVE,
-MODULAR_PLAYER)
+MODULAR_PLAYER,
+MODULAR_ZOMBIE)
 
 ENUM(CreatureLayer,
 HEAD,
@@ -126,4 +128,5 @@ struct DrawCall {
 	float z;
 	int scale;
 	TextureStyle style;
+	Entity entity = 0;
 };

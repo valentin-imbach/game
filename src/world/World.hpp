@@ -49,6 +49,8 @@ public:
 	bool state = false;
 
 	Entity player = 0;
+	Entity inspect = 0;
+	Entity hover = 0;
 	Camera camera;
 
 	ECS ecs;

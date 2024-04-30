@@ -19,10 +19,14 @@ public:
 			GroundId::value groundId = realm->map->getGroundId(vec::round(positionComponent.position));
 
 			if (movementComponent.movementState == MovementState::WALK) {
-				float speed = movementComponent.walkingSpeed * GroundTemplate::templates[groundId].speed;
+				float mult = GroundTemplate::templates[groundId].speed;
+				float add = movementComponent.speedBonus;
+				float speed = (movementComponent.walkingSpeed + add) * mult;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			} else if (movementComponent.movementState == MovementState::RUN) {
-				float speed = movementComponent.runningSpeed * GroundTemplate::templates[groundId].speed;
+				float mult = GroundTemplate::templates[groundId].speed;
+				float add = movementComponent.speedBonus;
+				float speed =(movementComponent.runningSpeed + add) * mult;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
@@ -50,11 +54,13 @@ public:
 				newPosition += yOffset;
 			}
 
-			if (vec::dist(positionComponent.position, newPosition) > 0.01f) {
+			if (vec::dist(positionComponent.position, newPosition) > 0.0001f) {
 				positionComponent.position = newPosition;
 			} else {
 				movementComponent.movementState = MovementState::IDLE;
 			}
+
+			movementComponent.speedBonus = 0;
 		}
 	}
 

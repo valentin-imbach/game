@@ -42,7 +42,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 	if (debug) seed = 4;
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
 	spawn = spawnRealm->findFree(pair(50,50));
-	Entity player = EntityFactory::createPlayer(spawnRealm, spawn);
+	player = EntityFactory::createPlayer(spawnRealm, spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -183,10 +183,9 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 
 	deserialise_object(stream, seed);
 	deserialise_object(stream, ticks);
+	deserialise_object(stream, player);
 	realmManager.deserialise(this, stream);
 	ecs.deserialise(stream);
-
-	player = playerSystem->getPlayer();
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -318,17 +317,17 @@ void World::rosterSystems() {
 void World::update(uint dt) {
 	ticks += tickSpeed * dt;
 	time.update(tickSpeed * dt);
-	player = playerSystem->getPlayer();
+
+	if (player && ecs.hasComponent<DeathComponent>(player)) {
+		player = 0;
+		guiManager.add(makeDeathScreen());
+		LOG("Death");
+	}
 
 	if (player) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 		playerChunk = positionComponent.chunk;
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
-	} else {
-		if (playerAlive) {
-			playerAlive = false;
-			guiManager.add(makeDeathScreen());
-		}
 	}
 
 	minimap.update(playerRealm);
@@ -392,6 +391,7 @@ void World::update(uint dt) {
 	creatureParticleSystem->update();
 	particleEmitSystem->update(particleSystem, ticks);
 	particleSystem.update(dt);
+
 }
 
 void World::updateCamera(Entity target) {
@@ -432,7 +432,20 @@ void World::draw() {
 	};
 
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-	for (auto& p : drawQueue) p.spriteStack.draw(p.position, p.scale, p.style, ticks);
+	// hover = 0;
+	// pair mPos = Window::instance->mousePosition;
+	// for (int i = drawQueue.size()-1; i >= 0; i--) {
+	// 	DrawCall& p = drawQueue[i];
+	// 	if (pair::inside(mPos, p.position, pair(p.scale * BIT, p.scale * BIT)) && p.entity) {
+	// 		hover = p.entity;
+	// 		p.style.outline = true;
+	// 		break;
+	// 	}
+	// }
+
+	for (auto& p : drawQueue) {
+		p.spriteStack.draw(p.position, p.scale, p.style, ticks);
+	}
 
 	if (colliderDraw) {
 		colliderDrawSystem->update(camera, ticks, drawSet);
@@ -624,6 +637,14 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				launcherComponent.charge = 0;
 			}
 		}
+	} else if (event.id == InputEventId::INSPECT) {
+		pair mPos = Window::instance->mousePosition;
+		vec pos = camera.worldPosition(mPos);
+		pair tile = vec::round(pos);
+
+		if (playerRealm->gridMap.find(tile) != playerRealm->gridMap.end()) {
+			inspect = playerRealm->gridMap[tile];
+		}
 	}
 
 	return false;
@@ -632,6 +653,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 void World::serialise(std::fstream& stream) {
 	serialise_object(stream, seed);
 	serialise_object(stream, ticks);
+	serialise_object(stream, player);
 	realmManager.serialise(stream);
 	ecs.serialise(stream);
 }

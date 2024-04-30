@@ -3,8 +3,7 @@
 #include "Game.hpp"
 #include "pathfinding.hpp"
 
-Console::Console(Game* game)
-	: game(game) {}
+Console::Console(Game* game) : game(game) {}
 
 void Console::draw() {
 	if (!active) return;
@@ -74,7 +73,9 @@ bool Console::execute(std::string input) {
 	Camera& camera = game->world->camera;
 	std::vector<std::string> inputs = string::split(input);
 
-	if (inputs[0] == "clear") {
+	if (inputs[0] == "test") {
+		
+	} else if (inputs[0] == "clear") {
 		history.clear();
 	} else if (inputs[0] == "refresh") {
 		Sprite::loadSpriteSheets();
@@ -86,6 +87,7 @@ bool Console::execute(std::string input) {
 		if (!player) return false;
 		ecs.addComponent<DeathComponent>({}, player);
 	} else if (inputs[0] == "god") {
+		return false;
 		// MessageManager::notify(ToggleGodMessage());
 	} else if (inputs[0] == "tp") {
 		if (inputs.size() < 3) return false;
@@ -98,25 +100,28 @@ bool Console::execute(std::string input) {
 		if (!player) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
+		StationId::value stationId = StationId::from_string(inputs[1]);
 		if (resourceId) {
 			Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm, position);
-			return true;
-			
-		}
-		StationId::value stationId = StationId::from_string(inputs[1]);
-		if (stationId) {
+		} else if (stationId) {
 			Entity station = EntityFactory::createStation(stationId, game->world->playerRealm, position);
-			return true;
+		} else {
+			return false;
 		}
-		return false;
-	} else if (inputs[0] == "spawn") {
+	} else if (inputs[0] == "summon") {
 		if (inputs.size() < 2 || !player) return false;
 		AnimalId::value animalId = AnimalId::from_string(inputs[1]);
-		if (!animalId) return false;
+		EnemyId::value enemyId = EnemyId::from_string(inputs[1]);
 		int n = 1;
 		if (inputs.size() > 2) n = std::stoi(inputs[2]);
 		vec position = ecs.getComponent<PositionComponent>(player).position;
-		for (int i = 0; i < n; i++) EntityFactory::createAnimal(animalId, game->world->playerRealm, position);
+		if (animalId) {
+			for (int i = 0; i < n; i++) EntityFactory::createAnimal(animalId, game->world->playerRealm, position);
+		} else if (enemyId) {
+			for (int i = 0; i < n; i++) EntityFactory::createEnemy(enemyId, game->world->playerRealm, position);
+		} else {
+			return false;
+		}
 	} else if (inputs[0] == "give") {
 		if (inputs.size() < 2 || !player) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);
@@ -145,7 +150,7 @@ bool Console::execute(std::string input) {
 		game->world->playerRealm->map->updateStyle(position, true);
 	} else if (inputs[0] == "weather") {
 		WeatherId::value weatherId = WeatherId::from_string(inputs[1]);
-		LOG(int(weatherId));
+		if (!weatherId) return false;
 		if (weatherId) game->world->playerRealm->environment->weatherId = weatherId;
 	} else if (inputs[0] == "zoom") {
 		if (inputs.size() != 2) return false;
@@ -156,32 +161,34 @@ bool Console::execute(std::string input) {
 		uint scale = std::stoi(inputs[1]);
 		GuiManager::scale = scale;
 	} else if (inputs[0] == "tools") {
+		return false;
 		// vup(Item) tools = LootTable::tools();
 		// for (unsigned int i = 0; i < tools.size(); i++) MessageManager::notify(GiveMessage(std::move(tools[i])));
 	} else if (inputs[0] == "save") {
 		std::string path = "../saves/" + inputs[1] + ".binary";
 		std::fstream file = std::fstream(path, std::ios::out | std::ios::binary);
-		if (!file) {
+		if (file) {
+			game->world->serialise(file);
+			file.close();
+			LOG("World saved");
+		} else {
 			ERROR("No file");
-			return true;
 		}
-		game->world->serialise(file);
-		file.close();
-		LOG("World saved");
 	} else if (inputs[0] == "load") {
 		std::string path = "../saves/" + inputs[1] + ".binary";
 		std::fstream file = std::fstream(path, std::ios::in | std::ios::binary);
-		if (!file) {
+		if (file) {
+			game->world = std::make_unique<World>(file);
+			file.close();
+			LOG("World loaded");
+		} else {
 			ERROR("No file");
-			return true;
 		}
-		game->world = std::make_unique<World>(file);
-		file.close();
-		LOG("World loaded");
-	} else if (inputs[0] == "test") {
-		
 	} else if (inputs[0] == "state") {
-		game->gameState = GameState::from_string(inputs[1]);
+		if (inputs.size() != 2) return false;
+		GameState::value state = GameState::from_string(inputs[1]);
+		if (!state) return false;
+		game->gameState = state;
 	} else if (inputs[0] == "gui_box") {
 		GuiManager::box = !GuiManager::box;
 	} else if (inputs[0] == "collider_box") {
@@ -206,7 +213,7 @@ bool Console::execute(std::string input) {
 		if (!effect) return false;
 		uint time = 5000;
 		if (inputs.size() > 2) time = std::stoi(inputs[2]);
-		ecs.getComponent<EffectComponent>(player).effects[effect] = game->world->ticks + time;
+		ecs.getComponent<EffectComponent>(player).effects[effect].end = game->world->ticks + time;
 	} else {
 		return false;
 	}
