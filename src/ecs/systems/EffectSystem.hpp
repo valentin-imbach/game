@@ -4,7 +4,8 @@
 #include "Components.hpp"
 #include "ECS.hpp"
 
-#define POISON_PERIOD 1500
+#define POISON_PERIOD 2000
+#define BURNING_PERIOD 800
 
 class EffectSystem : public System {
 public:
@@ -29,6 +30,30 @@ public:
 						healthComponent.lastDamage = ticks;
 						effectComponent.effects[Effect::POISON].lastEvent = ticks;
 					}
+				}
+			}
+
+			if (effectComponent.effects[Effect::BURNING].end) {
+				if (effectComponent.effects[Effect::BURNING].lastEvent + BURNING_PERIOD < ticks) {
+					if (ecs->hasComponent<HealthComponent>(entity)) {
+						HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
+						if (healthComponent.health > 0) {	
+							healthComponent.health -= 1;
+							healthComponent.lastDamage = ticks;
+							effectComponent.effects[Effect::BURNING].lastEvent = ticks;
+						}
+					}
+				}
+				if (ecs->hasComponent<ParticleComponent>(entity)) {
+					ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);
+					if (!particleComponent.emitters[ParticleId::FIRE].lastEmit) {
+						particleComponent.emitters[ParticleId::FIRE] = {ticks, 100};
+					}
+				}
+			} else {
+				if (ecs->hasComponent<ParticleComponent>(entity)) {
+					ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);
+					particleComponent.emitters[ParticleId::FIRE] = {};
 				}
 			}
 		}

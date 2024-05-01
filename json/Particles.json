@@ -31,5 +31,17 @@
 		"velocityVariance": [0, 0.1],
 		"lifespan": 700,
 		"alphaEnd": 0
+	},
+
+	"fire": {
+		"source": [1, 1],
+		"positionOffset": [0, -0.3],
+		"velocity": [0, -0.8],
+		"scale": 0.5,
+		"scaleVariance": 0.2,
+		"positionVariance": [0.2, 0.2],
+		"velocityVariance": [0, 0.3],
+		"lifespan": 700,
+		"alphaEnd": 0
 	}
 }

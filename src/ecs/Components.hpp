@@ -140,10 +140,7 @@ struct NameComponent {
 struct DeathComponent {};
 
 struct ParticleComponent {
-	ParticleStyle style;
-	uint lastEmit = 0;
-	uint cooldown = 300;
-	bool active = true;
+	std::array<ParticleEmitter, ParticleId::count> emitters;
 };
 
 struct LightComponent {
@@ -182,8 +179,8 @@ struct ChunkComponent {};
 
 struct AiComponent {
 	AiState::value state = AiState::NONE;
-	uint lastChange = 0;
 	bool change = false;
+	uint lastChange = 0;
 	std::array<ushort, AiState::count> scores = {};
 };
 

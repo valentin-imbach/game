@@ -7,8 +7,14 @@
 ENUM(ParticleId,
 	DIRT,
 	SMOKE,
-	DEATH
+	DEATH,
+	FIRE
 );
+
+struct ParticleEmitter {
+	uint lastEmit = 0;
+	uint cooldown = 300;
+};
 
 struct ParticleStyle {
 	pair source = {0, 0};

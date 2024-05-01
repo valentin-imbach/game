@@ -388,7 +388,7 @@ void World::update(uint dt) {
 	inventoryDeathSystem->update(ticks, realmManager);
 	deathSystem->update(realmManager, particleSystem);
 
-	creatureParticleSystem->update();
+	creatureParticleSystem->update(ticks);
 	particleEmitSystem->update(particleSystem, ticks);
 	particleSystem.update(dt);
 

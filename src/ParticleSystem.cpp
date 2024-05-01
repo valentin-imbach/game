@@ -41,11 +41,11 @@ void ParticleStyle::setTemplates() {
 		}
 
 		if (value.contains("source")) templates[particleId].source = pair(value["source"][0], value["source"][1]);
-		if (value.contains("positionOffset")) templates[particleId].positionOffset = pair(value["positionOffset"][0], value["positionOffset"][1]);
-		if (value.contains("positionVariance")) templates[particleId].positionVariance = pair(value["positionVariance"][0], value["positionVariance"][1]);
-		if (value.contains("velocity")) templates[particleId].velocity = pair(value["velocity"][0], value["velocity"][1]);
-		if (value.contains("velocityVariance")) templates[particleId].velocityVariance = pair(value["velocityVariance"][0], value["velocityVariance"][1]);
-		if (value.contains("acceleration")) templates[particleId].acceleration = pair(value["acceleration"][0], value["acceleration"][1]);
+		if (value.contains("positionOffset")) templates[particleId].positionOffset = vec(value["positionOffset"][0], value["positionOffset"][1]);
+		if (value.contains("positionVariance")) templates[particleId].positionVariance = vec(value["positionVariance"][0], value["positionVariance"][1]);
+		if (value.contains("velocity")) templates[particleId].velocity = vec(value["velocity"][0], value["velocity"][1]);
+		if (value.contains("velocityVariance")) templates[particleId].velocityVariance = vec(value["velocityVariance"][0], value["velocityVariance"][1]);
+		if (value.contains("acceleration")) templates[particleId].acceleration = vec(value["acceleration"][0], value["acceleration"][1]);
 		if (value.contains("alphaStart")) templates[particleId].alphaStart = value["alphaStart"];
 		if (value.contains("alphaEnd")) templates[particleId].alphaEnd = value["alphaEnd"];
 		if (value.contains("scale")) templates[particleId].scale = value["scale"];

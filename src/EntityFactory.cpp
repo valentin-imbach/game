@@ -49,7 +49,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, player);
-	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, player);
+	world->ecs.addComponent<ParticleComponent>({}, player);
 
 	world->ecs.addComponent<EffectComponent>({}, player);
 
@@ -159,7 +159,7 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, Realm* realm, vec posi
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, enemy);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, enemy);
-	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, enemy);
+	world->ecs.addComponent<ParticleComponent>({}, enemy);
 
 	world->ecs.addComponent<SensorComponent>({10, EntityTag::PLAYER}, enemy);
 	world->ecs.addComponent<AiComponent>({}, enemy);
@@ -198,12 +198,11 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	world->ecs.addComponent<ActionComponent>({}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
-	world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::DIRT]}, animal);
+	world->ecs.addComponent<ParticleComponent>({}, animal);
 	world->ecs.addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
 	world->ecs.addComponent<AiFleeComponent>({}, animal);
-	world->ecs.addComponent<SpriteComponent>({}, animal);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::ANIMAL);
@@ -216,7 +215,20 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec p
 	world->ecs.addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
 	world->ecs.addComponent<LootComponent>({animalTemplate.lootTable}, animal);
 	world->ecs.addComponent<HealthComponent>({animalTemplate.health, animalTemplate.health}, animal);
-	// world->ecs.addComponent<CreatureAnimationComponent>({animalTemplate.sprites}, animal);
+	
+	world->ecs.addComponent<SpriteComponent>({}, animal);
+	CreatureAnimationComponent creatureAnimationComponent = {};
+	
+	creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(1, Sprite(SpriteSheet::COW, {3, 0}, {1, 2}), {0, -1});
+	creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(1, Sprite(SpriteSheet::COW, {3, 2}, {1, 2}), {0, -1});
+
+	creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(1, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100), {0, -1});
+	creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(1, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100), {0, -1});
+
+	creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(1, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100), {0, -1});
+	creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(1, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100), {0, -1});
+
+	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, animal);
 
 	return animal;
 }
@@ -267,7 +279,7 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 		SpriteStack fireSprites;
 		fireSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200));
 		world->ecs.addComponent<SpriteComponent>({fireSprites}, station);
-		world->ecs.addComponent<ParticleComponent>({ParticleStyle::templates[ParticleId::SMOKE]}, station);
+		world->ecs.addComponent<ParticleComponent>({}, station);
 		world->ecs.addComponent<LightComponent>({true, 3, {255, 0, 0, 255}, 3, 0.2f}, station);
 		return station;
 	}
