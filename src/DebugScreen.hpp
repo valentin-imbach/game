@@ -45,6 +45,8 @@ public:
 		vec pos = world->camera.worldPosition(mPos);
 		pair tile = vec::round(pos);
 
+		tileText += "Position: (" + std::to_string(tile.x) + ", " + std::to_string(tile.y) + ")\n";
+
 		Biome::value biome = world->playerRealm->environment->getBiome(tile);
 		tileText += "Biome: " + Biome::to_string(biome) + '\n';
 

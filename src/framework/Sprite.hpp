@@ -53,16 +53,6 @@ CAVE,
 MODULAR_PLAYER,
 MODULAR_ZOMBIE)
 
-ENUM(CreatureLayer,
-HEAD,
-EYES,
-HAIR,
-BACK_ARM,
-FEET,
-LEGS,
-BODY,
-FRONT_ARM)
-
 class Sprite {
 public:
 	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0, pair animationOffset = {1,0});

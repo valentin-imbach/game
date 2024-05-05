@@ -4,9 +4,6 @@
 #include "Sprite.hpp"
 #include "SoundManager.hpp"
 
-ENUM(StructureId,
-TENT)
-
 struct StructureTemplate {
 	SpriteSheet::value spriteSheet;
 	pair size = {1, 1};

@@ -35,7 +35,7 @@ struct MovementComponent {
 
 struct ActionComponent {
 	ActionState::value actionState = ActionState::IDLE;
-	vec actionPosition = {};
+	vec actionPosition = {0, 0};
 	uint actionStart = 0;
 	uint actionEvent = 0;
 	uint actionEnd = 0;
@@ -80,7 +80,7 @@ struct PlayerComponent {
 	Inventory hotbar;
 	Inventory equipment;
 	uchar activeSlot = 0;
-	uint lastAction = 0;
+	//uint lastAction = 0;
 };
 
 struct ResourceComponent {

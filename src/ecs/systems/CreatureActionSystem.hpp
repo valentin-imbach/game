@@ -25,9 +25,9 @@ public:
 						EntityFactory::createDamageArea(realm, actionComponent.actionPosition, vec(0.2f, 0.2f), ticks, 1, force, entity);
 						
 					} else if (forageSystem->update(actionComponent.actionPosition, item, ticks, updateSet)) {
-						playerComponent.lastAction = ticks;
+						//playerComponent.lastAction = ticks;
 					}
-					playerComponent.lastAction = ticks;
+					//playerComponent.lastAction = ticks;
 				}
 				actionComponent.done = true;
 			}

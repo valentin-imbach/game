@@ -5,13 +5,6 @@
 #include "Sprite.hpp"
 #include "SoundManager.hpp"
 
-ENUM(AnimalId,
-COW,
-CHICKEN)
-
-ENUM(EnemyId,
-ZOMBIE)
-
 struct AnimalTemplate {
 	std::array<std::pair<Sprite, Sprite>, MovementState::count> sprites;
 	Shape collider;
