@@ -11,7 +11,7 @@
 	enum value : uchar { NONE,                                                        \
 		items,                                                                        \
 		MAX };                                                                        \
-	constexpr uint count = value::MAX;                                              \
+	constexpr uint count = value::MAX;                                                \
 	inline value from_int(int n) {                                                    \
 		assert(0 <= n && n < count);                                                  \
 		return value(n);                                                              \

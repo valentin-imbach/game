@@ -10,6 +10,7 @@
 #include "utils.hpp"
 #include "TextureManager.hpp"
 #include "World.hpp"
+#include "Command.hpp"
 
 class Game;
 
@@ -26,6 +27,8 @@ private:
 	std::string input;
 	std::vector<std::string> history;
 	uint index = 0;
+
+	std::unordered_map<std::string, Command> commands;
 
 	bool execute(std::string input);
 };

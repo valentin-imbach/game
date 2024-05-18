@@ -28,6 +28,8 @@ public:
 		TextureManager::drawRect({20, 20}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
 		TextureManager::drawRect({windowSize.x - 320, 20}, {300, windowSize.y - 30}, {0, 0, 0, 100}, false, true);
 
+
+		//* Debug
 		std::string debugText = "Debug Info\n";
 		debugText += "FPS: " + std::to_string(framesPerSecond) + '\n';
 		debugText += "UPS: " + std::to_string(updatesPerSecond) + '\n';
@@ -40,37 +42,30 @@ public:
 			debugText += "Particles: " + std::to_string(particleCount) + '\n';
 		}
 
+		TextManager::drawText(debugText, pair(30, 30));
+
+		//* Tile
 		std::string tileText = "Tile Info\n";
+
 		pair mPos = Window::instance->mousePosition;
 		vec pos = world->camera.worldPosition(mPos);
 		pair tile = vec::round(pos);
 
+		Environment* env = world->playerRealm->environment.get();
 		tileText += "Position: (" + std::to_string(tile.x) + ", " + std::to_string(tile.y) + ")\n";
-
-		Biome::value biome = world->playerRealm->environment->getBiome(tile);
-		tileText += "Biome: " + Biome::to_string(biome) + '\n';
-
-		int temperature = world->playerRealm->environment->temparatureMap->get(tile);
-		tileText += "Temperateure: " + std::to_string(temperature) + '\n';
-
-		int elevation = world->playerRealm->environment->elevationMap->get(tile);
-		tileText += "Elevation: " + std::to_string(elevation) + '\n';
-
-		int precipitation = world->playerRealm->environment->precipitationMap->get(tile);
-		tileText += "Precipitation: " + std::to_string(precipitation) + '\n';
-
-		int vegetation = world->playerRealm->environment->vegetationMap->get(tile);
-		tileText += "Vegetation: " + std::to_string(vegetation) + '\n';
-
-		int variation = world->playerRealm->environment->variationMap->get(tile);
-		tileText += "Variation: " + std::to_string(variation) + '\n';
+		tileText += "Biome: " + Biome::to_string(env->getBiome(tile)) + '\n';
+		tileText += "Temperateure: " + std::to_string(env->temparatureMap->get(tile)) + '\n';
+		tileText += "Elevation: " + std::to_string(env->elevationMap->get(tile)) + '\n';
+		tileText += "Precipitation: " + std::to_string(env->precipitationMap->get(tile)) + '\n';
+		tileText += "Vegetation: " + std::to_string(env->vegetationMap->get(tile)) + '\n';
+		tileText += "Variation: " + std::to_string(env->variationMap->get(tile)) + '\n';
 
 		GroundId::value groundId = world->playerRealm->map->getGroundId(tile);
 		tileText += "Tile: " + GroundId::to_string(groundId) + '\n';
 
-		TextManager::drawText(debugText, pair(30, 30));
 		TextManager::drawText(tileText, pair(windowSize.x - 310, 30));
 
+		//* Entity
 		if (!entity) return;
 		std::string entityText = "Entity Info\n";
 

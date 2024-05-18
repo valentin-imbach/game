@@ -3,7 +3,7 @@
 #include "utils.hpp"
 
 ENUM(ComponentId,
-// Basic
+//* Basic
 POSITION,
 INVENTORY,
 LOOT,
@@ -12,22 +12,22 @@ HEALTH,
 DEATH,
 TAG,
 
-// Rendering
+//* Rendering
 SPRITE,
 CREATURE_ANIMATION,
 LIGHT,
 PARTICLE,
 
-// Player
+//* Player
 PLAYER,
 CONTROLLER,
 
-// Static
+//* Static
 GRID,
 INTERACTION,
 RESOURCE,
 
-// Dynamic
+//* Dynamic
 ACTION,
 MOVEMENT,
 DIRECTION,
@@ -36,13 +36,13 @@ COLLIDER,
 HITBOX,
 CHUNK,
 
-// Item
+//* Item
 ITEM,
 ITEM_KIND,
 MELEE_ITEM,
 DURABILITY,
 
-// AI
+//* AI
 AI,
 SENSOR,
 AI_WANDER,
@@ -51,7 +51,7 @@ AI_FLEE,
 AI_CHASE,
 AI_MELEE,
 
-// Misc
+//* Misc
 PORTAL,
 MATURITY,
 LAUNCHER,
@@ -60,14 +60,14 @@ DAMAGE,
 EFFECT)
 
 ENUM(SystemId,
-// Basic
+//* Basic
 POSITION,
 HEALTH,
 LOOT,
 DEATH,
 INVENTORY_DEATH,
 
-// Rendering
+//* Rendering
 ENTITY_DRAW,
 CREATURE_ANIMATION,
 HAND_RENDER,
@@ -77,12 +77,12 @@ COLLIDER_DRAW,
 HITBOX_DRAW,
 LIGHT,
 
-//Player
+//*Player
 PLAYER,
 CONTROLLER,
 ITEM_PICKUP,
 
-// Dynamic
+//* Dynamic
 CREATURE_MOVEMENT,
 COLLISION,
 HITBOX,
@@ -91,11 +91,11 @@ CHUNK,
 FORAGE,
 CREATURE_ACTION,
 
-// Static
+//* Static
 GRID,
 INTERACTION,
 
-// AI
+//* AI
 SENSOR,
 AI,
 AI_WANDER,
@@ -104,7 +104,7 @@ AI_FLEE,
 AI_CHASE,
 AI_MELEE,
 
-// Misc
+//* Misc
 PROJECTILE,
 MATURITY,
 DAMAGE,

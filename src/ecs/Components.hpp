@@ -35,10 +35,11 @@ struct MovementComponent {
 
 struct ActionComponent {
 	ActionState::value actionState = ActionState::IDLE;
-	vec actionPosition = {0, 0};
-	uint actionStart = 0;
-	uint actionEvent = 0;
-	uint actionEnd = 0;
+	Entity item = 0;
+	vec position = {0, 0};
+	uint start = 0;
+	uint trigger = 0;
+	uint end = 0;
 	bool done = false;
 };
 
@@ -80,7 +81,6 @@ struct PlayerComponent {
 	Inventory hotbar;
 	Inventory equipment;
 	uchar activeSlot = 0;
-	//uint lastAction = 0;
 };
 
 struct ResourceComponent {
@@ -103,7 +103,7 @@ struct MeleeItemComponent {
 };
 
 struct ForceComponent {
-	vec force;
+	vec force = {};
 };
 
 struct GridComponent {
@@ -208,7 +208,7 @@ struct AiMeleeComponent {
 	int damage;
 	uint cooldown;
 	uint lastHit;
-	Entity target;
+	Entity item;
 };
 
 struct PortalComponent {

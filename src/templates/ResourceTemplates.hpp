@@ -21,8 +21,6 @@ struct ResourceTemplate {
 
 	uchar health = 1;
 
-	// SoundId sound;
-
 	LootTable lootTable;
 
 	static std::array<ResourceTemplate, ResourceId::count> templates;

@@ -75,7 +75,6 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 	ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 
 	int spacing = 30;
-	// int width = 0;
 
 	std::vector<std::pair<Text, pair>> texts;
 	std::vector<std::pair<pair, pair>> icons;

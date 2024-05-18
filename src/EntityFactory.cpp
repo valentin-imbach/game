@@ -54,6 +54,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	world->ecs.addComponent<EffectComponent>({}, player);
 
 	world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, player);
+
 	Inventory equipment({3,4});
 	equipment.itemContainers[0][0].itemKind = ItemKind::CLOTHING_HEAD;
 	equipment.itemContainers[0][1].itemKind = ItemKind::CLOTHING_BODY;
@@ -64,6 +65,7 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	equipment.itemContainers[1][2].itemKind = ItemKind::ARMOR_LEGS;
 	equipment.itemContainers[1][3].itemKind = ItemKind::ARMOR_FEET;
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
+	
 	world->ecs.addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
 
 	TagComponent tagComponent = {};
@@ -77,8 +79,6 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {3, 2*i-2}, {1, 2}), {0, -1});
 		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {3, 16 + 2*i-2}, {1, 2}), {0, -1});
 	}
-
-	//creatureAnimationComponent.sprites[MovementState::IDLE].first.stack[CreatureLayer::HEAD].sprite.tint = {255, 100, 100};
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
 		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
@@ -166,7 +166,9 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, Realm* realm, vec posi
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, enemy);
 	world->ecs.addComponent<AiChaseComponent>({}, enemy);
 	// world->ecs.addComponent<AiFleeComponent>({}, enemy);
-	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, enemy);
+
+	Entity weapon = createTool(ItemKind::SWORD);
+	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0, weapon}, enemy);
 
 	world->ecs.addComponent<SpriteComponent>({}, enemy);
 	CreatureAnimationComponent creatureAnimationComponent = {};
@@ -266,6 +268,22 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, Realm* realm
 	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, item);
 	realm->linkChunk(item, chunk);
 
+	return item;
+}
+
+Entity EntityFactory::createTool(ItemKind::value itemKind) {
+	Entity item = world->ecs.createEntity();
+	SpriteStack spriteStack;
+	spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
+	spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(0, 0)));
+	spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(1, 7)));
+	SpriteComponent spriteComponent = {spriteStack, 0.5f};
+	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
+	world->ecs.addComponent<SpriteComponent>(spriteComponent, item);
+	world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, item);
+	world->ecs.addComponent<MeleeItemComponent>({1}, item);
+	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
+	world->ecs.addComponent<NameComponent>({Textblock("Sword")}, item);
 	return item;
 }
 

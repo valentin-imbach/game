@@ -275,7 +275,7 @@ void World::rosterSystems() {
 	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
 		{ComponentId::PARTICLE, ComponentId::MOVEMENT});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
-		{ComponentId::POSITION, ComponentId::PLAYER, ComponentId::MOVEMENT});
+		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT});
 	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
 		{ComponentId::POSITION, ComponentId::CHUNK});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
@@ -572,10 +572,11 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		ActionComponent& actionComponent = ecs.getComponent<ActionComponent>(player);
 		if (actionComponent.actionState == ActionState::IDLE) {
 			actionComponent.actionState = ActionState::ATTACK;
-			actionComponent.actionPosition = position;
-			actionComponent.actionStart = ticks;
-			actionComponent.actionEvent = ticks + 150;
-			actionComponent.actionEnd = ticks + 300;
+			actionComponent.position = position;
+			actionComponent.start = ticks;
+			actionComponent.trigger = ticks + 150;
+			actionComponent.end = ticks + 300;
+			actionComponent.item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
 		}
 
 	} else if (event.id == InputEventId::SECONDARY) {

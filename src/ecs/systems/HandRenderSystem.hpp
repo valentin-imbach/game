@@ -11,11 +11,11 @@ public:
 	void update(Camera camera, std::vector<DrawCall>& drawQueue, uint ticks) {
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
+			//PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 
-			Entity item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
+			Entity item = actionComponent.item;
 
 			if (!item) continue;
 			ItemComponent& itemComponent = ecs->getComponent<ItemComponent>(item);
@@ -30,7 +30,7 @@ public:
 
 			if (actionComponent.actionState != ActionState::ATTACK) continue;
 
-			uint timePassed = ticks - actionComponent.actionStart;
+			uint timePassed = ticks - actionComponent.start;
 
 			if (movementComponent.facing == Direction::EAST) {
 				entityPosition.x += 0.625;

@@ -380,8 +380,7 @@ void CraftingGrid::craft() {
 
 //* BuildGui
 
-BuildGui::BuildGui(pair position, Inventory* link)
-	: Widget(position, pair(144, 128)), link(link) {
+BuildGui::BuildGui(pair position, Inventory* link) : Widget(position, pair(144, 128)), link(link) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
 
 	for (uint n = 1; n < BuildRecipeId::count; n++) {
@@ -399,8 +398,7 @@ void BuildGui::select(int n) {
 	addGuiElement(std::move(grid));
 }
 
-BuildGrid::BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* link)
-	: Widget(position, {40, 0}), recipeId(recipeId), link(link) {
+BuildGrid::BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* link) : Widget(position, {40, 0}), recipeId(recipeId), link(link) {
 
 	BuildKindRecipe& recipe = BuildKindRecipe::recipes[recipeId];
 	arity = recipe.ingredients.size();

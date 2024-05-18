@@ -11,9 +11,6 @@
 class World;
 class Realm;
 
-ENUM(CropId,
-PARSNIP)
-
 class EntityFactory {
 public:
 	EntityFactory() = delete;
@@ -28,6 +25,8 @@ public:
 	
 	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1);
 	static Entity createItem(ItemId::value itemId, uchar count, Realm* realm, vec position);
+
+	static Entity createTool(ItemKind::value itemKind);
 
 	static Entity createProjectile(Realm* realm, vec position, vec direction);
 	static Entity createDamageArea(Realm* realm, vec position, Shape shape, uint start, uint duration, vec force = {0,0}, Entity imune = 0);

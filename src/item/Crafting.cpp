@@ -101,25 +101,6 @@ void CraftingKindRecipe::setRecipes() {
 			recipes[recipeId].ingredients.emplace_back(itemKind, ing[1]);
 		}
 	}
-
-// 	recipes[1].ingredients.push_back({ItemKind::ROD, 1});
-// 	recipes[1].ingredients.push_back({ItemKind::PLATE, 2});
-// 	recipes[1].ingredients.push_back({ItemKind::ROPE, 4});
-// 	recipes[1].product.name = "Axe";
-// 	recipes[1].product.spriteTemplates = {{{2, 0}, {1, 1}, {0, 0}, 1}};
-// 	recipes[1].product.productKinds = {ItemKind::AXE};
-// 	recipes[1].product.productProperties.push_back({ItemProperty::EFFICIENCY, {{ItemProperty::FLEXIBILITY, 1},{},{}}});
-// 	recipes[1].product.productProperties.push_back({ItemProperty::LEVEL, {{},{ItemProperty::STRENGTH, 1},{}}});
-// 	recipes[1].product.productProperties.push_back({ItemProperty::DURABILITY, {{},{},{ItemProperty::STRENGTH, 1}}});
-
-// 	recipes[2].ingredients.push_back({ItemKind::ROD, 1});
-// 	recipes[2].ingredients.push_back({ItemKind::PLATE, 4});
-// 	recipes[2].product.name = "Pick Axe";
-// 	recipes[2].product.spriteTemplates = {{{2, 0}, {1, 1}, {0, 0}, 1}};
-// 	recipes[2].product.productKinds = {ItemKind::PICK_AXE};
-// 	recipes[2].product.productProperties.push_back({ItemProperty::EFFICIENCY, {{ItemProperty::FLEXIBILITY, 1},{}}});
-// 	recipes[2].product.productProperties.push_back({ItemProperty::LEVEL, {{},{ItemProperty::STRENGTH, 1}}});
-// 	recipes[2].product.productProperties.push_back({ItemProperty::DURABILITY, {{},{ItemProperty::STRENGTH, 1}}});
 }
 
 

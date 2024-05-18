@@ -175,14 +175,14 @@ void Map::updateStyle(pair position, bool propagate) {
 			GroundId::value right = getGroundId(position + Direction::taxi[Direction::rotate(dir, -2)]);
 			GroundId::value opposite = getGroundId(position + Direction::taxi[Direction::rotate(dir, 4)]);
 
-			// Straights
+			//* Straights
 			if (left != id && right != id) {
 				std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
 				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, noise::choice<pair>(s++, variants[dir / 2]), pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
 				sprites.emplace_back(sprite, id);
 			}
 
-			// Us
+			//* Us
 			if (left == id && right == id && opposite != id) {
 				pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
 				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, variants[dir / 2], pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
@@ -199,7 +199,7 @@ void Map::updateStyle(pair position, bool propagate) {
 			GroundId::value right = getGroundId(position + Direction::taxi[Direction::rotate(dir, -1)]);
 			GroundId::value right2 = getGroundId(position + Direction::taxi[Direction::rotate(dir, -3)]);
 
-			// Curves
+			//* Curves
 			GroundId::value curve = GroundId::MAX;
 			if (!GroundTemplate::templates[left].wall && left < groundId && left == right && left2 != left && right2 != right) {
 				pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
@@ -208,7 +208,7 @@ void Map::updateStyle(pair position, bool propagate) {
 				curve = left;
 			}
 
-			// Corners
+			//* Corners
 			if (id < groundId && left != id && right != id && id < curve) {
 				pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
 				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, variants[dir / 2 - 1], pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
@@ -216,7 +216,7 @@ void Map::updateStyle(pair position, bool propagate) {
 			}
 		}
 
-		// Os
+		//* Os
 		GroundId::value id1 = getGroundId(position + Direction::taxi[1]);
 		GroundId::value id2 = getGroundId(position + Direction::taxi[3]);
 		GroundId::value id3 = getGroundId(position + Direction::taxi[5]);

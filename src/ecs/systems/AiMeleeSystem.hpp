@@ -33,16 +33,19 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiMeleeComponent& aiMeleeComponent = ecs->getComponent<AiMeleeComponent>(entity);
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
+			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 
 			if (ticks - aiMeleeComponent.lastHit < aiMeleeComponent.cooldown) continue;
-			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			vec force = {0,0.1};
-			if (vec::dist(sensorComponent.position, positionComponent.position) > 0.001f) {
-				force = vec::normalise(sensorComponent.position - positionComponent.position) / 10;
-			}
-			EntityFactory::createDamageArea(realm, sensorComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);
-			aiMeleeComponent.lastHit = ticks;
 
+			if (actionComponent.actionState == ActionState::IDLE) {
+				actionComponent.actionState = ActionState::ATTACK;
+				actionComponent.position = sensorComponent.position;
+				actionComponent.start = ticks;
+				actionComponent.trigger = ticks + 150;
+				actionComponent.end = ticks + 300;
+				actionComponent.item = aiMeleeComponent.item;
+				aiMeleeComponent.lastHit = ticks;
+			}
 		}
 	}
 };

@@ -12,31 +12,35 @@ public:
 		for (Entity entity : entities) {
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 			if (actionComponent.actionState == ActionState::IDLE) continue;
-			if (ticks > actionComponent.actionEvent && !actionComponent.done) {
+
+			if (ticks > actionComponent.trigger && !actionComponent.done) {
 				if (actionComponent.actionState == ActionState::ATTACK) {	
-					if (!ecs->hasComponent<PlayerComponent>(entity)) continue;
-					PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
-					Entity item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
+					//if (!ecs->hasComponent<PlayerComponent>(entity)) continue;
+					//PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
+					//Entity item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
+					Entity item = actionComponent.item;
 					if (item && ecs->hasComponent<MeleeItemComponent>(item)) {
 						MeleeItemComponent& damageComponent = ecs->getComponent<MeleeItemComponent>(item);
 						PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-						vec force = vec::normalise(actionComponent.actionPosition - positionComponent.position) / 10;
+						vec force = {0.1f, 0.0f};
+						if (vec::dist(actionComponent.position, positionComponent.position) > 0.001f) {
+							force = vec::normalise(actionComponent.position - positionComponent.position) / 10;
+						}
 						Realm* realm = realmManager.getRealm(positionComponent.realmId);
-						EntityFactory::createDamageArea(realm, actionComponent.actionPosition, vec(0.2f, 0.2f), ticks, 1, force, entity);
-						
-					} else if (forageSystem->update(actionComponent.actionPosition, item, ticks, updateSet)) {
+						EntityFactory::createDamageArea(realm, actionComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);	
+					} else if (forageSystem->update(actionComponent.position, item, ticks, updateSet)) {
 						//playerComponent.lastAction = ticks;
 					}
 					//playerComponent.lastAction = ticks;
 				}
 				actionComponent.done = true;
 			}
-			if (ticks > actionComponent.actionEnd) {
+			if (ticks > actionComponent.end) {
 				actionComponent.actionState = ActionState::IDLE;
-				actionComponent.actionPosition = {};
-				actionComponent.actionStart = 0;
-				actionComponent.actionEvent = 0;
-				actionComponent.actionEnd = 0;
+				actionComponent.position = {0, 0};
+				actionComponent.start = 0;
+				actionComponent.trigger = 0;
+				actionComponent.end = 0;
 				actionComponent.done = false;
 			}
 		}
