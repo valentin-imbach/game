@@ -8,8 +8,8 @@ Entity Loot::create(uint seed) {
 	return EntityFactory::createItem(itemId, count);
 }
 
-Entity Loot::create(uint seed, Realm* realm, vec position) {
+Entity Loot::create(uint seed, RealmId realmId, vec position) {
 	int count = noise::Int(seed, range.x, range.y);
 	if (count <= 0 || !itemId) return 0;
-	return EntityFactory::createItem(itemId, count, realm, position);
+	return EntityFactory::createItem(itemId, count, realmId, position);
 }

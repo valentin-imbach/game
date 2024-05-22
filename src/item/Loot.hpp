@@ -5,7 +5,6 @@
 #include "Item_types.hpp"
 
 #define LOOT_SIZE 5
-class Realm;
 
 struct Loot {
 	ItemId::value itemId;
@@ -13,7 +12,7 @@ struct Loot {
 	float chance = 1.0f;
 
 	Entity create(uint seed);
-	Entity create(uint seed, Realm* realm, vec position);
+	Entity create(uint seed, RealmId realmId, vec position);
 };
 
 struct LootTable {

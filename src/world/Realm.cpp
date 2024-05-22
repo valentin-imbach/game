@@ -4,18 +4,7 @@
 #include "EntityFactory.hpp"
 #include "Dungeon.hpp"
 
-Realm::Realm(RealmId realmId, uint seed, RealmType::value realmType) : realmId(realmId), seed(seed) {
-	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100));
-	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
-	if (realmType == RealmType::CAVE) generateCave(3, 500);
-	if (realmType == RealmType::DUNGEON) generateDungeon();
-
-	map->updateStyle();
-
-	SDL_Surface* surface = map->makeMiniMap();
-	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	SDL_FreeSurface(surface);
-}
+Realm::Realm(RealmId realmId, uint seed) : realmId(realmId), seed(seed) {}
 
 Realm::Realm(std::fstream& stream) {
 	deserialise_object(stream, realmId);
@@ -23,6 +12,19 @@ Realm::Realm(std::fstream& stream) {
 	map = std::make_unique<Map>(stream);
 	environment = std::make_unique<Environment>(seed + 2);
 	
+	SDL_Surface* surface = map->makeMiniMap();
+	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
+	SDL_FreeSurface(surface);
+}
+
+void Realm::generate(RealmType::value realmType) {
+	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100));
+	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
+	if (realmType == RealmType::CAVE) generateCave(3, 500);
+	if (realmType == RealmType::DUNGEON) generateDungeon();
+
+	map->updateStyle();
+
 	SDL_Surface* surface = map->makeMiniMap();
 	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
 	SDL_FreeSurface(surface);
@@ -55,7 +57,7 @@ void Realm::generateWorld(pair size) {
 			for (auto& p : ground.resources) {
 				choice -= p.second;
 				if (choice < 0) {
-					Entity resource = EntityFactory::createResource(p.first, this, position);
+					Entity resource = EntityFactory::createResource(p.first, realmId, position);
 					break;
 				}
 			}
@@ -201,7 +203,7 @@ void Realm::generateCave(int count, int length) {
 			for (auto& p : ground.resources) {
 				choice -= p.second;
 				if (choice < 0) {
-					Entity resource = EntityFactory::createResource(p.first, this, position);
+					Entity resource = EntityFactory::createResource(p.first, realmId, position);
 					break;
 				}
 			}

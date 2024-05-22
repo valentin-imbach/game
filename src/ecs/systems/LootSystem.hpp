@@ -7,7 +7,7 @@
 
 class LootSystem : public System {
 public:
-	void update(uint ticks, Realm* realm) {
+	void update(uint ticks) {
 		uint seed = ticks;
 		for (Entity entity : entities) {
 			LootComponent& lootComponent = ecs->getComponent<LootComponent>(entity);
@@ -16,7 +16,7 @@ public:
 				vec offset;
 				offset.x = noise::Float(seed++, -0.3f, 0.3f);
 				offset.y = noise::Float(seed++, -0.3f, 0.3f);
-				lootComponent.lootTable.table[i].create(seed++, realm, positionComponent.position + offset);
+				lootComponent.lootTable.table[i].create(seed++, positionComponent.realmId, positionComponent.position + offset);
 			}
 		}
 	}

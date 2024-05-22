@@ -246,3 +246,7 @@ struct EffectComponent {
 	std::bitset<Effect::count> applicable = {};
 	std::array<EffectInstance, Effect::count> effects = {};
 };
+
+struct ExplosiveComponent {
+	uint trigger = 0;
+};

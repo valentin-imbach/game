@@ -118,6 +118,7 @@ private:
 	HitboxSystem* hitboxSystem;
 	CreatureActionSystem* creatureActionSystem;
 	EffectSystem* effectSystem;
+	ExplosiveSystem* explosiveSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

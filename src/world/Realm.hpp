@@ -7,14 +7,15 @@
 #define CHUNK_REACH 10
 
 class World;
-using RealmId = unsigned char;
 struct GridComponent;
 struct PositionComponent;
 
 class Realm {
 public:
-	Realm(RealmId realmId, uint seed, RealmType::value realmType);
+	Realm(RealmId realmId, uint seed);
 	Realm(std::fstream& stream);
+
+	void generate(RealmType::value realmType);
 
 	void generateWorld(pair size);
 	void generateHouse(pair size);

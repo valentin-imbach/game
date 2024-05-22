@@ -8,7 +8,7 @@ class RealmManager {
 public:
 	RealmManager(uchar maxRealms);
 
-	Realm* addRealm(World* world, uint seed, RealmType::value realmType = RealmType::WORLD);
+	Realm* addRealm(World* world, uint seed);
 	void removeRealm(RealmId realmId);
 	Realm* getRealm(RealmId realmId);
 

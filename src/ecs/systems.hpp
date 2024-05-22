@@ -35,3 +35,4 @@
 #include "HitboxSystem.hpp"
 #include "CreatureActionSystem.hpp"
 #include "EffectSystem.hpp"
+#include "ExplosiveSystem.hpp"

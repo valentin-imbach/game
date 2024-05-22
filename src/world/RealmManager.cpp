@@ -9,14 +9,14 @@ RealmManager::RealmManager(uchar maxRealms) : maxRealms(maxRealms) {
 	for (uint i = maxRealms; i > 0; i--) availableRealms.push_back(i);
 }
 
-Realm* RealmManager::addRealm(World* world, uint seed, RealmType::value realmType) {
+Realm* RealmManager::addRealm(World* world, uint seed) {
 	if (availableRealms.empty()) {
 		WARNING("Max realms reached");
 		return 0;
 	}
 	RealmId realmId = availableRealms.back();
 	availableRealms.pop_back();
-	realms[realmId] = std::make_unique<Realm>(realmId, seed, realmType);
+	realms[realmId] = std::make_unique<Realm>(realmId, seed);
 	LOG("Realm", int(realmId), "created");
 	return realms[realmId].get();
 }

@@ -9,34 +9,34 @@
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;
 
-Entity EntityFactory::createStaticEntity(Realm* realm, pair position, pair size, bool solid, bool opaque) {
+Entity EntityFactory::createStaticEntity(RealmId realmId, pair position, pair size, bool solid, bool opaque) {
 	Entity entity = world->ecs.createEntity();
 	if (!entity) return 0;
 
 	pair chunk = vec::round(vec(position) / CHUNK_SIZE);
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, entity);
-	realm->linkChunk(entity, chunk);
+	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
+	world->realmManager.getRealm(realmId)->linkChunk(entity, chunk);
 
-	world->ecs.addComponent<GridComponent>({position, realm->realmId, size, solid, opaque}, entity);
-	realm->linkGrid(entity, position, size, solid, opaque);
+	world->ecs.addComponent<GridComponent>({position, realmId, size, solid, opaque}, entity);
+	world->realmManager.getRealm(realmId)->linkGrid(entity, position, size, solid, opaque);
 
 	return entity;
 }
 
-Entity EntityFactory::createDynamicEntity(Realm* realm, vec position) {
+Entity EntityFactory::createDynamicEntity(RealmId realmId, vec position) {
 	Entity entity = world->ecs.createEntity();
 	if (!entity) return 0;
 
 	pair chunk = vec::round(position / CHUNK_SIZE);
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, entity);
-	realm->linkChunk(entity, chunk);
+	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
+	world->realmManager.getRealm(realmId)->linkChunk(entity, chunk);
 	world->ecs.addComponent<ChunkComponent>({}, entity);
 
 	return entity;
 }
 
-Entity EntityFactory::createPlayer(Realm* realm, vec position) {
-	Entity player = createDynamicEntity(realm, position);
+Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
+	Entity player = createDynamicEntity(realmId, position);
 	if (!player) return 0;
 
 	world->ecs.addComponent<ActionComponent>({}, player);
@@ -90,11 +90,11 @@ Entity EntityFactory::createPlayer(Realm* realm, vec position) {
 	return player;
 }
 
-Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm, pair position) {
+Entity EntityFactory::createResource(ResourceId::value resourceId, RealmId realmId, pair position) {
 	if (!resourceId) return 0;
 	ResourceTemplate& resourceTemplate = ResourceTemplate::templates[resourceId];
 
-	Entity resource = createStaticEntity(realm, position, resourceTemplate.size, resourceTemplate.solid, resourceTemplate.opaque);
+	Entity resource = createStaticEntity(realmId, position, resourceTemplate.size, resourceTemplate.solid, resourceTemplate.opaque);
 	if (!resource) return 0;
 
 	SpriteStack spriteStack;
@@ -116,11 +116,11 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, Realm* realm,
 	return resource;
 }
 
-Entity EntityFactory::createStructure(StructureId::value structureId, Realm* realm, pair position) {
+Entity EntityFactory::createStructure(StructureId::value structureId, RealmId realmId, pair position) {
 	if (!structureId) return 0;
 	StructureTemplate& structureTemplate = StructureTemplate::templates[structureId];
 
-	Entity structure = createStaticEntity(realm, position, structureTemplate.size, true, true);
+	Entity structure = createStaticEntity(realmId, position, structureTemplate.size, true, true);
 	if (!structure) return 0;
 
 	SpriteStack spriteStack;
@@ -134,9 +134,9 @@ Entity EntityFactory::createStructure(StructureId::value structureId, Realm* rea
 	return structure;
 }
 
-Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair position) {
+Entity EntityFactory::createCrop(CropId::value cropId, RealmId realmId, pair position) {
 	if (!cropId) return 0;
-	Entity crop = createStaticEntity(realm, position, pair(1, 1), false, false);
+	Entity crop = createStaticEntity(realmId, position, pair(1, 1), false, false);
 	if (!crop) return 0;
 
 	SpriteStack spriteStack;
@@ -146,8 +146,8 @@ Entity EntityFactory::createCrop(CropId::value cropId, Realm *realm, pair positi
 	return crop;
 }
 
-Entity EntityFactory::createEnemy(EnemyId::value enemyId, Realm* realm, vec position) {
-	Entity enemy = createDynamicEntity(realm, position);
+Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec position) {
+	Entity enemy = createDynamicEntity(realmId, position);
 	if (!enemy) return 0;
 	
 	world->ecs.addComponent<ActionComponent>({}, enemy);
@@ -194,8 +194,8 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, Realm* realm, vec posi
 }
 
 
-Entity EntityFactory::createAnimal(AnimalId::value animalId, Realm* realm, vec position) {
-	Entity animal = createDynamicEntity(realm, position);
+Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, vec position) {
+	Entity animal = createDynamicEntity(realmId, position);
 	if (!animal) return 0;
 	
 	world->ecs.addComponent<ActionComponent>({}, animal);
@@ -260,42 +260,83 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 	return item;
 }
 
-Entity EntityFactory::createItem(ItemId::value itemId, uchar count, Realm* realm, vec position) {
+Entity EntityFactory::createItem(ItemId::value itemId, uchar count, RealmId realmId, vec position) {
 	Entity item = createItem(itemId, count);
 	if (!item) return 0;
 
 	pair chunk = vec::round(position / CHUNK_SIZE);
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, item);
-	realm->linkChunk(item, chunk);
+	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, item);
+	world->realmManager.getRealm(realmId)->linkChunk(item, chunk);
 
 	return item;
 }
 
 Entity EntityFactory::createTool(ItemKind::value itemKind) {
-	Entity item = world->ecs.createEntity();
-	SpriteStack spriteStack;
-	spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
-	spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(0, 0)));
-	spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(1, 7)));
-	SpriteComponent spriteComponent = {spriteStack, 0.5f};
+	Entity tool = world->ecs.createEntity();
+
+	world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, tool);
+	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, tool);
+	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
+
+	ItemKindComponent itemKindComponent = {};
+	itemKindComponent.itemKinds[itemKind] = true;
+
+	SpriteComponent spriteComponent = {{}, 0.5f};
 	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, item);
-	world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, item);
-	world->ecs.addComponent<MeleeItemComponent>({1}, item);
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
-	world->ecs.addComponent<NameComponent>({Textblock("Sword")}, item);
-	return item;
+
+	if (itemKind == ItemKind::SWORD) {
+		world->ecs.addComponent<NameComponent>({Textblock("Sword")}, tool);
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
+		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(0, 0)));
+		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(1, 7)));	
+		world->ecs.addComponent<MeleeItemComponent>({1}, tool);
+		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
+		itemKindComponent.itemProperties[ItemProperty::PARRY] = 10;
+	} else if (itemKind == ItemKind::BOW) {
+		world->ecs.addComponent<NameComponent>({Textblock("Bow")}, tool);
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(2, 8)));
+		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(1, 8)));
+		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
+		world->ecs.addComponent<LauncherComponent>({}, tool);
+	} else if (itemKind == ItemKind::AXE) {
+		world->ecs.addComponent<NameComponent>({Textblock("Axe")}, tool);
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
+		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(2, 0)));
+		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 7)));
+		itemKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 10;
+		itemKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
+	} else if (itemKind == ItemKind::HOE) {
+		world->ecs.addComponent<NameComponent>({Textblock("Hoe")}, tool);
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 5)));
+		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(4, 2)));
+		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 5)));
+		itemKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 10;
+		itemKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
+	} else if (itemKind == ItemKind::PICK_AXE) {
+		world->ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, tool);
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 7)));
+		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(1, 1)));
+		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 4)));
+		itemKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 10;
+		itemKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
+	}
+
+	world->ecs.addComponent<SpriteComponent>(spriteComponent, tool);
+	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
+
+	return tool;
 }
 
-Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pair position, bool link) {
+Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId, pair position, bool link) {
 	Entity station = world->ecs.createEntity();
 	if (!stationId || !station) return 0;
 	
 	pair chunk = vec::round(position / CHUNK_SIZE);
-	world->ecs.addComponent<PositionComponent>({position, realm->realmId, chunk}, station);
+	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, station);
+	Realm* realm = world->realmManager.getRealm(realmId);
 	realm->linkChunk(station, chunk);
 
-	world->ecs.addComponent<GridComponent>({position, realm->realmId, {1,1}, true, false}, station);
+	world->ecs.addComponent<GridComponent>({position, realmId, {1,1}, true, false}, station);
 	if (link) realm->linkGrid(station, position, {1,1}, true, false);
 
 	world->ecs.addComponent<StationComponent>({stationId}, station);
@@ -319,8 +360,8 @@ Entity EntityFactory::createStation(StationId::value stationId, Realm* realm, pa
 	return station;
 }
 
-Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction) {
-	Entity projectile = createDynamicEntity(realm, position);
+Entity EntityFactory::createProjectile(RealmId realmId, vec position, vec direction) {
+	Entity projectile = createDynamicEntity(realmId, position);
 	if (!projectile) return 0;
 
 	SpriteStack spriteStack;
@@ -334,8 +375,21 @@ Entity EntityFactory::createProjectile(Realm* realm, vec position, vec direction
 	return projectile;
 }
 
-Entity EntityFactory::createDamageArea(Realm* realm, vec position, Shape shape, uint start, uint duration, vec force, Entity imune) {
-	Entity damageArea = createDynamicEntity(realm, position);
+Entity EntityFactory::createExplosive(RealmId realmId, vec position) {
+	Entity explosive = createDynamicEntity(realmId, position);
+	if (!explosive) return 0;
+
+	SpriteStack spriteStack;
+	spriteStack.setSprite(0, Sprite(SpriteSheet::BOMB, {0, 0}, {1, 1}));
+	world->ecs.addComponent<SpriteComponent>({spriteStack}, explosive);
+
+	world->ecs.addComponent<ExplosiveComponent>({world->ticks + 5000}, explosive);
+
+	return  explosive;
+}
+
+Entity EntityFactory::createDamageArea(RealmId realmId, vec position, Shape shape, uint start, uint duration, vec force, Entity imune) {
+	Entity damageArea = createDynamicEntity(realmId, position);
 	if (!damageArea) return 0;
 
 	world->ecs.addComponent<HitboxComponent>({shape}, damageArea);
@@ -343,11 +397,11 @@ Entity EntityFactory::createDamageArea(Realm* realm, vec position, Shape shape, 
 	return damageArea;
 }
 
-Entity EntityFactory::createPortal(Realm* realm, pair position, Realm* otherRealm, pair entry) {
-	Entity portal = createStaticEntity(realm, position, {1, 1}, true, true);
+Entity EntityFactory::createPortal(RealmId realmId, pair position, RealmId otherRealmId, pair entry) {
+	Entity portal = createStaticEntity(realmId, position, {1, 1}, true, true);
 	SpriteStack portalSprites;
 	portalSprites.setSprite(0, Sprite(SpriteSheet::CAVE, pair(0, 0), pair(1, 1)));
 	world->ecs.addComponent<SpriteComponent>({portalSprites}, portal);
-	world->ecs.addComponent<PortalComponent>({otherRealm->realmId, entry}, portal);
+	world->ecs.addComponent<PortalComponent>({otherRealmId, entry}, portal);
 	return portal;
 }

@@ -8,7 +8,7 @@
 
 class CreatureActionSystem : public System {
 public:
-	void update(uint ticks, RealmManager& realmManager, ForageSystem* forageSystem, EntitySet& updateSet) {
+	void update(uint ticks, ForageSystem* forageSystem, EntitySet& updateSet) {
 		for (Entity entity : entities) {
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 			if (actionComponent.actionState == ActionState::IDLE) continue;
@@ -26,8 +26,7 @@ public:
 						if (vec::dist(actionComponent.position, positionComponent.position) > 0.001f) {
 							force = vec::normalise(actionComponent.position - positionComponent.position) / 10;
 						}
-						Realm* realm = realmManager.getRealm(positionComponent.realmId);
-						EntityFactory::createDamageArea(realm, actionComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);	
+						EntityFactory::createDamageArea(positionComponent.realmId, actionComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);	
 					} else if (forageSystem->update(actionComponent.position, item, ticks, updateSet)) {
 						//playerComponent.lastAction = ticks;
 					}

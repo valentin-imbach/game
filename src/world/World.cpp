@@ -41,16 +41,23 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 	if (debug) seed = 4;
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
+	spawnRealm->generate(RealmType::WORLD);
+	
 	spawn = spawnRealm->findFree(pair(50,50));
-	player = EntityFactory::createPlayer(spawnRealm, spawn);
+	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
 	if (debug) {
-		Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2), RealmType::HOUSE);
-		Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3), RealmType::CAVE);
-		Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + rand()), RealmType::DUNGEON);
+		Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
+		house->generate(RealmType::HOUSE);
+
+		Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3));
+		cave->generate(RealmType::CAVE);
+
+		Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + rand()));
+		dungeon->generate(RealmType::DUNGEON);
 
 		//Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
 
@@ -64,9 +71,9 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		spawnRealm->map->updateStyle();
 
-		EntityFactory::createPortal(spawnRealm, spawn + pair(3, 1), dungeon, dungeon->spawn);
+		EntityFactory::createPortal(spawnRealm->realmId, spawn + pair(3, 1), dungeon->realmId, dungeon->spawn);
 
-		EntityFactory::createStructure(StructureId::TENT, spawnRealm, spawn + pair(0, 3));
+		EntityFactory::createStructure(StructureId::TENT, spawnRealm->realmId, spawn + pair(0, 3));
 		
 		//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
 
@@ -235,6 +242,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<CreatureAnimationComponent>(ComponentId::CREATURE_ANIMATION);
 	ecs.rosterComponent<DurabilityComponent>(ComponentId::DURABILITY);
 	ecs.rosterComponent<EffectComponent>(ComponentId::EFFECT);
+	ecs.rosterComponent<ExplosiveComponent>(ComponentId::EXPLOSIVE);
 
 	LOG("Components rostered");
 }
@@ -310,6 +318,8 @@ void World::rosterSystems() {
 		{ComponentId::ACTION});
 	effectSystem = ecs.rosterSystem<EffectSystem>(SystemId::EFFECT,
 		{ComponentId::EFFECT});
+	explosiveSystem = ecs.rosterSystem<ExplosiveSystem>(SystemId::EXPLOSIVE,
+		{ComponentId::EXPLOSIVE, ComponentId::POSITION});
 
 	LOG("Systems rostered")
 }
@@ -360,9 +370,11 @@ void World::update(uint dt) {
 	aiChaseSystem->update(ticks, realmManager);
 	aiMeleeSystem->update(ticks, realmManager);
 
-	creatureActionSystem->update(ticks, realmManager, forageSystem, updateSet);
+	creatureActionSystem->update(ticks, forageSystem, updateSet);
 
 	projectileSystem->update(ticks, dt);
+	explosiveSystem->update(ticks);
+
 	effectSystem->update(ticks);
 	creatureMovementSystem->update(dt, realmManager);
 
@@ -381,7 +393,7 @@ void World::update(uint dt) {
 	updateCamera(player);
 	healthSystem->update(ticks, updateSet);
 	maturitySystem->update(ticks, updateSet);
-	lootSystem->update(ticks, playerRealm);
+	lootSystem->update(ticks);
 
 	creatureAnimationSystem->update(ticks);
 
@@ -519,7 +531,7 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 }
 
 void World::respawn() {
-	Entity player = EntityFactory::createPlayer(spawnRealm, spawn);
+	Entity player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
 	LOG("Player Respawned");
 }
 
@@ -608,7 +620,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			} else {
 				ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
 				if (itemComponent.itemId == ItemId::PARSNIP_SEEDS) {
-					EntityFactory::createCrop(CropId::PARSNIP, playerRealm, gridPos);
+					EntityFactory::createCrop(CropId::PARSNIP, playerRealm->realmId, gridPos);
 					itemComponent.count -= 1;
 					if (itemComponent.count == 0) {
 						ecs.addComponent<DeathComponent>({}, activeItemContainer.item);
@@ -633,7 +645,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 					vec position = camera.worldPosition(event.mousePosition);
 					vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
 					vec direction = vec::normalise(position - playerPosition);
-					EntityFactory::createProjectile(playerRealm, playerPosition, launcherComponent.charge * direction);
+					EntityFactory::createProjectile(playerRealm->realmId, playerPosition, launcherComponent.charge * direction);
 				}
 				launcherComponent.charge = 0;
 			}

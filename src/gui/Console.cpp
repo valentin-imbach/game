@@ -103,9 +103,9 @@ bool Console::execute(std::string input) {
 		ResourceId::value resourceId = ResourceId::from_string(inputs[1]);
 		StationId::value stationId = StationId::from_string(inputs[1]);
 		if (resourceId) {
-			Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm, position);
+			Entity resource = EntityFactory::createResource(resourceId, game->world->playerRealm->realmId, position);
 		} else if (stationId) {
-			Entity station = EntityFactory::createStation(stationId, game->world->playerRealm, position);
+			Entity station = EntityFactory::createStation(stationId, game->world->playerRealm->realmId, position);
 		} else {
 			return false;
 		}
@@ -117,13 +117,17 @@ bool Console::execute(std::string input) {
 		if (inputs.size() > 2) n = std::stoi(inputs[2]);
 		vec position = ecs.getComponent<PositionComponent>(player).position;
 		if (animalId) {
-			for (int i = 0; i < n; i++) game->world->inspect = EntityFactory::createAnimal(animalId, game->world->playerRealm, position);
+			for (int i = 0; i < n; i++) game->world->inspect = EntityFactory::createAnimal(animalId, game->world->playerRealm->realmId, position);
 			
 		} else if (enemyId) {
-			for (int i = 0; i < n; i++) game->world->inspect = EntityFactory::createEnemy(enemyId, game->world->playerRealm, position);
+			for (int i = 0; i < n; i++) game->world->inspect = EntityFactory::createEnemy(enemyId, game->world->playerRealm->realmId, position);
 		} else {
 			return false;
 		}
+	} else if (inputs[0] == "bomb") {
+		if (!player) return false;
+		vec position = ecs.getComponent<PositionComponent>(player).position;
+		EntityFactory::createExplosive(game->world->playerRealm->realmId, position);
 	} else if (inputs[0] == "give") {
 		if (inputs.size() < 2 || !player) return false;
 		ItemId::value itemId = ItemId::from_string(inputs[1]);
@@ -212,11 +216,12 @@ bool Console::execute(std::string input) {
 		uint time = 5000;
 		if (inputs.size() > 2) time = std::stoi(inputs[2]);
 		ecs.getComponent<EffectComponent>(player).effects[effect].end = game->world->ticks + time;
-	} else if (inputs[0] == "tool") {
-		//if (inputs.size() < 2) return false;
-		Entity tool = EntityFactory::createTool(ItemKind::SWORD);
-		Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(tool);
-		if (rest) ecs.addComponent<DeathComponent>({}, rest);
+	} else if (inputs[0] == "tools") {
+		for (ItemKind::value itemKind : {ItemKind::SWORD, ItemKind::BOW, ItemKind::AXE, ItemKind::PICK_AXE, ItemKind::HOE}) {
+			Entity tool = EntityFactory::createTool(itemKind);
+			Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(tool);
+			if (rest) ecs.addComponent<DeathComponent>({}, rest);
+		}
 	}else {
 		return false;
 	}
