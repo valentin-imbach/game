@@ -6,6 +6,10 @@
 #include "Components.hpp"
 #include "World.hpp"
 
+#include "ResourceTemplates.hpp"
+#include "StructureTemplates.hpp"
+#include "AnimalTemplates.hpp"
+
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;
 

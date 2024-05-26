@@ -3,18 +3,15 @@
 #include "Components.hpp"
 #include "ECS.hpp"
 #include "GuiManager.hpp"
-#include "Item.hpp"
-#include "ResourceTemplates.hpp"
-#include "Sprite.hpp"
+
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
 #include "World.hpp"
-#include "direction.hpp"
-#include "pair.hpp"
 #include "utils.hpp"
 
 #include "Crafting.hpp"
+#include "EntityFactory.hpp"
 
 //* GuiElement
 

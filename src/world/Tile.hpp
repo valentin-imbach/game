@@ -3,19 +3,6 @@
 #include "utils.hpp"
 #include "Sprite.hpp"
 
-ENUM(GroundId,
-ROCK_WALL,
-PLANKS,
-GRASS,
-SOIL,
-DIRT,
-MUD,
-ROCK,
-MUD_WALL,
-GRAVEL,
-WATER,
-SAND)
-
 struct GroundTemplate {
 	GroundId::value groundId = GroundId::NONE;
 	SpriteSheet::value spriteSheet = SpriteSheet::NONE;

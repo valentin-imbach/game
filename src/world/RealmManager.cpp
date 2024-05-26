@@ -3,7 +3,6 @@
 #include "serialiser.hpp"
 #include "utils.hpp"
 
-
 RealmManager::RealmManager(uchar maxRealms) : maxRealms(maxRealms) {
 	availableRealms.reserve(maxRealms);
 	for (uint i = maxRealms; i > 0; i--) availableRealms.push_back(i);

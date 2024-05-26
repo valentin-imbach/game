@@ -1,5 +1,6 @@
 
 #include "World.hpp"
+#include "systems.hpp"
 
 #include "Components.hpp"
 #include "Crafting.hpp"
@@ -14,7 +15,9 @@
 #include "Tile.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
+
 #include "StructureTemplates.hpp"
+#include "AnimalTemplates.hpp"
 
 void World::init() {
 	rosterComponents();
@@ -42,7 +45,7 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 	if (debug) seed = 4;
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
 	spawnRealm->generate(RealmType::WORLD);
-	
+
 	spawn = spawnRealm->findFree(pair(50,50));
 	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
 
@@ -75,98 +78,6 @@ World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), 
 
 		EntityFactory::createStructure(StructureId::TENT, spawnRealm->realmId, spawn + pair(0, 3));
 		
-		//EntityFactory::createAnimal(CreatureId::COW, realm, realm->findFree(pair(52,52)));
-
-		// Entity portal = EntityFactory::createResource(ResourceId::BASALT_ROCK, realm, spawn);
-		// ecs.addComponent<PortalComponent>({otherRealm->realmId, pair(2, 2)}, portal);
-
-		//EntityFactory::createCrop(CropId::PARSNIP, spawnRealm, spawn + pair(1, -1));
-
-		//LOG(ecs.getComponent<PositionComponent>(player).chunk);
-
-		//EntityFactory::createMonster(AnimalId::COW, spawnRealm, spawnRealm->findFree(pair(55,55)));
-
-		Entity axe = ecs.createEntity();
-		SpriteStack axeSprites;
-		axeSprites.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
-		axeSprites.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(2, 0)));
-		axeSprites.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 7)));
-		ecs.addComponent<SpriteComponent>({axeSprites, 0.5f}, axe);
-		ecs.getComponent<SpriteComponent>(axe).effects[SpriteEffectId::BOUNCE] = {true, 0};
-		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, axe);
-		ecs.addComponent<DurabilityComponent>({255,255}, axe);
-		ItemKindComponent axeKindComponent = {};
-		axeKindComponent.itemKinds[ItemKind::AXE] = true;
-		axeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
-		axeKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
-		ecs.addComponent<ItemKindComponent>(axeKindComponent, axe);
-		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, axe);
-		ecs.addComponent<NameComponent>({Textblock("Axe")}, axe);
-		Entity rest1 = ecs.getComponent<InventoryComponent>(player).inventory.add(axe);
-
-		Entity hoe = ecs.createEntity();
-		SpriteStack hoeSprites;
-		hoeSprites.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 5)));
-		hoeSprites.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(4, 2)));
-		hoeSprites.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 5)));
-		ecs.addComponent<SpriteComponent>({hoeSprites, 0.5f}, hoe);
-		ecs.getComponent<SpriteComponent>(hoe).effects[SpriteEffectId::BOUNCE] = {true, 0};
-		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, hoe);
-		ItemKindComponent hoeKindComponent = {};
-		hoeKindComponent.itemKinds[ItemKind::HOE] = true;
-		hoeKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 3;
-		hoeKindComponent.itemProperties[ItemProperty::LEVEL] = 2;
-		ecs.addComponent<ItemKindComponent>(hoeKindComponent, hoe);
-		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, hoe);
-		ecs.addComponent<NameComponent>({Textblock("Hoe")}, hoe);
-		Entity rest5 = ecs.getComponent<InventoryComponent>(player).inventory.add(hoe);
-
-		Entity pick = ecs.createEntity();
-		SpriteStack pickSprites;
-		pickSprites.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 7)));
-		pickSprites.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(1, 1)));
-		pickSprites.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 4)));
-		ecs.addComponent<SpriteComponent>({pickSprites, 0.5f}, pick);
-		ecs.getComponent<SpriteComponent>(pick).effects[SpriteEffectId::BOUNCE] = {true, 0};
-		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, pick);
-		ItemKindComponent pickKindComponent = {};
-		pickKindComponent.itemKinds[ItemKind::PICK_AXE] = true;
-		pickKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 4;
-		pickKindComponent.itemProperties[ItemProperty::LEVEL] = 3;
-		ecs.addComponent<ItemKindComponent>(pickKindComponent, pick);
-		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, pick);
-		ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, pick);
-		Entity rest2 = ecs.getComponent<InventoryComponent>(player).inventory.add(pick);
-
-		Entity sword = ecs.createEntity();
-		SpriteStack swordSprites;
-		swordSprites.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
-		swordSprites.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(0, 0)));
-		swordSprites.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(1, 7)));
-		ecs.addComponent<SpriteComponent>({swordSprites, 0.5f}, sword);
-		ecs.getComponent<SpriteComponent>(sword).effects[SpriteEffectId::BOUNCE] = {true, 0};
-		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, sword);
-		ecs.addComponent<MeleeItemComponent>({1}, sword);
-		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, sword);
-		ecs.addComponent<NameComponent>({Textblock("Sword")}, sword);
-		Entity rest3 = ecs.getComponent<InventoryComponent>(player).inventory.add(sword);
-
-		Entity bow = ecs.createEntity();
-		SpriteStack bowSprites;
-		bowSprites.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(2, 8)));
-		bowSprites.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(1, 8)));
-		ecs.addComponent<SpriteComponent>({bowSprites, 0.5f}, bow);
-		ecs.getComponent<SpriteComponent>(bow).effects[SpriteEffectId::BOUNCE] = {true, 0};
-		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, bow);
-		ItemKindComponent bowKindComponent = {};
-		bowKindComponent.itemKinds[ItemKind::BOW] = true;
-		bowKindComponent.itemProperties[ItemProperty::DAMAGE] = 3;
-		ecs.addComponent<ItemKindComponent>(bowKindComponent, bow);
-		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, bow);
-		ecs.addComponent<NameComponent>({Textblock("Bow")}, bow);
-		ecs.addComponent<LauncherComponent>({}, bow);
-		Entity rest4 = ecs.getComponent<InventoryComponent>(player).inventory.add(bow);
-
 		// Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
 		// Entity fire = ecs.createEntity();
@@ -243,6 +154,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<DurabilityComponent>(ComponentId::DURABILITY);
 	ecs.rosterComponent<EffectComponent>(ComponentId::EFFECT);
 	ecs.rosterComponent<ExplosiveComponent>(ComponentId::EXPLOSIVE);
+	ecs.rosterComponent<ItemModComponent>(ComponentId::ITEM_MOD);
 
 	LOG("Components rostered");
 }
@@ -320,6 +232,8 @@ void World::rosterSystems() {
 		{ComponentId::EFFECT});
 	explosiveSystem = ecs.rosterSystem<ExplosiveSystem>(SystemId::EXPLOSIVE,
 		{ComponentId::EXPLOSIVE, ComponentId::POSITION});
+	itemModSystem = ecs.rosterSystem<ItemModSystem>(SystemId::ITEM_MOD,
+		{ComponentId::PLAYER, ComponentId::MOVEMENT});
 
 	LOG("Systems rostered")
 }
@@ -373,9 +287,11 @@ void World::update(uint dt) {
 	creatureActionSystem->update(ticks, forageSystem, updateSet);
 
 	projectileSystem->update(ticks, dt);
-	explosiveSystem->update(ticks);
+	explosiveSystem->update(ticks, camera);
 
 	effectSystem->update(ticks);
+	itemModSystem->update();
+
 	creatureMovementSystem->update(dt, realmManager);
 
 	EntityMap collisions;
@@ -391,6 +307,7 @@ void World::update(uint dt) {
 	itemPickupSystem->update(collisions, realmManager);
 
 	updateCamera(player);
+	camera.update(ticks);
 	healthSystem->update(ticks, updateSet);
 	maturitySystem->update(ticks, updateSet);
 	lootSystem->update(ticks);

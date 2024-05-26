@@ -95,6 +95,17 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 				texts.emplace_back(Text(text), pos);
 				pos.y += spacing;
 			}
+			if (EntityFactory::world->ecs.hasComponent<ItemModComponent>(item)) {
+				ItemModComponent& itemModComponent = EntityFactory::world->ecs.getComponent<ItemModComponent>(item);
+				for (int i = 1; i < ItemModId::count; i++) {
+					int val = itemModComponent.mods[i];
+					if (val == 0) continue;
+					std::string sign = (val > 0) ? "+" : "";
+					std::string text = "Movement Speed: " + sign + std::to_string(val) + "%";
+					texts.emplace_back(Text(text), pos);
+					pos.y += spacing;
+				}
+			}
 			if (EntityFactory::world->ecs.hasComponent<MeleeItemComponent>(item)) {
 				MeleeItemComponent& damageComponent = EntityFactory::world->ecs.getComponent<MeleeItemComponent>(item);
 				texts.emplace_back(Text("  Weapon", TTF_STYLE_BOLD), pos);

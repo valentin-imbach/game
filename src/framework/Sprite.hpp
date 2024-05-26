@@ -52,7 +52,8 @@ SMALL_TENT,
 CAVE,
 MODULAR_PLAYER,
 MODULAR_ZOMBIE,
-BOMB)
+BOMB,
+BOOTS)
 
 class Sprite {
 public:

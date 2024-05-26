@@ -2,6 +2,7 @@
 #include "GuiManager.hpp"
 #include "GuiElement.hpp"
 #include "World.hpp"
+#include "Components.hpp"
 
 uint GuiManager::scale = 3;
 bool GuiManager::box = true;

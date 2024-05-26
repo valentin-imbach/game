@@ -1,10 +1,11 @@
 
 #include "Console.hpp"
 #include "Game.hpp"
-#include "pathfinding.hpp"
+#include "ResourceTemplates.hpp"
+#include "EntityFactory.hpp"
 
 Console::Console(Game* game) : game(game) {
-	commands["tp"] = Command({Argument<int>(), Argument<int>()});
+	// commands["tp"] = Command({Argument<int>(), Argument<int>()});
 }
 
 void Console::draw() {
@@ -222,9 +223,37 @@ bool Console::execute(std::string input) {
 			Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(tool);
 			if (rest) ecs.addComponent<DeathComponent>({}, rest);
 		}
-	}else {
+	} else if (inputs[0] == "boots") {
+		Entity boots = ecs.createEntity();
+		if (!boots) return true;
+		ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, boots);
+		ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, boots);
+		ecs.addComponent<DurabilityComponent>({255,255}, boots);
+
+		ecs.addComponent<NameComponent>({Textblock("Speedy Boots")}, boots);
+
+		SpriteComponent spriteComponent = {{}, 0.5f};
+		spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::BOOTS, pair(0, 0)));
+		ecs.addComponent<SpriteComponent>(spriteComponent, boots);
+
+		ItemKindComponent itemKindComponent = {};
+		itemKindComponent.itemKinds[ItemKind::CLOTHING_FEET] = true;
+		itemKindComponent.itemProperties[ItemProperty::VANITY] = 7;
+		ecs.addComponent<ItemKindComponent>(itemKindComponent, boots);
+
+		ItemModComponent itemModComponent = {};
+		itemModComponent.mods[ItemModId::SPEED] = -90;
+		ecs.addComponent<ItemModComponent>(itemModComponent, boots);
+
+		Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(boots);
+		if (rest) ecs.addComponent<DeathComponent>({}, rest);
+	} else if (inputs[0] == "shake") {
+		camera.shake = game->world->ticks;
+	} else {
 		return false;
 	}
+
 
 	return true;
 }

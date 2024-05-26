@@ -18,15 +18,12 @@ public:
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 			GroundId::value groundId = realm->map->getGroundId(vec::round(positionComponent.position));
 
+			float mult = GroundTemplate::templates[groundId].speed * movementComponent.speedBonus;
 			if (movementComponent.movementState == MovementState::WALK) {
-				float mult = GroundTemplate::templates[groundId].speed;
-				float add = movementComponent.speedBonus;
-				float speed = (movementComponent.walkingSpeed + add) * mult;
+				float speed = movementComponent.walkingSpeed * mult;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			} else if (movementComponent.movementState == MovementState::RUN) {
-				float mult = GroundTemplate::templates[groundId].speed;
-				float add = movementComponent.speedBonus;
-				float speed =(movementComponent.runningSpeed + add) * mult;
+				float speed = movementComponent.runningSpeed * mult;
 				offset += dt * speed * Direction::unit[directionComponent.direction] / 1000;
 			}
 
@@ -60,7 +57,7 @@ public:
 				movementComponent.movementState = MovementState::IDLE;
 			}
 
-			movementComponent.speedBonus = 0;
+			movementComponent.speedBonus = 1.0f;
 		}
 	}
 

@@ -1,19 +1,6 @@
 
 #pragma once
 #include "utils.hpp"
-#include "Generation.hpp"
-
-ENUM(WeatherId,
-CLEAR,
-RAIN,
-FOG,
-SNOW)
-
-ENUM(RealmType,
-WORLD,
-HOUSE,
-CAVE,
-DUNGEON)
 
 class Environment {
 public:

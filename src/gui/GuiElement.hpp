@@ -1,7 +1,7 @@
 
 #pragma once
 #include "Crafting.hpp"
-#include "ECS_types.hpp"
+
 #include "Events.hpp"
 #include "Item.hpp"
 #include "Sprite.hpp"

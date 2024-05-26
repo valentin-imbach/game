@@ -1,6 +1,8 @@
 
 #include "Realm.hpp"
-#include "World.hpp"
+#include "Map.hpp"
+#include "Generation.hpp"
+
 #include "EntityFactory.hpp"
 #include "Dungeon.hpp"
 

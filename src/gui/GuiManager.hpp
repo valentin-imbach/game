@@ -1,12 +1,9 @@
 
 #pragma once
-#include <memory>
-#include <vector>
+#include "utils.hpp"
 #include "Events.hpp"
 #include "Item.hpp"
-#include "Window.hpp"
-#include "utils.hpp"
-#include "ECS.hpp"
+#include "ECS_types.hpp"
 
 class World;
 class GuiElement;

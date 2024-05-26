@@ -1,6 +1,7 @@
 
 #include "Environment.hpp"
 #include "Window.hpp"
+#include "Sprite.hpp"
 
 Environment::Environment(uint seed, RealmType::value realmType) : seed(seed), realmType(realmType) {
 	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);

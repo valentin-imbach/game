@@ -19,7 +19,7 @@ public:
 
 			if (effectComponent.effects[Effect::SPEED].end && ecs->hasComponent<MovementComponent>(entity)) {
 				MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
-				movementComponent.speedBonus = 2;
+				movementComponent.speedBonus *= 1.5f;
 			}
 
 			if (effectComponent.effects[Effect::POISON].end && ecs->hasComponent<HealthComponent>(entity)) {

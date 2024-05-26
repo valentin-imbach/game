@@ -19,6 +19,7 @@ public:
 			} else {
 				aiComponent.scores[AiState::CHASE] = 0;
 			}
+			
 		}
 	}
 

@@ -27,4 +27,8 @@ namespace lerp {
 	[[nodiscard]] static float flicker(float t) {
 		return std::sin(t)/2 + std::sin(M_PI * t)/4 + std::sin(M_PI * M_PI * t)/4;
 	}
+
+	[[nodiscard]] static vec shake(float t) {
+		return vec(flicker(t), flicker(t + 10));
+	}
 };

@@ -250,3 +250,11 @@ struct EffectComponent {
 struct ExplosiveComponent {
 	uint trigger = 0;
 };
+
+ENUM(ItemModId,
+SPEED
+)
+
+struct ItemModComponent {
+	std::array<int8_t, ItemModId::count> mods;
+};

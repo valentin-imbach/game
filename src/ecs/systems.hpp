@@ -36,3 +36,4 @@
 #include "CreatureActionSystem.hpp"
 #include "EffectSystem.hpp"
 #include "ExplosiveSystem.hpp"
+#include "ItemModSystem.hpp"

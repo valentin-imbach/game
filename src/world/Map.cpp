@@ -1,6 +1,7 @@
 
 #include "Map.hpp"
 #include "utils.hpp"
+#include "Tile.hpp"
 
 #define TILE_FRAME_TIME 2000
 

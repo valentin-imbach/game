@@ -1,7 +1,13 @@
 
 #pragma once
-#include "Chunk.hpp"
+
+#include "utils.hpp"
+#include "ECS_types.hpp"
+#include "Map.hpp"
 #include "Environment.hpp"
+// #include "Chunk.hpp"
+
+class SDL_Texture;
 
 #define CHUNK_SIZE 16
 #define CHUNK_REACH 10

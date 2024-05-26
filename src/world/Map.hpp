@@ -1,9 +1,9 @@
 
 #pragma once
-#include "Tile.hpp"
+
 #include "utils.hpp"
-#include "ResourceTemplates.hpp"
-#include "Environment.hpp"
+#include "Tile.hpp"
+class SDL_Surface;
 
 class Map {
 public:

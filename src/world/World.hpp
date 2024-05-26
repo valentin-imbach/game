@@ -1,17 +1,14 @@
 
 #pragma once
-#include "ECS.hpp"
-#include "Events.hpp"
-#include "GuiManager.hpp"
-#include "Map.hpp"
-#include "PlayerSystem.hpp"
-#include "systems.hpp"
 #include "utils.hpp"
-#include "ParticleSystem.hpp"
-#include "Realm.hpp"
-#include "Camera.hpp"
-#include "Sprite.hpp"
+#include "systems_fwd.hpp"
+#include "ECS.hpp"
+
 #include "RealmManager.hpp"
+#include "GuiManager.hpp"
+#include "ParticleSystem.hpp"
+
+#include "Camera.hpp"
 #include "Minimap.hpp"
 #include "Time.hpp"
 
@@ -19,22 +16,6 @@ class World {
 public:
 	World(std::string name, uint seed, bool debug = false);
 	World(std::fstream& stream);
-
-	// void linkGrid(Entity entity, GridComponent& gridComponent) {
-	// 	realmManager.getRealm(gridComponent.realmId)->linkGrid(entity, gridComponent);
-	// }
-
-	// void unlinkGrid(Entity entity, GridComponent& gridComponent) {
-	// 	realmManager.getRealm(gridComponent.realmId)->unlinkGrid(entity, gridComponent);
-	// }
-
-	// void linkChunk(Entity entity, PositionComponent& positionComponent) {
-	// 	realmManager.getRealm(positionComponent.realmId)->linkChunk(entity, positionComponent);
-	// }
-
-	// void unlinkChunk(Entity entity, PositionComponent& positionComponent) {
-	// 	realmManager.getRealm(positionComponent.realmId)->unlinkChunk(entity, positionComponent);
-	// }
 
 	void update(uint dt);
 	void updateCamera(Entity target);
@@ -119,6 +100,7 @@ private:
 	CreatureActionSystem* creatureActionSystem;
 	EffectSystem* effectSystem;
 	ExplosiveSystem* explosiveSystem;
+	ItemModSystem* itemModSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

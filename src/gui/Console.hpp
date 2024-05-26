@@ -1,16 +1,9 @@
 
 #pragma once
-#include <vector>
-#include "Components.hpp"
-#include "EntityFactory.hpp"
-#include "Events.hpp"
-#include "SDL2/SDL_events.h"
-#include "TextManager.hpp"
-#include "Window.hpp"
 #include "utils.hpp"
-#include "TextureManager.hpp"
-#include "World.hpp"
-#include "Command.hpp"
+#include "Events.hpp"
+
+// #include "Command.hpp"
 
 class Game;
 
@@ -28,7 +21,7 @@ private:
 	std::vector<std::string> history;
 	uint index = 0;
 
-	std::unordered_map<std::string, Command> commands;
+	// std::unordered_map<std::string, Command> commands;
 
 	bool execute(std::string input);
 };

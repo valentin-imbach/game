@@ -3,10 +3,8 @@
 #include "utils.hpp"
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
-#include "ResourceTemplates.hpp"
-#include "AnimalTemplates.hpp"
+
 #include "Components.hpp"
-#include "StructureTemplates.hpp"
 
 class World;
 class Realm;

@@ -1,19 +1,6 @@
 
 #pragma once
-#include "Tile.hpp"
 #include "ResourceTemplates.hpp"
-
-ENUM(Biome,
-OCEAN,
-DESERT,
-TUNDRA,
-TAIGA,
-SWAMP,
-GRASSLAND,
-FOREST,
-SAVANNA,
-RAINFOREST,
-MOUNTAIN)
 
 struct BiomeGroundTemplate {
 	GroundId::value groundId = GroundId::NONE;

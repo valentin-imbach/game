@@ -4,6 +4,8 @@
 #include "TextManager.hpp"
 #include "Window.hpp"
 #include "World.hpp"
+#include "Environment.hpp"
+#include "Components.hpp"
 
 class DebugScreen {
 public:
