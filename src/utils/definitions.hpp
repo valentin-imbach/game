@@ -73,6 +73,7 @@ ENUM(ActionState,
 IDLE,
 EAT,
 ATTACK,
+CHARGE,
 USE)
 
 ENUM(StationId,

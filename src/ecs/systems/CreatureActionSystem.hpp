@@ -13,11 +13,8 @@ public:
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 			if (actionComponent.actionState == ActionState::IDLE) continue;
 
-			if (ticks > actionComponent.trigger && !actionComponent.done) {
-				if (actionComponent.actionState == ActionState::ATTACK) {	
-					//if (!ecs->hasComponent<PlayerComponent>(entity)) continue;
-					//PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
-					//Entity item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
+			if (actionComponent.actionState == ActionState::ATTACK) {
+				if (actionComponent.trigger && ticks > actionComponent.trigger) {
 					Entity item = actionComponent.item;
 					if (item && ecs->hasComponent<MeleeItemComponent>(item)) {
 						MeleeItemComponent& damageComponent = ecs->getComponent<MeleeItemComponent>(item);
@@ -27,21 +24,52 @@ public:
 							force = vec::normalise(actionComponent.position - positionComponent.position) / 10;
 						}
 						EntityFactory::createDamageArea(positionComponent.realmId, actionComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);	
-					} else if (forageSystem->update(actionComponent.position, item, ticks, updateSet)) {
-						//playerComponent.lastAction = ticks;
+					} else {
+						forageSystem->update(actionComponent.position, item, ticks, updateSet);
 					}
-					//playerComponent.lastAction = ticks;
+					actionComponent.trigger = 0;
 				}
-				actionComponent.done = true;
+
+				if (ticks > actionComponent.end) {
+					actionComponent.actionState = ActionState::IDLE;
+					actionComponent.position = {0, 0};
+					actionComponent.start = 0;
+					actionComponent.trigger = 0;
+					actionComponent.end = 0;
+				}
 			}
-			if (ticks > actionComponent.end) {
-				actionComponent.actionState = ActionState::IDLE;
-				actionComponent.position = {0, 0};
-				actionComponent.start = 0;
-				actionComponent.trigger = 0;
-				actionComponent.end = 0;
-				actionComponent.done = false;
+
+			if (actionComponent.actionState == ActionState::CHARGE) {
+				if (actionComponent.trigger && ticks > actionComponent.trigger) {
+					Entity item = actionComponent.item;
+					if (item && ecs->hasComponent<LauncherComponent>(item)) {
+						LauncherComponent& launcherComponent = ecs->getComponent<LauncherComponent>(item);
+	
+						uint past = ticks - actionComponent.start;
+						float charge = launcherComponent.maxForce * std::min(float(past) / launcherComponent.chargeTime, 1.0f);
+
+						if (charge > launcherComponent.minForce) {
+							PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+							vec target = actionComponent.position;
+
+							vec direction = {1.0f, 0};
+							if (vec::dist(target, positionComponent.position) > 0.001f) {
+								direction = vec::normalise(target - positionComponent.position);
+							}
+
+							EntityFactory::createProjectile(positionComponent.realmId, positionComponent.position, charge * direction, entity);
+						}
+
+					}
+					actionComponent.actionState = ActionState::IDLE;
+					actionComponent.position = {0, 0};
+					actionComponent.start = 0;
+					actionComponent.trigger = 0;
+					actionComponent.end = 0;
+				}
 			}
+
+
 		}
 	}
 };

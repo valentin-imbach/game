@@ -40,7 +40,6 @@ struct ActionComponent {
 	uint start = 0;
 	uint trigger = 0;
 	uint end = 0;
-	bool done = false;
 };
 
 struct CreatureAnimationComponent {

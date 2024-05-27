@@ -364,15 +364,18 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 	return station;
 }
 
-Entity EntityFactory::createProjectile(RealmId realmId, vec position, vec direction) {
+Entity EntityFactory::createProjectile(RealmId realmId, vec position, vec direction, Entity imune) {
 	Entity projectile = createDynamicEntity(realmId, position);
 	if (!projectile) return 0;
 
 	SpriteStack spriteStack;
-	spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, {5, 0}, {1, 1}));
+	spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, {0, 9}, {1, 1}));
 	SpriteComponent spriteComponent = {spriteStack};
 	spriteComponent.angle = 45 - vec::angle(direction) * 180/M_PI;
 	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
+
+	world->ecs.addComponent<HitboxComponent>({Shape(0.2f)}, projectile);
+	world->ecs.addComponent<DamageComponent>({1, 0, 0, direction/10, imune}, projectile);
 
 	world->ecs.addComponent<ProjectileComponent>({direction * 70}, projectile);
 

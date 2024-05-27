@@ -239,6 +239,9 @@ void World::rosterSystems() {
 }
 
 void World::update(uint dt) {
+
+	inspect = player;
+
 	ticks += tickSpeed * dt;
 	time.update(tickSpeed * dt);
 
@@ -552,21 +555,41 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
 		state = true;
-		if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
-			LauncherComponent& launcherComponent = ecs.getComponent<LauncherComponent>(activeItemContainer.item);
-			if (inputState[InputStateId::SECONDARY]) {
-				launcherComponent.charge +=  dt * launcherComponent.maxForce / launcherComponent.chargeTime;
-				launcherComponent.charge = std::min(launcherComponent.charge, launcherComponent.maxForce);
-			} else {
-				if (launcherComponent.charge > launcherComponent.minForce) {
-					vec position = camera.worldPosition(event.mousePosition);
-					vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
-					vec direction = vec::normalise(position - playerPosition);
-					EntityFactory::createProjectile(playerRealm->realmId, playerPosition, launcherComponent.charge * direction);
-				}
-				launcherComponent.charge = 0;
+
+		ActionComponent& actionComponent = ecs.getComponent<ActionComponent>(player);
+
+		if (actionComponent.actionState == ActionState::IDLE && inputState[InputStateId::SECONDARY]) {
+			Entity item = activeItemContainer.item;
+			if (ecs.hasComponent<LauncherComponent>(item)) {
+				actionComponent.actionState = ActionState::CHARGE;
+				actionComponent.start = ticks;
+				actionComponent.trigger = 0;
+				actionComponent.end = 0;
+				actionComponent.item = item;
 			}
 		}
+
+		if (actionComponent.actionState == ActionState::CHARGE && !inputState[InputStateId::SECONDARY]) {
+			actionComponent.position = camera.worldPosition(event.mousePosition);
+			actionComponent.trigger = ticks;
+		}
+	
+
+		// if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
+		// 	LauncherComponent& launcherComponent = ecs.getComponent<LauncherComponent>(activeItemContainer.item);
+		// 	if (inputState[InputStateId::SECONDARY]) {
+		// 		launcherComponent.charge +=  dt * launcherComponent.maxForce / launcherComponent.chargeTime;
+		// 		launcherComponent.charge = std::min(launcherComponent.charge, launcherComponent.maxForce);
+		// 	} else {
+		// 		if (launcherComponent.charge > launcherComponent.minForce) {
+		// 			vec position = camera.worldPosition(event.mousePosition);
+		// 			vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
+		// 			vec direction = vec::normalise(position - playerPosition);
+		// 			EntityFactory::createProjectile(playerRealm->realmId, playerPosition, launcherComponent.charge * direction);
+		// 		}
+		// 		launcherComponent.charge = 0;
+		// 	}
+		// }
 	} else if (event.id == InputEventId::INSPECT) {
 		pair mPos = Window::instance->mousePosition;
 		vec pos = camera.worldPosition(mPos);
