@@ -7,6 +7,53 @@ namespace ai {
 	using GridPred = std::function<bool(pair)>;
 	using Node = std::pair<int, pair>;
 
+	inline std::vector<Direction::value> a_star(std::function<bool(pair)> space, pair start, std::function<bool(pair)> target, std::function<float(pair)> cost, std::function<float(pair)> heuristic, bool diagonal, uint steps) {
+		std::unordered_map<pair, Direction::value> entered;
+		using Node = std::pair<float, pair>;
+
+		auto comparison = [&](Node& left, Node& right) {
+			return left.first + heuristic(left.second) > right.first + heuristic(right.second);
+		};
+
+		std::priority_queue<Node, std::vector<Node>, decltype(comparison)> queue(comparison);
+
+		if (target(start)) return {};
+		entered[start] = Direction::NONE;
+		queue.emplace(cost(start), start);
+
+		bool found = false;
+		while (!queue.empty() && steps && !found) {
+			Node node = queue.top();
+			queue.pop();
+			for (int d = 1; d < 9; d += (2 - diagonal)) {
+				pair next = node.second + Direction::taxi[d];
+				if (d % 2 == 0) {
+					pair left = node.second + Direction::taxi[Direction::rotate(d, 1)];
+					pair right = node.second + Direction::taxi[Direction::rotate(d, -1)];
+					if (!space(left) || !space(right)) continue;
+				}
+				if (space(next) && entered.find(next) == entered.end()) {
+					entered[next] = Direction::from_int(d);
+					queue.emplace(node.first + cost(next), next);
+					if (target(next)) {
+						found = true;
+						break;
+					}
+				}
+			}
+			steps -= 1;
+		}
+
+		std::vector<Direction::value> path;
+		pair pos = queue.top().second;
+		while (pos != start) {
+			path.push_back(entered[pos]);
+			pos += Direction::taxi[Direction::rotate(entered[pos], 4)];
+		}
+		std::reverse(path.begin(), path.end());
+		return path;
+	}
+
 	inline std::vector<Direction::value> bfs(pair start, pair end, GridPred free, bool diagonal = false) {
 		std::unordered_map<pair, Direction::value> visited;
 
@@ -55,6 +102,24 @@ namespace ai {
 
 	inline Direction::value find_direction(pair start, pair end, GridPred free, bool diagonal = false) {
 		std::vector<Direction::value> path = bfs(start, end, free, diagonal);
+		return path.empty() ? Direction::NONE : path[0];
+	}
+
+	inline Direction::value seek(pair start, pair end, std::function<bool(pair)> space, bool diagonal = false, uint steps = 100) {
+		std::function<bool(pair)> target = [end](pair pos) { return pos == end; };
+		std::function<float(pair)> cost = [](pair pos) { return 1.0f; };
+		std::function<float(pair)> heuristic = [end](pair pos) { return vec::dist(pos, end)*2; };
+
+		std::vector<Direction::value> path = a_star(space, start, target, cost, heuristic, diagonal, 100);
+		return path.empty() ? Direction::NONE : path[0];
+	}
+
+	inline Direction::value avoid(pair start, pair avoid, std::function<bool(pair)> space, bool diagonal = false, uint steps = 100) {
+		std::function<bool(pair)> target = [avoid](pair pos) { return vec::dist(pos, avoid) > 5; };
+		std::function<float(pair)> cost = [](pair pos) { return 1.0f; };
+		std::function<float(pair)> heuristic = [avoid](pair pos) { return -vec::dist(pos, avoid)*2; };
+
+		std::vector<Direction::value> path = a_star(space, start, target, cost, heuristic, diagonal, 100);
 		return path.empty() ? Direction::NONE : path[0];
 	}
 

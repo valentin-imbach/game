@@ -3,6 +3,7 @@
 #include "Game.hpp"
 #include "ResourceTemplates.hpp"
 #include "EntityFactory.hpp"
+#include "utils/pathfinding.hpp"
 
 Console::Console(Game* game) : game(game) {
 	// commands["tp"] = Command({Argument<int>(), Argument<int>()});
@@ -77,7 +78,9 @@ bool Console::execute(std::string input) {
 	std::vector<std::string> inputs = string::split(input);
 
 	if (inputs[0] == "test") {
-		
+		Realm* realm = game->world->playerRealm;
+		auto space = [realm](pair pos){ return realm->walkable(pos); };
+		ai::seek(pair(0,0), pair(5,5), space, true);
 	} else if (inputs[0] == "clear") {
 		history.clear();
 	} else if (inputs[0] == "refresh") {

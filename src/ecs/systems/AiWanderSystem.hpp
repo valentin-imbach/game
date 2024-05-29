@@ -38,7 +38,7 @@ public:
 			vec offset = positionComponent.position - start;
 			//LOG(start, end);
 			auto lambda = [realm](pair pos){ return realm->walkable(pos); };
-			Direction::value dir = ai::find_direction(start, end, lambda, true);
+			Direction::value dir = ai::seek(start, end, lambda, true);
 	
 			if (dir) {
 				pair step = start + Direction::taxi[dir];

@@ -36,21 +36,14 @@ public:
 			Direction::value oldFacing = movementComponent.facing;
 
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			
-			if (aiComponent.change || vec::dist(aiFleeComponent.target, positionComponent.position) < 1 || ticks - aiFleeComponent.lastChange > 500) {
-				vec pos = positionComponent.position + (positionComponent.position - aiFleeComponent.avoid) * 7;
-				aiFleeComponent.target = realm->findFree(vec::round(pos), 5, false);
-				aiFleeComponent.lastChange = ticks;
-			}
 
 			pair start = vec::round(positionComponent.position);
-			pair end = vec::round(aiFleeComponent.target);
-			vec offset = positionComponent.position - start;
-			//LOG(start, end);
+			pair avoid = vec::round(aiFleeComponent.avoid);
 			auto lambda = [realm](pair pos){ return realm->walkable(pos); };
-			Direction::value dir = ai::find_direction(start, end, lambda, true);
+			Direction::value dir = ai::avoid(start, avoid, lambda, true);
 	
 			if (dir) {
+				vec offset = positionComponent.position - start;
 				pair step = start + Direction::taxi[dir];
 				pair left = start + Direction::taxi[Direction::rotate(dir, 1)];
 				pair right = start + Direction::taxi[Direction::rotate(dir, 7)];
@@ -62,9 +55,6 @@ public:
 					directionComponent.direction = dir;
 				}
 			} else {
-				vec pos = positionComponent.position + (positionComponent.position - aiFleeComponent.avoid) * 7;
-				aiFleeComponent.target = realm->findFree(vec::round(pos), 5, false);
-				aiFleeComponent.lastChange = ticks;
 				continue;
 			}
 

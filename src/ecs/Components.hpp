@@ -195,8 +195,6 @@ struct AiWanderComponent {
 
 struct AiFleeComponent {
 	vec avoid;
-	vec target;
-	uint lastChange;
 };
 
 struct AiChaseComponent {

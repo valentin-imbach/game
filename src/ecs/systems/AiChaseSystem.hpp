@@ -50,7 +50,7 @@ public:
 				}
 			} else {
 				auto lambda = [realm](pair pos){ return realm->walkable(pos); };
-				dir = ai::find_direction(start, end, lambda, true);
+				dir = ai::seek(start, end, lambda, true);
 		
 				if (dir) {
 					pair step = start + Direction::taxi[dir];
