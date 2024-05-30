@@ -25,31 +25,37 @@ public:
 			if (!itemComponent.show) continue;
 
 			TextureStyle style;
+			style.angle = 0;
 
-			pair mpos = Window::instance->mousePosition;
-			pair epos = camera.screenPosition(positionComponent.position);
-			style.angle = vec::angle(mpos - epos);
-
-			vec pos = positionComponent.position;
-			pos.y -= 0.5;
-
-			int pm = 1;
-			if (movementComponent.facing == Direction::WEST) {
-				pm = -1;
-				style.flip = SDL_FLIP_HORIZONTAL;
-				style.angle += M_PI;
+			if (ecs->hasComponent<PlayerComponent>(entity)) {
+				pair mpos = Window::instance->mousePosition;
+				pair epos = camera.screenPosition(positionComponent.position);
+				if (mpos.x > epos.x) {
+					style.angle = vec::angle(mpos - epos);
+				} else {
+					style.angle = M_PI - vec::angle(mpos - epos);
+				}
 			}
 
-			pos.x += pm * 0.5;
-			style.pivot = pair(-pm * 8 * camera.zoom, 0);
-			
+			vec offset = vec(0.5f, -0.5f);
+			style.pivot = pair(-8 * camera.zoom, 0);
+					
 			if (actionComponent.actionState == ActionState::ATTACK) {
 				uint timePassed = ticks - actionComponent.start;
 				uint totalTime = actionComponent.end - actionComponent.start;
 				float t = float(timePassed)/totalTime;
+				style.angle += std::sin(2 * t*t * M_PI) * M_PI * (1-t);
+			} else if (actionComponent.actionState == ActionState::CHARGE) {
+				offset.x = 0.2f;
+				style.pivot = pair(0, 0);
+				style.angle += M_PI_4;
+			}
 
-				float angle = std::sin(2 * t*t * M_PI) * M_PI * (1-t);
-				style.angle += pm * angle;
+			if (movementComponent.facing == Direction::WEST) {
+				offset.x *= -1;
+				style.angle *= -1;
+				style.pivot.x *= -1;
+				style.flip = SDL_FLIP_HORIZONTAL;
 			}
 			
 			// if (movementComponent.movementState == MovementState::WALK) {
@@ -57,7 +63,7 @@ public:
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 
-			pair screenPosition = camera.screenPosition(pos);
+			pair screenPosition = camera.screenPosition(positionComponent.position + offset);
 			SpriteStack& itemSprites = ecs->getComponent<SpriteComponent>(item).spriteStack;
 			drawQueue.push_back({itemSprites, screenPosition, 1, int(camera.zoom), style});
 		}

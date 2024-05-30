@@ -174,6 +174,7 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 
 	Entity weapon = createTool(ItemKind::SWORD);
 	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0, weapon}, enemy);
+	world->ecs.addComponent<HandComponent>({weapon}, enemy);
 
 	world->ecs.addComponent<SpriteComponent>({}, enemy);
 	CreatureAnimationComponent creatureAnimationComponent = {};
@@ -299,8 +300,8 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 		itemKindComponent.itemProperties[ItemProperty::PARRY] = 10;
 	} else if (itemKind == ItemKind::BOW) {
 		world->ecs.addComponent<NameComponent>({Textblock("Bow")}, tool);
-		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(2, 8)));
-		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(1, 8)));
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(3, 4)));
+		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(3, 5)));
 		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
 		world->ecs.addComponent<LauncherComponent>({}, tool);
 	} else if (itemKind == ItemKind::AXE) {

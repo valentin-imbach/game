@@ -40,32 +40,43 @@ public:
 			}
 
 			if (actionComponent.actionState == ActionState::CHARGE) {
-				if (actionComponent.trigger && ticks > actionComponent.trigger) {
-					Entity item = actionComponent.item;
-					if (item && ecs->hasComponent<LauncherComponent>(item)) {
-						LauncherComponent& launcherComponent = ecs->getComponent<LauncherComponent>(item);
-	
-						uint past = ticks - actionComponent.start;
-						float charge = launcherComponent.maxForce * std::min(float(past) / launcherComponent.chargeTime, 1.0f);
+				Entity item = actionComponent.item;
+				if (!item || !ecs->hasComponent<LauncherComponent>(item)) return;
+				LauncherComponent& launcherComponent = ecs->getComponent<LauncherComponent>(item);
 
-						if (charge > launcherComponent.minForce) {
-							PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-							vec target = actionComponent.position;
+				uint past = ticks - actionComponent.start;
+				float t = float(past) / launcherComponent.chargeTime;
+				float charge = launcherComponent.maxForce * std::min(t, 1.0f);
 
-							vec direction = {1.0f, 0};
-							if (vec::dist(target, positionComponent.position) > 0.001f) {
-								direction = vec::normalise(target - positionComponent.position);
-							}
+				if (actionComponent.trigger && ticks > actionComponent.trigger) {				
+					if (charge > launcherComponent.minForce) {
+						PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+						vec target = actionComponent.position;
 
-							EntityFactory::createProjectile(positionComponent.realmId, positionComponent.position, charge * direction, entity);
+						vec direction = {1.0f, 0};
+						if (vec::dist(target, positionComponent.position) > 0.001f) {
+							direction = vec::normalise(target - positionComponent.position);
 						}
 
+						EntityFactory::createProjectile(positionComponent.realmId, positionComponent.position, charge * direction, entity);
 					}
+
 					actionComponent.actionState = ActionState::IDLE;
 					actionComponent.position = {0, 0};
 					actionComponent.start = 0;
 					actionComponent.trigger = 0;
 					actionComponent.end = 0;
+
+					ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(3, 4)));
+					ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(3, 5)));
+				} else {
+					if (past > launcherComponent.chargeTime) {
+						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(5, 4)));
+						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(5, 5)));
+					} else if (charge > launcherComponent.minForce) {
+						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(4, 4)));
+						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(4, 5)));
+					}
 				}
 			}
 
