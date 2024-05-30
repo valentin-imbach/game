@@ -6,8 +6,14 @@
 
 class PlayerSystem : public System {
 public:
-	Entity getPlayer() {
-		if (entities.empty()) return 0;
-		return *entities.begin();
+	void update() {
+		for (Entity entity : entities) {
+			HandComponent& handComonent = ecs->getComponent<HandComponent>(entity);
+			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
+
+			uchar sel = playerComponent.activeSlot;
+			Entity item = playerComponent.hotbar.itemContainers[sel]->item;
+			handComonent.item = item;
+		}
 	}
 };

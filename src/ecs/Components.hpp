@@ -255,3 +255,7 @@ SPEED
 struct ItemModComponent {
 	std::array<int8_t, ItemModId::count> mods;
 };
+
+struct HandComponent {
+	Entity item = 0;
+};

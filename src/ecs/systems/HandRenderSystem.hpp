@@ -11,38 +11,45 @@ public:
 	void update(Camera camera, std::vector<DrawCall>& drawQueue, uint ticks) {
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			//PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
+			HandComponent& handComponent = ecs->getComponent<HandComponent>(entity);
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 
-			Entity item = actionComponent.item;
+			Entity item = handComponent.item;
+			if (actionComponent.actionState != ActionState::IDLE) {
+				item = actionComponent.item;
+			}
 
 			if (!item) continue;
 			ItemComponent& itemComponent = ecs->getComponent<ItemComponent>(item);
 			if (!itemComponent.show) continue;
 
-			SpriteStack& itemSprites = ecs->getComponent<SpriteComponent>(item).spriteStack;
-
-			vec entityPosition = positionComponent.position;
 			TextureStyle style;
 
-			entityPosition.y -= 0.5;
+			pair mpos = Window::instance->mousePosition;
+			pair epos = camera.screenPosition(positionComponent.position);
+			style.angle = vec::angle(mpos - epos);
 
-			if (actionComponent.actionState != ActionState::ATTACK) continue;
+			vec pos = positionComponent.position;
+			pos.y -= 0.5;
 
-			uint timePassed = ticks - actionComponent.start;
-
-			if (movementComponent.facing == Direction::EAST) {
-				entityPosition.x += 0.625;
-				style.pivot = pair(-8 * camera.zoom, 8 * camera.zoom);
-				style.angle = -90;
-				if (timePassed < 300) style.angle = -90 + std::sin((M_PI * timePassed) / 300) * 90;
-			} else if (movementComponent.facing == Direction::WEST) {
-				entityPosition.x -= 0.625;
+			int pm = 1;
+			if (movementComponent.facing == Direction::WEST) {
+				pm = -1;
 				style.flip = SDL_FLIP_HORIZONTAL;
-				style.pivot = pair(8 * camera.zoom, 8 * camera.zoom);
-				style.angle = 90;
-				if (timePassed < 300) style.angle = 90 - std::sin((M_PI * timePassed) / 300) * 90;
+				style.angle += M_PI;
+			}
+
+			pos.x += pm * 0.5;
+			style.pivot = pair(-pm * 8 * camera.zoom, 0);
+			
+			if (actionComponent.actionState == ActionState::ATTACK) {
+				uint timePassed = ticks - actionComponent.start;
+				uint totalTime = actionComponent.end - actionComponent.start;
+				float t = float(timePassed)/totalTime;
+
+				float angle = std::sin(2 * t*t * M_PI) * M_PI * (1-t);
+				style.angle += pm * angle;
 			}
 			
 			// if (movementComponent.movementState == MovementState::WALK) {
@@ -50,7 +57,8 @@ public:
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 
-			pair screenPosition = camera.screenPosition(entityPosition);
+			pair screenPosition = camera.screenPosition(pos);
+			SpriteStack& itemSprites = ecs->getComponent<SpriteComponent>(item).spriteStack;
 			drawQueue.push_back({itemSprites, screenPosition, 1, int(camera.zoom), style});
 		}
 	}

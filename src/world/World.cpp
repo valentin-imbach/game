@@ -155,6 +155,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<EffectComponent>(ComponentId::EFFECT);
 	ecs.rosterComponent<ExplosiveComponent>(ComponentId::EXPLOSIVE);
 	ecs.rosterComponent<ItemModComponent>(ComponentId::ITEM_MOD);
+	ecs.rosterComponent<HandComponent>(ComponentId::HAND);
 
 	LOG("Components rostered");
 }
@@ -179,7 +180,7 @@ void World::rosterSystems() {
 	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,
 		{ComponentId::LOOT, ComponentId::DEATH, ComponentId::POSITION});
 	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER,
-		{ComponentId::PLAYER});
+		{ComponentId::PLAYER, ComponentId::HAND});
 	colliderDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID,
@@ -195,7 +196,7 @@ void World::rosterSystems() {
 	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
 		{ComponentId::PARTICLE, ComponentId::MOVEMENT});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
-		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT});
+		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT, ComponentId::HAND});
 	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
 		{ComponentId::POSITION, ComponentId::CHUNK});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
@@ -261,6 +262,7 @@ void World::update(uint dt) {
 
 	guiManager.update(dt);
 	controllerSystem->update(inputState, state, ticks);
+	playerSystem->update();
 
 	updateSet.clear();
 	const uchar updateDistance = 1;

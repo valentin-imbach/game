@@ -48,6 +48,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	world->ecs.addComponent<MovementComponent>({2, 3}, player);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, player);
 	world->ecs.addComponent<ControllerComponent>({}, player);
+	world->ecs.addComponent<HandComponent>({}, player);
 
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, player);
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
@@ -371,7 +372,7 @@ Entity EntityFactory::createProjectile(RealmId realmId, vec position, vec direct
 	SpriteStack spriteStack;
 	spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, {0, 9}, {1, 1}));
 	SpriteComponent spriteComponent = {spriteStack};
-	spriteComponent.angle = 45 - vec::angle(direction) * 180/M_PI;
+	spriteComponent.angle = vec::angle(direction) - M_PI/4;
 	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
 
 	world->ecs.addComponent<HitboxComponent>({Shape(0.2f)}, projectile);

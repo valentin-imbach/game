@@ -27,7 +27,7 @@ void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, 
 	SDL_SetRenderTarget(Window::instance->renderer, dst);
 	SDL_SetTextureAlphaMod(src, style.alpha * 255);
 	SDL_SetTextureColorMod(src, style.tint.r, style.tint.g, style.tint.b);
-	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, style.angle, &pivot, style.flip);
+	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, -style.angle * 180 / M_PI, &pivot, style.flip);
 }
 
 void TextureManager::drawRect(pair position, pair size, Colour colour, bool centered, bool filled) {
