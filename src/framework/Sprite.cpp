@@ -17,6 +17,17 @@ void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	TextureManager::drawTexture(texture, nullptr, BIT * (source + offset), BIT * size, position, dsize, style);
 }
 
+bool Sprite::ison(pair point, pair position, float scale, TextureStyle style, uint ticks) {
+	if (!spriteSheet) return false;
+	uint past = ticks - animationStart;
+	int frame = frameCount > 1 ? ((past / frameDuration) % frameCount) : 0;
+	pair offset = frame * animationOffset;
+	SDL_Texture* texture = style.outline ? outlineSpriteSheets[spriteSheet] : spriteSheets[spriteSheet];
+	pair dsize = vec::round(scale * BIT * vec(size));
+	style.tint = style.tint.mult(tint);
+	return TextureManager::ison(point, texture, nullptr, BIT * (source + offset), BIT * size, position, dsize, style);
+}
+
 void Sprite::animationReset(uint ticks) {
 	animationStart = ticks;
 }
@@ -44,6 +55,18 @@ void SpriteStack::draw(pair position, float scale, TextureStyle style, uint tick
 		if (style.centered) offset /= 2;
 		stack[layer].sprite.draw(position + offset, scale, style, ticks);
 	}
+}
+
+bool SpriteStack::ison(pair point, pair position, float scale, TextureStyle style, uint ticks) {
+	for (int layer = 0; layer < SPRITE_LAYER_COUNT; layer++) {
+		if (!stack[layer].sprite.spriteSheet) continue;
+		pair offset = vec::round(scale * BIT * vec(stack[layer].offset));
+		if (style.centered) offset /= 2;
+		if (stack[layer].sprite.ison(point, position + offset, scale, style, ticks)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void SpriteStack::clear() {

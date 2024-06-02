@@ -241,7 +241,7 @@ void World::rosterSystems() {
 
 void World::update(uint dt) {
 
-	inspect = player;
+	// inspect = player;
 
 	ticks += tickSpeed * dt;
 	time.update(tickSpeed * dt);
@@ -366,18 +366,11 @@ void World::draw() {
 	};
 
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
-	// hover = 0;
-	// pair mPos = Window::instance->mousePosition;
-	// for (int i = drawQueue.size()-1; i >= 0; i--) {
-	// 	DrawCall& p = drawQueue[i];
-	// 	if (pair::inside(mPos, p.position, pair(p.scale * BIT, p.scale * BIT)) && p.entity) {
-	// 		hover = p.entity;
-	// 		p.style.outline = true;
-	// 		break;
-	// 	}
-	// }
 
+	hover = 0;
+	pair mpos = Window::instance->mousePosition;
 	for (auto& p : drawQueue) {
+		if (p.spriteStack.ison(mpos, p.position, p.scale, p.style, ticks) && p.entity) hover = p.entity;
 		p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 	}
 
@@ -412,10 +405,6 @@ void World::drawTiles() {
 		for (int y = y1; y <= y2; y++) {
 			if (!playerRealm->map->tiles[x][y]) continue;
 			pair screenPosition = camera.screenPosition(vec(x, y));
-			// for (auto& layer : playerRealm->map->tiles[x][y]->sprites) {
-			// 	
-			// 	layer.second.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
-			// }
 			playerRealm->map->tiles[x][y]->sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
 		}
 	}
@@ -593,13 +582,20 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		// 	}
 		// }
 	} else if (event.id == InputEventId::INSPECT) {
-		pair mPos = Window::instance->mousePosition;
-		vec pos = camera.worldPosition(mPos);
-		pair tile = vec::round(pos);
 
-		if (playerRealm->gridMap.find(tile) != playerRealm->gridMap.end()) {
-			inspect = playerRealm->gridMap[tile];
+		
+		if (hover) {
+			inspect = hover;
+			return true;
 		}
+
+		// pair mPos = Window::instance->mousePosition;
+		// vec pos = camera.worldPosition(mPos);
+		// pair tile = vec::round(pos);
+
+		// if (playerRealm->gridMap.find(tile) != playerRealm->gridMap.end()) {
+		// 	inspect = playerRealm->gridMap[tile];
+		// }
 	}
 
 	return false;

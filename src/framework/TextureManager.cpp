@@ -30,6 +30,12 @@ void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, 
 	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, -style.angle * 180 / M_PI, &pivot, style.flip);
 }
 
+bool TextureManager::ison(pair point, SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style) {
+	if (!src) return false;
+	if (style.centered) dpos -= dsize / 2;
+	return pair::inside(point, dpos, dsize, false);
+}
+
 void TextureManager::drawRect(pair position, pair size, Colour colour, bool centered, bool filled) {
 	if (centered) position -= size / 2;
 	SDL_Rect rect = {position.x, position.y, size.x, size.y};

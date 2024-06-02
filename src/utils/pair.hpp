@@ -110,8 +110,9 @@ struct pair {
 		return tnorm(p1 - p2);
 	}
 
-	[[nodiscard]] inline static bool inside(pair p, pair position, pair size) {
-		pair offset = p - position;
+	[[nodiscard]] inline static bool inside(pair p, pair position, pair size, bool centered = true) {
+		pair offset = p - (position + size/2);
+		if (centered) offset = p - position;
 		return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
 	}
 

@@ -253,6 +253,12 @@ bool Console::execute(std::string input) {
 		if (rest) ecs.addComponent<DeathComponent>({}, rest);
 	} else if (inputs[0] == "shake") {
 		camera.shake = game->world->ticks;
+	} else if (inputs[0] == "structure") {
+		if (inputs.size() < 2) return false;
+		StructureId::value structureId = StructureId::from_string(inputs[1]);
+		if (!structureId) return false;
+		pair pos = vec::round(ecs.getComponent<PositionComponent>(player).position);
+		EntityFactory::createStructure(structureId, game->world->playerRealm->realmId, pos);
 	} else {
 		return false;
 	}

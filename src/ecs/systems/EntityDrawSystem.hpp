@@ -75,7 +75,7 @@ public:
 			vec offset(0.5f, 0.5f);
 			pair screenPosition = camera.screenPosition(entityPosition - spriteComponent.scale * offset);
 
-			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * camera.zoom * spriteComponent.z, int(spriteComponent.scale * camera.zoom), style});
+			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * camera.zoom * spriteComponent.z, int(spriteComponent.scale * camera.zoom), style, entity});
 		}
 	}
 };
