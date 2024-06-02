@@ -61,7 +61,7 @@ void Environment::draw(uint ticks) {
 			int dx = startx - t/4;
 			int dy = t - 20;
 
-			rainSprite.draw({dx, dy}, 4);
+			rainSprite.draw(pair(dx, dy), 4);
 		}
 	}
 

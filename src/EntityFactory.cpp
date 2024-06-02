@@ -46,7 +46,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	world->ecs.addComponent<ActionComponent>({}, player);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
 	world->ecs.addComponent<MovementComponent>({2, 3}, player);
-	world->ecs.addComponent<ForceComponent>({{0, 0}}, player);
+	world->ecs.addComponent<ForceComponent>({vec(0, 0)}, player);
 	world->ecs.addComponent<ControllerComponent>({}, player);
 	world->ecs.addComponent<HandComponent>({}, player);
 
@@ -58,7 +58,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 
 	world->ecs.addComponent<EffectComponent>({}, player);
 
-	world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, player);
+	world->ecs.addComponent<InventoryComponent>({Inventory(pair(7, 5))}, player);
 
 	Inventory equipment({3,4});
 	equipment.itemContainers[0][0].itemKind = ItemKind::CLOTHING_HEAD;
@@ -71,7 +71,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	equipment.itemContainers[1][3].itemKind = ItemKind::ARMOR_FEET;
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	
-	world->ecs.addComponent<PlayerComponent>({Inventory({7, 1}), equipment, 0}, player);
+	world->ecs.addComponent<PlayerComponent>({Inventory(pair(7, 1)), equipment, 0}, player);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::PLAYER);
@@ -81,13 +81,13 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	CreatureAnimationComponent creatureAnimationComponent = {};
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {3, 2*i-2}, {1, 2}), {0, -1});
-		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {3, 16 + 2*i-2}, {1, 2}), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(3, 2*i-2), pair(1, 2)), pair(0, -1));
+		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(3, 16 + 2*i-2), pair(1, 2)), pair(0, -1));
 	}
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
-		creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
+		creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 16 + 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
 	}
 
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);

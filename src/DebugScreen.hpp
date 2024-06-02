@@ -27,8 +27,8 @@ public:
 	void draw() {
 		if (!active) return;
 		pair windowSize = Window::instance->size;
-		TextureManager::drawRect({20, 20}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
-		TextureManager::drawRect({windowSize.x - 320, 20}, {300, windowSize.y - 30}, {0, 0, 0, 100}, false, true);
+		TextureManager::drawRect(pair(20, 20), pair(300, windowSize.y / 2 - 30), Colour(0, 0, 0, 100), false, true);
+		TextureManager::drawRect(pair(windowSize.x - 320, 20), pair(300, windowSize.y - 30), Colour(0, 0, 0, 100), false, true);
 
 
 		//* Debug
