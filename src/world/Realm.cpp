@@ -24,6 +24,7 @@ void Realm::generate(RealmType::value realmType) {
 	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
 	if (realmType == RealmType::CAVE) generateCave(3, 500);
 	if (realmType == RealmType::DUNGEON) generateDungeon();
+	if (realmType == RealmType::TEST) generateFlat(pair(100, 100));
 
 	map->updateStyle();
 
@@ -112,6 +113,19 @@ void Realm::generateHouse(pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			map->tiles[x][y] = std::make_unique<Tile>(GroundId::PLANKS);
+		}
+	}
+
+	spawn = pair(0, 0);
+}
+
+void Realm::generateFlat(pair size) {
+	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
+
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			map->tiles[x][y] = std::make_unique<Tile>(GroundId::GRASS);
 		}
 	}
 

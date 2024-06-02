@@ -140,6 +140,7 @@ FOG,
 SNOW)
 
 ENUM(RealmType,
+TEST,
 WORLD,
 HOUSE,
 CAVE,

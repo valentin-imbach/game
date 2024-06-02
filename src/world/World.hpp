@@ -14,7 +14,7 @@
 
 class World {
 public:
-	World(std::string name, uint seed, bool debug = false);
+	World(std::string name, uint seed, bool debug = false, bool test = false);
 	World(std::fstream& stream);
 
 	void update(uint dt);
@@ -101,6 +101,7 @@ private:
 	EffectSystem* effectSystem;
 	ExplosiveSystem* explosiveSystem;
 	ItemModSystem* itemModSystem;
+	ShovingSystem* shovingSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

@@ -19,6 +19,8 @@
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
 
+#include "GenerationTree.hpp"
+
 void World::init() {
 	rosterComponents();
 	rosterSystems();
@@ -39,12 +41,17 @@ void World::init() {
 	EntityFactory::world = this;
 }
 
-World::World(std::string name, uint seed, bool debug) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
+World::World(std::string name, uint seed, bool debug, bool test) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
 	init();
 
 	if (debug) seed = 4;
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
-	spawnRealm->generate(RealmType::WORLD);
+
+	if (test) {
+		spawnRealm->generate(RealmType::TEST);
+	} else {
+		spawnRealm->generate(RealmType::WORLD);
+	}
 
 	spawn = spawnRealm->findFree(pair(50,50));
 	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
@@ -235,6 +242,8 @@ void World::rosterSystems() {
 		{ComponentId::EXPLOSIVE, ComponentId::POSITION});
 	itemModSystem = ecs.rosterSystem<ItemModSystem>(SystemId::ITEM_MOD,
 		{ComponentId::PLAYER, ComponentId::MOVEMENT});
+	shovingSystem = ecs.rosterSystem<ShovingSystem>(SystemId::SHOVING,
+		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::FORCE});
 
 	LOG("Systems rostered")
 }
@@ -301,6 +310,7 @@ void World::update(uint dt) {
 
 	EntityMap collisions;
 	collisionSystem->update(collisions, updateSet);
+	shovingSystem->update(collisions);
 
 	EntityMap hits;
 	hitboxSystem->update(hits, updateSet);

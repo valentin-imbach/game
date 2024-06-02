@@ -37,3 +37,4 @@
 #include "EffectSystem.hpp"
 #include "ExplosiveSystem.hpp"
 #include "ItemModSystem.hpp"
+#include "ShovingSystem.hpp"

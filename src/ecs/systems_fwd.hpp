@@ -37,3 +37,4 @@ class CreatureActionSystem;
 class EffectSystem;
 class ExplosiveSystem;
 class ItemModSystem;
+class ShovingSystem;

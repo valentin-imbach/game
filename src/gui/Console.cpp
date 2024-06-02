@@ -4,6 +4,7 @@
 #include "ResourceTemplates.hpp"
 #include "EntityFactory.hpp"
 #include "utils/pathfinding.hpp"
+#include "GenerationTree.hpp"
 
 Console::Console(Game* game) : game(game) {
 	// commands["tp"] = Command({Argument<int>(), Argument<int>()});
@@ -246,7 +247,7 @@ bool Console::execute(std::string input) {
 		ecs.addComponent<ItemKindComponent>(itemKindComponent, boots);
 
 		ItemModComponent itemModComponent = {};
-		itemModComponent.mods[ItemModId::SPEED] = -90;
+		itemModComponent.mods[ItemModId::SPEED] = 50;
 		ecs.addComponent<ItemModComponent>(itemModComponent, boots);
 
 		Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(boots);
@@ -259,6 +260,12 @@ bool Console::execute(std::string input) {
 		if (!structureId) return false;
 		pair pos = vec::round(ecs.getComponent<PositionComponent>(player).position);
 		EntityFactory::createStructure(structureId, game->world->playerRealm->realmId, pos);
+	} else if (inputs[0] == "rock") {
+		using namespace generation;
+		auto rock = SurroundNode(new ResourceNode(ResourceId::BASALT_BOULDER), new SurroundNode(new ResourceNode(ResourceId::BASALT_ROCK), new ResourceNode(ResourceId::BASALT_PEBBLE), 4, 2), 5, 5);
+		auto layout = rock.build();
+		pair pos = vec::round(ecs.getComponent<PositionComponent>(player).position);
+		layout->generate(game->world->playerRealm->realmId, pos);
 	} else {
 		return false;
 	}

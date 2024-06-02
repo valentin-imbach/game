@@ -223,7 +223,7 @@ public:
     TextField(pair position, pair size, Direction::value alignment = Direction::NONE);
 	std::string getText();
 private:
-	std::string text;
+	std::string text = "text";
 	bool active;
 	void draw() override;
     bool handleEvent(InputEvent event) override;

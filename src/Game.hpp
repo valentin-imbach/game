@@ -42,7 +42,8 @@ private:
 	uint ticks;
 
 	void createButton();
-	void createWorld(std::string name, uint seed, bool debug = false);
+	void testButton();
+	void createWorld(std::string name, uint seed, bool debug = false, bool test = false);
 	void removeWorld(std::string name);
 	void loadWorld(std::string name);
 	void saveWorld();

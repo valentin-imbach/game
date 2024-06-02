@@ -43,7 +43,8 @@ void Game::buildMenu() {
 	parallax[2] = TextureManager::loadTexture("background/3.png");
 	parallax[3] = TextureManager::loadTexture("background/4.png");
 	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	mainMenu->addGuiElement(std::make_unique<Button>(pair(0, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), Sprite(), "New World"));
+	mainMenu->addGuiElement(std::make_unique<Button>(pair(-30, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), Sprite(), "New World"));
+	mainMenu->addGuiElement(std::make_unique<Button>(pair(30, -70), pair(50, 20), std::bind(&Game::testButton, this), Sprite(), Sprite(), "Test World"));
 	std::unique_ptr<TextField> nameTextField = std::make_unique<TextField>(pair(-50, -90), pair(80, 15));
 	std::unique_ptr<TextField> seedTextField = std::make_unique<TextField>(pair(50, -90), pair(80, 15));
 	nameField = nameTextField.get();
@@ -74,7 +75,19 @@ void Game::createButton() {
 	createWorld(nameField->getText(), seed);
 }
 
-void Game::createWorld(std::string name, uint seed, bool debug) {
+void Game::testButton() {
+	if (!nameField || !seedField) return;
+	uint seed;
+	std::string seedString = seedField->getText();
+	if (!seedString.empty() && string::is_int(seedString)) {
+		seed = std::stoi(seedString);
+	} else {
+		seed = arc4random();
+	}
+	createWorld(nameField->getText(), seed, false, true);
+}
+
+void Game::createWorld(std::string name, uint seed, bool debug, bool test) {
 	if (name.empty()) {
 		WARNING("World name can't be empty");
 		return;
@@ -85,7 +98,7 @@ void Game::createWorld(std::string name, uint seed, bool debug) {
 		return;
 	}
 
-	world = std::make_unique<World>(name, seed, debug);
+	world = std::make_unique<World>(name, seed, debug, test);
 	LOG("World", name, "created");
 	gameState = GameState::RUNNING;
 }

@@ -4,7 +4,9 @@
 #include <ostream>
 
 struct pair {
-	int x, y;
+	int x = 0;
+	int y = 0;
+	
 	pair() :  x(0), y(0) {};
 	pair(int x, int y) : x(x), y(y) {}
 
