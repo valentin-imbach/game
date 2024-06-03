@@ -73,6 +73,16 @@
     "bow": {
         "name": "Bow",
         "properties": ["damage"]
+    },
+
+    "ore": {
+        "name": "Ore",
+        "properties": ["melting_point"]
+    },
+
+    "ingot": {
+        "name": "Ingot",
+        "properties": ["hardness"]
     }
 }
 

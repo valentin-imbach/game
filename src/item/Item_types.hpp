@@ -6,7 +6,7 @@
 
 ENUM(ItemKind,
 
-//Tools
+//* Tools
 PICK_AXE,
 AXE,
 SHOVEL,
@@ -16,13 +16,13 @@ HOE,
 KNIFE,
 ACCESSORY,
 
-//Weapons
+//* Weapons
 SWORD,
 BOW,
 ARROW,
 SHIELD,
 
-//Materials
+//* Materials
 COBBLE,
 ORE,
 PEBBLE,
@@ -36,8 +36,8 @@ ORGANIC,
 DUST,
 ROPE,
 
-//Crafting
-METAL_BAR,
+//* Crafting
+INGOT,
 PLATE,
 GLASS,
 PAPER,
@@ -46,50 +46,53 @@ FABRIC,
 FUEL,
 POTION,
 
-//Clothing
+//* Clothing
 CLOTHING_HEAD,
 CLOTHING_BODY,
 CLOTHING_LEGS,
 CLOTHING_FEET,
 
-//Armor
+//* Armor
 ARMOR_HEAD,
 ARMOR_BODY,
 ARMOR_LEGS,
 ARMOR_FEET)
 
 ENUM(ItemProperty,
-//Mechanical
+//* Mechanical
 WEIGHT,
 STRENGTH,
 HARDNESS,
 FLEXIBILITY,
 TOUGHNESS,
 
-//Food
+//* Metal
+MELTING_POINT,
+
+//* Food
 NUTRITION,
 
-//Optical
+//* Optical
 REFLECTIVITY,
 LUMINOCITY,
 OPACITY,
 
-//Fuel
+//* Fuel
 BURN_TIME,
 HEAT,
 
-//Tools
+//* Tools
 EFFICIENCY,
 DURABILITY,
 PRECISION,
 EFFECTIVENESS,
 LEVEL,
 
-//Weapons
+//* Weapons
 DAMAGE,
 PARRY,
 
-//Clothing
+//* Clothing
 VANITY,
 COMFORT,
 WARMTH)
@@ -134,7 +137,19 @@ CHALK_PEBBLE,
 
 GRASS_FIBER,
 PARSNIP_SEEDS,
-APPLE)
+APPLE,
+X,
+Y,
+
+BRONZE_ORE,
+SILVER_ORE,
+GOLD_ORE,
+Z,
+W,
+
+BRONZE_INGOT,
+SILVER_INGOT,
+GOLD_INGOT)
 
 ENUM(ItemAmount,
 ALL,

@@ -319,5 +319,59 @@
         "properties": {
             "nutrition": 3
         }
+    },
+    "bronze_ore": {
+        "name": "Bronze Ore",
+        "kinds": [
+            "ore"
+        ],
+        "properties": {
+            "melting_point": 4
+        }
+    },
+    "silver_ore": {
+        "name": "Silver Ore",
+        "kinds": [
+            "ore"
+        ],
+        "properties": {
+            "melting_point": 7
+        }
+    },
+    "gold_ore": {
+        "name": "Gold Ore",
+        "kinds": [
+            "ore"
+        ],
+        "properties": {
+            "melting_point": 9
+        }
+    },
+    "bronze_ingot": {
+        "name": "Bronze Ingot",
+        "kinds": [
+            "ingot"
+        ],
+        "properties": {
+            "hardness": 3
+        }
+    },
+    "silver_ingot": {
+        "name": "Silver Ingot",
+        "kinds": [
+            "ingot"
+        ],
+        "properties": {
+            "hardness": 6
+        }
+    },
+    "gold_ingot": {
+        "name": "Gold Ingot",
+        "kinds": [
+            "ingot"
+        ],
+        "properties": {
+            "hardness": 2
+        }
     }
 }

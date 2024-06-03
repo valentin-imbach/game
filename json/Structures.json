@@ -1,8 +1,15 @@
 {
 	"tent": {
-		"sheet": "small_tent",
+		"sheet": "tent",
 		"sprites": [
-			{"anker": [0, 0], "size": [3, 4], "offset": [0, -1], "variations" : 1}
+			{"anker": [0, 0], "size": [5, 5], "offset": [0, -2], "variations" : 3}
+		],
+		"size": [5, 3]
+	},
+	"small_tent": {
+		"sheet": "tent",
+		"sprites": [
+			{"anker": [0, 5], "size": [3, 4], "offset": [0, -1], "variations" : 3}
 		],
 		"size": [3, 3]
 	}

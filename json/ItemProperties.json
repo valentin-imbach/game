@@ -42,5 +42,9 @@
 
     "parry": {
         "name": "Parry"
+    },
+
+    "melting_point": {
+        "name": "Melting Point"
     }
 }

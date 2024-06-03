@@ -425,5 +425,50 @@
 		"loot": {
 			"apple": [1, 2]
 		}
+	},
+
+	"bronze_ore": {
+		"sprites": [
+			{"anker": [22, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [0, 20], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+		],
+		"opaque": false,
+		"tool": "pick_axe",
+		"level": 2,
+		"health": 5,
+		"sound": "rock",
+		"loot": {
+			"bronze_ore": [1, 5]
+		}
+	},
+
+	"silver_ore": {
+		"sprites": [
+			{"anker": [22, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [1, 20], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+		],
+		"opaque": false,
+		"tool": "pick_axe",
+		"level": 2,
+		"health": 5,
+		"sound": "rock",
+		"loot": {
+			"silver_ore": [1, 5]
+		}
+	},
+
+	"gold_ore": {
+		"sprites": [
+			{"anker": [22, 0], "size": [1, 2], "offset": [0, -1], "variations" : 3},
+			{"anker": [2, 20], "size": [1, 2], "offset": [0, -1], "variations" : 1}
+		],
+		"opaque": false,
+		"tool": "pick_axe",
+		"level": 2,
+		"health": 5,
+		"sound": "rock",
+		"loot": {
+			"gold_ore": [1, 5]
+		}
 	}
 }
