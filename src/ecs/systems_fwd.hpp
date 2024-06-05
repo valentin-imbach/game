@@ -38,3 +38,4 @@ class EffectSystem;
 class ExplosiveSystem;
 class ItemModSystem;
 class ShovingSystem;
+class ProcessingSystem;

@@ -53,7 +53,8 @@ CAVE,
 MODULAR_PLAYER,
 MODULAR_ZOMBIE,
 BOMB,
-BOOTS)
+BOOTS,
+FURNACE)
 
 class Sprite {
 public:

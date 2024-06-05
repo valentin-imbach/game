@@ -334,25 +334,36 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 }
 
 Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId, pair position, bool link) {
-	Entity station = world->ecs.createEntity();
-	if (!stationId || !station) return 0;
-	
-	pair chunk = vec::round(position / CHUNK_SIZE);
-	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, station);
-	Realm* realm = world->realmManager.getRealm(realmId);
-	realm->linkChunk(station, chunk);
-
-	world->ecs.addComponent<GridComponent>({position, realmId, {1,1}, true, false}, station);
-	if (link) realm->linkGrid(station, position, {1,1}, true, false);
+	if (!stationId) return 0;
+	Entity station = createStaticEntity(realmId, position, pair(1, 1), true, false);
+	if (!station) return 0;
 
 	world->ecs.addComponent<StationComponent>({stationId}, station);
 
 	if (stationId == StationId::CAMP_FIRE) {
-		SpriteStack fireSprites;
-		fireSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(0, 0), pair(1, 1), 4, 200));
-		world->ecs.addComponent<SpriteComponent>({fireSprites}, station);
-		world->ecs.addComponent<ParticleComponent>({}, station);
-		world->ecs.addComponent<LightComponent>({true, 3, {255, 0, 0, 255}, 3, 0.2f}, station);
+		ProcessingComponent processingComponent;
+		processingComponent.processingSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(1, 0), pair(1, 1), 4, 200));
+		processingComponent.normarSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(0, 0), pair(1, 1)));
+		processingComponent.light = true;
+		processingComponent.particle = ParticleId::SMOKE;
+
+		processingComponent.input.itemKind = ItemKind::FUEL;
+
+		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
+		world->ecs.addComponent<SpriteComponent>({processingComponent.normarSprites}, station);
+		
+		return station;
+	} else if (stationId == StationId::FURNACE) {
+		ProcessingComponent processingComponent;
+		processingComponent.processingSprites.setSprite(0, Sprite(SpriteSheet::FURNACE, pair(1, 0), pair(1, 2), 3, 200), pair(0, -1));
+		processingComponent.normarSprites.setSprite(0, Sprite(SpriteSheet::FURNACE, pair(0, 0), pair(1, 2)), pair(0, -1));
+		processingComponent.light = true;
+		processingComponent.particle = ParticleId::SMOKE;
+
+		processingComponent.input.itemKind = ItemKind::FUEL;
+
+		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
+		world->ecs.addComponent<SpriteComponent>({processingComponent.normarSprites}, station);
 		return station;
 	}
 

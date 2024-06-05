@@ -102,6 +102,7 @@ private:
 	ExplosiveSystem* explosiveSystem;
 	ItemModSystem* itemModSystem;
 	ShovingSystem* shovingSystem;
+	ProcessingSystem* processingSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

@@ -163,6 +163,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ExplosiveComponent>(ComponentId::EXPLOSIVE);
 	ecs.rosterComponent<ItemModComponent>(ComponentId::ITEM_MOD);
 	ecs.rosterComponent<HandComponent>(ComponentId::HAND);
+	ecs.rosterComponent<ProcessingComponent>(ComponentId::PROCESSING);
 
 	LOG("Components rostered");
 }
@@ -244,6 +245,8 @@ void World::rosterSystems() {
 		{ComponentId::PLAYER, ComponentId::MOVEMENT});
 	shovingSystem = ecs.rosterSystem<ShovingSystem>(SystemId::SHOVING,
 		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::FORCE});
+	processingSystem = ecs.rosterSystem<ProcessingSystem>(SystemId::PROCESSING,
+		{ComponentId::PROCESSING, ComponentId::SPRITE});
 
 	LOG("Systems rostered")
 }
@@ -316,6 +319,8 @@ void World::update(uint dt) {
 	hitboxSystem->update(hits, updateSet);
 
 	damageSystem->update(hits, ticks);
+
+	processingSystem->update(ticks);
 
 	chunkSystem->update(realmManager);
 
@@ -552,7 +557,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			}
 		}
 		
-		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet);
+		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet, ticks);
 		if (gui) guiManager.open(makeInventory(), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
 		state = true;

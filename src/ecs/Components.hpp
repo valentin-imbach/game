@@ -259,3 +259,16 @@ struct ItemModComponent {
 struct HandComponent {
 	Entity item = 0;
 };
+
+struct ProcessingComponent {
+	SpriteStack normarSprites;
+	SpriteStack processingSprites;
+
+	uint end = 0;
+	bool processing = false;
+
+	bool light = false;
+	ParticleId::value particle;
+
+	ItemContainer input;
+};

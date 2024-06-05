@@ -38,3 +38,4 @@
 #include "ExplosiveSystem.hpp"
 #include "ItemModSystem.hpp"
 #include "ShovingSystem.hpp"
+#include "ProcessingSystem.hpp"

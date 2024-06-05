@@ -18,8 +18,10 @@ public:
 
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
-			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+			
 			LightComponent& lightComponent = ecs->getComponent<LightComponent>(entity);
+			if (!lightComponent.active) continue;
+			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 
 			pair screenPosition = camera.screenPosition(positionComponent.position);
 			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
