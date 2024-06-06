@@ -39,3 +39,4 @@ class ExplosiveSystem;
 class ItemModSystem;
 class ShovingSystem;
 class ProcessingSystem;
+class FuelSystem;

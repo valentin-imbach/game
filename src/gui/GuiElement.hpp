@@ -228,3 +228,13 @@ private:
 	void draw() override;
     bool handleEvent(InputEvent event) override;
 };
+
+class ProgressGui : public GuiElement {
+public:
+	ProgressGui(pair position, float& value, Sprite base, Sprite overlay, Direction::value alignment = Direction::NONE);
+	~ProgressGui() = default;
+	void draw() override;
+private:
+	Sprite overlay;
+	float& value;
+};

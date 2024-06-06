@@ -261,11 +261,28 @@ struct HandComponent {
 };
 
 struct ProcessingComponent {
-	SpriteStack normarSprites;
-	SpriteStack processingSprites;
-
-	uint end = 0;
+	float process = 0;
 	bool processing = false;
+
+	uint end;
+	ItemId::value product;
+
+	ItemContainer input;
+	ItemContainer output;
+};
+
+struct FuelComponent {
+	SpriteStack coldSprites;
+	SpriteStack hotSprites;
+
+	float heat = 0;
+	float targetHeat = 0;
+
+	bool burning = false;
+
+	uint start;
+	uint end;
+	float progress = 0;
 
 	bool light = false;
 	ParticleId::value particle;

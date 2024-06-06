@@ -103,6 +103,7 @@ private:
 	ItemModSystem* itemModSystem;
 	ShovingSystem* shovingSystem;
 	ProcessingSystem* processingSystem;
+	FuelSystem* fuelSystem;
 
 	GuiManager guiManager;
 	Minimap minimap;

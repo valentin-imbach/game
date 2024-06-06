@@ -341,29 +341,36 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 	world->ecs.addComponent<StationComponent>({stationId}, station);
 
 	if (stationId == StationId::CAMP_FIRE) {
+		FuelComponent fuelComponent;
+		fuelComponent.hotSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(1, 0), pair(1, 1), 4, 200));
+		fuelComponent.coldSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(0, 0), pair(1, 1)));
+		fuelComponent.input.itemKind = ItemKind::FUEL;
+		fuelComponent.light = true;
+		fuelComponent.particle = ParticleId::SMOKE;
+		world->ecs.addComponent<FuelComponent>(fuelComponent, station);
+		world->ecs.addComponent<SpriteComponent>({fuelComponent.coldSprites}, station);
+
 		ProcessingComponent processingComponent;
-		processingComponent.processingSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(1, 0), pair(1, 1), 4, 200));
-		processingComponent.normarSprites.setSprite(0, Sprite(SpriteSheet::FIRE, pair(0, 0), pair(1, 1)));
-		processingComponent.light = true;
-		processingComponent.particle = ParticleId::SMOKE;
-
-		processingComponent.input.itemKind = ItemKind::FUEL;
-
+		processingComponent.input.itemKind = ItemKind::ORE;
+		processingComponent.output.output = true;
 		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
-		world->ecs.addComponent<SpriteComponent>({processingComponent.normarSprites}, station);
 		
 		return station;
 	} else if (stationId == StationId::FURNACE) {
+		FuelComponent fuelComponent;
+		fuelComponent.hotSprites.setSprite(0, Sprite(SpriteSheet::FURNACE, pair(1, 0), pair(1, 2), 3, 200), pair(0, -1));
+		fuelComponent.coldSprites.setSprite(0, Sprite(SpriteSheet::FURNACE, pair(0, 0), pair(1, 2)), pair(0, -1));
+		fuelComponent.input.itemKind = ItemKind::FUEL;
+		fuelComponent.light = true;
+		fuelComponent.particle = ParticleId::SMOKE;
+		world->ecs.addComponent<FuelComponent>(fuelComponent, station);
+		world->ecs.addComponent<SpriteComponent>({fuelComponent.coldSprites}, station);
+
 		ProcessingComponent processingComponent;
-		processingComponent.processingSprites.setSprite(0, Sprite(SpriteSheet::FURNACE, pair(1, 0), pair(1, 2), 3, 200), pair(0, -1));
-		processingComponent.normarSprites.setSprite(0, Sprite(SpriteSheet::FURNACE, pair(0, 0), pair(1, 2)), pair(0, -1));
-		processingComponent.light = true;
-		processingComponent.particle = ParticleId::SMOKE;
-
-		processingComponent.input.itemKind = ItemKind::FUEL;
-
+		processingComponent.input.itemKind = ItemKind::ORE;
+		processingComponent.output.output = true;
 		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
-		world->ecs.addComponent<SpriteComponent>({processingComponent.normarSprites}, station);
+		
 		return station;
 	}
 

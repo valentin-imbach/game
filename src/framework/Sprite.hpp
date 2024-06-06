@@ -54,7 +54,8 @@ MODULAR_PLAYER,
 MODULAR_ZOMBIE,
 BOMB,
 BOOTS,
-FURNACE)
+FURNACE,
+HEAT_BAR)
 
 class Sprite {
 public:
@@ -81,6 +82,7 @@ private:
 	friend class CreatureAnimationSystem;
 	friend class MaturitySystem;
 	friend class SpriteStack;
+	friend class ProgressGui;
 };
 
 struct SpriteLayer {

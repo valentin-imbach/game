@@ -39,3 +39,4 @@
 #include "ItemModSystem.hpp"
 #include "ShovingSystem.hpp"
 #include "ProcessingSystem.hpp"
+#include "FuelSystem.hpp"

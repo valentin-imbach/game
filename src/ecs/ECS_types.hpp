@@ -61,7 +61,10 @@ EFFECT,
 EXPLOSIVE,
 ITEM_MOD,
 HAND,
-PROCESSING)
+
+//* Station
+PROCESSING,
+FUEL)
 
 ENUM(SystemId,
 //* Basic
@@ -116,7 +119,10 @@ DAMAGE,
 EFFECT,
 EXPLOSIVE,
 ITEM_MOD,
-PROCESSING)
+
+//* Stattion
+PROCESSING,
+FUEL)
 
 using Entity = uint;
 

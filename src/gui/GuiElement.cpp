@@ -552,3 +552,33 @@ bool TextField::handleEvent(InputEvent event) {
 std::string TextField::getText() {
 	return text;
 }
+
+//* ProgressGui
+
+ProgressGui::ProgressGui(pair position, float& value, Sprite base, Sprite overlay, Direction::value alignment) : GuiElement(position, {0,0}, alignment), value(value), overlay(overlay) {
+	this->sprite = base;
+}
+	
+void ProgressGui::draw() {
+	GuiElement::draw();
+
+	SDL_Texture* texture = Sprite::spriteSheets[overlay.spriteSheet];
+	
+	pair spos = BIT * overlay.source;
+	pair ssize = BIT * overlay.size;
+
+	int height = std::round(value * ssize.y);
+	int cut = ssize.y - height;
+	spos.y += cut;
+	ssize.y = height;
+
+	pair dsize = GuiManager::scale * ssize;
+	pair dpos = screenPosition;
+	dpos.y += GuiManager::scale * cut/2;
+
+	TextureManager::drawTexture(texture, nullptr, spos, ssize, dpos, dsize);
+
+	// int percent = std::round(value * 100);
+	// std::string text = std::to_string(percent);
+    // TextManager::drawText(text, screenPosition, true);
+}

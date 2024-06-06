@@ -12,7 +12,7 @@ public:
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			if (ecs->hasComponent<ActionComponent>(entity)) {
 				SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
-				if (ticks < healthComponent.lastDamage + 200) {
+				if (healthComponent.lastDamage && ticks < healthComponent.lastDamage + 200) {
 					spriteComponent.effects[SpriteEffectId::HURT] = {true, ticks};
 				} else {
 					spriteComponent.effects[SpriteEffectId::HURT] = {false, 0};

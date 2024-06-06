@@ -164,6 +164,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ItemModComponent>(ComponentId::ITEM_MOD);
 	ecs.rosterComponent<HandComponent>(ComponentId::HAND);
 	ecs.rosterComponent<ProcessingComponent>(ComponentId::PROCESSING);
+	ecs.rosterComponent<FuelComponent>(ComponentId::FUEL);
 
 	LOG("Components rostered");
 }
@@ -247,6 +248,8 @@ void World::rosterSystems() {
 		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::FORCE});
 	processingSystem = ecs.rosterSystem<ProcessingSystem>(SystemId::PROCESSING,
 		{ComponentId::PROCESSING, ComponentId::SPRITE});
+	fuelSystem = ecs.rosterSystem<FuelSystem>(SystemId::FUEL,
+		{ComponentId::FUEL});
 
 	LOG("Systems rostered")
 }
@@ -320,6 +323,7 @@ void World::update(uint dt) {
 
 	damageSystem->update(hits, ticks);
 
+	fuelSystem->update(ticks, dt);
 	processingSystem->update(ticks);
 
 	chunkSystem->update(realmManager);

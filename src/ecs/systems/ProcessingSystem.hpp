@@ -7,11 +7,9 @@
 
 class ProcessingSystem : public System {
 public:
-	LightComponent lightComponent = {true, 3, {255, 0, 0, 255}, 3, 0.2f};
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			ProcessingComponent& processingComponent = ecs->getComponent<ProcessingComponent>(entity);
-			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 
 			if (processingComponent.end && ticks > processingComponent.end) processingComponent.end = 0;
 			
@@ -29,20 +27,10 @@ public:
 
 			if (processingComponent.end && !processingComponent.processing) {
 				processingComponent.processing = true;
-				spriteComponent.spriteStack = processingComponent.processingSprites;
-				if (processingComponent.light) ecs->addComponent<LightComponent>(lightComponent, entity);
-				if (processingComponent.particle) {
-					ParticleComponent particleComponent = {};
-					particleComponent.emitters[processingComponent.particle] = {ticks};
-					ecs->addComponent<ParticleComponent>(particleComponent, entity);
-				}
 			}
 
 			if (!processingComponent.end && processingComponent.processing) {
 				processingComponent.processing = false;
-				spriteComponent.spriteStack = processingComponent.normarSprites;
-				if (processingComponent.light) ecs->removeComponent<LightComponent>(entity);
-				if (processingComponent.particle) ecs->removeComponent<ParticleComponent>(entity);
 			}
 		}
 	}
