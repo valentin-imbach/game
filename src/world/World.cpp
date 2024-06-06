@@ -324,7 +324,7 @@ void World::update(uint dt) {
 	damageSystem->update(hits, ticks);
 
 	fuelSystem->update(ticks, dt);
-	processingSystem->update(ticks);
+	processingSystem->update(ticks, dt);
 
 	chunkSystem->update(realmManager);
 

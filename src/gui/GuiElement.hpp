@@ -231,10 +231,11 @@ private:
 
 class ProgressGui : public GuiElement {
 public:
-	ProgressGui(pair position, float& value, Sprite base, Sprite overlay, Direction::value alignment = Direction::NONE);
+	ProgressGui(pair position, float& value, Sprite base, Sprite overlay, bool verticle = false, Direction::value alignment = Direction::NONE);
 	~ProgressGui() = default;
 	void draw() override;
 private:
+	bool verticle;
 	Sprite overlay;
 	float& value;
 };

@@ -555,7 +555,7 @@ std::string TextField::getText() {
 
 //* ProgressGui
 
-ProgressGui::ProgressGui(pair position, float& value, Sprite base, Sprite overlay, Direction::value alignment) : GuiElement(position, {0,0}, alignment), value(value), overlay(overlay) {
+ProgressGui::ProgressGui(pair position, float& value, Sprite base, Sprite overlay, bool verticle, Direction::value alignment) : GuiElement(position, {0,0}, alignment), value(value), overlay(overlay), verticle(verticle) {
 	this->sprite = base;
 }
 	
@@ -567,15 +567,24 @@ void ProgressGui::draw() {
 	pair spos = BIT * overlay.source;
 	pair ssize = BIT * overlay.size;
 
-	int height = std::round(value * ssize.y);
-	int cut = ssize.y - height;
-	spos.y += cut;
-	ssize.y = height;
+	pair dpos = screenPosition;
+
+	if (verticle) {
+		int width = std::round(value * ssize.x);
+		int cut = ssize.x - width;
+		ssize.x = width;
+		
+		dpos.x -= (GuiManager::scale * cut)/2;
+	} else {
+		int height = std::round(value * ssize.y);
+		int cut = ssize.y - height;
+		spos.y += cut;
+		ssize.y = height;
+
+		dpos.y += (GuiManager::scale * cut)/2;
+	}
 
 	pair dsize = GuiManager::scale * ssize;
-	pair dpos = screenPosition;
-	dpos.y += GuiManager::scale * cut/2;
-
 	TextureManager::drawTexture(texture, nullptr, spos, ssize, dpos, dsize);
 
 	// int percent = std::round(value * 100);

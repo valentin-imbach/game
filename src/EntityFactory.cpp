@@ -368,6 +368,9 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 
 		ProcessingComponent processingComponent;
 		processingComponent.input.itemKind = ItemKind::ORE;
+		processingComponent.map[ItemId::BRONZE_ORE] = ItemId::BRONZE_INGOT;
+		processingComponent.map[ItemId::SILVER_ORE] = ItemId::SILVER_INGOT;
+		processingComponent.map[ItemId::GOLD_ORE] = ItemId::GOLD_INGOT;
 		processingComponent.output.output = true;
 		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
 		

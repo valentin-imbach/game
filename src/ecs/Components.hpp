@@ -262,13 +262,9 @@ struct HandComponent {
 
 struct ProcessingComponent {
 	float process = 0;
-	bool processing = false;
-
-	uint end;
-	ItemId::value product;
-
 	ItemContainer input;
 	ItemContainer output;
+	std::array<ItemId::value, ItemId::count> map;
 };
 
 struct FuelComponent {

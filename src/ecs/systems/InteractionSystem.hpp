@@ -41,16 +41,20 @@ public:
 				ProcessingComponent& processingComponent = ecs->getComponent<ProcessingComponent>(entity);
 				Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
 				std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-				gui->addGuiElement(std::make_unique<ItemSlot>(pair(0, -20), fuelComponent.input));
-				gui->addGuiElement(std::make_unique<ItemSlot>(pair(-20, 20), processingComponent.input));
-				gui->addGuiElement(std::make_unique<ItemSlot>(pair(20, 20), processingComponent.output));
+				gui->addGuiElement(std::make_unique<ItemSlot>(pair(0, 20), fuelComponent.input));
+				gui->addGuiElement(std::make_unique<ItemSlot>(pair(-20, -20), processingComponent.input));
+				gui->addGuiElement(std::make_unique<ItemSlot>(pair(20, -20), processingComponent.output));
 				Sprite base = Sprite(SpriteSheet::HEAT_BAR, {0, 0}, {1, 5});
 				Sprite overlay = Sprite(SpriteSheet::HEAT_BAR, {1, 0}, {1, 5});
 				gui->addGuiElement(std::make_unique<ProgressGui>(pair(-50, 0), fuelComponent.heat, base, overlay));
 
 				Sprite flameBase = Sprite(SpriteSheet::HEAT_BAR, {0, 5}, {1, 1});
 				Sprite flameOverlay = Sprite(SpriteSheet::HEAT_BAR, {1, 5}, {1, 1});
-				gui->addGuiElement(std::make_unique<ProgressGui>(pair(-50, 50), fuelComponent.progress, flameBase, flameOverlay));
+				gui->addGuiElement(std::make_unique<ProgressGui>(pair(0, 0), fuelComponent.progress, flameBase, flameOverlay));
+
+				Sprite progressBase = Sprite(SpriteSheet::PROGRESS, {0, 0}, {1, 1});
+				Sprite progressOverlay = Sprite(SpriteSheet::PROGRESS, {0, 1}, {1, 1});
+				gui->addGuiElement(std::make_unique<ProgressGui>(pair(0, -20), processingComponent.process, progressBase, progressOverlay, true));
 				return gui;
 			}
 		}

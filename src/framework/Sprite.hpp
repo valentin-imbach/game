@@ -55,7 +55,8 @@ MODULAR_ZOMBIE,
 BOMB,
 BOOTS,
 FURNACE,
-HEAT_BAR)
+HEAT_BAR,
+PROGRESS)
 
 class Sprite {
 public:
