@@ -19,7 +19,7 @@
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
 
-#include "GenerationTree.hpp"
+#include "ClusterTemplates.hpp"
 
 void World::init() {
 	rosterComponents();
@@ -36,6 +36,7 @@ void World::init() {
 	GroundTemplate::setTemplates();
 	AnimalTemplate::setTemplates();
 	StructureTemplate::setTemplates();
+	Cluster::setTemplates();
 
 	guiManager.world = this;
 	EntityFactory::world = this;

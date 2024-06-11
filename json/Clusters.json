@@ -1,0 +1,58 @@
+
+{
+	"basalt_rocks": {
+		"sequence": [
+			{
+				"resource": "basalt_boulder"
+			}, {
+				"spread": {
+					"resource": "basalt_rock"
+				},
+				"radius": 2,
+				"number": 5
+			}, {
+				"spread": {
+					"resource": "basalt_pebble"
+				},
+				"radius": 3,
+				"number": 8
+			}
+		]
+	},
+
+	"camp": {
+		"sequence": [
+			{
+				"station": "camp_fire"
+			}, {
+				"spread": {
+					"choice": [
+						{
+							"structure": "small_tent"
+						}, {
+							"structure": "tent"
+						}
+					]
+				},
+				"radius": 5,
+				"number": 3
+			}, {
+				"spread": {
+					"choice": [
+						{
+							"station": "anvil"
+						}, {
+							"station": "furnace"
+						}, {
+							"station": "work_station"
+						}, {
+							"station": "chest"
+						}
+					]
+				},
+				"radius": 5,
+				"number": 2
+			}
+		]
+	}
+}

@@ -130,6 +130,50 @@ void Realm::generateFlat(pair size) {
 	}
 
 	spawn = pair(0, 0);
+
+	// using namespace generation;
+	// auto bp = new ResourceNode(ResourceId::BASALT_PEBBLE);
+	// auto br = new ResourceNode(ResourceId::BASALT_ROCK);
+	// auto bb = new ResourceNode(ResourceId::BASALT_BOULDER);
+
+	// auto sbr = new SpreadNode(br, 2, 5);
+	// auto sbp = new SpreadNode(bp, 3, 8);
+
+	// auto sn = SequenceNode({bb, sbr, sbp});
+
+	// auto st = new StructureNode(StructureId::SMALL_TENT);
+	// auto lt = new StructureNode(StructureId::TENT);
+	// auto t = new ChoiceNode({st, lt});
+
+	// auto cf = new StationNode(StationId::CAMP_FIRE);
+
+	// auto s1 = new StationNode(StationId::CHEST);
+	// auto s2 = new StationNode(StationId::WORK_STATION);
+	// auto s3 = new StationNode(StationId::FURNACE);
+	// auto s4 = new StationNode(StationId::ANVIL);
+
+	// auto sc = new ChoiceNode({s1, s2, s3, s4});
+	// auto ssc = new SpreadNode(sc, 3, 2);
+	
+	// auto s = new SpreadNode(t, 5, 3);
+	// auto camp = SequenceNode({cf, s, ssc});
+	
+
+	// SpacedAllocation boulders(seed, 10, 5);
+	// SpacedAllocation camps(seed, 40, 10);
+
+
+	// for (int x = 0; x < size.x; x++) {
+	// 	for (int y = 0; y < size.y; y++) {
+	// 		pair pos(x, y);
+	// 		if (camps.get(pos)) {
+	// 			camp.generate(seed++, this, pos);
+	// 		}
+	// 		if (boulders.get(pos)) {
+	// 			sn.generate(seed++, this, pos);
+	// 		}
+	// 	}
+	// }
 }
 
 void Realm::generateCave(int count, int length) {

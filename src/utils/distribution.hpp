@@ -69,3 +69,29 @@ struct BoundDistribution : public Distribution {
 		return std::max(min, std::min(max, distribution->get(position)));
 	}
 };
+
+struct Allocation {
+	virtual bool get(pair position) = 0;
+	virtual ~Allocation() = default;
+};
+
+struct SpacedAllocation : public Allocation {
+	uint seed;
+	int space;
+	int radius;
+	pair shift;
+
+	SpacedAllocation(uint seed, int space, int radius) : seed(seed), space(space), radius(radius) {
+		shift.x = noise::Int(seed + 1, space);
+		shift.y = noise::Int(seed + 2, space);
+	}
+
+	bool get(pair position) override {
+		pair cell = space * pair((position + shift) / space);
+		uint s = hash(seed, cell);
+		float angle = noise::Float(s++, 2*M_PI);
+		float dist = noise::Float(s++, radius);
+		pair offset = vec::round(vec::polar(angle, dist));
+		return position == cell + offset;
+	}
+};

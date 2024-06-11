@@ -4,7 +4,8 @@
 #include "ResourceTemplates.hpp"
 #include "EntityFactory.hpp"
 #include "utils/pathfinding.hpp"
-#include "GenerationTree.hpp"
+
+#include "ClusterTemplates.hpp"
 
 Console::Console(Game* game) : game(game) {
 	// commands["tp"] = Command({Argument<int>(), Argument<int>()});
@@ -77,6 +78,8 @@ bool Console::execute(std::string input) {
 	Entity player = game->world->player;
 	Camera& camera = game->world->camera;
 	std::vector<std::string> inputs = string::split(input);
+
+	uint seed = game->world->ticks;
 
 	if (inputs[0] == "test") {
 		Realm* realm = game->world->playerRealm;
@@ -260,12 +263,15 @@ bool Console::execute(std::string input) {
 		if (!structureId) return false;
 		pair pos = vec::round(ecs.getComponent<PositionComponent>(player).position);
 		EntityFactory::createStructure(structureId, game->world->playerRealm->realmId, pos);
-	} else if (inputs[0] == "rock") {
-		using namespace generation;
-		auto rock = SurroundNode(new ResourceNode(ResourceId::BASALT_BOULDER), new SurroundNode(new ResourceNode(ResourceId::BASALT_ROCK), new ResourceNode(ResourceId::BASALT_PEBBLE), 4, 2), 5, 5);
-		auto layout = rock.build();
+	} else if (inputs[0] == "cluster") {
+		if (inputs.size() < 2) return false;
+		ClusterId::value clusterId = ClusterId::from_string(inputs[1]);
+		if (!clusterId) return false;
+		auto& cluster = Cluster::templates[clusterId];
 		pair pos = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		layout->generate(game->world->playerRealm->realmId, pos);
+		cluster->generate(seed, game->world->playerRealm, pos);
+	} else if (inputs[0] == "camp") {
+		
 	} else {
 		return false;
 	}
