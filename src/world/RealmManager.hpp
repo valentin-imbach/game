@@ -2,6 +2,8 @@
 #pragma once
 #include "Realm.hpp"
 
+class World;
+
 using RealmId = unsigned char;
 
 class RealmManager {

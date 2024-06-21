@@ -20,7 +20,7 @@ struct GroundTemplate {
 
 class Tile {
 public:
-	Tile(GroundId::value groundId, GroundId::value wallId = GroundId::NONE);
+	Tile(GroundId::value groundId = GroundId::NONE, GroundId::value wallId = GroundId::NONE);
 	GroundId::value groundId;
 	GroundId::value wallId;
 	SpriteStack sprites;

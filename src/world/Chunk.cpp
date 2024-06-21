@@ -1,0 +1,232 @@
+
+#include "Chunk.hpp"
+#include "ChunkManager.hpp"
+#include "Environment.hpp"
+#include "Generation.hpp"
+#include "EntityFactory.hpp"
+
+Chunk::Chunk(pair position) : position(position) {
+	seed = hash(69, position);
+}
+
+void Chunk::serialise(std::fstream& stream) {
+
+}
+
+void Chunk::deserialise(std::fstream& stream) {
+
+}
+
+bool Chunk::inside(pair pos) {
+	return (pos / CHUNK_SIZE) == position;
+}
+
+void Chunk::advance(ChunkManager* manager, Environment* environment) {
+	switch (stage) {
+		case ChunkStage::NONE:
+			setNode(manager, environment);
+			break;
+		case ChunkStage::NODE:
+			setBiome(manager, environment);
+			break;
+		case ChunkStage::BIOME:
+			setRiver(manager, environment);
+			break;
+		case ChunkStage::RIVER:
+			setGround(manager, environment);
+			break;
+		case ChunkStage::GROUND:
+			setTiles(manager);
+			break;
+		case ChunkStage::TILES:
+			setObjects(manager, environment);
+			break;
+		case ChunkStage::OBJECTS:
+			break;
+		case ChunkStage::LOADED:
+		case ChunkStage::MAX:
+			return;
+	}
+	stage = ChunkStage::from_int(stage + 1);
+}
+
+void Chunk::setNode(ChunkManager* manager, Environment* environment) {
+	uint s = hash(seed, 123);
+
+	nodeOffset.x = noise::Int(s++, 2, CHUNK_SIZE - 2);
+	nodeOffset.y = noise::Int(s++, 2, CHUNK_SIZE - 2);
+	node = position * CHUNK_SIZE + nodeOffset;
+
+	elevation = environment->elevationMap->get(node);
+}
+
+void Chunk::setBiome(ChunkManager* manager, Environment* environment) {
+	
+	biome = environment->getBiome(node);
+
+	float low = elevation;
+	float heigh = elevation;
+	for (int i = 1; i < Direction::count; i += 2) {
+		pair chunk = position + Direction::taxi[i];
+		auto it = manager->chunks.find(chunk);
+		pair n = it->second.node;
+		float h = it->second.elevation;
+		if (h < low) {
+			low = h;
+			down = Direction::from_int(i);
+		}
+
+		if (h > heigh) {
+			heigh = h;
+			up = Direction::from_int(i);
+		}
+	}
+}
+
+void Chunk::setRiver(ChunkManager* manager, Environment* environment) {
+	int riverFreq = 5;
+	int riverLength = 5;
+	if (hash(position) % riverFreq) return;
+	if (elevation < 1000) return;
+
+	riverSource = true;
+	pair chunk = position;
+	for (int i = 0; i < riverLength; i++) {
+		auto it = manager->chunks.find(chunk);
+		it->second.river += 1;
+		
+		Direction::value d = it->second.down;
+		if (!d || it->second.elevation < 0) break;
+		chunk += Direction::taxi[d];
+	}
+}
+
+void Chunk::setGround(ChunkManager* manager, Environment* environment) {
+	// for (int i = 1; i < Direction::count; i++) {
+	// 	pair chunk = position + Direction::taxi[i];
+	// 	if (!manager->checkStage(chunk, ChunkStage::NODE)) return;
+	// }
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			pair offset(x, y);
+			pair pos = CHUNK_SIZE * position + offset;
+
+			pos = vec::round(manager->pdist(pos));
+			
+			pair chunk = position;
+			int dist = pair::sdist(pos, node);
+
+			for (int i = 1; i < Direction::count; i++) {
+				pair chunk2 = position + Direction::taxi[i];
+				int d = pair::sdist(pos, manager->chunks.find(chunk2)->second.node);
+				if (d < dist) {
+					chunk = chunk2;
+					dist = d;
+				}
+			}
+
+			int variation = environment->variationMap->get(pos);
+			Biome::value b = manager->chunks.find(chunk)->second.biome;
+			BiomeGroundTemplate& groundTemp = BiomeTemplate::templates[b].getGround(variation);
+			tiles[x][y].groundId = groundTemp.groundId;
+
+			auto is_on = [](pair a, pair b, pair pos, float d){
+				int n = 20;
+				vec v = a;
+				vec step = vec(b - a) / n;
+				for (int i = 0; i <= n; i++) {
+					if (vec::dist(v, pos) < d) return true;
+					v += step;
+				}
+				return false;
+			};
+
+			if (river) {
+				if (down) {
+					pair a = node;
+					pair to = position + Direction::taxi[down];
+					auto it = manager->chunks.find(to);
+					pair b = it->second.node;
+					if (is_on(a, b, pos, river)) {
+						tiles[x][y].groundId = GroundId::WATER;
+					}
+				}
+
+				for (int i = 1; i < Direction::count; i++) {
+					pair from = position + Direction::taxi[i];
+					auto it = manager->chunks.find(from);
+					if (it->second.river && it->second.down == Direction::rotate(i, 4)) {
+						pair a = node;
+						pair b = it->second.node;
+						if (is_on(a, b, pos, it->second.river)) {
+							tiles[x][y].groundId = GroundId::WATER;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;
+
+
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			pair pos(x, y);
+			uint s = hash(seed, pos);
+			pair baseVariant = noise::choice<pair>(s, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
+			Sprite baseSprite = Sprite(GroundTemplate::templates[tiles[x][y].groundId].spriteSheet, baseVariant);
+			tiles[x][y].sprites.setSprite(0, baseSprite);
+		}
+	}
+	// LOG("Ground set at", position);
+}
+
+void Chunk::setTiles(ChunkManager* manager) {
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			pair offset(x, y);
+			pair pos = CHUNK_SIZE * position + offset;
+			manager->updateStyle(pos);
+		}
+	}
+	// LOG("Tiles set at", position);
+}
+
+void Chunk::setObjects(ChunkManager* manager, Environment* environment) {
+	uint s = hash(234, position);
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			pair offset(x, y);
+			pair pos = CHUNK_SIZE * position + offset;
+
+			if (tiles[x][y].groundId == GroundId::WATER) continue;
+			
+			// if (!free(position)) continue;
+			int variation = environment->variationMap->get(pos);
+			int vegetation = environment->vegetationMap->get(pos);
+			int choice = noise::Int(s++, 0, 50 + vegetation);
+			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
+			for (auto& p : ground.resources) {
+				choice -= p.second;
+				if (choice < 0) {
+					Entity resource = EntityFactory::createResource(p.first, manager->realm->realmId, pos);
+					break;
+				}
+			}
+
+		}
+	}
+}
+
+void Chunk::drawTiles(Camera camera, uint ticks) {
+	for (int a = 0; a < CHUNK_SIZE; a++) {
+		for (int b = 0; b < CHUNK_SIZE; b++) {
+			pair offset(a, b);
+			pair pos = CHUNK_SIZE * position + offset;
+			pair screenPosition = camera.screenPosition(pos);
+			tiles[a][b].sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
+		}
+	}
+}

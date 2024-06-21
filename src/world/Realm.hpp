@@ -5,16 +5,13 @@
 #include "ECS_types.hpp"
 #include "Map.hpp"
 #include "Environment.hpp"
-// #include "Chunk.hpp"
+#include "Chunk.hpp"
+#include "ChunkManager.hpp"
+#include "Minimap.hpp"
 
 class SDL_Texture;
 
-#define CHUNK_SIZE 16
 #define CHUNK_REACH 10
-
-class World;
-struct GridComponent;
-struct PositionComponent;
 
 class Realm {
 public:
@@ -29,16 +26,16 @@ public:
 	void generateFlat(pair size);
 	void generateDungeon();
 
-	// std::unordered_map<pair, Chunk> chunks;
+	ChunkManager chunkManager;
 
 	pair spawn;
 
 	RealmId realmId;
-	SDL_Texture* minimap;
+	MapData mapData;
 
 	std::unique_ptr<Map> map;
 	std::unique_ptr<Environment> environment;
-	std::unordered_map<pair, EntitySet> chunks;
+	std::unordered_map<pair, EntitySet> chunkEntities;
 	GridMap gridMap;
 
 	void linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque);

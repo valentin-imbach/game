@@ -6,31 +6,42 @@
 #include "EntityFactory.hpp"
 #include "Dungeon.hpp"
 
-Realm::Realm(RealmId realmId, uint seed) : realmId(realmId), seed(seed) {}
+Realm::Realm(RealmId realmId, uint seed) : realmId(realmId), seed(seed), chunkManager(seed + 1) {
+	chunkManager.realm = this;
+}
 
-Realm::Realm(std::fstream& stream) {
+Realm::Realm(std::fstream& stream) : chunkManager(0) {
 	deserialise_object(stream, realmId);
 	deserialise_object(stream, seed);
+	chunkManager = ChunkManager(seed);
 	map = std::make_unique<Map>(stream);
 	environment = std::make_unique<Environment>(seed + 2);
 	
 	SDL_Surface* surface = map->makeMiniMap();
-	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
+	mapData.texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
 	SDL_FreeSurface(surface);
+
 }
 
 void Realm::generate(RealmType::value realmType) {
 	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100));
 	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
 	if (realmType == RealmType::CAVE) generateCave(3, 500);
+
 	if (realmType == RealmType::DUNGEON) generateDungeon();
-	if (realmType == RealmType::TEST) generateFlat(pair(100, 100));
+	if (realmType == RealmType::TEST) generateFlat(pair(50, 50));
 
 	map->updateStyle();
 
-	SDL_Surface* surface = map->makeMiniMap();
-	minimap = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	SDL_FreeSurface(surface);
+	// SDL_Surface* surface = map->makeMiniMap();
+	auto mm = chunkManager.minimap();
+	mapData.texture = SDL_CreateTextureFromSurface(Window::instance->renderer, mm.first);
+	SDL_FreeSurface(mm.first);
+	mapData.offset = mm.second;
+
+	Uint32 format;
+	int access;
+	SDL_QueryTexture(mapData.texture, &format, &access, &mapData.size.x, &mapData.size.y);
 }
 
 void Realm::generateWorld(pair size) {
@@ -120,12 +131,114 @@ void Realm::generateHouse(pair size) {
 }
 
 void Realm::generateFlat(pair size) {
+
 	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
 	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
 
+	int r = 5;
+	for (int x = -r; x <= r; x++) {
+		for (int y = -r; y <= r; y++) {
+			pair chunk(x, y);
+			chunkManager.generateChunk(chunk, ChunkStage::LOADED, environment.get());
+		}
+	}
+	
+
+	Voronoi cells = Voronoi(noise::UInt(seed + 3), 20, 4);
+	PerlinDistortion pdist = PerlinDistortion(noise::UInt(seed + 4));
+
+	TopoGraph topo = TopoGraph(noise::UInt(seed + 3), 20, 5);
+
+	// std::function<Direction::value(pair)> down = [this](pair pos) {
+	// 	float height = this->environment->elevationMap->get(pos);
+	// 	Direction::value res = Direction::NONE;
+	// 	for (int i = 1; i < Direction::count; i++) {
+	// 		pair neig = pos + Direction::taxi[i];
+	// 		float h = this->environment->elevationMap->get(neig);
+	// 		if (h < height) {
+	// 			height = h;
+	// 			res = Direction::from_int(i);
+	// 		}
+	// 	}
+	// 	return res;
+	// };
+
+	// std::function<bool(pair)> valley = [this, &cells, &pdist, &down](pair pos) {
+	// 	pair root = vec::round(cells(pdist(pos)));
+	// 	Direction::value dir = down(root);
+	// 	if (this->environment->elevationMap->get(root) < 0) return false;
+
+	// 	for (int i = 1; i < Direction::count; i++) {
+	// 		pair r = vec::round(cells(pdist(pos + Direction::taxi[i])));
+	// 		Direction::value dir2 = down(r);
+	// 		// int x = pair::dot(Direction::taxi[dir], r-root);
+	// 		// int y = pair::dot(Direction::taxi[dir2], root-r);
+	// 		int x = pair::dot(Direction::taxi[dir], Direction::taxi[dir2]);
+	// 		if (r != root && this->environment->elevationMap->get(r) > 0 && x < 0) return true;
+	// 	}
+	// 	return false;
+	// };
+
+	// std::function<bool(pair)> border = [this, &cells, &pdist](pair pos) {
+	// 	pair root = vec::round(cells(pdist(pos)));
+	// 	if (this->environment->elevationMap->get(root) < 0) return false;
+	// 	for (int i = 1; i < Direction::count; i++) {
+	// 		pair r = vec::round(cells(pdist(pos + Direction::taxi[i])));
+	// 		if (r != root && this->environment->elevationMap->get(r) > 0) return true;
+	// 	}
+	// 	return false;
+	// };
+
+	// std::function<bool(pair, int)> river = [this, &border, &river](pair pos, int d) {
+	// 	if (!border(pos)) return false;
+
+	// 	pair low = pos;
+	// 	float height = this->environment->elevationMap->get(pos);
+	// 	if (height < 0) return true;
+	// 	if (d == 0) return false;
+
+	// 	for (int i = 1; i < Direction::count; i++) {
+	// 		pair npos = pos + Direction::taxi[i];
+	// 		if (!border(npos)) continue;
+	// 		float h = this->environment->elevationMap->get(npos);
+	// 		if (h < height) {
+	// 			height = h;
+	// 			low = npos;
+	// 		}
+	// 	}
+
+	// 	if (low == pos) {
+	// 		return false;
+	// 	}
+
+	// 	return river(low, d-1);
+	// };
+
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
-			map->tiles[x][y] = std::make_unique<Tile>(GroundId::GRASS);
+			pair pos(x, y);
+			// pos = pdist(pos);
+
+			pair node = topo.node(pos);
+
+			// GroundId::value ground = GroundId::GRASS;
+			// if (environment->elevationMap->get(root) < 0) {
+			// 	ground = GroundId::WATER;
+			// }
+
+			// if (valley(pos)) {
+			// 	ground = GroundId::DIRT;
+			// }
+
+			// if (river(pos, 5)) {
+			// 	ground = GroundId::ROCK;
+			// }
+
+			GroundId::value ground = topo.ground(node, this->environment.get());
+
+			if (vec::round(topo.position(node)) == pos) ground = GroundId::PLANKS;
+
+			map->tiles[x][y] = std::make_unique<Tile>(ground);
 		}
 	}
 
@@ -307,20 +420,20 @@ void Realm::unlinkGrid(Entity entity, pair anker, pair size, bool solid, bool op
 
 void Realm::linkChunk(Entity entity, pair chunk) {
 	assert(entity);
-	if (chunks[chunk].find(entity) != chunks[chunk].end()) {
+	if (chunkEntities[chunk].find(entity) != chunkEntities[chunk].end()) {
 		WARNING("Trying to link entity", entity, "to chunk", chunk, "twice");
 		return;
 	}
-	chunks[chunk].insert(entity);
+	chunkEntities[chunk].insert(entity);
 }
 
 void Realm::unlinkChunk(Entity entity, pair chunk) {
 	assert(entity);
-	if (chunks[chunk].find(entity) == chunks[chunk].end()) {
+	if (chunkEntities[chunk].find(entity) == chunkEntities[chunk].end()) {
 		WARNING("Trying to unlink non-existing entity", entity, "from chunk", chunk);
 		return;
 	}
-	chunks[chunk].erase(entity);
+	chunkEntities[chunk].erase(entity);
 }
 
 bool Realm::free(pair anker, pair size) {

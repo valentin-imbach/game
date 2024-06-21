@@ -22,6 +22,8 @@ src/world/Tile.cpp
 src/world/Generation.cpp
 src/world/Realm.cpp
 src/world/Environment.cpp
+src/World/Chunk.cpp
+src/World/ChunkManager.cpp
 src/Gui/GuiElement.cpp
 src/Gui/GuiManager.cpp
 src/item/Item.cpp
@@ -35,6 +37,7 @@ src/templates/ClusterTemplates.cpp
 src/EntityFactory.cpp
 src/Gui/Console.cpp
 src/ParticleSystem.cpp
+src/Distribution.cpp
 src/main.cpp)
 
 # add libraries

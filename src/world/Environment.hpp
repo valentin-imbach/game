@@ -11,11 +11,11 @@ public:
 	int intensity = 50;
 
 	Biome::value getBiome(pair position);
-	std::unique_ptr<Distribution> temparatureMap;
-	std::unique_ptr<Distribution> precipitationMap;
-	std::unique_ptr<Distribution> elevationMap;
-	std::unique_ptr<Distribution> vegetationMap;
-	std::unique_ptr<Distribution> variationMap;
+	std::unique_ptr<Distribution<float>> temparatureMap;
+	std::unique_ptr<Distribution<float>> precipitationMap;
+	std::unique_ptr<Distribution<float>> elevationMap;
+	std::unique_ptr<Distribution<float>> vegetationMap;
+	std::unique_ptr<Distribution<float>> variationMap;
 private:
 	uint seed;
 	RealmType::value realmType;

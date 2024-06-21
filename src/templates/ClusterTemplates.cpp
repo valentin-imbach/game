@@ -13,7 +13,7 @@ void Cluster::setTemplates() {
 
 	std::function<std::unique_ptr<Cluster>(nlohmann::json&)> parse;
 	parse = [&parse](nlohmann::json& value) -> std::unique_ptr<Cluster> {
-		LOG(value);
+		// LOG(value);
 		if (value.contains("resource")) {
 			ResourceId::value resourceId = ResourceId::from_string(value["resource"]);
 			if (!resourceId) {

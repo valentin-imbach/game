@@ -274,7 +274,7 @@ void World::update(uint dt) {
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
 	}
 
-	minimap.update(playerRealm);
+	minimap.update(playerRealm->mapData);
 
 	guiManager.update(dt);
 	controllerSystem->update(inputState, state, ticks);
@@ -285,7 +285,7 @@ void World::update(uint dt) {
 	for (int x = -updateDistance; x <= updateDistance; x++) {
 		for (int y = -updateDistance; y <= updateDistance; y++) {
 			pair chunk(playerChunk.x + x, playerChunk.y + y);
-			EntitySet& set = playerRealm->chunks[chunk];
+			EntitySet& set = playerRealm->chunkEntities[chunk];
         	updateSet.insert(set.begin(), set.end());
 		}
 	}
@@ -357,7 +357,8 @@ void World::updateCamera(Entity target) {
 
 void World::draw() {
 	drawQueue.clear();
-	drawTiles();
+	playerRealm->chunkManager.draw(camera, ticks);
+	// drawTiles()
 
 	if (state) {
 		pair gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
@@ -371,7 +372,7 @@ void World::draw() {
 	for (int x = -renderDistance; x <= renderDistance; x++) {
 		for (int y = -renderDistance; y <= renderDistance; y++) {
 			pair chunk(cameraChunk.x + x, cameraChunk.y + y);
-			EntitySet& set = cameraRealm->chunks[chunk];
+			EntitySet& set = cameraRealm->chunkEntities[chunk];
 			drawSet.insert(set.begin(), set.end());
 		}
 	}
@@ -410,24 +411,6 @@ void World::draw() {
 		minimap.draw(playerPos);
 	}
 	state = false;
-}
-
-void World::drawTiles() {
-	pair range = vec::ceil(vec(Window::instance->size) / (2 * BIT * camera.zoom));
-	pair start = vec::round(camera.position);
-
-	int x1 = std::max(0, start.x - range.x);
-	int x2 = std::min(playerRealm->map->size.x - 1, start.x + range.x);
-	int y1 = std::max(0, start.y - range.y);
-	int y2 = std::min(playerRealm->map->size.y - 1, start.y + range.y);
-
-	for (int x = x1; x <= x2; x++) {
-		for (int y = y1; y <= y2; y++) {
-			if (!playerRealm->map->tiles[x][y]) continue;
-			pair screenPosition = camera.screenPosition(vec(x, y));
-			playerRealm->map->tiles[x][y]->sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
-		}
-	}
 }
 
 std::unique_ptr<GuiElement> World::makeInventory() {

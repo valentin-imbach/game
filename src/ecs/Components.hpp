@@ -285,3 +285,9 @@ struct FuelComponent {
 
 	ItemContainer input;
 };
+
+struct CraftingComponent {
+	float progress = 0;
+	std::array<ItemContainer, 3> inputs;
+	ItemContainer output;
+};

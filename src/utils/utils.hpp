@@ -20,7 +20,7 @@
 #include "pair.hpp"
 #include "vec.hpp"
 #include "random.hpp"
-#include "distribution.hpp"
+#include "Distribution.hpp"
 #include "lerp.hpp"
 #include "logger.hpp"
 #include "strings.hpp"

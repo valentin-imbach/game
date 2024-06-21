@@ -7,7 +7,6 @@
 #include "Components.hpp"
 
 class World;
-class Realm;
 
 class EntityFactory {
 public:
