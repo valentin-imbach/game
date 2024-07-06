@@ -83,6 +83,11 @@
     "ingot": {
         "name": "Ingot",
         "properties": ["hardness"]
+    },
+
+    "tank": {
+        "name": "Tank",
+        "properties": []
     }
 }
 

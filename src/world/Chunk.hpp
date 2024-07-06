@@ -23,6 +23,7 @@ public:
 	Chunk(pair position);
 
 	void serialise(std::fstream& stream);
+	void serialise2(std::filesystem::path path);
 	void deserialise(std::fstream& stream);
 
 	ChunkStage::value stage = ChunkStage::NONE;
@@ -48,6 +49,10 @@ private:
 	Biome::value biome;
 
 	Tile tiles[CHUNK_SIZE][CHUNK_SIZE] = {};
+	Entity entityGrid[CHUNK_SIZE][CHUNK_SIZE] = {};
+	bool solid[CHUNK_SIZE][CHUNK_SIZE] = {};
+	bool opaque[CHUNK_SIZE][CHUNK_SIZE] = {};
+
 	uint seed;
 	pair position;
 
@@ -63,4 +68,5 @@ private:
 
 	friend class World;
 	friend class ChunkManager;
+	friend class Minimap;
 };

@@ -20,10 +20,11 @@ public:
 	static Entity createStation(StationId::value stationId, RealmId realmId, pair position, bool link = true);
 	static Entity createPortal(RealmId realmId, pair position, RealmId otherRealmId, pair entry);
 	
-	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1);
+	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1, bool show = false);
 	static Entity createItem(ItemId::value itemId, uchar count, RealmId realmId, vec position);
 
 	static Entity createTool(ItemKind::value itemKind);
+	static Entity createBucket();
 
 	static Entity createProjectile(RealmId realmId, vec position, vec direction, Entity imune = 0);
 	static Entity createExplosive(RealmId realmId, vec position);

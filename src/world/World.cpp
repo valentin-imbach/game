@@ -166,6 +166,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<HandComponent>(ComponentId::HAND);
 	ecs.rosterComponent<ProcessingComponent>(ComponentId::PROCESSING);
 	ecs.rosterComponent<FuelComponent>(ComponentId::FUEL);
+	ecs.rosterComponent<TankComponent>(ComponentId::TANK);
 
 	LOG("Components rostered");
 }
@@ -274,7 +275,7 @@ void World::update(uint dt) {
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
 	}
 
-	minimap.update(playerRealm->mapData);
+	playerRealm->minimap.update();
 
 	guiManager.update(dt);
 	controllerSystem->update(inputState, state, ticks);
@@ -408,7 +409,7 @@ void World::draw() {
 
 	if (player) {
 		vec playerPos = ecs.getComponent<PositionComponent>(player).position;
-		minimap.draw(playerPos);
+		playerRealm->minimap.draw(playerRealm, playerPos);
 	}
 	state = false;
 }
@@ -458,7 +459,7 @@ std::unique_ptr<GuiElement> World::makeDeathScreen() {
 
 bool World::handleEvent(InputEvent event, uint dt) {
 	if (guiManager.handleEvent(event)) return true;
-	if (minimap.handleEvent(event)) return true;
+	if (playerRealm->minimap.handleEvent(event)) return true;
 	if (!player) return false;
 	
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
@@ -467,6 +468,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	if (event.id == InputEventId::INVENTORY) {
 		guiManager.open(makeInventory(), makeMenu());
 	} else if (event.id == InputEventId::THROW) {
+		if (!activeItemContainer.item) return true;
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 		MovementComponent& movementComponent = ecs.getComponent<MovementComponent>(player);
 		vec position = positionComponent.position + Direction::unit[movementComponent.facing];
@@ -523,7 +525,11 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				realm->linkChunk(player, chunk);
 				return true;
 			}
-		} else {
+		}
+		
+		if (activeItemContainer.item) {
+			ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
+			ItemKindComponent& itemKindComponent = ecs.getComponent<ItemKindComponent>(activeItemContainer.item);
 			if (hasItemKind(activeItemContainer.item, ItemKind::HOE)) {
 				GroundId:: value groundId = playerRealm->map->getGroundId(gridPos);
 				if (groundId == GroundId::DIRT || groundId == GroundId::GRASS) {
@@ -531,17 +537,18 @@ bool World::handleEvent(InputEvent event, uint dt) {
 					playerRealm->map->updateStyle(gridPos, true);
 					return true;
 				}
-			} else {
-				ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
-				if (itemComponent.itemId == ItemId::PARSNIP_SEEDS) {
-					EntityFactory::createCrop(CropId::PARSNIP, playerRealm->realmId, gridPos);
-					itemComponent.count -= 1;
-					if (itemComponent.count == 0) {
-						ecs.addComponent<DeathComponent>({}, activeItemContainer.item);
-						activeItemContainer.item = 0;
-					}
-					return true;
+			}  
+			if (itemComponent.itemId == ItemId::PARSNIP_SEEDS) {
+				EntityFactory::createCrop(CropId::PARSNIP, playerRealm->realmId, gridPos);
+				itemComponent.count -= 1;
+				if (itemComponent.count == 0) {
+					ecs.addComponent<DeathComponent>({}, activeItemContainer.item);
+					activeItemContainer.item = 0;
 				}
+				return true;
+			}
+			if (itemKindComponent.itemKinds[ItemKind::TANK]) {
+				
 			}
 		}
 		
@@ -610,4 +617,18 @@ void World::serialise(std::fstream& stream) {
 	serialise_object(stream, player);
 	realmManager.serialise(stream);
 	ecs.serialise(stream);
+}
+
+void World::serialise2(std::filesystem::path path) {
+	std::filesystem::create_directory(path / name);
+	std::fstream file = std::fstream(path / name / "world.binary", std::ios::out | std::ios::binary);
+	if (!file) ERROR("Failed to create save files for world", name);
+
+	serialise_object(file, seed);
+	serialise_object(file, ticks);
+	serialise_object(file, player);
+
+	realmManager.serialise2(path / name);
+	file.close();
+	
 }

@@ -49,6 +49,11 @@ void RealmManager::serialise(std::fstream& stream) {
 	for (RealmId realmId : availableRealms) serialise_object(stream, realmId);
 }
 
+void RealmManager::serialise2(std::filesystem::path path) {
+	std::filesystem::create_directory(path / "Realms");
+	for (auto& p : realms) p.second->serialise2(path / "Realms");
+}
+
 void RealmManager::deserialise(World* world, std::fstream& stream) {
 	uint num;
 	deserialise_object(stream, num);

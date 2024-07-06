@@ -26,6 +26,8 @@ src/World/Chunk.cpp
 src/World/ChunkManager.cpp
 src/Gui/GuiElement.cpp
 src/Gui/GuiManager.cpp
+src/Gui/Console.cpp
+src/Gui/Minimap.cpp
 src/item/Item.cpp
 src/item/ItemTemplates.cpp
 src/item/Loot.cpp
@@ -35,7 +37,6 @@ src/templates/AnimalTemplates.cpp
 src/templates/StructureTemplates.cpp
 src/templates/ClusterTemplates.cpp
 src/EntityFactory.cpp
-src/Gui/Console.cpp
 src/ParticleSystem.cpp
 src/Distribution.cpp
 src/main.cpp)

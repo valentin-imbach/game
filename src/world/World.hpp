@@ -24,6 +24,7 @@ public:
 	void drawTiles();
 	
 	void serialise(std::fstream& stream);
+	void serialise2(std::filesystem::path path);
 	void deserialise(std::fstream& stream);
 
 	std::bitset<InputStateId::count> inputState;
@@ -106,7 +107,6 @@ private:
 	FuelSystem* fuelSystem;
 
 	GuiManager guiManager;
-	Minimap minimap;
 	std::string name;
 
 	uint ticks;

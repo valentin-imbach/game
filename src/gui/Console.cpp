@@ -272,10 +272,15 @@ bool Console::execute(std::string input) {
 		cluster->generate(seed, game->world->playerRealm, pos);
 	} else if (inputs[0] == "camp") {
 		
+	} else if (inputs[0] == "bucket") {
+		Entity bucket = EntityFactory::createBucket();
+		Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(bucket);
+		if (rest) ecs.addComponent<DeathComponent>({}, rest);
+	} else if (inputs[0] == "save2") {
+		game->world->serialise2(Window::instance->root / "saves");
 	} else {
 		return false;
 	}
-
 
 	return true;
 }

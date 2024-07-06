@@ -31,15 +31,16 @@ public:
 	pair spawn;
 
 	RealmId realmId;
-	MapData mapData;
 
 	std::unique_ptr<Map> map;
 	std::unique_ptr<Environment> environment;
 	std::unordered_map<pair, EntitySet> chunkEntities;
 	GridMap gridMap;
 
+	Minimap minimap;
+
 	void linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque);
-	void unlinkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque);
+	void unlinkGrid(Entity entity, pair anker, pair size);
 	void linkChunk(Entity entity, pair chunk);
 	void unlinkChunk(Entity entity, pair chunk);
 	
@@ -53,6 +54,7 @@ public:
 	pair findFree(pair pos, int radius = 5, bool origin = true);
 
 	void serialise(std::fstream& stream);
+	void serialise2(std::filesystem::path path);
 
 private:
 	uint seed;

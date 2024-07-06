@@ -66,6 +66,49 @@ GroundId::value ChunkManager::getGround(pair position) {
 	return chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId;
 }
 
+bool ChunkManager::solid(pair position) {
+	pair chunk = getChunk(position);
+	assert(checkStage(chunk, ChunkStage::OBJECTS));
+	pair offset = getOffset(position);
+	return chunks.find(chunk)->second.solid[offset.x][offset.y];
+}
+
+bool ChunkManager::opaque(pair position) {
+	pair chunk = getChunk(position);
+	assert(checkStage(chunk, ChunkStage::OBJECTS));
+	pair offset = getOffset(position);
+	return chunks.find(chunk)->second.opaque[offset.x][offset.y];
+}
+
+Entity ChunkManager::gridEntity(pair position) {
+	pair chunk = getChunk(position);
+	// assert(checkStage(chunk, ChunkStage::OBJECTS));
+	pair offset = getOffset(position);
+	return chunks.find(chunk)->second.entityGrid[offset.x][offset.y];
+}
+
+void ChunkManager::linkGridEntity(pair position, Entity entity, bool solid, bool opaque) {
+	pair chunk = getChunk(position);
+	// assert(checkStage(chunk, ChunkStage::OBJECTS));
+	pair offset = getOffset(position);
+	Chunk& c = chunks.find(chunk)->second;
+	if (c.entityGrid[offset.x][offset.y]) WARNING("Linking more than one entity to grid at", position);
+	c.entityGrid[offset.x][offset.y] = entity;
+	c.solid[offset.x][offset.y] = solid;
+	c.opaque[offset.x][offset.y] = opaque;
+}
+
+void ChunkManager::unlinkGridEntity(pair position, Entity entity) {
+	pair chunk = getChunk(position);
+	// assert(checkStage(chunk, ChunkStage::OBJECTS));
+	pair offset = getOffset(position);
+	Chunk& c = chunks.find(chunk)->second;
+	// assert(c.entityGrid[offset.x][offset.y] == entity);
+	c.entityGrid[offset.x][offset.y] = 0;
+	c.solid[offset.x][offset.y] = false;
+	c.opaque[offset.x][offset.y] = false;
+}
+
 void ChunkManager::updateStyle(pair position, bool propagate) {
 	// for (int i = 0; i < Direction::count; i++) {
 	// 	pair pos = position + Direction::taxi[i];
@@ -276,34 +319,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 
 }
 
-
-std::pair<SDL_Surface*, pair> ChunkManager::minimap() {
-
-	if (chunks.empty()) return {nullptr, {}};
-	pair topLeft = chunks.begin()->second.position;
-	pair bottomRight = topLeft;
-
-	for (auto [p, c] : chunks) {
-		topLeft.x = std::min(topLeft.x, p.x);
-		topLeft.y = std::min(topLeft.y, p.y);
-
-		bottomRight.x = std::max(bottomRight.x, p.x);
-		bottomRight.y = std::max(bottomRight.y, p.y);
-	}
-
-	pair size = CHUNK_SIZE * (bottomRight - topLeft + pair(1, 1));
-	pair offset = CHUNK_SIZE * topLeft;
-
-	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, size.x, size.y, 32, SDL_PIXELFORMAT_RGBA8888);
-	Uint32 *pixels = (Uint32 *)surface->pixels;
-
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair pos = pair(x, y) + offset;
-			GroundId::value groundId = getGround(pos);
-			pixels[y * size.x + x] = GroundTemplate::templates[groundId].colour;
-		}
-	}
-	LOG(size);
-	return {surface, offset};
+void ChunkManager::serialise2(std::filesystem::path path) {
+	std::filesystem::create_directory(path / "chunks");
+	for (auto& c : chunks) c.second.serialise2(path / "chunks");
 }

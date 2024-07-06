@@ -56,7 +56,8 @@ BOMB,
 BOOTS,
 FURNACE,
 HEAT_BAR,
-PROGRESS)
+PROGRESS,
+BUCKET)
 
 class Sprite {
 public:

@@ -15,6 +15,7 @@ public:
 	Realm* getRealm(RealmId realmId);
 
 	void serialise(std::fstream& stream);
+	void serialise2(std::filesystem::path path);
 	void deserialise(World* world, std::fstream& stream);
 
 private:

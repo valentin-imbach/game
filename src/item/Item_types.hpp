@@ -15,6 +15,7 @@ SCYTHE,
 HOE,
 KNIFE,
 ACCESSORY,
+TANK,
 
 //* Weapons
 SWORD,

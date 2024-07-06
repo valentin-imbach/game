@@ -25,7 +25,7 @@ public:
 				GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 				PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 				Realm* realm = realmManager.getRealm(positionComponent.realmId);
-				realm->unlinkGrid(entity, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);
+				realm->unlinkGrid(entity, gridComponent.anker, gridComponent.size);
 			}
 			ecs -> destroyEntity(entity);
 		}

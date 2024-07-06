@@ -248,7 +248,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, ve
 	return animal;
 }
 
-Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
+Entity EntityFactory::createItem(ItemId::value itemId, uchar count, bool show) {
 	Entity item = world->ecs.createEntity();
 	if (!item) return 0;
 
@@ -261,7 +261,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count) {
 	}
 
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
-	world->ecs.addComponent<ItemComponent>({itemId, count}, item);
+	world->ecs.addComponent<ItemComponent>({itemId, count, show}, item);
 	
 	return item;
 }
@@ -278,10 +278,9 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, RealmId real
 }
 
 Entity EntityFactory::createTool(ItemKind::value itemKind) {
-	Entity tool = world->ecs.createEntity();
+	Entity tool = createItem(ItemId::NONE, 1, true);
+	if (!tool) return 0;
 
-	world->ecs.addComponent<ItemComponent>({ItemId::NONE, 1, true}, tool);
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, tool);
 	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
 
 	ItemKindComponent itemKindComponent = {};
@@ -331,6 +330,30 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
 
 	return tool;
+}
+
+Entity EntityFactory::createBucket() {
+	Entity bucket = createItem(ItemId::NONE, 1, true);
+	if (!bucket) return 0;
+
+	world->ecs.addComponent<NameComponent>({Textblock("Bucket")}, bucket);
+
+	SpriteStack emptySprite;
+	emptySprite.setSprite(0, Sprite(SpriteSheet::BUCKET, pair(0, 0)));
+	SpriteStack fullSprite;
+	fullSprite.setSprite(0, Sprite(SpriteSheet::BUCKET, pair(1, 0)));
+	world->ecs.addComponent<TankComponent>({10, emptySprite, fullSprite}, bucket);
+
+	ItemKindComponent itemKindComponent = {};
+	itemKindComponent.itemKinds[ItemKind::TANK] = true;
+	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, bucket);
+
+	SpriteComponent spriteComponent = {{}, 0.5f};
+	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
+	spriteComponent.spriteStack = emptySprite;
+	world->ecs.addComponent<SpriteComponent>(spriteComponent, bucket);
+
+	return bucket;
 }
 
 Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId, pair position, bool link) {

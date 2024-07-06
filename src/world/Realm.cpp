@@ -17,9 +17,9 @@ Realm::Realm(std::fstream& stream) : chunkManager(0) {
 	map = std::make_unique<Map>(stream);
 	environment = std::make_unique<Environment>(seed + 2);
 	
-	SDL_Surface* surface = map->makeMiniMap();
-	mapData.texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	SDL_FreeSurface(surface);
+	// SDL_Surface* surface = map->makeMiniMap();
+	// texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
+	// SDL_FreeSurface(surface);
 
 }
 
@@ -32,16 +32,7 @@ void Realm::generate(RealmType::value realmType) {
 	if (realmType == RealmType::TEST) generateFlat(pair(50, 50));
 
 	map->updateStyle();
-
-	// SDL_Surface* surface = map->makeMiniMap();
-	auto mm = chunkManager.minimap();
-	mapData.texture = SDL_CreateTextureFromSurface(Window::instance->renderer, mm.first);
-	SDL_FreeSurface(mm.first);
-	mapData.offset = mm.second;
-
-	Uint32 format;
-	int access;
-	SDL_QueryTexture(mapData.texture, &format, &access, &mapData.size.x, &mapData.size.y);
+	minimap.refresh(this);
 }
 
 void Realm::generateWorld(pair size) {
@@ -390,30 +381,18 @@ void Realm::linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaq
 	assert(entity);
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
-			pair key = anker + pair(x, y);
-			if (gridMap.find(key) != gridMap.end()) {
-				WARNING("Trying to link more than one entity to tile");
-				continue;
-			}
-			gridMap[key] = entity;
-			if (solid) solidMap.insert(key);
-			if (opaque) opaqueMap.insert(key);
+			pair pos = anker + pair(x, y);
+			chunkManager.linkGridEntity(pos, entity, solid, opaque);
 		}
 	}
 }
 
-void Realm::unlinkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque) {
+void Realm::unlinkGrid(Entity entity, pair anker, pair size) {
 	assert(entity);
 	for (int x = 0; x <size.x; x++) {
 		for (int y = 0; y <size.y; y++) {
-			pair key = anker + pair(x, y);
-			if (gridMap.find(key) == gridMap.end()) {
-				WARNING("Trying to remove non-existing grid link");
-				continue;
-			}
-			gridMap.erase(key);
-			if (solid) solidMap.erase(key);
-			if (opaque) opaqueMap.erase(key);
+			pair pos = anker + pair(x, y);
+			chunkManager.unlinkGridEntity(pos, entity);
 		}
 	}
 }
@@ -440,23 +419,24 @@ bool Realm::free(pair anker, pair size) {
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair pos = anker + pair(x, y);
-			if (gridMap.find(pos) != gridMap.end()) return false;
-			if (!map->getGroundId(pos) || GroundTemplate::templates[map->getGroundId(pos)].wall) return false;
+			if (chunkManager.gridEntity(pos)) return false;
+			// GroundId::value groundId = chunkManager.getGround(pos);
+			// if (!map->getGroundId(pos) || GroundTemplate::templates[map->getGroundId(pos)].wall) return false;
 		}
 	}
 	return true;
 }
 
 bool Realm::walkable(pair position) {
-	GroundId::value groundId = map->getGroundId(position);
-	if (map->getWallId(position)) return false;
+	if (chunkManager.solid(position)) return false;
+	GroundId::value groundId = chunkManager.getGround(position);
+	// if (map->getWallId(position)) return false;
 	if (!GroundTemplate::templates[groundId].walk) return false;
-	if (solidMap.find(position) != solidMap.end()) return false;
 	return true;
 }
 
 bool Realm::opaque(pair position) {
-	return opaqueMap.find(position) != opaqueMap.end();
+	return chunkManager.opaque(position);
 }
 
 pair Realm::findFree(pair pos, int radius, bool origin) {
@@ -473,4 +453,20 @@ void Realm::serialise(std::fstream& stream) {
 	serialise_object(stream, realmId);
 	serialise_object(stream, seed);
 	map->serialize(stream);
+}
+
+
+void Realm::serialise2(std::filesystem::path path) {
+	std::string idStr = std::to_string(realmId);
+	std::filesystem::create_directory(path / idStr);
+
+	std::fstream file = std::fstream(path / idStr / "realm.binary", std::ios::out | std::ios::binary);
+	if (!file) ERROR("Failed to create save files for realm", realmId);
+
+	serialise_object(file, realmId);
+	serialise_object(file, seed);
+
+	file.close();
+
+	chunkManager.serialise2(path / idStr);
 }

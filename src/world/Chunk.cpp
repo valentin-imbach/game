@@ -211,6 +211,8 @@ void Chunk::setObjects(ChunkManager* manager, Environment* environment) {
 			for (auto& p : ground.resources) {
 				choice -= p.second;
 				if (choice < 0) {
+					pair size = ResourceTemplate::templates[p.first].size;
+					if (!manager->realm->free(pos, size)) return;
 					Entity resource = EntityFactory::createResource(p.first, manager->realm->realmId, pos);
 					break;
 				}
@@ -229,4 +231,22 @@ void Chunk::drawTiles(Camera camera, uint ticks) {
 			tiles[a][b].sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
 		}
 	}
+}
+
+void Chunk::serialise2(std::filesystem::path path) {
+	std::string posStr = "(" + std::to_string(position.x) + "," + std::to_string(position.y) + ")";
+	std::filesystem::create_directory(path / posStr);
+
+	std::fstream chunkFile = std::fstream(path / posStr / "chunk.binary", std::ios::out | std::ios::binary);
+	std::fstream entityFile = std::fstream(path / posStr / "entities.binary", std::ios::out | std::ios::binary);
+	std::fstream tileFile = std::fstream(path / posStr / "tiles.binary", std::ios::out | std::ios::binary);
+
+	if (!chunkFile || !entityFile || !tileFile) ERROR("Failed to create save files for chunk", position);
+
+	serialise_object(chunkFile,	position);
+	serialise_object(chunkFile,	stage);
+
+	chunkFile.close();
+	entityFile.close();
+	tileFile.close();
 }

@@ -291,3 +291,17 @@ struct CraftingComponent {
 	std::array<ItemContainer, 3> inputs;
 	ItemContainer output;
 };
+
+ENUM(Liquid,
+WATER)
+
+struct TankComponent {
+	ushort capacity;
+	SpriteStack emptySprite;
+	SpriteStack fullSprite;
+
+	ushort content = 0;
+	Liquid::value liquid = Liquid::NONE;
+
+	
+};

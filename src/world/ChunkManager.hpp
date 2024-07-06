@@ -14,7 +14,15 @@ public:
 
 	void updateStyle(pair position, bool propagate = false);
 
-	std::pair<SDL_Surface*, pair> minimap();
+	void serialise2(std::filesystem::path path);
+
+	GroundId::value getGround(pair position);
+	bool opaque(pair position);
+	bool solid(pair position);
+	Entity gridEntity(pair position);
+
+	void linkGridEntity(pair position, Entity entity, bool solid, bool opaque);
+	void unlinkGridEntity(pair position, Entity entity);
 
 	std::array<ushort, ChunkStage::count> stageBuffer = {};
 
@@ -28,11 +36,11 @@ private:
 	void setGround(pair chunk);
 	void setTiles(pair chunk);
 
-	GroundId::value getGround(pair position);
 	bool checkStage(pair chunk, ChunkStage::value stage = ChunkStage::NONE);
 	std::unordered_map<pair, Chunk> chunks;
 
 	PerlinDistortion pdist = PerlinDistortion(noise::UInt(seed + 4));
 
 	friend class Chunk;
+	friend class Minimap;
 };
