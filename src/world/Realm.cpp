@@ -32,7 +32,6 @@ void Realm::generate(RealmType::value realmType) {
 	if (realmType == RealmType::TEST) generateFlat(pair(50, 50));
 
 	map->updateStyle();
-	minimap.refresh(this);
 }
 
 void Realm::generateWorld(pair size) {
@@ -126,19 +125,19 @@ void Realm::generateFlat(pair size) {
 	map = std::make_unique<Map>(size, noise::UInt(seed + 1));
 	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
 
-	int r = 5;
-	for (int x = -r; x <= r; x++) {
-		for (int y = -r; y <= r; y++) {
-			pair chunk(x, y);
-			chunkManager.generateChunk(chunk, ChunkStage::LOADED, environment.get());
-		}
-	}
+	// int r = 5;
+	// for (int x = -r; x <= r; x++) {
+	// 	for (int y = -r; y <= r; y++) {
+	// 		pair chunk(x, y);
+	// 		chunkManager.generateChunk(chunk, ChunkStage::LOADED, environment.get());
+	// 	}
+	// }
 	
 
-	Voronoi cells = Voronoi(noise::UInt(seed + 3), 20, 4);
-	PerlinDistortion pdist = PerlinDistortion(noise::UInt(seed + 4));
+	// Voronoi cells = Voronoi(noise::UInt(seed + 3), 20, 4);
+	// PerlinDistortion pdist = PerlinDistortion(noise::UInt(seed + 4));
 
-	TopoGraph topo = TopoGraph(noise::UInt(seed + 3), 20, 5);
+	// TopoGraph topo = TopoGraph(noise::UInt(seed + 3), 20, 5);
 
 	// std::function<Direction::value(pair)> down = [this](pair pos) {
 	// 	float height = this->environment->elevationMap->get(pos);
@@ -205,35 +204,35 @@ void Realm::generateFlat(pair size) {
 	// 	return river(low, d-1);
 	// };
 
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair pos(x, y);
-			// pos = pdist(pos);
+	// for (int x = 0; x < size.x; x++) {
+	// 	for (int y = 0; y < size.y; y++) {
+	// 		pair pos(x, y);
+	// 		// pos = pdist(pos);
 
-			pair node = topo.node(pos);
+	// 		pair node = topo.node(pos);
 
-			// GroundId::value ground = GroundId::GRASS;
-			// if (environment->elevationMap->get(root) < 0) {
-			// 	ground = GroundId::WATER;
-			// }
+	// 		// GroundId::value ground = GroundId::GRASS;
+	// 		// if (environment->elevationMap->get(root) < 0) {
+	// 		// 	ground = GroundId::WATER;
+	// 		// }
 
-			// if (valley(pos)) {
-			// 	ground = GroundId::DIRT;
-			// }
+	// 		// if (valley(pos)) {
+	// 		// 	ground = GroundId::DIRT;
+	// 		// }
 
-			// if (river(pos, 5)) {
-			// 	ground = GroundId::ROCK;
-			// }
+	// 		// if (river(pos, 5)) {
+	// 		// 	ground = GroundId::ROCK;
+	// 		// }
 
-			GroundId::value ground = topo.ground(node, this->environment.get());
+	// 		GroundId::value ground = topo.ground(node, this->environment.get());
 
-			if (vec::round(topo.position(node)) == pos) ground = GroundId::PLANKS;
+	// 		if (vec::round(topo.position(node)) == pos) ground = GroundId::PLANKS;
 
-			map->tiles[x][y] = std::make_unique<Tile>(ground);
-		}
-	}
+	// 		map->tiles[x][y] = std::make_unique<Tile>(ground);
+	// 	}
+	// }
 
-	spawn = pair(0, 0);
+	// spawn = pair(0, 0);
 
 	// using namespace generation;
 	// auto bp = new ResourceNode(ResourceId::BASALT_PEBBLE);

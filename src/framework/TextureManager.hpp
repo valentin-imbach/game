@@ -26,6 +26,8 @@ public:
 	static void drawRect(pair position, pair size, Colour colour = {255, 0, 0, 255}, bool centered = true, bool filled = false);
 	static void drawCirc(pair position, int radius, Colour colour = {255, 0, 0, 255});
 
+	// static void saveTexture(SDL_Texture* texture, std::filesystem::path path);
+
 	static SDL_Texture* createTexture(pair size, Colour colour = {0, 0, 0, 0});
 	static void outlineSurface(SDL_Surface* surface);
 	static SDL_Texture* lightTexture;

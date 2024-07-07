@@ -20,75 +20,56 @@ bool Minimap::handleEvent(InputEvent event) {
 	return false;
 }
 
-void Minimap::refresh(Realm* realm) {
-	std::unordered_map<pair, Chunk>& chunks = realm->chunkManager.chunks;
-	if (chunks.empty()) return;
+void Minimap::update(vec playerPos, Realm* realm) {
+	playerPosition = playerPos;
+	playerRealm = realm;
+}
 
-	pair topLeft = chunks.begin()->second.position;
-	pair bottomRight = topLeft;
+void Minimap::draw() {
+	if (!active || !playerRealm) return;
 
-	for (auto [p, c] : chunks) {
-		topLeft.x = std::min(topLeft.x, p.x);
-		topLeft.y = std::min(topLeft.y, p.y);
+	pair size = zoom * pair(CHUNK_SIZE, CHUNK_SIZE);
+	pair origin = worldToMap(vec(CHUNK_SIZE - 1, CHUNK_SIZE - 1) / 2);
 
-		bottomRight.x = std::max(bottomRight.x, p.x);
-		bottomRight.y = std::max(bottomRight.y, p.y);
-	}
-
-	size = CHUNK_SIZE * (bottomRight - topLeft + pair(1, 1));
-	offset = CHUNK_SIZE * topLeft;
-
-	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, size.x, size.y, 32, SDL_PIXELFORMAT_RGBA8888);
-	Uint32 *pixels = (Uint32 *)surface->pixels;
-
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair pos = pair(x, y) + offset;
-			GroundId::value groundId = realm->chunkManager.getGround(pos);
-			pixels[y * size.x + x] = GroundTemplate::templates[groundId].colour;
+	for (auto& [pos,c] : playerRealm->chunkManager.chunks) {
+		
+		pair offset = pos * CHUNK_SIZE * zoom;
+		if (c.mapTexture) {
+			TextureManager::drawTexture(c.mapTexture, nullptr, {0,0}, size, origin + offset, size);
 		}
-	}
-	
-	texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	SDL_FreeSurface(surface);
-}
 
-void Minimap::update() {
-	
-}
-
-void Minimap::draw(Realm* realm, vec playerPos) {
-	if (!active) return;
-
-	TextureManager::drawTexture(texture, nullptr, {0,0}, size, Window::instance->size/2, zoom * size);
-	TextureManager::drawCirc(worldToMap(playerPos), 5);
-
-	SDL_SetRenderDrawColor(Window::instance->renderer, 255, 0, 0, 100);
-
-	pair chunkNumber = size / CHUNK_SIZE;
-	for (int x = 0; x <= chunkNumber.x; x++) {
-		int xx = x * CHUNK_SIZE + offset.x;
-		pair start = worldToMap(vec(xx - 0.5f, -1 + offset.y));
-		pair end = worldToMap(vec(xx - 0.5f, size.y + 0.5f + offset.y));
-		SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
+		float t = float(c.stage)/ChunkStage::MAX;
+		TextureManager::drawRect(origin + offset, size, {uint8_t(255 * (1-t)), uint8_t(255 * t), 0, 100}, true, true);
 	}
 
-	for (int y = 0; y <= chunkNumber.y; y++) {
-		int yy = y * CHUNK_SIZE + offset.y;
-		pair start = worldToMap(vec(-1 + offset.x, yy - 0.5f));
-		pair end = worldToMap(vec(size.y + 0.5f + offset.x, yy - 0.5f));
-		SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
-	}
+	TextureManager::drawCirc(Window::instance->size/2, 5);
 
-	for (int x = 0; x < chunkNumber.x; x++) {
-		for (int y = 0; y < chunkNumber.y; y++) {
-			pair chunk(x, y);
-			pair position = CHUNK_SIZE * chunk + offset;
+	// SDL_SetRenderDrawColor(Window::instance->renderer, 255, 0, 0, 100);
+
+	// pair chunkNumber = size / CHUNK_SIZE;
+	// for (int x = 0; x <= chunkNumber.x; x++) {
+	// 	int xx = x * CHUNK_SIZE + offset.x;
+	// 	pair start = worldToMap(vec(xx - 0.5f, -1 + offset.y));
+	// 	pair end = worldToMap(vec(xx - 0.5f, size.y + 0.5f + offset.y));
+	// 	SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
+	// }
+
+	// for (int y = 0; y <= chunkNumber.y; y++) {
+	// 	int yy = y * CHUNK_SIZE + offset.y;
+	// 	pair start = worldToMap(vec(-1 + offset.x, yy - 0.5f));
+	// 	pair end = worldToMap(vec(size.y + 0.5f + offset.x, yy - 0.5f));
+	// 	SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
+	// }
+
+	// for (int x = 0; x < chunkNumber.x; x++) {
+	// 	for (int y = 0; y < chunkNumber.y; y++) {
+	// 		pair chunk(x, y);
+	// 		pair position = CHUNK_SIZE * chunk + offset;
 		
 			
 
-		}
-	}
+	// 	}
+	// }
 
 	// pair tl = worldToMap(vec(-0.5f, -0.5f));
 	// pair tr = worldToMap(vec(size.x - 0.5f, -0.5f));
@@ -102,5 +83,9 @@ void Minimap::draw(Realm* realm, vec playerPos) {
 }
 
 pair Minimap::worldToMap(vec position) {
-	return (Window::instance->size - zoom * size)/2 + vec::round(zoom * (position + vec(0.5f, 0.5f) - offset));
+	return Window::instance->size/2 + vec::round(zoom * (position - playerPosition));
+}
+
+vec Minimap::mapToWorld(pair position) {
+	return playerPosition + vec(position - Window::instance->size/2) / zoom;
 }

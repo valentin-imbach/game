@@ -8,6 +8,7 @@ ChunkManager::ChunkManager(uint seed) : seed(seed), chunks() {
 	stageBuffer[ChunkStage::RIVER] = 5;
 	stageBuffer[ChunkStage::GROUND] = 5;
 	stageBuffer[ChunkStage::TILES] = 1;
+	stageBuffer[ChunkStage::LOADED] = 5;
 }
 
 void ChunkManager::generateChunk(pair position, ChunkStage::value target, Environment* environment) {
@@ -45,8 +46,8 @@ void ChunkManager::draw(Camera camera, uint ticks) {
 	}
 }
 
-pair ChunkManager::getChunk(pair position) {
-	return vec::floor(vec(position) / CHUNK_SIZE);
+pair ChunkManager::getChunk(vec position) {
+	return vec::floor(position / CHUNK_SIZE);
 }
 
 pair ChunkManager::getOffset(pair position) {
@@ -68,21 +69,21 @@ GroundId::value ChunkManager::getGround(pair position) {
 
 bool ChunkManager::solid(pair position) {
 	pair chunk = getChunk(position);
-	assert(checkStage(chunk, ChunkStage::OBJECTS));
+	if (!checkStage(chunk, ChunkStage::GROUND)) return true;
 	pair offset = getOffset(position);
 	return chunks.find(chunk)->second.solid[offset.x][offset.y];
 }
 
 bool ChunkManager::opaque(pair position) {
 	pair chunk = getChunk(position);
-	assert(checkStage(chunk, ChunkStage::OBJECTS));
+	if (!checkStage(chunk, ChunkStage::GROUND)) return true;
 	pair offset = getOffset(position);
 	return chunks.find(chunk)->second.opaque[offset.x][offset.y];
 }
 
 Entity ChunkManager::gridEntity(pair position) {
 	pair chunk = getChunk(position);
-	// assert(checkStage(chunk, ChunkStage::OBJECTS));
+	if (!checkStage(chunk, ChunkStage::GROUND)) return 0;
 	pair offset = getOffset(position);
 	return chunks.find(chunk)->second.entityGrid[offset.x][offset.y];
 }

@@ -101,6 +101,21 @@ void Chunk::setRiver(ChunkManager* manager, Environment* environment) {
 	}
 }
 
+void Chunk::refreshMap() {
+	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, CHUNK_SIZE, CHUNK_SIZE, 32, SDL_PIXELFORMAT_RGBA8888);
+	Uint32 *pixels = (Uint32 *)surface->pixels;
+
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			GroundId::value groundId = tiles[x][y].groundId;
+			pixels[y * CHUNK_SIZE + x] = GroundTemplate::templates[groundId].colour;
+		}
+	}
+	
+	mapTexture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
+	SDL_FreeSurface(surface);
+}
+
 void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 	// for (int i = 1; i < Direction::count; i++) {
 	// 	pair chunk = position + Direction::taxi[i];
@@ -180,6 +195,8 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 			tiles[x][y].sprites.setSprite(0, baseSprite);
 		}
 	}
+
+	refreshMap();
 	// LOG("Ground set at", position);
 }
 

@@ -273,9 +273,13 @@ void World::update(uint dt) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 		playerChunk = positionComponent.chunk;
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
+		playerPosition = positionComponent.position;
+
+		pair c = playerRealm->chunkManager.getChunk(playerPosition);
+		playerRealm->chunkManager.generateChunk(c, ChunkStage::LOADED, playerRealm->environment.get());
 	}
 
-	playerRealm->minimap.update();
+	playerRealm->minimap.update(playerPosition, playerRealm);
 
 	guiManager.update(dt);
 	controllerSystem->update(inputState, state, ticks);
@@ -409,7 +413,7 @@ void World::draw() {
 
 	if (player) {
 		vec playerPos = ecs.getComponent<PositionComponent>(player).position;
-		playerRealm->minimap.draw(playerRealm, playerPos);
+		playerRealm->minimap.draw();
 	}
 	state = false;
 }

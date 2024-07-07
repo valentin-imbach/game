@@ -13,16 +13,15 @@ class Realm;
 class Minimap {
 public:
 	bool handleEvent(InputEvent event);
-	void refresh(Realm* realm);
-	void update();
-	void draw(Realm* realm, vec playerPos);
+	void update(vec PlayerPos, Realm* realm);
+	void draw();
 
 private:
 	pair worldToMap(vec position);
+	vec mapToWorld(pair position);
 
-	SDL_Texture* texture;
-	pair offset;
-	pair size;
+	vec playerPosition;
+	Realm* playerRealm;
 
 	int zoom = 1;
 	bool active = false;

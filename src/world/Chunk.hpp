@@ -44,6 +44,8 @@ private:
 	void setTiles(ChunkManager* manager);
 	void setObjects(ChunkManager* manager, Environment* environment);
 
+	void refreshMap();
+
 	pair node;
 	pair nodeOffset;
 	Biome::value biome;
@@ -65,6 +67,8 @@ private:
 	bool riverSource = false;
 
 	Entity grid[CHUNK_SIZE][CHUNK_SIZE] = {};
+
+	SDL_Texture* mapTexture = nullptr;
 
 	friend class World;
 	friend class ChunkManager;

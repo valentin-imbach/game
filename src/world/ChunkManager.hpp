@@ -30,7 +30,7 @@ public:
 
 private:
 	uint seed;
-	pair getChunk(pair position);
+	pair getChunk(vec position);
 	pair getOffset(pair position);
 
 	void setGround(pair chunk);
@@ -43,4 +43,5 @@ private:
 
 	friend class Chunk;
 	friend class Minimap;
+	friend class World;
 };

@@ -114,6 +114,8 @@ private:
 
 	pair playerChunk;
 
+	vec playerPosition;
+
 	friend class Game;
 	friend class Console;
 	friend class DebugScreen;
