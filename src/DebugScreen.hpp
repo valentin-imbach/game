@@ -62,7 +62,7 @@ public:
 		tileText += "Vegetation: " + std::to_string(env->vegetationMap->get(tile)) + '\n';
 		tileText += "Variation: " + std::to_string(env->variationMap->get(tile)) + '\n';
 
-		GroundId::value groundId = world->playerRealm->map->getGroundId(tile);
+		GroundId::value groundId = world->playerRealm->ground(tile);
 		tileText += "Tile: " + GroundId::to_string(groundId) + '\n';
 
 		TextManager::drawText(tileText, pair(windowSize.x - 310, 30));

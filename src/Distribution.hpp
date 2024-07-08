@@ -44,6 +44,15 @@ private:
 	int oct;
 };
 
+class ConstantDistribution : public Distribution<float> {
+public:
+	ConstantDistribution(float value = 0);
+	float get(vec position) override;
+
+private:
+	float value;
+};
+
 class BoundDistribution : public Distribution<float> {
 public:
 	BoundDistribution(std::unique_ptr<Distribution> dist, float min, float max);

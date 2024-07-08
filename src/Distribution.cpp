@@ -34,6 +34,12 @@ float PerlinNoise::get(vec position) {
 	return res;
 }
 
+
+ConstantDistribution::ConstantDistribution(float value) : Distribution(0), value(value) {}
+float ConstantDistribution::get(vec position) {
+	return value;
+}
+
 BoundDistribution::BoundDistribution(std::unique_ptr<Distribution> dist, float min, float max) : Distribution(0), distribution(std::move(dist)), min(min), max(max) {}
 
 float BoundDistribution::get(vec position) {

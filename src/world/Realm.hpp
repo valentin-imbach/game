@@ -32,7 +32,7 @@ public:
 
 	RealmId realmId;
 
-	std::unique_ptr<Map> map;
+	// std::unique_ptr<Map> map;
 	std::unique_ptr<Environment> environment;
 	std::unordered_map<pair, EntitySet> chunkEntities;
 	GridMap gridMap;
@@ -47,9 +47,11 @@ public:
 	// void link(Entity entity);
 	// void unlink(Entity entity);
 
-	bool free(pair anker, pair size = {1, 1});
+	bool free(pair anker, pair size = pair(1, 1));
 	bool walkable(pair pos);
 	bool opaque(pair pos);
+
+	GroundId::value ground(pair position);
 
 	pair findFree(pair pos, int radius = 5, bool origin = true);
 

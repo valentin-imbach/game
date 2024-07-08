@@ -146,6 +146,7 @@ SNOW)
 
 ENUM(RealmType,
 TEST,
+FLAT,
 WORLD,
 HOUSE,
 CAVE,

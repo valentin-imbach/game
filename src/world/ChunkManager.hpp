@@ -21,6 +21,8 @@ public:
 	bool solid(pair position);
 	Entity gridEntity(pair position);
 
+	void setGround(pair position, GroundId::value groundId);
+
 	void linkGridEntity(pair position, Entity entity, bool solid, bool opaque);
 	void unlinkGridEntity(pair position, Entity entity);
 
@@ -33,9 +35,6 @@ private:
 	pair getChunk(vec position);
 	pair getOffset(pair position);
 
-	void setGround(pair chunk);
-	void setTiles(pair chunk);
-
 	bool checkStage(pair chunk, ChunkStage::value stage = ChunkStage::NONE);
 	std::unordered_map<pair, Chunk> chunks;
 
@@ -44,4 +43,5 @@ private:
 	friend class Chunk;
 	friend class Minimap;
 	friend class World;
+	friend class Realm;
 };

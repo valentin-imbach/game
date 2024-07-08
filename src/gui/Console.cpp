@@ -160,8 +160,7 @@ bool Console::execute(std::string input) {
 		GroundId::value groundId = GroundId::from_string(inputs[1]);
 		if (!groundId) return false;
 		pair position = vec::round(ecs.getComponent<PositionComponent>(player).position);
-		game->world->playerRealm->map->tiles[position.x][position.y]->groundId = groundId;
-		game->world->playerRealm->map->updateStyle(position, true);
+		game->world->playerRealm->chunkManager.setGround(position, groundId);
 	} else if (inputs[0] == "weather") {
 		WeatherId::value weatherId = WeatherId::from_string(inputs[1]);
 		if (!weatherId) return false;

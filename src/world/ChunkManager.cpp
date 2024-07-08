@@ -67,6 +67,14 @@ GroundId::value ChunkManager::getGround(pair position) {
 	return chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId;
 }
 
+void ChunkManager::setGround(pair position, GroundId::value groundId) {
+	pair chunk = getChunk(position);
+	if (!checkStage(chunk, ChunkStage::GROUND)) return;
+	pair offset = getOffset(position);
+	chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId = groundId;
+	updateStyle(position, true);
+}
+
 bool ChunkManager::solid(pair position) {
 	pair chunk = getChunk(position);
 	if (!checkStage(chunk, ChunkStage::GROUND)) return true;

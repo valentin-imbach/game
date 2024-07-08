@@ -4,11 +4,20 @@
 #include "Sprite.hpp"
 
 Environment::Environment(uint seed, RealmType::value realmType) : seed(seed), realmType(realmType) {
-	temparatureMap = std::make_unique<PerlinNoise>(seed + 87364, 200, 120, 10, 3);
-	precipitationMap = std::make_unique<PerlinNoise>(seed + 372342, 100, 800, 130, 3);
-	elevationMap = std::make_unique<PerlinNoise>(seed + 267443, 50, 3000, 500, 3);
-	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 934328, 100, 200, 50, 3), 0, 100);
-	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(seed + 825934, 10, 200, 50, 5), 0, 100);
+	uint s = seed;
+	if (realmType == RealmType::WORLD) {
+		temparatureMap = std::make_unique<PerlinNoise>(s++, 200, 120, 10, 3);
+		precipitationMap = std::make_unique<PerlinNoise>(s++, 100, 800, 130, 3);
+		elevationMap = std::make_unique<PerlinNoise>(s++, 50, 3000, 500, 3);
+		vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(s++, 100, 200, 50, 3), 0, 100);
+		variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(s++, 10, 200, 50, 5), 0, 100);
+	}
+
+	temparatureMap = std::make_unique<ConstantDistribution>();
+	precipitationMap = std::make_unique<ConstantDistribution>();
+	elevationMap = std::make_unique<ConstantDistribution>(100);
+	vegetationMap = std::make_unique<ConstantDistribution>();
+	variationMap = std::make_unique<ConstantDistribution>();
 }
 
 Biome::value Environment::getBiome(pair position) {

@@ -21,6 +21,8 @@
 
 #include "ClusterTemplates.hpp"
 
+#include <thread>
+
 void World::init() {
 	rosterComponents();
 	rosterSystems();
@@ -72,15 +74,15 @@ World::World(std::string name, uint seed, bool debug, bool test) : name(name), s
 
 		//Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
 
-		for (int x = 0; x < 6; x++) {
-			spawnRealm->map->tiles[spawn.x + x][spawn.y]->wallId = GroundId::MUD_WALL;
-		}
+		// for (int x = 0; x < 6; x++) {
+		// 	spawnRealm->map->tiles[spawn.x + x][spawn.y]->wallId = GroundId::MUD_WALL;
+		// }
 
-		for (int x = 1; x < 5; x++) {
-			spawnRealm->map->tiles[spawn.x + x][spawn.y + 1]->wallId = GroundId::MUD_WALL;
-		}
+		// for (int x = 1; x < 5; x++) {
+		// 	spawnRealm->map->tiles[spawn.x + x][spawn.y + 1]->wallId = GroundId::MUD_WALL;
+		// }
 
-		spawnRealm->map->updateStyle();
+		// spawnRealm->map->updateStyle();
 
 		EntityFactory::createPortal(spawnRealm->realmId, spawn + pair(3, 1), dungeon->realmId, dungeon->spawn);
 
@@ -276,6 +278,9 @@ void World::update(uint dt) {
 		playerPosition = positionComponent.position;
 
 		pair c = playerRealm->chunkManager.getChunk(playerPosition);
+
+		// ChunkManager& cm = playerRealm->chunkManager;
+		// std::thread thread(&ChunkManager::generateChunk, cm, c, ChunkStage::LOADED, playerRealm->environment.get());
 		playerRealm->chunkManager.generateChunk(c, ChunkStage::LOADED, playerRealm->environment.get());
 	}
 
@@ -515,34 +520,34 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		vec position = camera.worldPosition(event.mousePosition);
 		pair gridPos = vec::round(position);
 
-		if (playerRealm->gridMap.find(gridPos) != playerRealm->gridMap.end()) {
-			Entity entity = playerRealm->gridMap[gridPos];
-			if (entity && ecs.hasComponent<PortalComponent>(entity)) {
-				PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(entity);
-				PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-				playerRealm->unlinkChunk(player, positionComponent.chunk);
-				positionComponent.position = portalComponent.position;
-				pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
-				positionComponent.chunk = chunk;
-				positionComponent.realmId = portalComponent.realmId;
-				Realm* realm = realmManager.getRealm(portalComponent.realmId);
-				realm->linkChunk(player, chunk);
-				return true;
-			}
+		Entity gridEntity = playerRealm->chunkManager.gridEntity(gridPos);
+		GroundId::value groundId = playerRealm->chunkManager.getGround(gridPos);
+
+		if (gridEntity && ecs.hasComponent<PortalComponent>(gridEntity)) {
+			PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(gridEntity);
+			PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
+			playerRealm->unlinkChunk(player, positionComponent.chunk);
+			positionComponent.position = portalComponent.position;
+			pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
+			positionComponent.chunk = chunk;
+			positionComponent.realmId = portalComponent.realmId;
+			Realm* realm = realmManager.getRealm(portalComponent.realmId);
+			realm->linkChunk(player, chunk);
+			return true;
 		}
 		
 		if (activeItemContainer.item) {
 			ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
 			ItemKindComponent& itemKindComponent = ecs.getComponent<ItemKindComponent>(activeItemContainer.item);
+
 			if (hasItemKind(activeItemContainer.item, ItemKind::HOE)) {
-				GroundId:: value groundId = playerRealm->map->getGroundId(gridPos);
-				if (groundId == GroundId::DIRT || groundId == GroundId::GRASS) {
-					playerRealm->map->tiles[gridPos.x][gridPos.y]->groundId = GroundId::SOIL;
-					playerRealm->map->updateStyle(gridPos, true);
+				if (groundId == GroundId::DIRT || groundId == GroundId::GRASS && gridEntity) {
+					playerRealm->chunkManager.setGround(gridPos, GroundId::SOIL);
 					return true;
 				}
 			}  
-			if (itemComponent.itemId == ItemId::PARSNIP_SEEDS) {
+
+			if (itemComponent.itemId == ItemId::PARSNIP_SEEDS && groundId == GroundId::SOIL && !gridEntity) {
 				EntityFactory::createCrop(CropId::PARSNIP, playerRealm->realmId, gridPos);
 				itemComponent.count -= 1;
 				if (itemComponent.count == 0) {
@@ -551,8 +556,15 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				}
 				return true;
 			}
-			if (itemKindComponent.itemKinds[ItemKind::TANK]) {
-				
+
+			if (itemKindComponent.itemKinds[ItemKind::TANK] && groundId == GroundId::WATER) {
+				TankComponent& tankComponent = ecs.getComponent<TankComponent>(activeItemContainer.item);
+				SpriteComponent& spriteComponent = ecs.getComponent<SpriteComponent>(activeItemContainer.item);
+
+				tankComponent.content = tankComponent.capacity;
+				tankComponent.liquid = Liquid::WATER;
+
+				spriteComponent.spriteStack = tankComponent.fullSprite;
 			}
 		}
 		

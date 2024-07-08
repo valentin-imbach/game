@@ -16,7 +16,8 @@ public:
 
 			vec offset;
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			GroundId::value groundId = realm->map->getGroundId(vec::round(positionComponent.position));
+			pair tile = vec::round(positionComponent.position);
+			GroundId::value groundId = realm->ground(tile);
 
 			float mult = GroundTemplate::templates[groundId].speed * movementComponent.speedBonus;
 			if (movementComponent.movementState == MovementState::WALK) {
