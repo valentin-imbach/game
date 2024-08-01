@@ -49,6 +49,8 @@ public:
 		return res;
 	}
 
+
+
 	template <typename T>
 	void addComponent(T component, Entity entity) {
 		if (!entity) return;
@@ -78,6 +80,9 @@ public:
 	T& getComponent(Entity entity) {
 		return componentManager.get<T>(entity);
 	}
+
+
+	
 
 	template <typename T>
 	T* rosterSystem(SystemId::value id, std::vector<ComponentId::value>&& ids) {
