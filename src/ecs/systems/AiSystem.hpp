@@ -9,6 +9,7 @@ public:
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);
+			aiComponent.scores[aiComponent.state] += 5;
 			auto maxElementIter = std::max_element(aiComponent.scores.begin(), aiComponent.scores.end());
     		int index = maxElementIter - aiComponent.scores.begin();
 			if (aiComponent.scores[index] == 0) index = 0;

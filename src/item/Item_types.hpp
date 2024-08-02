@@ -15,7 +15,6 @@ SCYTHE,
 HOE,
 KNIFE,
 ACCESSORY,
-TANK,
 
 //* Weapons
 SWORD,
@@ -57,7 +56,10 @@ CLOTHING_FEET,
 ARMOR_HEAD,
 ARMOR_BODY,
 ARMOR_LEGS,
-ARMOR_FEET)
+ARMOR_FEET,
+
+//* Misc
+TANK)
 
 ENUM(ItemProperty,
 //* Mechanical

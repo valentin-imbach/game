@@ -94,8 +94,12 @@ public:
 		}
 
 		if (world->ecs.hasComponent<AiComponent>(entity)) {
-			AiState::value aiState = world->ecs.getComponent<AiComponent>(entity).state;
-			entityText += "Ai State: " + AiState::to_string(aiState) + '\n';
+			AiComponent& aiComponent = world->ecs.getComponent<AiComponent>(entity);
+			entityText += "Ai Scores:";
+			for (int i = 1; i < AiState::count; i++) {
+				entityText += "- " + AiState::strings[i] + ": " + std::to_string(aiComponent.scores[i]) + "\n""";
+			}
+			entityText += "Ai State: " + AiState::to_string(aiComponent.state) + '\n';
 		}
 
 		// if (world->ecs.hasComponent<AiWanderComponent>(entity)) {

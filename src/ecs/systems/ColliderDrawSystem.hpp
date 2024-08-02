@@ -30,21 +30,21 @@ public:
 				TextureManager::drawCirc(screenPosition, radius, {255, 255, 255, 255});
 			}
 
-			if (ecs->hasComponent<AiMoveComponent>(entity)) {
-				AiMoveComponent& aiMoveComponent = ecs->getComponent<AiMoveComponent>(entity);
-				pair start = camera.screenPosition(positionComponent.position);
-				for (int dir = 1; dir <= 8; dir++) {
-					float score = aiMoveComponent.moveScores[dir];
-					pair end = camera.screenPosition(positionComponent.position + std::abs(score) * Direction::unit[dir]);
-					if (score >= 0) {
-						SDL_SetRenderDrawColor(Window::instance->renderer, 0, 0, 255, 255);
-					} else {
-						SDL_SetRenderDrawColor(Window::instance->renderer, 255, 0, 0, 255);
-					}
-					SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
-				}
+			// if (ecs->hasComponent<AiMoveComponent>(entity)) {
+			// 	AiMoveComponent& aiMoveComponent = ecs->getComponent<AiMoveComponent>(entity);
+			// 	pair start = camera.screenPosition(positionComponent.position);
+			// 	for (int dir = 1; dir <= 8; dir++) {
+			// 		float score = aiMoveComponent.moveScores[dir];
+			// 		pair end = camera.screenPosition(positionComponent.position + std::abs(score) * Direction::unit[dir]);
+			// 		if (score >= 0) {
+			// 			SDL_SetRenderDrawColor(Window::instance->renderer, 0, 0, 255, 255);
+			// 		} else {
+			// 			SDL_SetRenderDrawColor(Window::instance->renderer, 255, 0, 0, 255);
+			// 		}
+			// 		SDL_RenderDrawLine(Window::instance->renderer, start.x, start.y, end.x, end.y);
+			// 	}
 				
-			}
+			// }
 		}
 	}
 };

@@ -5,36 +5,32 @@
 #include "pathfinding.hpp"
 #include "ECS.hpp"
 
-class AiChaseSystem : public System {
+class AiPostSystem : public System {
 public:
 	void score(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);
-			AiChaseComponent& aiChaseComponent = ecs->getComponent<AiChaseComponent>(entity);
-			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
+			AiPostComponent& aiPostComponent = ecs->getComponent<AiPostComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			
-			if (ticks - sensorComponent.lastSeen < 3000) {
-				float dist = vec::dist(positionComponent.position, sensorComponent.position);
-				
-				aiComponent.scores[AiState::CHASE] = 90 * std::exp(-dist/10);
-				aiChaseComponent.target = sensorComponent.position;
+			float dist = vec::dist(positionComponent.position, aiPostComponent.position);
+			if (dist > aiPostComponent.range) {
+				aiComponent.scores[AiState::POST] = 90;
 			} else {
-				aiComponent.scores[AiState::CHASE] = 0;
+				aiComponent.scores[AiState::POST] = lerp::linear(dist / aiPostComponent.range, 0, 90);
 			}
-			
 		}
 	}
 
 	void update(uint ticks, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);
-			if (aiComponent.state != AiState::CHASE) continue;
+			if (aiComponent.state != AiState::POST) continue;
 			
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-			AiChaseComponent& aiChaseComponent = ecs->getComponent<AiChaseComponent>(entity);
+			AiPostComponent& aiPostComponent = ecs->getComponent<AiPostComponent>(entity);
 
 			MovementState::value oldState = movementComponent.movementState;
 			Direction::value oldFacing = movementComponent.facing;
@@ -42,12 +38,12 @@ public:
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
 			pair start = vec::round(positionComponent.position);
-			pair end = vec::round(aiChaseComponent.target);
+			pair end = vec::round(aiPostComponent.position);
 			vec offset = positionComponent.position - start;
 
 			Direction::value dir;
 			if (start == end) {
-				vec v = aiChaseComponent.target - positionComponent.position;
+				vec v = aiPostComponent.position - positionComponent.position;
 				if (vec::norm(v) > 0.1f) {
 					dir = Direction::from_vec(v);
 				}
@@ -74,9 +70,9 @@ public:
 			} else if (Direction::taxi[directionComponent.direction].x == -1) {
 				movementComponent.facing = Direction::WEST;
 			} else {
-				if (aiChaseComponent.target.x > positionComponent.position.x) {
+				if (aiPostComponent.position.x > positionComponent.position.x) {
 					movementComponent.facing = Direction::EAST;
-				} else if (aiChaseComponent.target.x < positionComponent.position.x) {
+				} else if (aiPostComponent.position.x < positionComponent.position.x) {
 					movementComponent.facing = Direction::WEST;
 				}
 			}

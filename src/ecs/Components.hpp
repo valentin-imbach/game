@@ -183,10 +183,10 @@ struct AiComponent {
 	std::array<ushort, AiState::count> scores = {};
 };
 
-struct AiMoveComponent {
-	bool move = false;
-	std::array<float, Direction::count> moveScores = {};
-};
+// struct AiMoveComponent {
+// 	bool move = false;
+// 	std::array<float, Direction::count> moveScores = {};
+// };
 
 struct AiWanderComponent {
 	vec position;
@@ -194,6 +194,7 @@ struct AiWanderComponent {
 };
 
 struct AiFleeComponent {
+	ushort baseScore;
 	vec avoid;
 };
 
@@ -206,6 +207,11 @@ struct AiMeleeComponent {
 	uint cooldown;
 	uint lastHit;
 	Entity item;
+};
+
+struct AiPostComponent {
+	vec position;
+	uint range;
 };
 
 struct PortalComponent {
@@ -231,6 +237,10 @@ struct DamageComponent {
 struct DurabilityComponent {
 	ushort durability;
 	ushort maxDurability;
+};
+
+struct VanityComponent {
+	SpriteStack spriteStack;
 };
 
 struct EffectInstance {
@@ -292,9 +302,6 @@ struct CraftingComponent {
 	ItemContainer output;
 };
 
-ENUM(Liquid,
-WATER)
-
 struct TankComponent {
 	ushort capacity;
 	SpriteStack emptySprite;
@@ -302,6 +309,4 @@ struct TankComponent {
 
 	ushort content = 0;
 	Liquid::value liquid = Liquid::NONE;
-
-	
 };

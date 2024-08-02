@@ -170,7 +170,9 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 	world->ecs.addComponent<AiComponent>({}, enemy);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, enemy);
 	world->ecs.addComponent<AiChaseComponent>({}, enemy);
-	// world->ecs.addComponent<AiFleeComponent>({}, enemy);
+	world->ecs.addComponent<AiFleeComponent>({10}, enemy);
+
+	world->ecs.addComponent<AiPostComponent>({position, 10}, enemy);
 
 	Entity weapon = createTool(ItemKind::SWORD);
 	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0, weapon}, enemy);
@@ -211,7 +213,7 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, ve
 	world->ecs.addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
-	world->ecs.addComponent<AiFleeComponent>({}, animal);
+	world->ecs.addComponent<AiFleeComponent>({80}, animal);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::ANIMAL);

@@ -151,10 +151,12 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ChunkComponent>(ComponentId::CHUNK);
 	ecs.rosterComponent<AiComponent>(ComponentId::AI);
 	ecs.rosterComponent<AiWanderComponent>(ComponentId::AI_WANDER);
-	ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
+	// ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
 	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
 	ecs.rosterComponent<AiChaseComponent>(ComponentId::AI_CHASE);
 	ecs.rosterComponent<AiMeleeComponent>(ComponentId::AI_MELEE);
+	ecs.rosterComponent<AiPostComponent>(ComponentId::AI_POST);
+
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
@@ -222,14 +224,16 @@ void World::rosterSystems() {
 		{ComponentId::AI});
 	aiWanderSystem = ecs.rosterSystem<AiWanderSystem>(SystemId::AI_WANDER,
 		{ComponentId::AI, ComponentId::AI_WANDER});
-	aiMoveSystem = ecs.rosterSystem<AiMoveSystem>(SystemId::AI_MOVE,
-		{ComponentId::AI, ComponentId::AI_MOVE});
+	// aiMoveSystem = ecs.rosterSystem<AiMoveSystem>(SystemId::AI_MOVE,
+	// 	{ComponentId::AI, ComponentId::AI_MOVE});
 	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE,
-		{ComponentId::AI, ComponentId::AI_FLEE});
+		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_FLEE, ComponentId::HEALTH});
 	aiChaseSystem = ecs.rosterSystem<AiChaseSystem>(SystemId::AI_CHASE,
-		{ComponentId::AI, ComponentId::AI_CHASE});
+		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_CHASE});
 	aiMeleeSystem = ecs.rosterSystem<AiMeleeSystem>(SystemId::AI_MELEE,
-		{ComponentId::AI, ComponentId::AI_MELEE});
+		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_MELEE});
+	aiPostSystem = ecs.rosterSystem<AiPostSystem>(SystemId::AI_POST,
+		{ComponentId::AI, ComponentId::AI_POST});
 	positionSystem = ecs.rosterSystem<PositionSystem>(SystemId::POSITION,
 		{ComponentId::POSITION});
 	maturitySystem = ecs.rosterSystem<MaturitySystem>(SystemId::MATURITY,
@@ -307,6 +311,7 @@ void World::update(uint dt) {
 	aiFleeSystem->score(ticks);
 	aiChaseSystem->score(ticks);
 	aiMeleeSystem->score(ticks);
+	aiPostSystem->score(ticks);
 
 	aiSystem->update(ticks);
 	//aiMoveSystem->move(ticks);
@@ -314,6 +319,7 @@ void World::update(uint dt) {
 	aiFleeSystem->update(ticks, realmManager);
 	aiChaseSystem->update(ticks, realmManager);
 	aiMeleeSystem->update(ticks, realmManager);
+	aiPostSystem->update(ticks, realmManager);
 
 	creatureActionSystem->update(ticks, forageSystem, updateSet);
 

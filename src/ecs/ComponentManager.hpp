@@ -11,7 +11,7 @@ public:
 		bool rostered = (rosteredSet.find(&typeid(T)) != rosteredSet.end());
 		static ComponentId::value s_type = ComponentId::NONE;
 		if (type == ComponentId::NONE) {
-			if (!rostered) ERROR("Using non-registered component");
+			if (!rostered) ERROR("Using non-registered component", typeid(T).name());
 			return rosteredSet[&typeid(T)];
 		}
 		if (rostered) WARNING("Component registered twice");

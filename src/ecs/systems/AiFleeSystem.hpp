@@ -12,9 +12,12 @@ public:
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);
 			AiFleeComponent& aiFleeComponent = ecs->getComponent<AiFleeComponent>(entity);
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
-			
+
+			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
+			float relHealth = float(healthComponent.health)/healthComponent.maxHealth;
+
 			if (sensorComponent.lastSeen - ticks < 3000) {
-				aiComponent.scores[AiState::FLEE] = 80;
+				aiComponent.scores[AiState::FLEE] = lerp::linear(relHealth, 100, aiFleeComponent.baseScore);
 				aiFleeComponent.avoid = sensorComponent.position;
 			} else {
 				aiComponent.scores[AiState::FLEE] = 0;
