@@ -504,22 +504,23 @@ void Selector::draw() {
 
 //* TextGui
 
-TextGui::TextGui(pair position, std::string text, Direction::value alignment) : GuiElement(position, {0,0}, alignment), text(text) {
-	size = TextManager::textSize(text) / GuiManager::scale;
+TextGui::TextGui(pair position, std::string text, bool centered, Direction::value alignment) : GuiElement(position, {0,0}, alignment), text(text), centered(centered) {
+	size = TextManager::textSize(text) / GuiManager::scale + pair(2, 2);
 }
 
 void TextGui::draw() {
 	GuiElement::draw();
-	TextManager::drawText(text, screenPosition, true);
+	TextManager::drawText(text, screenPosition, centered);
 }
 
 //* TextField
 
 
-TextField::TextField(pair position, pair size, Direction::value alignment) : GuiElement(position, size, alignment) {}
+TextField::TextField(pair position, pair size, std::string preview, Direction::value alignment) : GuiElement(position, size, alignment), preview(preview) {}
 
 void TextField::draw() {
 	GuiElement::draw();
+	if (text.empty()) TextManager::drawText(preview, screenPosition, true, {255, 255, 255, 100});
     TextManager::drawText(text, screenPosition, true);
 }
 
@@ -590,4 +591,61 @@ void ProgressGui::draw() {
 	// int percent = std::round(value * 100);
 	// std::string text = std::to_string(percent);
     // TextManager::drawText(text, screenPosition, true);
+}
+
+//* SliderGui
+
+SliderGui::SliderGui(pair position, int* value, int min, int max, Sprite sprite, Sprite slider, Direction::value alignment) : GuiElement(position, {16*5, 16}, alignment), value(value), slider(slider), min(min), max(max) {
+	this->sprite = sprite;
+	size.x = sprite.size.x * BIT;
+	assert(max > min);
+}
+	
+void SliderGui::draw() {
+	GuiElement::draw();
+
+	float rel = float(*value - min)/(max-min);
+	int range = (sprite.size.x - 1) * BIT * GuiManager::scale;
+	pair pos = screenPosition;
+	pos.x += range * (rel - 0.5f);
+	slider.draw(pos, GuiManager::scale);
+}
+
+bool SliderGui::handleEvent(InputEvent event) {
+	if (event.id == InputEventId::PRIMARY) {
+		if (inside(event.mousePosition)) {
+			active = true;
+		}
+	}
+
+	if (event.id == InputEventId::STATE) {
+		if (event.state[InputStateId::PRIMARY] && active) {
+			int range = (sprite.size.x - 1) * BIT * GuiManager::scale;
+			int offset = event.mousePosition.x - screenPosition.x + range / 2;
+			int nv = min + (offset * (max - min) / range);
+			*value = std::max(min, std::min(max, nv));
+		} else {
+			active = false;
+		}
+	}
+	return false;
+}
+
+//* ValueGui
+
+ValueGui::ValueGui(pair position, int* value, Direction::value alignment) : GuiElement(position, {0, 0}, alignment), value(value) {}
+	
+void ValueGui::draw() {
+	std::string text = std::to_string(*value);
+	size = TextManager::textSize(text) / GuiManager::scale + pair(2, 2);
+	GuiElement::draw();
+	TextManager::drawText(text, screenPosition, true);
+}
+
+//* SettingSlider
+
+SettingSlider::SettingSlider(pair position, int* value, int min, int max, std::string text, Direction::value alignment) : Widget(position, {0,0}), value(value) {
+	addGuiElement(std::make_unique<TextGui>(pair(0, -15), text));
+	addGuiElement(std::make_unique<SliderGui>(pair(0, 0), value, min, max, Sprite(SpriteSheet::SLIDER, {0,0}, {6,1}), Sprite(SpriteSheet::SLIDER, {6,0})));
+	addGuiElement(std::make_unique<ValueGui>(pair(0, 15), value));
 }

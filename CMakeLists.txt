@@ -28,6 +28,7 @@ src/Gui/GuiElement.cpp
 src/Gui/GuiManager.cpp
 src/Gui/Console.cpp
 src/Gui/Minimap.cpp
+src/Gui/Menu.cpp
 src/item/Item.cpp
 src/item/ItemTemplates.cpp
 src/item/Loot.cpp

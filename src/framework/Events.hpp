@@ -40,12 +40,6 @@ STATE,
 HOVER,
 RESET)
 
-struct InputEvent {
-	InputEventId::value id;
-	pair mousePosition;
-	std::string text;
-};
-
 ENUM(InputStateId,
 PRIMARY,
 SECONDARY,
@@ -59,3 +53,11 @@ INFO,
 ALTER)
 
 typedef std::bitset<InputStateId::count> InputState;
+
+struct InputEvent {
+	InputEventId::value id;
+	pair mousePosition;
+	InputState state;
+	std::string text;
+};
+

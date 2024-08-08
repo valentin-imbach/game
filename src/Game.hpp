@@ -4,10 +4,13 @@
 #include "DebugScreen.hpp"
 #include "GuiElement.hpp"
 #include "SoundManager.hpp"
+#include "Menu.hpp"
 
 ENUM(GameState,
 LOADING,
 MENU,
+CREATE,
+SETTINGS,
 RUNNING,
 PAUSED)
 
@@ -32,20 +35,20 @@ public:
 
 private:
 	bool handleEvent(InputEvent event, uint dt);
-	TextField* nameField = nullptr;
-	TextField* seedField = nullptr;
-	void buildMenu();
-	
-	SDL_Texture* parallax[4];
-	std::unique_ptr<Widget> mainMenu;
-	std::unique_ptr<Widget> pauseMenu;
+	void buildMenus();
+
+	MainMenu mainMenu;
+	CreateMenu createMenu;
+	PauseMenu pauseMenu;
+
 	uint ticks;
 
-	void createButton();
-	void testButton();
 	void createWorld(std::string name, uint seed, bool debug = false, bool test = false);
 	void removeWorld(std::string name);
 	void loadWorld(std::string name);
 	void saveWorld();
 
+friend class MainMenu;
+friend class PauseMenu;
+friend class CreateMenu;
 };

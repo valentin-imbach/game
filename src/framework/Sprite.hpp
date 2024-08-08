@@ -57,7 +57,8 @@ BOOTS,
 FURNACE,
 HEAT_BAR,
 PROGRESS,
-BUCKET)
+BUCKET,
+SLIDER)
 
 class Sprite {
 public:
@@ -85,6 +86,7 @@ private:
 	friend class MaturitySystem;
 	friend class SpriteStack;
 	friend class ProgressGui;
+	friend class SliderGui;
 };
 
 struct SpriteLayer {

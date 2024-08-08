@@ -50,6 +50,14 @@ public:
 	void removeGuiElement();
 	bool handleEvent(InputEvent event) override;
 
+	template<typename T, typename... Ts>
+	T* emplaceGuiElement(Ts... args) {
+		std::unique_ptr<T> guiElement = std::make_unique<T>(std::forward<Ts>(args)...);
+		T* res = guiElement.get();
+		addGuiElement(std::move(guiElement));
+		return res;
+	}
+
 protected:
 	std::vector<std::unique_ptr<GuiElement>> children;
 };
@@ -211,19 +219,21 @@ private:
 
 class TextGui : public GuiElement {
 public:
-	TextGui(pair position, std::string text, Direction::value alignment = Direction::NONE);
+	TextGui(pair position, std::string text, bool centered = true, Direction::value alignment = Direction::NONE);
 	~TextGui() = default;
 	void draw() override;
 private:
 	std::string text;
+	bool centered;
 };
 
 class TextField : public GuiElement {
 public:
-    TextField(pair position, pair size, Direction::value alignment = Direction::NONE);
+    TextField(pair position, pair size, std::string preview = "", Direction::value alignment = Direction::NONE);
 	std::string getText();
 private:
-	std::string text = "text";
+	std::string text;
+	std::string preview;
 	bool active;
 	void draw() override;
     bool handleEvent(InputEvent event) override;
@@ -238,4 +248,38 @@ private:
 	bool verticle;
 	Sprite overlay;
 	float& value;
+};
+
+class SliderGui : public GuiElement {
+public:
+	SliderGui(pair position, int* value, int min, int max, Sprite sprite, Sprite slider, Direction::value alignment = Direction::NONE);
+	~SliderGui() = default;
+	void draw() override;
+	bool handleEvent(InputEvent event) override;
+private:
+	int* value;
+	int min;
+	int max;
+	Sprite slider;
+	bool active = false;
+};
+
+class ValueGui : public GuiElement {
+public:
+	ValueGui(pair position, int* value, Direction::value alignment = Direction::NONE);
+	~ValueGui() = default;
+	void draw() override;
+private:
+	int* value;
+};
+
+class SettingSlider : public Widget {
+public:
+	SettingSlider(pair position, int* value, int min, int max, std::string text, Direction::value alignment = Direction::NONE);
+	~SettingSlider() = default;
+private:
+	int* value;
+	std::string text;
+	int min;
+	int max;
 };

@@ -18,7 +18,7 @@ Game::Game() : trackMix(1), console(this) {
 	SoundManager::Init();
 
 	gameState = GameState::MENU;
-	buildMenu();
+	buildMenus();
 
 	if (DEBUG_MODE) {
 		createWorld("Test World", arc4random(), true);
@@ -31,60 +31,10 @@ Game::~Game() {
 	SoundManager::cleanup();
 }
 
-void Game::buildMenu() {
-	std::vector<std::string> worldNames;
-	auto path = Window::instance->root / "saves";
-	for (const auto& dir : std::filesystem::directory_iterator(path)) {
-		if (dir.is_directory()) worldNames.push_back(dir.path().filename().string());
-	}
-
-	parallax[0] = TextureManager::loadTexture("background/1.png");
-	parallax[1] = TextureManager::loadTexture("background/2.png");
-	parallax[2] = TextureManager::loadTexture("background/3.png");
-	parallax[3] = TextureManager::loadTexture("background/4.png");
-	mainMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	mainMenu->addGuiElement(std::make_unique<Button>(pair(-30, -70), pair(50, 20), std::bind(&Game::createButton, this), Sprite(), Sprite(), "New World"));
-	mainMenu->addGuiElement(std::make_unique<Button>(pair(30, -70), pair(50, 20), std::bind(&Game::testButton, this), Sprite(), Sprite(), "Test World"));
-	std::unique_ptr<TextField> nameTextField = std::make_unique<TextField>(pair(-50, -90), pair(80, 15));
-	std::unique_ptr<TextField> seedTextField = std::make_unique<TextField>(pair(50, -90), pair(80, 15));
-	nameField = nameTextField.get();
-	seedField = seedTextField.get();
-	mainMenu->addGuiElement(std::move(nameTextField));
-	mainMenu->addGuiElement(std::move(seedTextField));
-
-	int offset = -40;
-	for (auto& name : worldNames) {
-		mainMenu->addGuiElement(std::make_unique<Button>(pair(0, offset), pair(50, 20), std::bind(&Game::loadWorld, this, name), Sprite(), Sprite(), name));
-		mainMenu->addGuiElement(std::make_unique<Button>(pair(50, offset), pair(20, 20), std::bind(&Game::removeWorld, this, name), Sprite(), Sprite(), "del"));
-		offset += 25;
-	}
-
-	pauseMenu = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	pauseMenu->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::saveWorld, this), Sprite(), Sprite(), "Save and Quit"));
-}
-
-void Game::createButton() {
-	if (!nameField || !seedField) return;
-	uint seed;
-	std::string seedString = seedField->getText();
-	if (!seedString.empty() && string::is_int(seedString)) {
-		seed = std::stoi(seedString);
-	} else {
-		seed = arc4random();
-	}
-	createWorld(nameField->getText(), seed);
-}
-
-void Game::testButton() {
-	if (!nameField || !seedField) return;
-	uint seed;
-	std::string seedString = seedField->getText();
-	if (!seedString.empty() && string::is_int(seedString)) {
-		seed = std::stoi(seedString);
-	} else {
-		seed = arc4random();
-	}
-	createWorld(nameField->getText(), seed, false, true);
+void Game::buildMenus() {
+	mainMenu.build(this);
+	pauseMenu.build(this);
+	createMenu.build(this);
 }
 
 void Game::createWorld(std::string name, uint seed, bool debug, bool test) {
@@ -110,7 +60,7 @@ void Game::removeWorld(std::string name) {
 		return;
 	}
 	std::filesystem::remove_all(path);
-	buildMenu();
+	buildMenus();
 }
 
 void Game::loadWorld(std::string name) {
@@ -131,7 +81,7 @@ void Game::saveWorld() {
 	if (!file) ERROR("Failed to create save file for world", world->name);
 	world->serialise(file);
 	file.close();
-	buildMenu();
+	buildMenus();
 	world = nullptr;
 	gameState = GameState::MENU;
 }
@@ -141,11 +91,11 @@ void Game::update(uint dt) {
 	Window::instance->update();
 	//trackMix.update();
 	if (gameState == GameState::MENU) {
-		mainMenu->reposition();
-		mainMenu->update(nullptr);
+		mainMenu.update();
+	} else if (gameState == GameState::CREATE) {
+		createMenu.update();
 	} else if (gameState == GameState::PAUSED) {
-		pauseMenu->reposition();
-		pauseMenu->update(nullptr);
+		pauseMenu.update();
 		debugScreen.update(world.get(), framesPerSecond, updatesPerSecond);
 		debugScreen.entity = world->inspect;
 	} else if (gameState == GameState::RUNNING) {
@@ -158,20 +108,16 @@ void Game::update(uint dt) {
 void Game::draw() {
 	Window::instance->clear();
 	if (gameState == GameState::MENU) {
-		TextureStyle style;
-		style.centered = false;
-		TextureManager::drawTexture(parallax[0], nullptr, {0, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-		TextureManager::drawTexture(parallax[1], nullptr, {int(ticks / 140) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-		TextureManager::drawTexture(parallax[2], nullptr, {int(ticks / 60) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-		TextureManager::drawTexture(parallax[3], nullptr, {int(ticks/ 20) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-		mainMenu->draw();
+		mainMenu.draw(ticks);
+	} else if (gameState == GameState::CREATE) {
+		createMenu.draw(ticks);
 	} else if (gameState == GameState::RUNNING) {
 		world->draw();
 		debugScreen.draw();
 	} else if (gameState == GameState::PAUSED) {
 		world->draw();
 		debugScreen.draw();
-		pauseMenu->draw();
+		pauseMenu.draw(ticks);
 	}
 	console.draw();
 	Window::instance->draw();
@@ -187,9 +133,11 @@ bool Game::handleEvent(InputEvent event, uint dt) {
 	if (console.handleEvent(event)) return true;
 
 	if (gameState == GameState::MENU) {
-		return mainMenu->handleEvent(event);
+		return mainMenu.handleEvent(event);
+	} else if (gameState == GameState::CREATE) {
+		return createMenu.handleEvent(event);
 	} else if (gameState == GameState::PAUSED) {
-		if (pauseMenu->handleEvent(event)) return true;
+		if (pauseMenu.handleEvent(event)) return true;
 		if (event.id == InputEventId::ESCAPE) {
 			gameState = GameState::RUNNING;
 			return true;
@@ -210,29 +158,31 @@ void Game::pollEvents(uint dt) {
 	const uchar* keyState = SDL_GetKeyboardState(NULL);
 	const uint mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
+	InputState inputState;
+
+	inputState.set(InputStateId::MOVE_EAST, keyState[SDL_SCANCODE_D]);
+	inputState.set(InputStateId::MOVE_NORTH, keyState[SDL_SCANCODE_W]);
+	inputState.set(InputStateId::MOVE_WEST, keyState[SDL_SCANCODE_A]);
+	inputState.set(InputStateId::MOVE_SOUTH, keyState[SDL_SCANCODE_S]);
+
+	inputState.set(InputStateId::INFO, keyState[SDL_SCANCODE_TAB]);
+	inputState.set(InputStateId::ALTER, keyState[SDL_SCANCODE_LSHIFT]);
+
+	inputState.set(InputStateId::PRIMARY, mouseState & SDL_BUTTON_LMASK);
+	inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
+
 	if (world) {
 		world->guiManager.mousePosition = mousePosition;
-
-		world->inputState.set(InputStateId::MOVE_EAST, keyState[SDL_SCANCODE_D]);
-		world->inputState.set(InputStateId::MOVE_NORTH, keyState[SDL_SCANCODE_W]);
-		world->inputState.set(InputStateId::MOVE_WEST, keyState[SDL_SCANCODE_A]);
-		world->inputState.set(InputStateId::MOVE_SOUTH, keyState[SDL_SCANCODE_S]);
-
-		world->inputState.set(InputStateId::INFO, keyState[SDL_SCANCODE_TAB]);
-		world->inputState.set(InputStateId::ALTER, keyState[SDL_SCANCODE_LSHIFT]);
-
-		world->inputState.set(InputStateId::PRIMARY, mouseState & SDL_BUTTON_LMASK);
-		world->inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
+		world->inputState = inputState;
 	}
 
-	handleEvent({InputEventId::RESET, mousePosition}, dt);
-	handleEvent({InputEventId::STATE, mousePosition}, dt);
-	handleEvent({InputEventId::HOVER, mousePosition}, dt);
+	handleEvent({InputEventId::RESET, mousePosition, inputState}, dt);
+	handleEvent({InputEventId::STATE, mousePosition, inputState}, dt);
+	handleEvent({InputEventId::HOVER, mousePosition, inputState}, dt);
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		InputEvent inputEvent;
-		inputEvent.mousePosition = mousePosition;
+		InputEvent inputEvent = {InputEventId::NONE, mousePosition, inputState};
 		if (event.type == SDL_QUIT) {
 			inputEvent.id = InputEventId::QUIT;
 		} else if (event.type == SDL_TEXTINPUT) {
