@@ -73,7 +73,16 @@ void CreateMenu::build(Game* game) {
 		if (!seedString.empty() && string::is_int(seedString)) {
 			seed = std::stoi(seedString);
 		}
-		game->createWorld(nameField->getText(), seed);
+		WorldParameters params;
+		params.elevAmp = 0;
+		params.tempAmp = 0;
+		params.percAmp = 0;
+
+		params.elevMean = elevMean;
+		params.percMean = percMean;
+		params.tempMean = tempMean;
+
+		game->createWorld(nameField->getText(), seed, params);
 	};
 
 	auto cancelCallback = [game]() -> void {
@@ -86,10 +95,10 @@ void CreateMenu::build(Game* game) {
 	nameField = widget->emplaceGuiElement<TextField>(pair(-60, -65), pair(80, 15), "World Name");
 
 	// widget->addGuiElement(std::make_unique<SettingSlider>(pair(-60, -30), s1, 0, 100, "Slider 1"));
-	widget->emplaceGuiElement<SettingSlider>(pair(-60, -30), &s1, 0, 100, "Slider 1");
-	widget->emplaceGuiElement<SettingSlider>(pair(60, -30), &s2, 0, 100, "Slider 2");
-	widget->emplaceGuiElement<SettingSlider>(pair(-60, 20), &s3, 0, 100, "Slider 3");
-	widget->emplaceGuiElement<SettingSlider>(pair(60, 20), &s4, 0, 100, "Slider 4");
+	widget->emplaceGuiElement<SettingSlider>(pair(-60, -30), &tempMean, -20, 40, "Temerature Mean");
+	widget->emplaceGuiElement<SettingSlider>(pair(60, -30), &elevMean, -100, 3000, "Elevation Mean");
+	widget->emplaceGuiElement<SettingSlider>(pair(-60, 20), &percMean, 0, 100, "Perculaition Mean");
+	widget->emplaceGuiElement<SettingSlider>(pair(60, 20), &period, 0, 100, "Period Size");
 
 	widget->emplaceGuiElement<Button>(pair(35, -15), pair(60, 20), cancelCallback, Sprite(), Sprite(), "Main Menu", Direction::SOUTH_WEST);
 	widget->emplaceGuiElement<Button>(pair(-35, -15), pair(60, 20), createCallback, Sprite(), Sprite(), "Create World", Direction::SOUTH_EAST);

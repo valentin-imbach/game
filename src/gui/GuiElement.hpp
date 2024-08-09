@@ -42,7 +42,7 @@ protected:
 
 class Widget : public GuiElement {
 public:
-	Widget(pair position, pair size, Sprite sprite = {});
+	Widget(pair position, pair size, Sprite sprite = {}, Direction::value alignment = Direction::NONE);
 	~Widget() override = default;
 	void update(GuiManager* manager) override;
 	void draw() override;
@@ -282,4 +282,15 @@ private:
 	std::string text;
 	int min;
 	int max;
+};
+
+class CheckboxGui : public GuiElement {
+public:
+	CheckboxGui(pair position, bool* value, Direction::value alignment = Direction::NONE);
+	~CheckboxGui() = default;
+	void draw() override;
+	bool handleEvent(InputEvent event) override;
+private:
+	bool* value;
+	Sprite checkedSprite;
 };

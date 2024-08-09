@@ -44,17 +44,11 @@ void World::init() {
 	EntityFactory::world = this;
 }
 
-World::World(std::string name, uint seed, bool debug, bool test) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
+World::World(std::string name, uint seed, WorldParameters params) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
 	init();
 
-	if (debug) seed = 4;
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
-
-	if (test) {
-		spawnRealm->generate(RealmType::TEST);
-	} else {
-		spawnRealm->generate(RealmType::WORLD);
-	}
+	spawnRealm->generate(RealmType::WORLD, params);
 
 	spawn = spawnRealm->findFree(pair(50,50));
 	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
@@ -62,15 +56,15 @@ World::World(std::string name, uint seed, bool debug, bool test) : name(name), s
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
-	if (debug) {
-		Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
-		house->generate(RealmType::HOUSE);
+	// if (debug) {
+	// 	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
+	// 	house->generate(RealmType::HOUSE);
 
-		Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3));
-		cave->generate(RealmType::CAVE);
+	// 	Realm* cave = realmManager.addRealm(this, noise::UInt(seed + 3));
+	// 	cave->generate(RealmType::CAVE);
 
-		Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + rand()));
-		dungeon->generate(RealmType::DUNGEON);
+	// 	Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + rand()));
+	// 	dungeon->generate(RealmType::DUNGEON);
 
 		//Entity dam = EntityFactory::createDamageArea(spawnRealm, spawn + pair(1,1), Shape(1.0f), ticks, 0);
 
@@ -84,9 +78,9 @@ World::World(std::string name, uint seed, bool debug, bool test) : name(name), s
 
 		// spawnRealm->map->updateStyle();
 
-		EntityFactory::createPortal(spawnRealm->realmId, spawn + pair(3, 1), dungeon->realmId, dungeon->spawn);
+		// EntityFactory::createPortal(spawnRealm->realmId, spawn + pair(3, 1), dungeon->realmId, dungeon->spawn);
 
-		EntityFactory::createStructure(StructureId::TENT, spawnRealm->realmId, spawn + pair(0, 3));
+		// EntityFactory::createStructure(StructureId::TENT, spawnRealm->realmId, spawn + pair(0, 3));
 		
 		// Entity chest = EntityFactory::createStation(StationId::CHEST, {10, 9});
 
@@ -103,7 +97,7 @@ World::World(std::string name, uint seed, bool debug, bool test) : name(name), s
 		// ecs.addComponent<PositionComponent>({{10, 10}}, circle);
 		// Shape circleCollider({0, 0}, 0.5f);
 		// ecs.addComponent<ColliderComponent>({circleCollider}, circle);
-	}
+	// }
 }
 
 World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {

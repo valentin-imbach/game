@@ -101,19 +101,34 @@ void Chunk::setRiver(ChunkManager* manager, Environment* environment) {
 	}
 }
 
-void Chunk::refreshMap() {
-	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, CHUNK_SIZE, CHUNK_SIZE, 32, SDL_PIXELFORMAT_RGBA8888);
-	Uint32 *pixels = (Uint32 *)surface->pixels;
+void Chunk::refreshMap(Environment* environment) {
+	SDL_Surface* mapSurface = SDL_CreateRGBSurfaceWithFormat(0, CHUNK_SIZE, CHUNK_SIZE, 32, SDL_PIXELFORMAT_RGBA8888);
+	Uint32 *mapPixels = (Uint32 *)mapSurface->pixels;
+
+	SDL_Surface* tempSurface = SDL_CreateRGBSurfaceWithFormat(0, CHUNK_SIZE, CHUNK_SIZE, 32, SDL_PIXELFORMAT_RGBA8888);
+	Uint32 *tempPixels = (Uint32 *)tempSurface->pixels;
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			GroundId::value groundId = tiles[x][y].groundId;
-			pixels[y * CHUNK_SIZE + x] = GroundTemplate::templates[groundId].colour;
+			mapPixels[y * CHUNK_SIZE + x] = GroundTemplate::templates[groundId].colour;
+
+			pair offset(x, y);
+			pair pos = CHUNK_SIZE * position + offset;
+			float temp = environment->temparatureMap->get(pos);
+
+			ushort red = (temp + 30) * 3;
+			ushort blue = 255 - red;
+			uint colour = 0x000000ff | (red << 24) | (blue << 8);
+			tempPixels[y * CHUNK_SIZE + x] = colour;
 		}
 	}
 	
-	mapTexture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	SDL_FreeSurface(surface);
+	mapTexture = SDL_CreateTextureFromSurface(Window::instance->renderer, mapSurface);
+	SDL_FreeSurface(mapSurface);
+
+	tempTexture = SDL_CreateTextureFromSurface(Window::instance->renderer, tempSurface);
+	SDL_FreeSurface(tempSurface);
 }
 
 void Chunk::setGround(ChunkManager* manager, Environment* environment) {
@@ -196,7 +211,7 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 		}
 	}
 
-	refreshMap();
+	refreshMap(environment);
 	// LOG("Ground set at", position);
 }
 

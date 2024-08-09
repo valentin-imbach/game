@@ -2,27 +2,38 @@
 #include "Minimap.hpp"
 #include "Realm.hpp"
 
+Minimap::Minimap() {
+	widget = std::make_unique<Widget>(pair(0,-20), pair(0,0), Sprite(), Direction::SOUTH);
+	widget->emplaceGuiElement<CheckboxGui>(pair(-10,0), &chunkOverlay);
+	widget->emplaceGuiElement<CheckboxGui>(pair(10,0), &tempOverlay);
+}
+
 bool Minimap::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::MAP) {
 		active = !active;
 		return true;
 	}
 
-	if (active) {
-		if (event.id == InputEventId::ZOOM_IN) {
-			zoom += 1;
-			return true;
-		} else if (event.id == InputEventId::ZOOM_OUT) {
-			zoom = std::max(zoom - 1, 1);
-			return true;
-		}
+	if (!active) return false;
+
+	if (widget->handleEvent(event)) {
+		return true;
+	} else if (event.id == InputEventId::ZOOM_IN) {
+		zoom += 1;
+		return true;
+	} else if (event.id == InputEventId::ZOOM_OUT) {
+		zoom = std::max(zoom - 1, 1);
+		return true;
 	}
+
 	return false;
 }
 
 void Minimap::update(vec playerPos, Realm* realm) {
 	playerPosition = playerPos;
 	playerRealm = realm;
+	widget->reposition();
+	widget->update(nullptr);
 }
 
 void Minimap::draw() {
@@ -38,11 +49,22 @@ void Minimap::draw() {
 			TextureManager::drawTexture(c.mapTexture, nullptr, {0,0}, size, origin + offset, size);
 		}
 
-		float t = float(c.stage)/ChunkStage::MAX;
-		TextureManager::drawRect(origin + offset, size, {uint8_t(255 * (1-t)), uint8_t(255 * t), 0, 100}, true, true);
+		if (chunkOverlay) {
+			float t = float(c.stage)/ChunkStage::MAX;
+			TextureManager::drawRect(origin + offset, size, {uint8_t(255 * (1-t)), uint8_t(255 * t), 0, 200}, true, true);
+		}
+
+		if (tempOverlay && c.tempTexture) {
+			TextureStyle style;
+			style.alpha = 50;
+			TextureManager::drawTexture(c.tempTexture, nullptr, {0,0}, size, origin + offset, size, style);
+		}
+
 	}
 
 	TextureManager::drawCirc(Window::instance->size/2, 5);
+
+	widget->draw();
 
 	// SDL_SetRenderDrawColor(Window::instance->renderer, 255, 0, 0, 100);
 

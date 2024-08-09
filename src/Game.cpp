@@ -20,10 +20,10 @@ Game::Game() : trackMix(1), console(this) {
 	gameState = GameState::MENU;
 	buildMenus();
 
-	if (DEBUG_MODE) {
-		createWorld("Test World", arc4random(), true);
-		return;
-	}
+	// if (DEBUG_MODE) {
+	// 	createWorld("Test World", arc4random(), true);
+	// 	return;
+	// }
 }
 
 Game::~Game() {
@@ -37,7 +37,7 @@ void Game::buildMenus() {
 	createMenu.build(this);
 }
 
-void Game::createWorld(std::string name, uint seed, bool debug, bool test) {
+void Game::createWorld(std::string name, uint seed, WorldParameters params) {
 	if (name.empty()) {
 		WARNING("World name can't be empty");
 		return;
@@ -48,7 +48,7 @@ void Game::createWorld(std::string name, uint seed, bool debug, bool test) {
 		return;
 	}
 
-	world = std::make_unique<World>(name, seed, debug, test);
+	world = std::make_unique<World>(name, seed, params);
 	LOG("World", name, "created");
 	gameState = GameState::RUNNING;
 }

@@ -63,7 +63,7 @@ bool GuiElement::inside(pair pos) {
 
 //* Widget
 
-Widget::Widget(pair position, pair size, Sprite sprite) : GuiElement(position, size) {
+Widget::Widget(pair position, pair size, Sprite sprite, Direction::value alignment) : GuiElement(position, size, alignment) {
 	children = std::vector<std::unique_ptr<GuiElement>>();
 	this->sprite = sprite;
 }
@@ -648,4 +648,26 @@ SettingSlider::SettingSlider(pair position, int* value, int min, int max, std::s
 	addGuiElement(std::make_unique<TextGui>(pair(0, -15), text));
 	addGuiElement(std::make_unique<SliderGui>(pair(0, 0), value, min, max, Sprite(SpriteSheet::SLIDER, {0,0}, {6,1}), Sprite(SpriteSheet::SLIDER, {6,0})));
 	addGuiElement(std::make_unique<ValueGui>(pair(0, 15), value));
+}
+
+//* CheckboxGui
+
+CheckboxGui::CheckboxGui(pair position, bool* value, Direction::value alignment) : GuiElement(position, {BIT, BIT}, alignment), value(value) {
+	this->sprite = Sprite(SpriteSheet::CHECKBOX);
+	checkedSprite = Sprite(SpriteSheet::CHECKBOX, {1, 0});
+}
+
+void CheckboxGui::draw() {
+	GuiElement::draw();
+	if (*value) checkedSprite.draw(screenPosition, GuiManager::scale);
+}
+
+bool CheckboxGui::handleEvent(InputEvent event) {
+	if (event.id == InputEventId::PRIMARY) {
+		if (inside(event.mousePosition)) {
+			*value = !(*value);
+			return true;
+		}
+	}
+	return false;
 }

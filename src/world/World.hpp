@@ -14,7 +14,7 @@
 
 class World {
 public:
-	World(std::string name, uint seed, bool debug = false, bool test = false);
+	World(std::string name, uint seed, WorldParameters params);
 	World(std::fstream& stream);
 
 	void update(uint dt);

@@ -44,7 +44,7 @@ private:
 	void setTiles(ChunkManager* manager);
 	void setObjects(ChunkManager* manager, Environment* environment);
 
-	void refreshMap();
+	void refreshMap(Environment* environemnt);
 
 	pair node;
 	pair nodeOffset;
@@ -69,6 +69,7 @@ private:
 	Entity grid[CHUNK_SIZE][CHUNK_SIZE] = {};
 
 	SDL_Texture* mapTexture = nullptr;
+	SDL_Texture* tempTexture = nullptr;
 
 	friend class World;
 	friend class ChunkManager;

@@ -15,7 +15,7 @@ Realm::Realm(std::fstream& stream) : chunkManager(0) {
 	deserialise_object(stream, seed);
 	chunkManager = ChunkManager(seed);
 	// map = std::make_unique<Map>(stream);
-	environment = std::make_unique<Environment>(seed + 2);
+	environment = std::make_unique<Environment>(seed + 2, WorldParameters());
 	
 	// SDL_Surface* surface = map->makeMiniMap();
 	// texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
@@ -23,8 +23,8 @@ Realm::Realm(std::fstream& stream) : chunkManager(0) {
 
 }
 
-void Realm::generate(RealmType::value realmType) {
-	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100));
+void Realm::generate(RealmType::value realmType, WorldParameters params) {
+	if (realmType == RealmType::WORLD) generateWorld(pair(100, 100), params);
 	if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
 	if (realmType == RealmType::CAVE) generateCave(3, 500);
 
@@ -34,19 +34,18 @@ void Realm::generate(RealmType::value realmType) {
 	// map->updateStyle();
 }
 
-void Realm::generateWorld(pair size) {
-	// map = std::make_unique<Map>(size, noise::UInt(seed + 1));
-	environment = std::make_unique<Environment>(noise::UInt(seed + 2));
+void Realm::generateWorld(pair size, WorldParameters params) {
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
 
-	for (int x = 0; x < size.x; x++) {
-		for (int y = 0; y < size.y; y++) {
-			pair position(x, y);
-			Biome::value biome = environment->getBiome(position);
-			int variation = environment->variationMap->get(position);
-			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
-			// map->tiles[x][y] = std::make_unique<Tile>(ground.groundId);
-		}
-	}
+	// for (int x = 0; x < size.x; x++) {
+	// 	for (int y = 0; y < size.y; y++) {
+	// 		pair position(x, y);
+	// 		Biome::value biome = environment->getBiome(position);
+	// 		int variation = environment->variationMap->get(position);
+	// 		BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
+	// 		// map->tiles[x][y] = std::make_unique<Tile>(ground.groundId);
+	// 	}
+	// }
 
 	// uint s = seed;
 	// for (int x = 0; x < map->size.x; x++) {
@@ -124,7 +123,7 @@ void Realm::generateFlat(pair size) {
 
 	// map = std::make_unique<Map>(size, noise::UInt(seed + 1));
 	
-	environment = std::make_unique<Environment>(noise::UInt(seed + 2), RealmType::FLAT);
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), WorldParameters());
 
 	// int r = 5;
 	// for (int x = -r; x <= r; x++) {
@@ -318,7 +317,7 @@ void Realm::generateCave(int count, int length) {
 	pair size( r - l + 1 + 2 * padding, d - u + 1 + 2 * padding);
 
 	// map = std::make_unique<Map>(size, noise::UInt(seed + 1));
-	environment = std::make_unique<Environment>(noise::UInt(seed + 2), RealmType::CAVE);
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), WorldParameters());
 
 	pair offset(l - padding, u - padding);
 

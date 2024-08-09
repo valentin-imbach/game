@@ -43,7 +43,7 @@ private:
 
 	uint ticks;
 
-	void createWorld(std::string name, uint seed, bool debug = false, bool test = false);
+	void createWorld(std::string name, uint seed, WorldParameters params);
 	void removeWorld(std::string name);
 	void loadWorld(std::string name);
 	void saveWorld();

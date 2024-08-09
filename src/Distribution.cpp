@@ -11,7 +11,8 @@ float PerlinNoise::octave(uint seed, vec position) {
 	float dots[4];
 	for (int i = 0; i < 4; i++) {
 		uint s = hash(seed, cell + steps[i]);
-		dots[i] = vec::dot(vec::polar(noise::Float(s, -M_PI, M_PI)), offset - steps[i]);
+		vec unit = vec::polar(noise::Float(s, 2 * M_PI));
+		dots[i] = vec::dot(unit, offset - steps[i]);
 	}
 	float left = lerp::smooth(offset.y, dots[0], dots[2]);
 	float right = lerp::smooth(offset.y, dots[1], dots[3]);

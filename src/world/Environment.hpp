@@ -4,7 +4,7 @@
 
 class Environment {
 public:
-	Environment(uint seed, RealmType::value realmType = RealmType::WORLD);
+	Environment(uint seed, WorldParameters params);
 
 	void draw(uint ticks);
 	WeatherId::value weatherId = WeatherId::NONE;
@@ -18,5 +18,4 @@ public:
 	std::unique_ptr<Distribution<float>> variationMap;
 private:
 	uint seed;
-	RealmType::value realmType;
 };

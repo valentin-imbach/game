@@ -58,7 +58,8 @@ FURNACE,
 HEAT_BAR,
 PROGRESS,
 BUCKET,
-SLIDER)
+SLIDER,
+CHECKBOX)
 
 class Sprite {
 public:

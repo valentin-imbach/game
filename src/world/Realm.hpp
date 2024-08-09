@@ -18,9 +18,9 @@ public:
 	Realm(RealmId realmId, uint seed);
 	Realm(std::fstream& stream);
 
-	void generate(RealmType::value realmType);
+	void generate(RealmType::value realmType, WorldParameters params);
 
-	void generateWorld(pair size);
+	void generateWorld(pair size, WorldParameters params);
 	void generateHouse(pair size);
 	void generateCave(int count, int length);
 	void generateFlat(pair size);

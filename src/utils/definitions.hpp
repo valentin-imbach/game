@@ -180,3 +180,12 @@ MOUNTAIN)
 
 ENUM(Liquid,
 WATER)
+
+struct WorldParameters {
+	int elevMean;
+	int elevAmp;
+	int tempMean;
+	int tempAmp;
+	int percMean;
+	int percAmp;
+};

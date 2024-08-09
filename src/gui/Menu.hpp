@@ -35,8 +35,8 @@ private:
 	TextField* nameField = nullptr;
 	TextField* seedField = nullptr;
 	
-	int s1 = 50;
-	int s2 = 50;
-	int s3 = 50;
-	int s4 = 50;
+	int elevMean = 50;
+	int tempMean = 50;
+	int percMean = 50;
+	int period = 50;
 };
