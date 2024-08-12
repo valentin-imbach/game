@@ -282,7 +282,6 @@ private:
 	SliderHeadGui* rightHead;
 	pair* value;
 	pair range;
-	Sprite headSprite;
 	bool leftActive = false;
 	bool rightActive = false;
 };

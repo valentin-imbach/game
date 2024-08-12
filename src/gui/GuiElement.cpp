@@ -633,7 +633,7 @@ SliderHeadGui::SliderHeadGui(pair position, pair size , Sprite sprite) : GuiElem
 
 //* RangeSliderGui
 
-RangeSliderGui::RangeSliderGui(pair position, pair* value, pair range, Sprite headSprite, Direction::value alignment) : Widget(position, {16*5, 16}, sprite, alignment), value(value), range(range) {
+RangeSliderGui::RangeSliderGui(pair position, pair* value, pair range, Sprite sprite, Direction::value alignment) : Widget(position, {16*5, 16}, sprite, alignment), value(value), range(range) {
 	size.x = sprite.size.x * BIT;
 	assert(range.x <= range.y);
 	leftHead = emplaceGuiElement<SliderHeadGui>(pair(0, 0), pair(8, 12), Sprite(SpriteSheet::SLIDER, {6,0}));
