@@ -67,22 +67,9 @@ void PauseMenu::build(Game* game) {
 void CreateMenu::build(Game* game) {
 
 	auto createCallback = [this, game]() -> void {
-		if (!nameField || !seedField) return;
 		uint seed = arc4random();
-		std::string seedString = seedField->getText();
-		if (!seedString.empty() && string::is_int(seedString)) {
-			seed = std::stoi(seedString);
-		}
-		WorldParameters params;
-		params.elevAmp = 0;
-		params.tempAmp = 0;
-		params.percAmp = 0;
-
-		params.elevMean = elevMean;
-		params.percMean = percMean;
-		params.tempMean = tempMean;
-
-		game->createWorld(nameField->getText(), seed, params);
+		if (!seedInput.empty() && string::is_int(seedInput)) seed = std::stoi(seedInput);
+		game->createWorld(nameInput, seed, params);
 	};
 
 	auto cancelCallback = [game]() -> void {
@@ -90,15 +77,12 @@ void CreateMenu::build(Game* game) {
 	};
 
 	widget = std::make_unique<Widget>(pair(0, 0), pair(240, 160), Sprite());
+	widget->emplaceGuiElement<TextField>(pair(-60, -65), pair(80, 15), &nameInput, "World Name");
+	widget->emplaceGuiElement<TextField>(pair(60, -65), pair(80, 15), &seedInput, "World Seed");
 
-	seedField = widget->emplaceGuiElement<TextField>(pair(60, -65), pair(80, 15), "World Seed");
-	nameField = widget->emplaceGuiElement<TextField>(pair(-60, -65), pair(80, 15), "World Name");
-
-	// widget->addGuiElement(std::make_unique<SettingSlider>(pair(-60, -30), s1, 0, 100, "Slider 1"));
-	widget->emplaceGuiElement<SettingSlider>(pair(-60, -30), &tempMean, -20, 40, "Temerature Mean");
-	widget->emplaceGuiElement<SettingSlider>(pair(60, -30), &elevMean, -100, 3000, "Elevation Mean");
-	widget->emplaceGuiElement<SettingSlider>(pair(-60, 20), &percMean, 0, 100, "Perculaition Mean");
-	widget->emplaceGuiElement<SettingSlider>(pair(60, 20), &period, 0, 100, "Period Size");
+	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, -40), &params.temperature, pair(-20, 40), "Temerature");
+	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, -25), &params.elevation, pair(-500, 1500), "Elevation");
+	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, -10), &params.percipitation, pair(0, 300), "Perculation");
 
 	widget->emplaceGuiElement<Button>(pair(35, -15), pair(60, 20), cancelCallback, Sprite(), Sprite(), "Main Menu", Direction::SOUTH_WEST);
 	widget->emplaceGuiElement<Button>(pair(-35, -15), pair(60, 20), createCallback, Sprite(), Sprite(), "Create World", Direction::SOUTH_EAST);

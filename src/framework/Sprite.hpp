@@ -88,6 +88,7 @@ private:
 	friend class SpriteStack;
 	friend class ProgressGui;
 	friend class SliderGui;
+	friend class RangeSliderGui;
 };
 
 struct SpriteLayer {

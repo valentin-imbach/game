@@ -118,6 +118,14 @@ struct pair {
 		return (std::abs(offset.x) <= size.x / 2 && std::abs(offset.y) <= size.y / 2);
 	}
 
+	[[nodiscard]] inline static int avg(pair p) {
+		return (p.x + p.y) / 2;
+	}
+
+	[[nodiscard]] inline static int diff(pair p) {
+		return std::abs(p.y - p.x);
+	}
+
 };
 
 [[nodiscard]] inline pair operator*(int n, pair p) {

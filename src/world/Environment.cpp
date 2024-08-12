@@ -4,18 +4,11 @@
 #include "Sprite.hpp"
 
 Environment::Environment(uint seed, WorldParameters params) : seed(seed) {
-	uint s = seed;
-	
-		// temparatureMap = std::make_unique<PerlinNoise>(s++, 200, 120, 10, 3);
-		// precipitationMap = std::make_unique<PerlinNoise>(s++, 100, 800, 130, 3);
-		// elevationMap = std::make_unique<PerlinNoise>(s++, 50, 3000, 500, 3);
-		// vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(s++, 100, 200, 50, 3), 0, 100);
-		// variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(s++, 10, 200, 50, 5), 0, 100);
+	uint s = seed;	
 
-	params.tempAmp = 40;
-	temparatureMap = std::make_unique<PerlinNoise>(s++, 200, params.tempAmp, params.tempMean, 3);
-	precipitationMap = std::make_unique<PerlinNoise>(s++, 100, params.percAmp, params.percMean, 3);
-	elevationMap = std::make_unique<PerlinNoise>(s++, 50, params.elevAmp, params.elevMean, 3);
+	temparatureMap = std::make_unique<PerlinNoise>(s++, 200, pair::diff(params.temperature), pair::avg(params.temperature), 3);
+	precipitationMap = std::make_unique<PerlinNoise>(s++, 100, pair::diff(params.percipitation), pair::avg(params.percipitation), 3);
+	elevationMap = std::make_unique<PerlinNoise>(s++, 200, pair::diff(params.elevation), pair::avg(params.elevation), 3);
 
 	vegetationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(s++, 100, 200, 50, 3), 0, 100);
 	variationMap = std::make_unique<BoundDistribution>(std::make_unique<PerlinNoise>(s++, 10, 200, 50, 5), 0, 100);

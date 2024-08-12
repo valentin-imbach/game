@@ -224,15 +224,14 @@ public:
 	void draw() override;
 private:
 	std::string text;
-	bool centered;
 };
 
 class TextField : public GuiElement {
 public:
-    TextField(pair position, pair size, std::string preview = "", Direction::value alignment = Direction::NONE);
+    TextField(pair position, pair size, std::string* text, std::string preview = "", Direction::value alignment = Direction::NONE);
 	std::string getText();
 private:
-	std::string text;
+	std::string* text;
 	std::string preview;
 	bool active;
 	void draw() override;
@@ -250,18 +249,42 @@ private:
 	float& value;
 };
 
-class SliderGui : public GuiElement {
+class SliderHeadGui : public GuiElement {
+public:
+	SliderHeadGui(pair position, pair size, Sprite sprite);
+	~SliderHeadGui() = default;
+friend class SliderGui;
+friend class RangeSliderGui;
+};
+
+class SliderGui : public Widget {
 public:
 	SliderGui(pair position, int* value, int min, int max, Sprite sprite, Sprite slider, Direction::value alignment = Direction::NONE);
 	~SliderGui() = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
 private:
+	SliderHeadGui* slider;
 	int* value;
 	int min;
 	int max;
-	Sprite slider;
 	bool active = false;
+};
+
+class RangeSliderGui : public Widget {
+public:
+	RangeSliderGui(pair position, pair* value, pair range, Sprite sprite, Direction::value alignment = Direction::NONE);
+	~RangeSliderGui() = default;
+	void draw() override;
+	bool handleEvent(InputEvent event) override;
+private:
+	SliderHeadGui* leftHead;
+	SliderHeadGui* rightHead;
+	pair* value;
+	pair range;
+	Sprite headSprite;
+	bool leftActive = false;
+	bool rightActive = false;
 };
 
 class ValueGui : public GuiElement {
@@ -273,15 +296,10 @@ private:
 	int* value;
 };
 
-class SettingSlider : public Widget {
+class SettingRangeSlider : public Widget {
 public:
-	SettingSlider(pair position, int* value, int min, int max, std::string text, Direction::value alignment = Direction::NONE);
-	~SettingSlider() = default;
-private:
-	int* value;
-	std::string text;
-	int min;
-	int max;
+	SettingRangeSlider(pair position, pair* value, pair range, std::string text, Direction::value alignment = Direction::NONE);
+	~SettingRangeSlider() = default;
 };
 
 class CheckboxGui : public GuiElement {

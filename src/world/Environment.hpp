@@ -1,6 +1,7 @@
 
 #pragma once
 #include "utils.hpp"
+#include "Generation.hpp"
 
 class Environment {
 public:

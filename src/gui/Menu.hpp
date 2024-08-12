@@ -1,6 +1,7 @@
 
 #pragma once
 #include "GuiElement.hpp"
+#include "Generation.hpp"
 class Game;
 
 class Menu {
@@ -32,11 +33,8 @@ class CreateMenu : public Menu {
 public:
 	void build(Game* game) override;
 private:
-	TextField* nameField = nullptr;
-	TextField* seedField = nullptr;
-	
-	int elevMean = 50;
-	int tempMean = 50;
-	int percMean = 50;
-	int period = 50;
+	std::string nameInput;
+	std::string seedInput;
+
+	WorldParameters params;
 };
