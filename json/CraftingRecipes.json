@@ -34,7 +34,7 @@
 				{"anker": [1, 0], "size": [1, 1], "offset": [0, 0], "variations" : 1}
 			],
 			"kinds": {
-				"pick_axe":{
+				"pick_axe": {
 					"efficiency": [["flexibility", 1], ["weight", -1], []],
 					"durability": [["strength", 1], ["strength", 1], ["strength", 1]],
 					"level": [[], ["strength", 1], []]

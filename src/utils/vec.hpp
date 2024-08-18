@@ -3,6 +3,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "json.hpp"
+
 struct vec {
 	float x, y;
 	vec() : x(0), y(0) {}
@@ -111,4 +113,9 @@ struct vec {
 
 [[nodiscard]] inline vec operator*(float t, vec v) {
 	return v * t;
+}
+
+inline vec parseVec(json::Value value) {
+	assert(value.is<json::Array>() && value.size() == 2);
+	return vec(float(value[0]), float(value[1]));
 }

@@ -3,6 +3,8 @@
 #include <functional>
 #include <ostream>
 
+#include "json.hpp"
+
 struct pair {
 	int x = 0;
 	int y = 0;
@@ -138,3 +140,8 @@ struct std::hash<pair> {
 		return std::hash<int>{}(p.x) ^ (std::hash<int>{}(p.y) << 1);
 	}
 };
+
+inline pair parsePair(json::Value value) {
+	assert(value.is<json::Array>() && value.size() == 2);
+	return pair(int(value[0]), int(value[1]));
+}

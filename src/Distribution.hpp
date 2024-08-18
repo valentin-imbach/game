@@ -105,8 +105,6 @@ private:
 	pair ptoc(vec position);
 	vec ctop(pair cell);
 	vec offset(pair cell);
-
-friend class Realm;
 };
 
 class PerlinDistortion : public Distribution<vec> {

@@ -26,31 +26,33 @@ void Particle::draw(Camera camera) {
 }
 
 void ParticleStyle::setTemplates() {
-	std::ifstream file(Window::instance->root / "json/Particles.json");
-	if (!file) ERROR("File not found");
-	nlohmann::json data = nlohmann::json::parse(file);
-	file.close();
+	// std::ifstream file(Window::instance->root / "json/Particles.json");
+	// if (!file) ERROR("File not found");
+	// nlohmann::json data = nlohmann::json::parse(file);
+	// file.close();
+
+	json::Value data = json::parseFile(Window::instance->root / "json/Particles.json");
 
 	ParticleStyle::templates = {};
 
-	for (auto &[key, value] : data.items()) {
+	for (auto &[key, val] : data.get<json::Object>()) {
 		ParticleId::value particleId = ParticleId::from_string(key);
 		if (!particleId) {
 			WARNING("Unrecognised Resource:", key);
 			continue;
 		}
 
-		if (value.contains("source")) templates[particleId].source = pair(value["source"][0], value["source"][1]);
-		if (value.contains("positionOffset")) templates[particleId].positionOffset = vec(value["positionOffset"][0], value["positionOffset"][1]);
-		if (value.contains("positionVariance")) templates[particleId].positionVariance = vec(value["positionVariance"][0], value["positionVariance"][1]);
-		if (value.contains("velocity")) templates[particleId].velocity = vec(value["velocity"][0], value["velocity"][1]);
-		if (value.contains("velocityVariance")) templates[particleId].velocityVariance = vec(value["velocityVariance"][0], value["velocityVariance"][1]);
-		if (value.contains("acceleration")) templates[particleId].acceleration = vec(value["acceleration"][0], value["acceleration"][1]);
-		if (value.contains("alphaStart")) templates[particleId].alphaStart = value["alphaStart"];
-		if (value.contains("alphaEnd")) templates[particleId].alphaEnd = value["alphaEnd"];
-		if (value.contains("scale")) templates[particleId].scale = value["scale"];
-		if (value.contains("scaleVariance")) templates[particleId].scaleVariance = value["scaleVariance"];
-		if (value.contains("lifeSpan")) templates[particleId].lifeSpan = value["lifeSpan"];
+		if (val["source"]) templates[particleId].source = parsePair(val["source"]);
+		if (val["positionOffset"]) templates[particleId].positionOffset = parseVec(val["positionOffset"]);
+		if (val["positionVariance"]) templates[particleId].positionVariance = parseVec(val["positionVariance"]);
+		if (val["velocity"]) templates[particleId].velocity = parseVec(val["velocity"]);
+		if (val["velocityVariance"]) templates[particleId].velocityVariance = parseVec(val["velocityVariance"]);
+		if (val["acceleration"]) templates[particleId].acceleration = parseVec(val["acceleration"]);
+		if (val["alphaStart"]) templates[particleId].alphaStart = float(val["alphaStart"]);
+		if (val["alphaEnd"]) templates[particleId].alphaEnd = float(val["alphaEnd"]);
+		if (val["scale"]) templates[particleId].scale = float(val["scale"]);
+		if (val["scaleVariance"]) templates[particleId].scaleVariance = float(val["scaleVariance"]);
+		if (val["lifeSpan"]) templates[particleId].lifeSpan = int(val["lifeSpan"]);
 	}
 }
 
