@@ -63,6 +63,11 @@ private:
 
 	float elevation;
 
+	bool cliff;
+
+	bool ocean;
+	bool coastal;
+
 	ushort river = 0;
 	bool riverSource = false;
 
@@ -74,4 +79,5 @@ private:
 	friend class World;
 	friend class ChunkManager;
 	friend class Minimap;
+	friend class DebugScreen;
 };

@@ -5,6 +5,8 @@
 #include "Generation.hpp"
 #include "EntityFactory.hpp"
 
+#define CLIFF_GAP 200
+
 Chunk::Chunk(pair position) : position(position) {
 	seed = hash(69, position);
 }
@@ -58,18 +60,32 @@ void Chunk::setNode(ChunkManager* manager, Environment* environment) {
 	node = position * CHUNK_SIZE + nodeOffset;
 
 	elevation = environment->elevationMap->get(node);
+
+	ocean = (elevation < 0);
 }
 
 void Chunk::setBiome(ChunkManager* manager, Environment* environment) {
 	
-	biome = environment->getBiome(node);
+	coastal = false;
+	if (!ocean) {
+		for (int i = 1; i < Direction::count; i += 2) {
+			pair chunk = position + Direction::taxi[i];
+			auto it = manager->chunks.find(chunk);
+			if (it->second.ocean) coastal = true;
+		}
+	}
+
+	biome = environment->getBiome(node, ocean, coastal);
+
+	// if (coastal) {
+	// 	biome = Biome::BEACH;
+	// }
 
 	float low = elevation;
 	float heigh = elevation;
 	for (int i = 1; i < Direction::count; i += 2) {
 		pair chunk = position + Direction::taxi[i];
 		auto it = manager->chunks.find(chunk);
-		pair n = it->second.node;
 		float h = it->second.elevation;
 		if (h < low) {
 			low = h;
@@ -81,6 +97,12 @@ void Chunk::setBiome(ChunkManager* manager, Environment* environment) {
 			up = Direction::from_int(i);
 		}
 	}
+
+	pair chunkUp = position + pair(0, -1);
+	auto it = manager->chunks.find(chunkUp);
+	float gap = it->second.elevation - elevation;
+	cliff = (!ocean && gap > CLIFF_GAP);
+
 }
 
 void Chunk::setRiver(ChunkManager* manager, Environment* environment) {
@@ -141,21 +163,21 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 			pair offset(x, y);
 			pair pos = CHUNK_SIZE * position + offset;
 
-			pos = vec::round(manager->pdist(pos));
+			pair dpos = vec::round(environment->fuzz->get(pos));
 			
 			pair chunk = position;
-			int dist = pair::sdist(pos, node);
+			int dist = pair::sdist(dpos, node);
 
 			for (int i = 1; i < Direction::count; i++) {
 				pair chunk2 = position + Direction::taxi[i];
-				int d = pair::sdist(pos, manager->chunks.find(chunk2)->second.node);
+				int d = pair::sdist(dpos, manager->chunks.find(chunk2)->second.node);
 				if (d < dist) {
 					chunk = chunk2;
 					dist = d;
 				}
 			}
 
-			int variation = environment->variationMap->get(pos);
+			int variation = environment->variationMap->get(dpos);
 			Biome::value b = manager->chunks.find(chunk)->second.biome;
 			BiomeGroundTemplate& groundTemp = BiomeTemplate::templates[b].getGround(variation);
 			tiles[x][y].groundId = groundTemp.groundId;
@@ -171,7 +193,7 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 				return false;
 			};
 
-			if (river) {
+			if (environment->rivers && river) {
 				if (down) {
 					pair a = node;
 					pair to = position + Direction::taxi[down];
@@ -195,10 +217,16 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 				}
 			}
 
+			if (environment->cliffs && cliff) {
+				if (CHUNK_SIZE/2 - 3 < y && y < CHUNK_SIZE/2 + 3) {
+					tiles[x][y].groundId = GroundId::ROCK_WALL;
+				}
+			}
+
 		}
 	}
 
-	tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;
+	// tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;
 
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
@@ -236,15 +264,26 @@ void Chunk::setObjects(ChunkManager* manager, Environment* environment) {
 			if (tiles[x][y].groundId == GroundId::WATER) continue;
 			
 			// if (!free(position)) continue;
-			int variation = environment->variationMap->get(pos);
-			int vegetation = environment->vegetationMap->get(pos);
-			int choice = noise::Int(s++, 0, 50 + vegetation);
+			float variation = environment->variationMap->get(pos);
+			float vegetation = environment->vegetationMap->get(pos);
+
+			uint ss = hash(s, offset);
+
+			if (!noise::bernoulli(ss++, vegetation / 200)) continue;
+
 			BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
+
+			int total = 0;
+			for (auto& p : ground.resources) total += p.second;
+
+			if (total == 0) continue;
+			int choice = noise::Int(ss++, total);
+
 			for (auto& p : ground.resources) {
 				choice -= p.second;
 				if (choice < 0) {
 					pair size = ResourceTemplate::templates[p.first].size;
-					if (!manager->realm->free(pos, size)) return;
+					if (!manager->realm->free(pos, size)) break;
 					Entity resource = EntityFactory::createResource(p.first, manager->realm->realmId, pos);
 					break;
 				}

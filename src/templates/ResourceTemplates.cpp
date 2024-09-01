@@ -12,7 +12,7 @@ void ResourceTemplate::setTemplates() {
 	// file.close();
 
 	json::Value data = json::parseFile(Window::instance->root / "json/Resources.json");
-	LOG(data.print());
+	// LOG(data.print());
 	ResourceTemplate::templates = {};
 
 	for (auto [key, value] : data.get<json::Object>()) {

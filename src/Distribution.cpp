@@ -149,10 +149,10 @@ vec Voronoi::get(vec position) {
 }
 
 
-PerlinDistortion::PerlinDistortion(uint seed) : Distribution(seed), angle(seed, 100, 20, 0, 2) {}
+PerlinDistortion::PerlinDistortion(uint seed, float frequency, float radius) : Distribution(seed), angle(seed, 100, frequency, 0, 1), radius(radius) {}
 
 vec PerlinDistortion::get(vec position) {
 	float ang = angle(position);
-	vec offset = vec::polar(ang, 2);
+	vec offset = vec::polar(ang, radius);
 	return position + offset;
 }

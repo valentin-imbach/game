@@ -9,7 +9,8 @@
             "hardness": 6,
             "burn_time": 8,
             "heat": 5
-        }
+        },
+        "value": 5
     },
     "maple_log": {
         "name": "Maple Log",
@@ -21,7 +22,8 @@
             "hardness": 3,
             "burn_time": 5,
             "heat": 4
-        }
+        },
+        "value": 5
     },
     "spruce_log": {
         "name": "Spruce Log",
@@ -33,7 +35,8 @@
             "hardness": 7,
             "burn_time": 6,
             "heat": 5
-        }
+        },
+        "value": 5
     },
     "birch_log": {
         "name": "Birch Log",
@@ -45,7 +48,8 @@
             "hardness": 3,
             "burn_time": 5,
             "heat": 4
-        }
+        },
+        "value": 5
     },
     "oak_branch": {
         "name": "Oak Branch",
@@ -58,7 +62,8 @@
             "strength": 6,
             "burn_time": 8,
             "heat": 5
-        }
+        },
+        "value": 2
     },
     "maple_branch": {
         "name": "Maple Branch",
@@ -71,7 +76,8 @@
             "strength": 6,
             "burn_time": 5,
             "heat": 4
-        }
+        },
+        "value": 2
     },
     "spruce_branch": {
         "name": "Spruce Branch",
@@ -84,7 +90,8 @@
             "strength": 6,
             "burn_time": 6,
             "heat": 5
-        }
+        },
+        "value": 2
     },
     "birch_branch": {
         "name": "Birch Branch",
@@ -97,7 +104,8 @@
             "strength": 6,
             "burn_time": 5,
             "heat": 4
-        }
+        },
+        "value": 2
     },
     "oak_plank": {
         "name": "Oak Plank",
@@ -110,7 +118,8 @@
             "strength": 6,
             "burn_time": 8,
             "heat": 5
-        }
+        },
+        "value": 4
     },
     "maple_plank": {
         "name": "Maple Plank",
@@ -123,7 +132,8 @@
             "strength": 7,
             "burn_time": 5,
             "heat": 9
-        }
+        },
+        "value": 4
     },
     "spruce_plank": {
         "name": "Spruce Plank",
@@ -136,7 +146,8 @@
             "strength": 7,
             "burn_time": 6,
             "heat": 5
-        }
+        },
+        "value": 4
     },
     "birch_plank": {
         "name": "Birch Plank",
@@ -149,7 +160,8 @@
             "strength": 3,
             "burn_time": 5,
             "heat": 4
-        }
+        },
+        "value": 4
     },
     "oak_stick": {
         "name": "Oak Stick",
@@ -162,7 +174,8 @@
             "strength": 6,
             "burn_time": 3,
             "heat": 5
-        }
+        },
+        "value": 3
     },
     "maple_stick": {
         "name": "Maple Stick",
@@ -175,7 +188,8 @@
             "strength": 7,
             "burn_time": 1,
             "heat": 9
-        }
+        },
+        "value": 3
     },
     "spruce_stick": {
         "name": "Spruce Stick",
@@ -188,7 +202,8 @@
             "strength": 7,
             "burn_time": 2,
             "heat": 5
-        }
+        },
+        "value": 3
     },
     "birch_stick": {
         "name": "Birch Stick",
@@ -201,7 +216,8 @@
             "strength": 3,
             "burn_time": 2,
             "heat": 4
-        }
+        },
+        "value": 3
     },
     "granite_cobble": {
         "name": "Granite Cobble",
@@ -210,7 +226,8 @@
         ],
         "properties": {
             "hardness": 7
-        }
+        },
+        "value": 7
     },
     "basalt_cobble": {
         "name": "Basalt Cobble",
@@ -219,7 +236,8 @@
         ],
         "properties": {
             "hardness": 9
-        }
+        },
+        "value": 7
     },
     "obsidian_cobble": {
         "name": "Obsidian Cobble",
@@ -228,7 +246,8 @@
         ],
         "properties": {
             "hardness": 6
-        }
+        },
+        "value": 7
     },
     "sandstone_cobble": {
         "name": "Sandstone Cobble",
@@ -237,7 +256,8 @@
         ],
         "properties": {
             "hardness": 4
-        }
+        },
+        "value": 7
     },
     "chalk_cobble": {
         "name": "Chalk Cobble",
@@ -246,7 +266,8 @@
         ],
         "properties": {
             "hardness": 2
-        }
+        },
+        "value": 7
     },
     "granite_pebble": {
         "name": "Granite Pebble",
@@ -255,7 +276,8 @@
         ],
         "properties": {
             "hardness": 7
-        }
+        },
+        "value": 3
     },
     "basalt_pebble": {
         "name": "Basalt Pebble",
@@ -264,7 +286,8 @@
         ],
         "properties": {
             "hardness": 9
-        }
+        },
+        "value": 3
     },
     "obsidian_pebble": {
         "name": "Obsidian Pebble",
@@ -273,7 +296,8 @@
         ],
         "properties": {
             "hardness": 6
-        }
+        },
+        "value": 3
     },
     "sandstone_pebble": {
         "name": "Sandstone Pebble",
@@ -282,7 +306,8 @@
         ],
         "properties": {
             "hardness": 4
-        }
+        },
+        "value": 3
     },
     "chalk_pebble": {
         "name": "Chalk Pebble",
@@ -291,7 +316,8 @@
         ],
         "properties": {
             "hardness": 2
-        }
+        },
+        "value": 3
     },
     "grass_fiber": {
         "name": "Grass Fiber",
@@ -300,7 +326,8 @@
         ],
         "properties": {
             "strength": 3
-        }
+        },
+        "value": 3
     },
     "apple": {
         "name": "Apple",
@@ -309,7 +336,8 @@
         ],
         "properties": {
             "nutrition": 3
-        }
+        },
+        "value": 10
     },
     "parsnip_seeds": {
         "name": "Parsnip Seeds",
@@ -318,7 +346,8 @@
         ],
         "properties": {
             "nutrition": 3
-        }
+        },
+        "value": 2
     },
     "bronze_ore": {
         "name": "Bronze Ore",
@@ -327,7 +356,8 @@
         ],
         "properties": {
             "melting_point": 4
-        }
+        },
+        "value": 20
     },
     "silver_ore": {
         "name": "Silver Ore",
@@ -336,7 +366,8 @@
         ],
         "properties": {
             "melting_point": 7
-        }
+        },
+        "value": 20
     },
     "gold_ore": {
         "name": "Gold Ore",
@@ -345,7 +376,8 @@
         ],
         "properties": {
             "melting_point": 9
-        }
+        },
+        "value": 20
     },
     "bronze_ingot": {
         "name": "Bronze Ingot",
@@ -354,7 +386,8 @@
         ],
         "properties": {
             "hardness": 3
-        }
+        },
+        "value": 40
     },
     "silver_ingot": {
         "name": "Silver Ingot",
@@ -363,7 +396,8 @@
         ],
         "properties": {
             "hardness": 6
-        }
+        },
+        "value": 40
     },
     "gold_ingot": {
         "name": "Gold Ingot",
@@ -372,6 +406,7 @@
         ],
         "properties": {
             "hardness": 2
-        }
+        },
+        "value": 40
     }
 }

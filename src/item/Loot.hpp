@@ -3,6 +3,7 @@
 #include "utils.hpp"
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
+#include "ItemTemplates.hpp"
 
 #define LOOT_SIZE 5
 
@@ -13,6 +14,8 @@ struct Loot {
 
 	Entity create(uint seed);
 	Entity create(uint seed, RealmId realmId, vec position);
+
+	static Entity fromValue(uint seed, uint value);
 };
 
 struct LootTable {

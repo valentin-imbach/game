@@ -75,6 +75,8 @@ void ItemTemplate::setTemplates() {
             continue;
         }
 
+        if (value["value"]) templates[id].value = int(value["value"]);
+
         templates[id].name = std::string(value["name"]);
 		for (auto& k : value["kinds"].get<json::Array>()) {
             ItemKind::value kind = ItemKind::from_string(std::string(k));

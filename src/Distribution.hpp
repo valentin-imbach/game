@@ -109,9 +109,10 @@ private:
 
 class PerlinDistortion : public Distribution<vec> {
 public:
-	PerlinDistortion(uint seed);
+	PerlinDistortion(uint seed, float period, float radius);
 	vec get(vec position) override;
 
 private:
+	float radius;
 	PerlinNoise angle;
 };

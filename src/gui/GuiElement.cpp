@@ -698,10 +698,10 @@ void ValueGui::draw() {
 //* SettingRangeSlider
 
 SettingRangeSlider::SettingRangeSlider(pair position, pair* value, pair range, std::string text, Direction::value alignment) : Widget(position, {0,0}) {
-	addGuiElement(std::make_unique<TextGui>(pair(-120, 0), text, false));
-	addGuiElement(std::make_unique<ValueGui>(pair(0, 0), &value->x));
-	addGuiElement(std::make_unique<RangeSliderGui>(pair(60, 0), value, range, Sprite(SpriteSheet::SLIDER, {0,0}, {6,1})));
-	addGuiElement(std::make_unique<ValueGui>(pair(120, 0),  &value->y));
+	addGuiElement(std::make_unique<TextGui>(pair(-100, 0), text, false));
+	addGuiElement(std::make_unique<ValueGui>(pair(-20, 0), &value->x));
+	addGuiElement(std::make_unique<RangeSliderGui>(pair(40, 0), value, range, Sprite(SpriteSheet::SLIDER, {0,0}, {6,1})));
+	addGuiElement(std::make_unique<ValueGui>(pair(100, 0),  &value->y));
 }
 
 //* CheckboxGui
@@ -724,4 +724,11 @@ bool CheckboxGui::handleEvent(InputEvent event) {
 		}
 	}
 	return false;
+}
+
+//* SettingCheckbox
+
+SettingCheckbox::SettingCheckbox(pair position, bool* value, std::string text, Direction::value alignment) : Widget(position, {0,0}) {
+	addGuiElement(std::make_unique<TextGui>(pair(-40, 0), text, false));
+	addGuiElement(std::make_unique<CheckboxGui>(pair(40, 0), value));
 }

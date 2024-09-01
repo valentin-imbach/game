@@ -38,10 +38,9 @@ private:
 	bool checkStage(pair chunk, ChunkStage::value stage = ChunkStage::NONE);
 	std::unordered_map<pair, Chunk> chunks;
 
-	PerlinDistortion pdist = PerlinDistortion(noise::UInt(seed + 4));
-
 	friend class Chunk;
 	friend class Minimap;
 	friend class World;
 	friend class Realm;
+	friend class DebugScreen;
 };

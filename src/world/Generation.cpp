@@ -6,19 +6,15 @@
 std::array<BiomeTemplate, Biome::count> BiomeTemplate::templates = {};
 
 BiomeGroundTemplate& BiomeTemplate::getGround(int variation) {
-	if (grounds.size() > 1 && variation < 30) return grounds[1];
+	if (grounds.size() > 1 && variation > 70) return grounds[1];
 	return grounds[0];
 }
 
-void BiomeTemplate::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/Generation.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-	// file.close();
 
+void BiomeTemplate::setTemplates() {
 	json::Value data = json::parseFile(Window::instance->root / "json/Generation.json");
 
-	BiomeTemplate::templates = {};
+	templates = {};
 
 	for (auto& [biome_key, biome_value] : data.get<json::Object>()) {
         Biome::value biome = Biome::from_string(biome_key);
@@ -26,6 +22,13 @@ void BiomeTemplate::setTemplates() {
             WARNING("Unrecognised Biome:", biome_key);
             continue;
         }
+
+		if (biome_value["ocean"]) templates[biome].ocean = biome_value["ocean"].get<bool>();
+		if (biome_value["coast"]) templates[biome].coast = biome_value["coast"].get<bool>();
+
+		templates[biome].temperature = biome_value["temperature"].get<int>();
+		templates[biome].elevation = biome_value["elevation"].get<int>();
+		templates[biome].precipitation = biome_value["precipitation"].get<int>();
 
 		for (auto ground : biome_value["grounds"].get<json::Array>()) {
 			GroundId::value groundId = GroundId::from_string(std::string(ground["tile"]));

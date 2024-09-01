@@ -26,6 +26,7 @@ struct ItemTemplate {
 	std::string name = "?";
 	ItemKindBitset kinds;
 	std::unordered_map<ItemProperty::value, int> properties;
+	uint value = 1;
 
 	static std::array<ItemTemplate, ItemId::count> templates;
 	static void setTemplates();

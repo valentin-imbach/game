@@ -36,6 +36,8 @@ void Realm::generate(RealmType::value realmType, WorldParameters params) {
 
 void Realm::generateWorld(pair size, WorldParameters params) {
 	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
+	environment->rivers = false;
+	environment->cliffs = false;
 
 	// for (int x = 0; x < size.x; x++) {
 	// 	for (int y = 0; y < size.y; y++) {

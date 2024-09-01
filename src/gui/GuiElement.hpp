@@ -311,3 +311,9 @@ private:
 	bool* value;
 	Sprite checkedSprite;
 };
+
+class SettingCheckbox : public Widget {
+public:
+	SettingCheckbox(pair position, bool* value, std::string text, Direction::value alignment = Direction::NONE);
+	~SettingCheckbox() = default;
+};

@@ -55,7 +55,9 @@ public:
 
 		Environment* env = world->playerRealm->environment.get();
 		tileText += "Position: (" + std::to_string(tile.x) + ", " + std::to_string(tile.y) + ")\n";
-		tileText += "Biome: " + Biome::to_string(env->getBiome(tile)) + '\n';
+		pair chunkPos = world->playerRealm->chunkManager.getChunk(tile);
+		auto it = world->playerRealm->chunkManager.chunks.find(chunkPos);
+		tileText += "Biome: " + Biome::to_string(it->second.biome) + '\n';
 		tileText += "Temperateure: " + std::to_string(env->temparatureMap->get(tile)) + '\n';
 		tileText += "Elevation: " + std::to_string(env->elevationMap->get(tile)) + '\n';
 		tileText += "Precipitation: " + std::to_string(env->precipitationMap->get(tile)) + '\n';

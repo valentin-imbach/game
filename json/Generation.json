@@ -1,5 +1,9 @@
 {
 	"ocean": {
+		"ocean": true,
+		"elevation": 0,
+		"temperature": 0,
+		"precipitation": 0,
 		"grounds": [
 			{
 				"tile": "water",
@@ -7,7 +11,24 @@
 			}
 		]
 	},
+	"beach": {
+		"coast": true,
+		"elevation": 0,
+		"temperature": 0,
+		"precipitation": 0,
+		"grounds": [
+			{
+				"tile": "sand",
+				"resources": {
+					"sandstone_pebble": 1
+				}
+			}
+		]
+	},
 	"desert": {
+		"elevation": 0,
+		"temperature": 40,
+		"precipitation": 10,
 		"grounds": [
 			{
 				"tile": "sand",
@@ -28,6 +49,9 @@
 		]
 	},
 	"tundra": {
+		"elevation": 0,
+		"temperature": -10,
+		"precipitation": 100,
 		"grounds": [
 			{
 				"tile": "grass",
@@ -50,6 +74,9 @@
 		]
 	},
 	"taiga": {
+		"elevation": 0,
+		"temperature": 0,
+		"precipitation": 100,
 		"grounds": [
 			{
 				"tile": "grass",
@@ -73,6 +100,9 @@
 		]
 	},
 	"swamp": {
+		"elevation": 0,
+		"temperature": 15,
+		"precipitation": 300,
 		"grounds": [
 			{
 				"tile": "mud",
@@ -96,6 +126,9 @@
 		]
 	},
 	"grassland": {
+		"elevation": 0,
+		"temperature": 20,
+		"precipitation": 100,
 		"grounds": [
 			{
 				"tile": "grass",
@@ -118,6 +151,9 @@
 		]
 	},
 	"forest": {
+		"elevation": 0,
+		"temperature": 20,
+		"precipitation": 200,
 		"grounds": [
 			{
 				"tile": "grass",
@@ -144,6 +180,9 @@
 		]
 	},
 	"savanna": {
+		"elevation": 0,
+		"temperature": 30,
+		"precipitation": 100,
 		"grounds": [
 			{
 				"tile": "grass",
@@ -168,6 +207,9 @@
 		]
 	},
 	"rainforest": {
+		"elevation": 0,
+		"temperature": 30,
+		"precipitation": 300,
 		"grounds": [
 			{
 				"tile": "grass",
@@ -195,6 +237,9 @@
 		]
 	},
 	"mountain": {
+		"elevation": 1000,
+		"temperature": 20,
+		"precipitation": 100,
 		"grounds": [
 			{
 				"tile": "rock",

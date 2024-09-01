@@ -8,7 +8,7 @@ ChunkManager::ChunkManager(uint seed) : seed(seed), chunks() {
 	stageBuffer[ChunkStage::RIVER] = 5;
 	stageBuffer[ChunkStage::GROUND] = 5;
 	stageBuffer[ChunkStage::TILES] = 1;
-	stageBuffer[ChunkStage::LOADED] = 5;
+	stageBuffer[ChunkStage::LOADED] = 10;
 }
 
 void ChunkManager::generateChunk(pair position, ChunkStage::value target, Environment* environment) {

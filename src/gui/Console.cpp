@@ -277,6 +277,11 @@ bool Console::execute(std::string input) {
 		if (rest) ecs.addComponent<DeathComponent>({}, rest);
 	} else if (inputs[0] == "save2") {
 		game->world->serialise2(Window::instance->root / "saves");
+	} else if (inputs[0] == "loot") {
+		int value = std::stoi(inputs[1]);
+		Entity loot = Loot::fromValue(SDL_GetTicks(), value);
+		Entity rest = ecs.getComponent<InventoryComponent>(player).inventory.add(loot);
+		if (rest) ecs.addComponent<DeathComponent>({}, rest);
 	} else {
 		return false;
 	}

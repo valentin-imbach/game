@@ -84,6 +84,15 @@ void CreateMenu::build(Game* game) {
 	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, -25), &params.elevation, pair(-500, 1500), "Elevation");
 	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, -10), &params.percipitation, pair(0, 300), "Perculation");
 
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0, 10), &params.cliffs, "Cliffs");
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0, 30), &params.rivers, "Rivers");
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0, 50), &params.structures, "Structures");
+
+	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, 70), &params.variation, pair(0, 100), "Variation");
+	widget->emplaceGuiElement<SettingRangeSlider>(pair(0, 85), &params.vegetation, pair(0, 100), "Vegetation");
+
 	widget->emplaceGuiElement<Button>(pair(35, -15), pair(60, 20), cancelCallback, Sprite(), Sprite(), "Main Menu", Direction::SOUTH_WEST);
 	widget->emplaceGuiElement<Button>(pair(-35, -15), pair(60, 20), createCallback, Sprite(), Sprite(), "Create World", Direction::SOUTH_EAST);
+
+	
 }

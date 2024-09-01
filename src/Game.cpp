@@ -15,7 +15,7 @@ Game::Game() : trackMix(1), console(this) {
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();
 	TextManager::Init();
-	SoundManager::Init();
+	//SoundManager::Init();
 
 	gameState = GameState::MENU;
 	buildMenus();
