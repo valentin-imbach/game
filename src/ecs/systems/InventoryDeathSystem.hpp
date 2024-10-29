@@ -23,7 +23,7 @@ public:
 							vec position = positionComponent.position + offset;
 							ecs->addComponent<PositionComponent>({position, positionComponent.realmId}, item);
 							Realm* realm = realmManager.getRealm(positionComponent.realmId);
-							pair chunk = vec::round(position / CHUNK_SIZE);
+							pair chunk = realm->chunkManager.getChunk(position);
 							realm->linkChunk(item, chunk);
 							inventoryComponent.inventory.itemContainers[x][y].clear();
 						}

@@ -7,8 +7,8 @@ class IComponentArray {
 public:
 	virtual ~IComponentArray() = default;
 	virtual void destroyEntity(Entity entity) = 0;
-	virtual void serialise(std::fstream& stream) = 0;
-	virtual void deserialise(std::fstream& stream) = 0;
+	// virtual void serialise(std::fstream& stream) = 0;
+	// virtual void deserialise(std::fstream& stream) = 0;
 
 	bool has(Entity entity) {
 		return (entityToIndex.find(entity)!= entityToIndex.end());
@@ -69,32 +69,32 @@ public:
 		if (hasComponent(entity)) removeComponent(entity);
 	}
 
-	void serialise(std::fstream& stream) override {
-		uint size = components.size();
-		serialise_object(stream, size);
-		for (int index = 0; index < size; index++) {
-			Entity entity = indexToEntity[index];
-			serialise_object(stream, entity);
-			serialise_object(stream, components[index]);
-		}
-	}
+	// void serialise(std::fstream& stream) override {
+	// 	uint size = components.size();
+	// 	serialise_object(stream, size);
+	// 	for (int index = 0; index < size; index++) {
+	// 		Entity entity = indexToEntity[index];
+	// 		serialise_object(stream, entity);
+	// 		serialise_object(stream, components[index]);
+	// 	}
+	// }
 
-	void deserialise(std::fstream& stream) override {
-		entityToIndex.clear();
-		indexToEntity.clear();
-		components.clear();
-		uint size = components.size();
-		deserialise_object(stream, size);
-		for (int index = 0; index < size; index++) {
-			Entity entity;
-			deserialise_object(stream, entity);
-			indexToEntity[index] = entity;
-			entityToIndex[entity] = index;
-			components.emplace_back();
-			deserialise_object(stream, components[index]);
-			if (start) start(entity, components[index]);
-		}
-	}
+	// void deserialise(std::fstream& stream) override {
+	// 	entityToIndex.clear();
+	// 	indexToEntity.clear();
+	// 	components.clear();
+	// 	uint size = components.size();
+	// 	deserialise_object(stream, size);
+	// 	for (int index = 0; index < size; index++) {
+	// 		Entity entity;
+	// 		deserialise_object(stream, entity);
+	// 		indexToEntity[index] = entity;
+	// 		entityToIndex[entity] = index;
+	// 		components.emplace_back();
+	// 		deserialise_object(stream, components[index]);
+	// 		if (start) start(entity, components[index]);
+	// 	}
+	// }
 
 	void setCallbacks(std::function<void(Entity, T&)> start, std::function<void(Entity, T&)> end) {
 		this->start = start;

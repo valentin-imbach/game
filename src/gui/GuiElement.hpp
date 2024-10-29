@@ -9,8 +9,6 @@
 
 class GuiManager;
 
-#define GUI_BOX true
-
 class GuiElement {
 public:
 	GuiElement(pair position, pair size, Direction::value alignment = Direction::NONE);

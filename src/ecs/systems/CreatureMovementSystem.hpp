@@ -2,7 +2,6 @@
 #pragma once
 #include "System.hpp"
 #include "Components.hpp"
-#include "Map.hpp"
 #include "ECS.hpp"
 
 class CreatureMovementSystem : public System {

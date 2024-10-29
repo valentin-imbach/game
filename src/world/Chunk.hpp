@@ -1,7 +1,7 @@
 
 #pragma once
 #include "ECS.hpp"
-#include "Map.hpp"
+#include "Tile.hpp"
 #include "Camera.hpp"
 #include "definitions.hpp"
 
@@ -34,8 +34,6 @@ public:
 
 	void drawTiles(Camera camera, uint ticks);
 
-	// Map map;
-
 private:
 	void setNode(ChunkManager* manager, Environment* environemnt);
 	void setBiome(ChunkManager* manager, Environment* environemnt);
@@ -51,9 +49,11 @@ private:
 	Biome::value biome;
 
 	Tile tiles[CHUNK_SIZE][CHUNK_SIZE] = {};
-	Entity entityGrid[CHUNK_SIZE][CHUNK_SIZE] = {};
 	bool solid[CHUNK_SIZE][CHUNK_SIZE] = {};
 	bool opaque[CHUNK_SIZE][CHUNK_SIZE] = {};
+
+	Entity entityGrid[CHUNK_SIZE][CHUNK_SIZE] = {};
+	EntitySet entities = {};
 
 	uint seed;
 	pair position;
@@ -80,4 +80,5 @@ private:
 	friend class ChunkManager;
 	friend class Minimap;
 	friend class DebugScreen;
+	friend class Realm;
 };

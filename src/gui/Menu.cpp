@@ -61,7 +61,10 @@ void MainMenu::draw(uint ticks) {
 
 void PauseMenu::build(Game* game) {
 	widget = std::make_unique<Widget>(pair(0, 0), pair(160, 160), Sprite(SpriteSheet::MENU, {0, 0}, {10, 10}));
-	widget->addGuiElement(std::make_unique<Button>(pair(0, 0), pair(50, 20), std::bind(&Game::saveWorld, game), Sprite(), Sprite(), "Save and Quit"));
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0, -20), &game->settings.showCollider, "Show Colliders");
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0, 0), &game->settings.showHitbox, "Show Hitboxes");
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0, 20), &game->settings.showGuiBox, "Show GUI Boxes");
+	widget->addGuiElement(std::make_unique<Button>(pair(0, 50), pair(50, 20), std::bind(&Game::saveWorld, game), Sprite(), Sprite(), "Save and Quit"));
 }
 
 void CreateMenu::build(Game* game) {

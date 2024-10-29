@@ -45,7 +45,6 @@ public:
 	pair spawn;
 
 	Time time;
-	bool colliderDraw = true;
 
 private:
 	uint seed;

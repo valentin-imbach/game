@@ -3,6 +3,7 @@
 #include "utils.hpp"
 #include "Chunk.hpp"
 #include "Camera.hpp"
+class World;
 
 class Realm;
 
@@ -30,13 +31,17 @@ public:
 
 	Realm* realm;
 
+	pair getChunk(vec position);
+
 private:
 	uint seed;
-	pair getChunk(vec position);
+
 	pair getOffset(pair position);
 
 	bool checkStage(pair chunk, ChunkStage::value stage = ChunkStage::NONE);
 	std::unordered_map<pair, Chunk> chunks;
+
+	void reballance(World* world);
 
 	friend class Chunk;
 	friend class Minimap;

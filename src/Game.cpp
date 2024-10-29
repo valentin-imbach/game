@@ -11,6 +11,8 @@
 
 #define DEBUG_MODE false
 
+GameSettings Game::settings = {};
+
 Game::Game() : trackMix(1), console(this) {
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();

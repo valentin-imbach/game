@@ -21,26 +21,26 @@ public:
 		systemManager.destroyEntity(entity);
 	}
 
-	void serialise(std::fstream& stream) {
-		entityManager.serialise(stream);
-		componentManager.serialise(stream);
-		LOG("ECS serialized");
-	}
+	// void serialise(std::fstream& stream) {
+	// 	entityManager.serialise(stream);
+	// 	componentManager.serialise(stream);
+	// 	LOG("ECS serialized");
+	// }
 
-	void deserialise(std::fstream& stream) {
-		entityManager.deserialise(stream);
-		componentManager.deserialise(stream);
-		for (auto& iter : entityManager.signatures) {
-			Entity entity = iter.first;
-			for (int comp = 1; comp < ComponentId::count; comp++) {
-				if (componentManager.has(entity, ComponentId::from_int(comp))) {
-					entityManager.signatures[entity].set(comp, true);
-				}
-			}
-			systemManager.signatureChange(entity, entityManager.signatures[entity]);
-		}
-		LOG("ECS deserialized");
-	}
+	// void deserialise(std::fstream& stream) {
+	// 	entityManager.deserialise(stream);
+	// 	componentManager.deserialise(stream);
+	// 	for (auto& iter : entityManager.signatures) {
+	// 		Entity entity = iter.first;
+	// 		for (int comp = 1; comp < ComponentId::count; comp++) {
+	// 			if (componentManager.has(entity, ComponentId::from_int(comp))) {
+	// 				entityManager.signatures[entity].set(comp, true);
+	// 			}
+	// 		}
+	// 		systemManager.signatureChange(entity, entityManager.signatures[entity]);
+	// 	}
+	// 	LOG("ECS deserialized");
+	// }
 
 	template <typename T>
 	ComponentId::value rosterComponent(ComponentId::value type = ComponentId::NONE, std::function<void(Entity, T&)> start = nullptr, std::function<void(Entity, T&)> end = nullptr) {
@@ -48,8 +48,6 @@ public:
 		componentManager.setCallbacks<T>(start, end);
 		return res;
 	}
-
-
 
 	template <typename T>
 	void addComponent(T component, Entity entity) {
@@ -81,9 +79,6 @@ public:
 		return componentManager.get<T>(entity);
 	}
 
-
-	
-
 	template <typename T>
 	T* rosterSystem(SystemId::value id, std::vector<ComponentId::value>&& ids) {
 		T* system = systemManager.roster<T>(id, makeSiganture(std::move(ids)));
@@ -98,7 +93,6 @@ public:
 	}
 
 	void update() {}
-
 
 private:
 	EntityManager entityManager;

@@ -1,5 +1,7 @@
-
 #include "ChunkManager.hpp"
+#include "World.hpp"
+#include "Components.hpp"
+
 #define TILE_FRAME_TIME 2000
 
 ChunkManager::ChunkManager(uint seed) : seed(seed), chunks() {
@@ -8,7 +10,7 @@ ChunkManager::ChunkManager(uint seed) : seed(seed), chunks() {
 	stageBuffer[ChunkStage::RIVER] = 5;
 	stageBuffer[ChunkStage::GROUND] = 5;
 	stageBuffer[ChunkStage::TILES] = 1;
-	stageBuffer[ChunkStage::LOADED] = 10;
+	stageBuffer[ChunkStage::LOADED] = 1;
 }
 
 void ChunkManager::generateChunk(pair position, ChunkStage::value target, Environment* environment) {
@@ -101,7 +103,10 @@ void ChunkManager::linkGridEntity(pair position, Entity entity, bool solid, bool
 	// assert(checkStage(chunk, ChunkStage::OBJECTS));
 	pair offset = getOffset(position);
 	Chunk& c = chunks.find(chunk)->second;
-	if (c.entityGrid[offset.x][offset.y]) WARNING("Linking more than one entity to grid at", position);
+	if (c.entityGrid[offset.x][offset.y]) {
+		WARNING("Linking more than one entity to grid at", position);
+		return;
+	}
 	c.entityGrid[offset.x][offset.y] = entity;
 	c.solid[offset.x][offset.y] = solid;
 	c.opaque[offset.x][offset.y] = opaque;
@@ -331,4 +336,23 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 void ChunkManager::serialise2(std::filesystem::path path) {
 	std::filesystem::create_directory(path / "chunks");
 	for (auto& c : chunks) c.second.serialise2(path / "chunks");
+}
+
+void ChunkManager::reballance(World* world) {
+	for (auto& c : chunks) {
+		Chunk& chunk = c.second;
+		if (chunk.stage != ChunkStage::LOADED) continue;
+		EntitySet set = chunk.entities;
+		for (const Entity& entity: set) {
+			if (!world->ecs.hasComponent<PositionComponent>(entity)) continue;
+			PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(entity);
+			vec pos = positionComponent.position;
+			vec offset = positionComponent.position - CHUNK_SIZE * c.first;
+			if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
+				pair newChunk = getChunk(pos);
+				chunk.entities.erase(entity);
+				chunks.at(newChunk).entities.insert(entity);
+			}			
+		}
+	}
 }

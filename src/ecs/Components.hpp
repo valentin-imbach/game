@@ -174,7 +174,7 @@ struct LauncherComponent {
 	float charge = 0;
 };
 
-struct ChunkComponent {};
+// struct ChunkComponent {};
 
 struct AiComponent {
 	AiState::value state = AiState::NONE;
@@ -220,10 +220,10 @@ struct PortalComponent {
 };
 
 struct MaturityComponent {
-	uint lastChange;
-	uint maturityTime;
-	ushort maxMaturity = 5;
-	ushort maturity = 1;
+	uint birth;
+	uint delay;
+	ushort maxMaturity = 4;
+	ushort maturity = 0;
 };
 
 struct DamageComponent {

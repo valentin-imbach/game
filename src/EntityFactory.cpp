@@ -17,13 +17,19 @@ Entity EntityFactory::createStaticEntity(RealmId realmId, pair position, pair si
 	Entity entity = world->ecs.createEntity();
 	if (!entity) return 0;
 
-	pair chunk = vec::round(vec(position) / CHUNK_SIZE);
+	Realm* realm = world->realmManager.getRealm(realmId);
+	pair chunk = realm->chunkManager.getChunk(position);
+
+	if (!realm->free(position, size)) {
+		WARNING("Trying to create static entity in occupied space");
+		return 0;
+	}
+
 	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
-	world->realmManager.getRealm(realmId)->linkChunk(entity, chunk);
-
 	world->ecs.addComponent<GridComponent>({position, realmId, size, solid, opaque}, entity);
-	world->realmManager.getRealm(realmId)->linkGrid(entity, position, size, solid, opaque);
 
+	realm->linkChunk(entity, chunk);
+	realm->linkGrid(entity, position, size, solid, opaque);
 	return entity;
 }
 
@@ -31,11 +37,12 @@ Entity EntityFactory::createDynamicEntity(RealmId realmId, vec position) {
 	Entity entity = world->ecs.createEntity();
 	if (!entity) return 0;
 
-	pair chunk = vec::round(position / CHUNK_SIZE);
-	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
-	world->realmManager.getRealm(realmId)->linkChunk(entity, chunk);
-	world->ecs.addComponent<ChunkComponent>({}, entity);
+	Realm* realm = world->realmManager.getRealm(realmId);
+	pair chunk = realm->chunkManager.getChunk(position);
 
+	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
+	// world->ecs.addComponent<ChunkComponent>({}, entity);
+	realm->linkChunk(entity, chunk);
 	return entity;
 }
 
@@ -264,6 +271,7 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, bool show) {
 
 	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
 	world->ecs.addComponent<ItemComponent>({itemId, count, show}, item);
+	// world->ecs.addComponent<ChunkComponent>({}, item);
 	
 	return item;
 }
@@ -272,9 +280,11 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, RealmId real
 	Entity item = createItem(itemId, count);
 	if (!item) return 0;
 
+	Realm* realm = world->realmManager.getRealm(realmId); 
 	pair chunk = vec::round(position / CHUNK_SIZE);
+	
 	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, item);
-	world->realmManager.getRealm(realmId)->linkChunk(item, chunk);
+	realm->linkChunk(item, chunk);
 
 	return item;
 }

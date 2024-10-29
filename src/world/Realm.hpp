@@ -3,7 +3,6 @@
 
 #include "utils.hpp"
 #include "ECS_types.hpp"
-#include "Map.hpp"
 #include "Environment.hpp"
 #include "Chunk.hpp"
 #include "ChunkManager.hpp"
@@ -32,9 +31,8 @@ public:
 
 	RealmId realmId;
 
-	// std::unique_ptr<Map> map;
 	std::unique_ptr<Environment> environment;
-	std::unordered_map<pair, EntitySet> chunkEntities;
+	// std::unordered_map<pair, EntitySet> chunkEntities;
 	GridMap gridMap;
 
 	Minimap minimap;
@@ -43,9 +41,8 @@ public:
 	void unlinkGrid(Entity entity, pair anker, pair size);
 	void linkChunk(Entity entity, pair chunk);
 	void unlinkChunk(Entity entity, pair chunk);
-	
-	// void link(Entity entity);
-	// void unlink(Entity entity);
+
+	std::unordered_map<Entity, pair> chunkMap;
 
 	bool free(pair anker, pair size = pair(1, 1));
 	bool walkable(pair pos);

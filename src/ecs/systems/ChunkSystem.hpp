@@ -17,7 +17,7 @@ public:
 		if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 			realm->unlinkChunk(entity, positionComponent.chunk);
-			positionComponent.chunk = vec::round(positionComponent.position / CHUNK_SIZE);
+			positionComponent.chunk = realm->chunkManager.getChunk(positionComponent.position);
 			realm->linkChunk(entity, positionComponent.chunk);
 		}
 	}

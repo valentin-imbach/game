@@ -317,6 +317,12 @@ void Chunk::serialise2(std::filesystem::path path) {
 	serialise_object(chunkFile,	position);
 	serialise_object(chunkFile,	stage);
 
+	for (int y = 0; y < CHUNK_SIZE; y++) {
+		for (int x = 0; x < CHUNK_SIZE; x++) {
+			serialise_object(tileFile, tiles[x][y].groundId);
+		}
+	}
+
 	chunkFile.close();
 	entityFile.close();
 	tileFile.close();

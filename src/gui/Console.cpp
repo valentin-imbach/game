@@ -198,10 +198,6 @@ bool Console::execute(std::string input) {
 		GameState::value state = GameState::from_string(inputs[1]);
 		if (!state) return false;
 		game->gameState = state;
-	} else if (inputs[0] == "gui_box") {
-		GuiManager::box = !GuiManager::box;
-	} else if (inputs[0] == "collider_box") {
-		game->world->colliderDraw = !game->world->colliderDraw;
 	} else if (inputs[0] == "realm") {
 		if (!player) return false;
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);

@@ -14,6 +14,12 @@ SETTINGS,
 RUNNING,
 PAUSED)
 
+struct GameSettings {
+	bool showHitbox = false;
+	bool showCollider = false;
+	bool showGuiBox = false;
+};
+
 class Game {
 public:
 	Game();
@@ -32,6 +38,8 @@ public:
 
 	int framesPerSecond;
 	int updatesPerSecond;
+
+	static GameSettings settings;
 
 private:
 	bool handleEvent(InputEvent event, uint dt);

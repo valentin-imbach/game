@@ -4,8 +4,8 @@
 
 Minimap::Minimap() {
 	widget = std::make_unique<Widget>(pair(0,-20), pair(0,0), Sprite(), Direction::SOUTH);
-	widget->emplaceGuiElement<CheckboxGui>(pair(-10,0), &chunkOverlay);
-	widget->emplaceGuiElement<CheckboxGui>(pair(10,0), &tempOverlay);
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0,-10), &chunkOverlay, "Chunks");
+	widget->emplaceGuiElement<SettingCheckbox>(pair(0,10), &tempOverlay, "Temparature");
 }
 
 bool Minimap::handleEvent(InputEvent event) {

@@ -5,7 +5,6 @@
 #include "Components.hpp"
 
 uint GuiManager::scale = 3;
-bool GuiManager::box = true;
 
 void GuiManager::update(uint dt) {
 	for (auto& guiElement : guiElements) guiElement->reposition();
@@ -76,7 +75,7 @@ bool GuiManager::handleEvent(InputEvent event) {
 		pair pos = vec::round(positionComponent.position);
 		if (world->playerRealm->free(pos)) {
 			world->ecs.getComponent<SpriteComponent>(buildMode).z = 0;
-			world->ecs.removeComponent<ChunkComponent>(buildMode);
+			// world->ecs.removeComponent<ChunkComponent>(buildMode);
 			world->playerRealm->linkGrid(buildMode, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);
 			buildMode = 0;
 		}

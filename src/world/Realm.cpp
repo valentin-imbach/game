@@ -1,6 +1,5 @@
 
 #include "Realm.hpp"
-#include "Map.hpp"
 #include "Generation.hpp"
 
 #include "EntityFactory.hpp"
@@ -14,13 +13,7 @@ Realm::Realm(std::fstream& stream) : chunkManager(0) {
 	deserialise_object(stream, realmId);
 	deserialise_object(stream, seed);
 	chunkManager = ChunkManager(seed);
-	// map = std::make_unique<Map>(stream);
 	environment = std::make_unique<Environment>(seed + 2, WorldParameters());
-	
-	// SDL_Surface* surface = map->makeMiniMap();
-	// texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	// SDL_FreeSurface(surface);
-
 }
 
 void Realm::generate(RealmType::value realmType, WorldParameters params) {
@@ -30,8 +23,6 @@ void Realm::generate(RealmType::value realmType, WorldParameters params) {
 
 	if (realmType == RealmType::DUNGEON) generateDungeon();
 	if (realmType == RealmType::TEST) generateFlat(pair(50, 50));
-
-	// map->updateStyle();
 }
 
 void Realm::generateWorld(pair size, WorldParameters params) {
@@ -380,6 +371,10 @@ void Realm::generateCave(int count, int length) {
 
 void Realm::linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque) {
 	assert(entity);
+	if (!free(anker, size)) {
+		WARNING("Trying to link to occupied grid");
+		return;
+	}
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair pos = anker + pair(x, y);
@@ -400,20 +395,43 @@ void Realm::unlinkGrid(Entity entity, pair anker, pair size) {
 
 void Realm::linkChunk(Entity entity, pair chunk) {
 	assert(entity);
-	if (chunkEntities[chunk].find(entity) != chunkEntities[chunk].end()) {
-		WARNING("Trying to link entity", entity, "to chunk", chunk, "twice");
+	auto it = chunkManager.chunks.find(chunk);
+	if (it == chunkManager.chunks.end()) {
+		WARNING("Trying to link to unloaded chunk");
 		return;
 	}
-	chunkEntities[chunk].insert(entity);
+
+	(*it).second.entities.insert(entity);
+	chunkMap[entity] = chunk;
+
+	// if (chunkEntities[chunk].find(entity) != chunkEntities[chunk].end()) {
+	// 	WARNING("Trying to link entity", entity, "to chunk", chunk, "twice");
+	// 	return;
+	// }
+	// chunkEntities[chunk].insert(entity);
 }
 
 void Realm::unlinkChunk(Entity entity, pair chunk) {
 	assert(entity);
-	if (chunkEntities[chunk].find(entity) == chunkEntities[chunk].end()) {
-		WARNING("Trying to unlink non-existing entity", entity, "from chunk", chunk);
+	if (chunkMap.find(entity) == chunkMap.end()) {
+		WARNING("Trying to unlink foreign entity");
 		return;
 	}
-	chunkEntities[chunk].erase(entity);
+
+	auto it = chunkManager.chunks.find(chunk);
+	if (it == chunkManager.chunks.end() || (*it).second.stage != ChunkStage::LOADED) {
+		WARNING("Trying to unlink from unloaded chunk");
+		return;
+	}
+
+	chunkMap.erase(entity);
+	(*it).second.entities.erase(entity);
+
+	// if (chunkEntities[chunk].find(entity) == chunkEntities[chunk].end()) {
+	// 	WARNING("Trying to unlink non-existing entity", entity, "from chunk", chunk);
+	// 	return;
+	// }
+	// chunkEntities[chunk].erase(entity);
 }
 
 GroundId::value Realm::ground(pair position) {
@@ -425,8 +443,6 @@ bool Realm::free(pair anker, pair size) {
 		for (int y = 0; y < size.y; y++) {
 			pair pos = anker + pair(x, y);
 			if (chunkManager.gridEntity(pos)) return false;
-			// GroundId::value groundId = chunkManager.getGround(pos);
-			// if (!map->getGroundId(pos) || GroundTemplate::templates[map->getGroundId(pos)].wall) return false;
 		}
 	}
 	return true;

@@ -55,15 +55,15 @@ public:
 		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->destroyEntity(entity);
 	}
 
-	void serialise(std::fstream& stream) {
-		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->serialise(stream);
-		LOG("Component Manager serialised")
-	}
+	// void serialise(std::fstream& stream) {
+	// 	for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->serialise(stream);
+	// 	LOG("Component Manager serialised")
+	// }
 
-	void deserialise(std::fstream& stream) {
-		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->deserialise(stream);
-		LOG("Component Manager deserialised")
-	}
+	// void deserialise(std::fstream& stream) {
+	// 	for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->deserialise(stream);
+	// 	LOG("Component Manager deserialised")
+	// }
 
 private:
 	std::array<std::unique_ptr<IComponentArray>, ComponentId::count> componentArrays = {};

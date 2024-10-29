@@ -16,6 +16,8 @@
 #include "Window.hpp"
 #include "utils.hpp"
 
+#include "Game.hpp"
+
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
 
@@ -50,7 +52,11 @@ World::World(std::string name, uint seed, WorldParameters params) : name(name), 
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
 	spawnRealm->generate(RealmType::WORLD, params);
 
-	spawn = spawnRealm->findFree(pair(50,50));
+	spawn = pair(50,50);
+	pair spawnChunk = spawnRealm->chunkManager.getChunk(spawn);
+
+	spawnRealm->chunkManager.generateChunk(spawnChunk, ChunkStage::LOADED, spawnRealm->environment.get());
+
 	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
@@ -107,7 +113,7 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 	deserialise_object(stream, ticks);
 	deserialise_object(stream, player);
 	realmManager.deserialise(this, stream);
-	ecs.deserialise(stream);
+	// ecs.deserialise(stream);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
@@ -142,7 +148,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<SensorComponent>(ComponentId::SENSOR);
 	ecs.rosterComponent<ProjectileComponent>(ComponentId::PROJECTILE);
 	ecs.rosterComponent<LauncherComponent>(ComponentId::LAUNCHER);
-	ecs.rosterComponent<ChunkComponent>(ComponentId::CHUNK);
+	// ecs.rosterComponent<ChunkComponent>(ComponentId::CHUNK);
 	ecs.rosterComponent<AiComponent>(ComponentId::AI);
 	ecs.rosterComponent<AiWanderComponent>(ComponentId::AI_WANDER);
 	// ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
@@ -271,9 +277,11 @@ void World::update(uint dt) {
 
 	if (player) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-		playerChunk = positionComponent.chunk;
+		// playerChunk = positionComponent.chunk;
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
 		playerPosition = positionComponent.position;
+
+		playerChunk = playerRealm->chunkManager.getChunk(playerPosition);
 
 		pair c = playerRealm->chunkManager.getChunk(playerPosition);
 
@@ -292,8 +300,8 @@ void World::update(uint dt) {
 	const uchar updateDistance = 1;
 	for (int x = -updateDistance; x <= updateDistance; x++) {
 		for (int y = -updateDistance; y <= updateDistance; y++) {
-			pair chunk(playerChunk.x + x, playerChunk.y + y);
-			EntitySet& set = playerRealm->chunkEntities[chunk];
+			pair chunk = playerChunk + pair(x, y);
+			EntitySet& set = playerRealm->chunkManager.chunks.at(chunk).entities;
         	updateSet.insert(set.begin(), set.end());
 		}
 	}
@@ -337,7 +345,7 @@ void World::update(uint dt) {
 	fuelSystem->update(ticks, dt);
 	processingSystem->update(ticks, dt);
 
-	chunkSystem->update(realmManager);
+	// chunkSystem->update(realmManager);
 
 	itemPickupSystem->update(collisions, realmManager);
 
@@ -376,16 +384,19 @@ void World::draw() {
 	}
 
 	EntitySet drawSet;
-	pair cameraChunk = vec::round(camera.position / CHUNK_SIZE);
+	
 	Realm* cameraRealm = realmManager.getRealm(camera.realmId);
+	pair cameraChunk = cameraRealm->chunkManager.getChunk(camera.position);
 	const uchar renderDistance = 1;
 	for (int x = -renderDistance; x <= renderDistance; x++) {
 		for (int y = -renderDistance; y <= renderDistance; y++) {
-			pair chunk(cameraChunk.x + x, cameraChunk.y + y);
-			EntitySet& set = cameraRealm->chunkEntities[chunk];
+			pair chunk = cameraChunk + pair(x, y);
+			EntitySet& set = cameraRealm->chunkManager.chunks.at(chunk).entities;
 			drawSet.insert(set.begin(), set.end());
 		}
 	}
+
+	// LOG(drawSet.size());
 
 	entityDrawSystem->update(camera, drawQueue, state, player, ticks, drawSet);
 	handRenderSystem->update(camera, drawQueue, ticks);
@@ -405,10 +416,8 @@ void World::draw() {
 		p.spriteStack.draw(p.position, p.scale, p.style, ticks);
 	}
 
-	if (colliderDraw) {
-		colliderDrawSystem->update(camera, ticks, drawSet);
-		hitboxDrawSystem->update(camera, ticks, drawSet);
-	}
+	if (Game::settings.showCollider) colliderDrawSystem->update(camera, ticks, drawSet);
+	if (Game::settings.showHitbox) hitboxDrawSystem->update(camera, ticks, drawSet);
 
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks, drawSet);
@@ -632,7 +641,7 @@ void World::serialise(std::fstream& stream) {
 	serialise_object(stream, ticks);
 	serialise_object(stream, player);
 	realmManager.serialise(stream);
-	ecs.serialise(stream);
+	// ecs.serialise(stream);
 }
 
 void World::serialise2(std::filesystem::path path) {

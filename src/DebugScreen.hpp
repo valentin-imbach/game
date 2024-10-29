@@ -77,7 +77,7 @@ public:
 			PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(entity);
 			entityText += "Position: " + std::to_string(positionComponent.position.x).substr(0, 5) + ", ";
 			entityText += std::to_string(positionComponent.position.y).substr(0, 5) + '\n';
-			entityText += "Chunk: " + std::to_string(positionComponent.chunk.x) + ", " + std::to_string(positionComponent.chunk.y) + '\n';
+			// entityText += "Chunk: " + std::to_string(positionComponent.chunk.x) + ", " + std::to_string(positionComponent.chunk.y) + '\n';
 		}
 
 		if (world->ecs.hasComponent<HealthComponent>(entity)) {

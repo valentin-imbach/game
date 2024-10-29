@@ -13,6 +13,8 @@
 #include "Crafting.hpp"
 #include "EntityFactory.hpp"
 
+#include "Game.hpp"
+
 //* GuiElement
 
 GuiElement::GuiElement(pair position, pair size, Direction::value alignment) : position(position), size(size), alignment(alignment) {}
@@ -38,7 +40,7 @@ void GuiElement::draw() {
 		sprite.draw(screenPosition, GuiManager::scale);
 	}
 
-	if (GuiManager::box) TextureManager::drawRect(screenPosition, screenSize);
+	if (Game::settings.showGuiBox) TextureManager::drawRect(screenPosition, screenSize);
 }
 
 bool GuiElement::handleEvent(InputEvent event) {
@@ -432,7 +434,7 @@ void BuildGrid::build() {
 
 	ECS& ecs = guiManager->world->ecs;
 	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(recipe.stationId), guiManager->world->playerRealm->realmId, {0, 0}, false);
-	ecs.addComponent<ChunkComponent>({}, guiManager->buildMode);
+	// ecs.addComponent<ChunkComponent>({}, guiManager->buildMode);
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();
 }
@@ -497,7 +499,7 @@ void Selector::draw() {
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);
 		(selected == i ? slot2 : slot).draw(pos, GuiManager::scale);
 		sprites[i].draw(pos, GuiManager::scale);
-		if (GuiManager::box) TextureManager::drawRect(pos, {offset, offset});
+		if (Game::settings.showGuiBox) TextureManager::drawRect(pos, {offset, offset});
 	}
 }
 

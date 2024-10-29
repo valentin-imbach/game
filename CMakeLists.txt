@@ -17,7 +17,6 @@ src/framework/SoundManager.cpp
 src/framework/Sprite.cpp
 src/world/RealmManager.cpp
 src/world/World.cpp
-src/world/Map.cpp
 src/world/Tile.cpp
 src/world/Generation.cpp
 src/world/Realm.cpp
