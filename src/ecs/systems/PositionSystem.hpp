@@ -11,7 +11,8 @@ public:
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
-			realm->linkChunk(entity, positionComponent.chunk);
+			pair chunk = realm->chunkManager.getChunk(positionComponent.position);
+			realm->attach(entity, chunk);
 		}
 	}
 };

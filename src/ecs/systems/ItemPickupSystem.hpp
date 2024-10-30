@@ -20,7 +20,7 @@ public:
 					if (!rest) {
 						PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(other);
 						Realm* realm = realmManager.getRealm(positionComponent.realmId);
-						realm->unlinkChunk(other, positionComponent.chunk);
+						realm->detach(other);
 						ecs->removeComponent<PositionComponent>(other);
 					}
 				}

@@ -11,7 +11,7 @@ public:
 		for (Entity entity : entities) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 			Realm* realm = realmManager.getRealm(gridComponent.realmId);
-			realm->linkGrid(entity, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);
+			realm->link(entity, gridComponent.anker, gridComponent.size, gridComponent.solid, gridComponent.opaque);
 		}
 	}
 };

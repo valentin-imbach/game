@@ -212,8 +212,8 @@ void World::rosterSystems() {
 		{ComponentId::PARTICLE, ComponentId::MOVEMENT});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
 		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT, ComponentId::HAND});
-	chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
-		{ComponentId::POSITION, ComponentId::CHUNK});
+	// chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
+	// 	{ComponentId::POSITION, ComponentId::CHUNK});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
 		{ComponentId::POSITION, ComponentId::LIGHT});
 	sensorSystem = ecs.rosterSystem<SensorSystem>(SystemId::SENSOR,
@@ -277,7 +277,6 @@ void World::update(uint dt) {
 
 	if (player) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-		// playerChunk = positionComponent.chunk;
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
 		playerPosition = positionComponent.position;
 
@@ -492,7 +491,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		vec position = positionComponent.position + Direction::unit[movementComponent.facing];
 		ecs.addComponent<PositionComponent>({position, positionComponent.realmId}, activeItemContainer.item);
 		pair chunk = vec::round(position / CHUNK_SIZE);
-		playerRealm->linkChunk(activeItemContainer.item, chunk);
+		playerRealm->attach(activeItemContainer.item, chunk);
 		activeItemContainer.clear();
 	} else if (event.id == InputEventId::SELECT_1) {
 		playerComponent.activeSlot = 0;
@@ -535,13 +534,12 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		if (gridEntity && ecs.hasComponent<PortalComponent>(gridEntity)) {
 			PortalComponent& portalComponent = ecs.getComponent<PortalComponent>(gridEntity);
 			PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-			playerRealm->unlinkChunk(player, positionComponent.chunk);
+			playerRealm->detach(player);
 			positionComponent.position = portalComponent.position;
-			pair chunk = vec::round(positionComponent.position / CHUNK_SIZE);
-			positionComponent.chunk = chunk;
 			positionComponent.realmId = portalComponent.realmId;
 			Realm* realm = realmManager.getRealm(portalComponent.realmId);
-			realm->linkChunk(player, chunk);
+			pair chunk = realm->chunkManager.getChunk(positionComponent.position);
+			realm->attach(player, chunk);
 			return true;
 		}
 		

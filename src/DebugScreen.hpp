@@ -77,7 +77,12 @@ public:
 			PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(entity);
 			entityText += "Position: " + std::to_string(positionComponent.position.x).substr(0, 5) + ", ";
 			entityText += std::to_string(positionComponent.position.y).substr(0, 5) + '\n';
-			// entityText += "Chunk: " + std::to_string(positionComponent.chunk.x) + ", " + std::to_string(positionComponent.chunk.y) + '\n';
+			Realm* realm = world->realmManager.getRealm(positionComponent.realmId);
+			auto it = realm->chunkManager.entityIndex.find(entity);
+			if (it != realm->chunkManager.entityIndex.end()) {
+				entityText += "Chunk: " + std::to_string((*it).second.x) + ", " + std::to_string((*it).second.y) + '\n';
+			}
+			
 		}
 
 		if (world->ecs.hasComponent<HealthComponent>(entity)) {

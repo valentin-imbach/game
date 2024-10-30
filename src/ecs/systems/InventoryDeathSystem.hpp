@@ -24,7 +24,7 @@ public:
 							ecs->addComponent<PositionComponent>({position, positionComponent.realmId}, item);
 							Realm* realm = realmManager.getRealm(positionComponent.realmId);
 							pair chunk = realm->chunkManager.getChunk(position);
-							realm->linkChunk(item, chunk);
+							realm->attach(item, chunk);
 							inventoryComponent.inventory.itemContainers[x][y].clear();
 						}
 					}

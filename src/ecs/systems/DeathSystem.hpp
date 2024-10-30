@@ -12,7 +12,8 @@ public:
 			if (ecs->hasComponent<PositionComponent>(entity)) {
 				PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 				Realm* realm = realmManager.getRealm(positionComponent.realmId);
-				realm->unlinkChunk(entity, positionComponent.chunk);
+
+				realm->detach(entity);
 
 				if (ecs->hasComponent<ActionComponent>(entity)) {
 					for (int i = 0; i < 10; i++) {
@@ -25,7 +26,7 @@ public:
 				GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);
 				PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 				Realm* realm = realmManager.getRealm(positionComponent.realmId);
-				realm->unlinkGrid(entity, gridComponent.anker, gridComponent.size);
+				realm->unlink(entity, gridComponent.anker, gridComponent.size);
 			}
 			ecs -> destroyEntity(entity);
 		}

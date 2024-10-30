@@ -18,7 +18,7 @@
 #include "ParticleEmitSystem.hpp"
 #include "CreatureParticleSystem.hpp"
 #include "HandRenderSystem.hpp"
-#include "ChunkSystem.hpp"
+// #include "ChunkSystem.hpp"
 #include "LightSystem.hpp"
 #include "SensorSystem.hpp"
 #include "ProjectileSystem.hpp"

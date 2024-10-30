@@ -82,7 +82,7 @@ private:
 	ParticleEmitSystem* particleEmitSystem;
 	CreatureParticleSystem* creatureParticleSystem;
 	HandRenderSystem* handRenderSystem;
-	ChunkSystem* chunkSystem;
+	// ChunkSystem* chunkSystem;
 	LightSystem* lightSystem;
 	SensorSystem* sensorSystem;
 	ProjectileSystem* projectileSystem;

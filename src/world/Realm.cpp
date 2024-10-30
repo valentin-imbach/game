@@ -309,7 +309,6 @@ void Realm::generateCave(int count, int length) {
 	int padding = 2;
 	pair size( r - l + 1 + 2 * padding, d - u + 1 + 2 * padding);
 
-	// map = std::make_unique<Map>(size, noise::UInt(seed + 1));
 	environment = std::make_unique<Environment>(noise::UInt(seed + 2), WorldParameters());
 
 	pair offset(l - padding, u - padding);
@@ -369,7 +368,7 @@ void Realm::generateCave(int count, int length) {
 	spawn = entry;
 }
 
-void Realm::linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque) {
+void Realm::link(Entity entity, pair anker, pair size, bool solid, bool opaque) {
 	assert(entity);
 	if (!free(anker, size)) {
 		WARNING("Trying to link to occupied grid");
@@ -378,60 +377,27 @@ void Realm::linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaq
 	for (int x = 0; x < size.x; x++) {
 		for (int y = 0; y < size.y; y++) {
 			pair pos = anker + pair(x, y);
-			chunkManager.linkGridEntity(pos, entity, solid, opaque);
+			chunkManager.link(pos, entity, solid, opaque);
 		}
 	}
 }
 
-void Realm::unlinkGrid(Entity entity, pair anker, pair size) {
+void Realm::unlink(Entity entity, pair anker, pair size) {
 	assert(entity);
 	for (int x = 0; x <size.x; x++) {
 		for (int y = 0; y <size.y; y++) {
 			pair pos = anker + pair(x, y);
-			chunkManager.unlinkGridEntity(pos, entity);
+			chunkManager.unlink(pos, entity);
 		}
 	}
 }
 
-void Realm::linkChunk(Entity entity, pair chunk) {
-	assert(entity);
-	auto it = chunkManager.chunks.find(chunk);
-	if (it == chunkManager.chunks.end()) {
-		WARNING("Trying to link to unloaded chunk");
-		return;
-	}
-
-	(*it).second.entities.insert(entity);
-	chunkMap[entity] = chunk;
-
-	// if (chunkEntities[chunk].find(entity) != chunkEntities[chunk].end()) {
-	// 	WARNING("Trying to link entity", entity, "to chunk", chunk, "twice");
-	// 	return;
-	// }
-	// chunkEntities[chunk].insert(entity);
+void Realm::attach(Entity entity, pair chunk) {
+	chunkManager.attach(entity, chunk);
 }
 
-void Realm::unlinkChunk(Entity entity, pair chunk) {
-	assert(entity);
-	if (chunkMap.find(entity) == chunkMap.end()) {
-		WARNING("Trying to unlink foreign entity");
-		return;
-	}
-
-	auto it = chunkManager.chunks.find(chunk);
-	if (it == chunkManager.chunks.end() || (*it).second.stage != ChunkStage::LOADED) {
-		WARNING("Trying to unlink from unloaded chunk");
-		return;
-	}
-
-	chunkMap.erase(entity);
-	(*it).second.entities.erase(entity);
-
-	// if (chunkEntities[chunk].find(entity) == chunkEntities[chunk].end()) {
-	// 	WARNING("Trying to unlink non-existing entity", entity, "from chunk", chunk);
-	// 	return;
-	// }
-	// chunkEntities[chunk].erase(entity);
+void Realm::detach(Entity entity) {
+	chunkManager.detach(entity);
 }
 
 GroundId::value Realm::ground(pair position) {

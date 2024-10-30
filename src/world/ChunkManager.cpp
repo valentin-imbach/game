@@ -98,7 +98,7 @@ Entity ChunkManager::gridEntity(pair position) {
 	return chunks.find(chunk)->second.entityGrid[offset.x][offset.y];
 }
 
-void ChunkManager::linkGridEntity(pair position, Entity entity, bool solid, bool opaque) {
+void ChunkManager::link(pair position, Entity entity, bool solid, bool opaque) {
 	pair chunk = getChunk(position);
 	// assert(checkStage(chunk, ChunkStage::OBJECTS));
 	pair offset = getOffset(position);
@@ -112,7 +112,7 @@ void ChunkManager::linkGridEntity(pair position, Entity entity, bool solid, bool
 	c.opaque[offset.x][offset.y] = opaque;
 }
 
-void ChunkManager::unlinkGridEntity(pair position, Entity entity) {
+void ChunkManager::unlink(pair position, Entity entity) {
 	pair chunk = getChunk(position);
 	// assert(checkStage(chunk, ChunkStage::OBJECTS));
 	pair offset = getOffset(position);
@@ -336,6 +336,42 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 void ChunkManager::serialise2(std::filesystem::path path) {
 	std::filesystem::create_directory(path / "chunks");
 	for (auto& c : chunks) c.second.serialise2(path / "chunks");
+}
+
+void ChunkManager::attach(Entity entity, pair chunk) {
+	if(!entity) return;
+	auto it = chunks.find(chunk);
+	if (it == chunks.end()) {
+		WARNING("Trying to attach entity to unloaded chunk");
+		return;
+	}
+
+	if (entityIndex.find(entity) != entityIndex.end()) {
+		WARNING("Trying to attach entity to multiple chunks");
+		return;
+	}
+
+	(*it).second.entities.insert(entity);
+	entityIndex[entity] = chunk;
+}
+
+void ChunkManager::detach(Entity entity) {
+	assert(entity);
+
+	auto it = entityIndex.find(entity);
+	if (it == entityIndex.end()) {
+		WARNING("Trying to detach loose entity");
+		return;
+	}
+	pair chunk = (*it).second;
+	auto it2 = chunks.find(chunk);
+	if (it2 == chunks.end() || (*it2).second.stage != ChunkStage::LOADED) {
+		WARNING("Trying to detach entity from unloaded chunk");
+		return;
+	}
+
+	entityIndex.erase(entity);
+	(*it2).second.entities.erase(entity);
 }
 
 void ChunkManager::reballance(World* world) {

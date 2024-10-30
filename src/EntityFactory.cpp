@@ -25,11 +25,11 @@ Entity EntityFactory::createStaticEntity(RealmId realmId, pair position, pair si
 		return 0;
 	}
 
-	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
+	world->ecs.addComponent<PositionComponent>({position, realmId}, entity);
 	world->ecs.addComponent<GridComponent>({position, realmId, size, solid, opaque}, entity);
 
-	realm->linkChunk(entity, chunk);
-	realm->linkGrid(entity, position, size, solid, opaque);
+	realm->attach(entity, chunk);
+	realm->link(entity, position, size, solid, opaque);
 	return entity;
 }
 
@@ -40,9 +40,9 @@ Entity EntityFactory::createDynamicEntity(RealmId realmId, vec position) {
 	Realm* realm = world->realmManager.getRealm(realmId);
 	pair chunk = realm->chunkManager.getChunk(position);
 
-	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, entity);
+	world->ecs.addComponent<PositionComponent>({position, realmId}, entity);
 	// world->ecs.addComponent<ChunkComponent>({}, entity);
-	realm->linkChunk(entity, chunk);
+	realm->attach(entity, chunk);
 	return entity;
 }
 
@@ -283,8 +283,8 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, RealmId real
 	Realm* realm = world->realmManager.getRealm(realmId); 
 	pair chunk = vec::round(position / CHUNK_SIZE);
 	
-	world->ecs.addComponent<PositionComponent>({position, realmId, chunk}, item);
-	realm->linkChunk(item, chunk);
+	world->ecs.addComponent<PositionComponent>({position, realmId}, item);
+	realm->attach(item, chunk);
 
 	return item;
 }

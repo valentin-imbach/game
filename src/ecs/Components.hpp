@@ -13,7 +13,7 @@
 struct PositionComponent {
 	vec position;
 	RealmId realmId;
-	pair chunk;
+	// pair chunk;
 };
 
 struct SpriteComponent {

@@ -24,8 +24,11 @@ public:
 
 	void setGround(pair position, GroundId::value groundId);
 
-	void linkGridEntity(pair position, Entity entity, bool solid, bool opaque);
-	void unlinkGridEntity(pair position, Entity entity);
+	void link(pair position, Entity entity, bool solid, bool opaque);
+	void unlink(pair position, Entity entity);
+
+	void attach(Entity entity, pair chunk);
+	void detach(Entity entity);
 
 	std::array<ushort, ChunkStage::count> stageBuffer = {};
 
@@ -40,6 +43,7 @@ private:
 
 	bool checkStage(pair chunk, ChunkStage::value stage = ChunkStage::NONE);
 	std::unordered_map<pair, Chunk> chunks;
+	std::unordered_map<Entity, pair> entityIndex;
 
 	void reballance(World* world);
 

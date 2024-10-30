@@ -18,7 +18,7 @@ class InventoryDeathSystem;
 class ParticleEmitSystem;
 class CreatureParticleSystem;
 class HandRenderSystem;
-class ChunkSystem;
+// class ChunkSystem;
 class LightSystem;
 class SensorSystem;
 class ProjectileSystem;

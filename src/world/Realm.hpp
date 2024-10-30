@@ -37,12 +37,11 @@ public:
 
 	Minimap minimap;
 
-	void linkGrid(Entity entity, pair anker, pair size, bool solid, bool opaque);
-	void unlinkGrid(Entity entity, pair anker, pair size);
-	void linkChunk(Entity entity, pair chunk);
-	void unlinkChunk(Entity entity, pair chunk);
+	void link(Entity entity, pair anker, pair size, bool solid, bool opaque);
+	void unlink(Entity entity, pair anker, pair size);
 
-	std::unordered_map<Entity, pair> chunkMap;
+	void attach(Entity entity, pair chunk);
+	void detach(Entity entity);
 
 	bool free(pair anker, pair size = pair(1, 1));
 	bool walkable(pair pos);
