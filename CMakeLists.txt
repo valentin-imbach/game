@@ -37,6 +37,7 @@ src/templates/AnimalTemplates.cpp
 src/templates/StructureTemplates.cpp
 src/templates/ClusterTemplates.cpp
 src/EntityFactory.cpp
+src/gui/Command.cpp
 src/ParticleSystem.cpp
 src/Distribution.cpp
 src/main.cpp)

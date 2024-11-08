@@ -12,17 +12,29 @@ struct GroundTemplate {
 	bool build = true;
 	bool walk = true;
 	bool liquid = false;
-	bool wall = false;
 
 	static void setTemplates();
 	static std::array<GroundTemplate, GroundId::count> templates;
 };
 
+struct WallTemplate {
+	WallId::value wallId = WallId::NONE;
+	SpriteSheet::value spriteSheet = SpriteSheet::NONE;
+	uint colour = 0;
+	uint frames = 1;
+	bool build = false;
+	bool climb = false;
+	bool liquid = false;
+
+	static void setTemplates();
+	static std::array<WallTemplate, WallId::count> templates;
+};
+
 class Tile {
 public:
-	Tile(GroundId::value groundId = GroundId::NONE, GroundId::value wallId = GroundId::NONE);
+	Tile(GroundId::value groundId = GroundId::NONE, WallId::value wallId = WallId::NONE);
 	GroundId::value groundId;
-	GroundId::value wallId;
+	WallId::value wallId;
 	SpriteStack sprites;
 };
 

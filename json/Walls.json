@@ -1,0 +1,14 @@
+{
+	"rock": {
+		"sprite": "rock_wall"
+	},
+	"dirt": {
+		"sprite": "wall3"
+	},
+	"brick": {
+		"sprite": "brick_wall"
+	},
+	"plaster": {
+		"sprite": "plaster_wall"
+	}
+}

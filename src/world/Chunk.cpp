@@ -219,7 +219,7 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 
 			if (environment->cliffs && cliff) {
 				if (CHUNK_SIZE/2 - 3 < y && y < CHUNK_SIZE/2 + 3) {
-					tiles[x][y].groundId = GroundId::ROCK_WALL;
+					tiles[x][y].wallId = WallId::DIRT;
 				}
 			}
 
@@ -229,15 +229,15 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 	// tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;
 
 
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		for (int y = 0; y < CHUNK_SIZE; y++) {
-			pair pos(x, y);
-			uint s = hash(seed, pos);
-			pair baseVariant = noise::choice<pair>(s, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
-			Sprite baseSprite = Sprite(GroundTemplate::templates[tiles[x][y].groundId].spriteSheet, baseVariant);
-			tiles[x][y].sprites.setSprite(0, baseSprite);
-		}
-	}
+	// for (int x = 0; x < CHUNK_SIZE; x++) {
+	// 	for (int y = 0; y < CHUNK_SIZE; y++) {
+	// 		pair pos(x, y);
+	// 		uint s = hash(seed, pos);
+	// 		pair baseVariant = noise::choice<pair>(s, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
+	// 		Sprite baseSprite = Sprite(GroundTemplate::templates[tiles[x][y].groundId].spriteSheet, baseVariant);
+	// 		tiles[x][y].sprites.setSprite(0, baseSprite);
+	// 	}
+	// }
 
 	refreshMap(environment);
 	// LOG("Ground set at", position);

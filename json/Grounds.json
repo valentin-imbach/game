@@ -1,18 +1,4 @@
 {
-	"rock_wall": {
-		"sprite": "rock_wall",
-		"colour": [0, 0, 0, 255],
-		"wall": true,
-		"walk": false,
-		"build": false
-	},
-	"mud_wall": {
-		"sprite": "wall3",
-		"colour": [0, 0, 0, 255],
-		"wall": true,
-		"walk": false,
-		"build": false
-	},
 	"planks": {
 		"sprite": "planks",
 		"colour": [184, 155, 101, 255]

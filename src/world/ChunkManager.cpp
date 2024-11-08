@@ -15,6 +15,8 @@ ChunkManager::ChunkManager(uint seed) : seed(seed), chunks() {
 
 void ChunkManager::generateChunk(pair position, ChunkStage::value target, Environment* environment) {
 	
+	if (fixed) return;
+
 	chunks.emplace(position, position);
 	auto it = chunks.find(position);
 
@@ -34,7 +36,7 @@ void ChunkManager::generateChunk(pair position, ChunkStage::value target, Enviro
 
 void ChunkManager::draw(Camera camera, uint ticks) {
 	pair range = vec::ceil(vec(Window::instance->size) / (2 * BIT * camera.zoom * CHUNK_SIZE));
-	pair start = vec::round(camera.position) / CHUNK_SIZE;
+	pair start = getChunk(camera.position);
 
 	for (int x = start.x - range.x; x <= start.x + range.x; x++) {
 		for (int y = start.y - range.y; y <= start.y + range.y; y++) {
@@ -69,11 +71,26 @@ GroundId::value ChunkManager::getGround(pair position) {
 	return chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId;
 }
 
+WallId::value ChunkManager::getWall(pair position) {
+	pair chunk = getChunk(position);
+	if (!checkStage(chunk, ChunkStage::GROUND)) return WallId::NONE;
+	pair offset = getOffset(position);
+	return chunks.find(chunk)->second.tiles[offset.x][offset.y].wallId;
+}
+
 void ChunkManager::setGround(pair position, GroundId::value groundId) {
 	pair chunk = getChunk(position);
 	if (!checkStage(chunk, ChunkStage::GROUND)) return;
 	pair offset = getOffset(position);
 	chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId = groundId;
+	updateStyle(position, true);
+}
+
+void ChunkManager::setWall(pair position, WallId::value wallId) {
+	pair chunk = getChunk(position);
+	if (!checkStage(chunk, ChunkStage::GROUND)) return;
+	pair offset = getOffset(position);
+	chunks.find(chunk)->second.tiles[offset.x][offset.y].wallId = wallId;
 	updateStyle(position, true);
 }
 
@@ -130,7 +147,8 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 	// 	if (!checkStage(chunk, ChunkStage::GROUND)) return;
 	// }
 
-	if (!getGround(position)) return;
+	// if (!getGround(position)) return;
+
 	uint s = hash(42, seed, position);
 
 	std::vector<std::pair<Sprite, int>> sprites;
@@ -145,12 +163,30 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 	GroundId::value tl = getGround(position + pair(-1, -1));
 	GroundId::value tr = getGround(position + pair(1, -1));
 
-	// GroundId::value wallId = getWallId(position);
-	// GroundId::value lw = getWallId(position + pair(-1, 0));
-	// GroundId::value rw = getWallId(position + pair(1, 0));
-	// GroundId::value tw = getWallId(position + pair(0, -1));
-	// GroundId::value bw = getWallId(position + pair(0, 1));
+	WallId::value wallId = getWall(position);
+	WallId::value lw = getWall(position + pair(-1, 0));
+	WallId::value rw = getWall(position + pair(1, 0));
+	WallId::value tw = getWall(position + pair(0, -1));
+	WallId::value bw = getWall(position + pair(0, 1));
+	WallId::value tlw = getWall(position + pair(-1, -1));
+	WallId::value trw = getWall(position + pair(1, -1));
 
+	if (wallId && lw == wallId && rw == wallId) {
+		pair source = (tw == wallId) ? pair(2, 1) : pair(2, 0);
+		sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, source), 0);
+	} else if (tw && tlw == tw && trw == tw) {
+		sprites.emplace_back(Sprite(WallTemplate::templates[tw].spriteSheet, pair(2, 2)), 0);
+	}
+
+	if (wallId && !lw && !left) {
+		pair source = (tw == wallId) ? pair(0, 1) : pair(0, 0);
+		sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, source), 0);
+	}
+
+	if (wallId && !rw && !right) {
+		pair source = (tw == wallId) ? pair(4, 1) : pair(4, 0);
+		sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, source), 0);
+	}
 
 	// if (groundId == GroundId::ROCK_WALL) {
 	// 	// if ((top && top != GroundId::ROCK_WALL) || (bottom && bottom != GroundId::ROCK_WALL)) {
@@ -228,28 +264,31 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 			// }
 		//}
 
-	pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
-	Sprite baseSprite = Sprite(GroundTemplate::templates[groundId].spriteSheet, baseVariant, pair(1,1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
-	sprites.emplace_back(baseSprite, groundId);
-
-	if (left == GroundId::ROCK_WALL) {
-		if (bl == GroundId::ROCK_WALL) {
-			Sprite sprite = Sprite(GroundTemplate::templates[GroundId::ROCK_WALL].spriteSheet, pair(2, 2));
-			sprites.emplace_back(sprite, GroundId::ROCK_WALL);
-		} else if (groundId != GroundId::ROCK_WALL) {
-			Sprite sprite = Sprite(GroundTemplate::templates[GroundId::ROCK_WALL].spriteSheet, pair(2, 4));
-			sprites.emplace_back(sprite, GroundId::ROCK_WALL);
-		}
+	if (groundId) {
+		pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
+		Sprite baseSprite = Sprite(GroundTemplate::templates[groundId].spriteSheet, baseVariant, pair(1,1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
+		sprites.emplace_back(baseSprite, groundId);
+	} else {
+		groundId = GroundId::MAX;
 	}
 
-	if (bottom == GroundId::ROCK_WALL) {
-		Sprite sprite = Sprite(GroundTemplate::templates[GroundId::ROCK_WALL].spriteSheet, pair(1, 3));
-		sprites.emplace_back(sprite, GroundId::ROCK_WALL);
-	}
+	// if (left == GroundId::ROCK_WALL) {
+	// 	if (bl == GroundId::ROCK_WALL) {
+	// 		Sprite sprite = Sprite(GroundTemplate::templates[GroundId::ROCK_WALL].spriteSheet, pair(2, 2));
+	// 		sprites.emplace_back(sprite, GroundId::ROCK_WALL);
+	// 	} else if (groundId != GroundId::ROCK_WALL) {
+	// 		Sprite sprite = Sprite(GroundTemplate::templates[GroundId::ROCK_WALL].spriteSheet, pair(2, 4));
+	// 		sprites.emplace_back(sprite, GroundId::ROCK_WALL);
+	// 	}
+	// }
+
+	// if (bottom == GroundId::ROCK_WALL) {
+	// 	Sprite sprite = Sprite(GroundTemplate::templates[GroundId::ROCK_WALL].spriteSheet, pair(1, 3));
+	// 	sprites.emplace_back(sprite, GroundId::ROCK_WALL);
+	// }
 
 	for (int dir = 1; dir < Direction::count; dir += 2) {
 		GroundId::value id = getGround(position + Direction::taxi[dir]);
-		if (id == GroundId::ROCK_WALL || id == GroundId::MUD_WALL) continue;
 		if (id == GroundId::NONE || id >= groundId) continue;
 
 		GroundId::value left = getGround(position + Direction::taxi[Direction::rotate(dir, 2)]);
@@ -273,7 +312,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 
 	for (int dir = 2; dir < Direction::count; dir += 2) {
 		GroundId::value id = getGround(position + Direction::taxi[dir]);
-		if (!id || GroundTemplate::templates[id].wall) continue;
+		if (!id) continue;
 
 		GroundId::value left = getGround(position + Direction::taxi[Direction::rotate(dir, 1)]);
 		GroundId::value left2 = getGround(position + Direction::taxi[Direction::rotate(dir, 3)]);
@@ -282,7 +321,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 
 		//* Curves
 		GroundId::value curve = GroundId::MAX;
-		if (!GroundTemplate::templates[left].wall && left < groundId && left == right && left2 != left && right2 != right) {
+		if (left < groundId && left == right && left2 != left && right2 != right) {
 			pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
 			Sprite sprite = Sprite(GroundTemplate::templates[left].spriteSheet, variants[dir / 2 - 1], pair(1,1), GroundTemplate::templates[left].frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, left);
@@ -318,7 +357,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 
 	pair chunk = getChunk(position);
 	pair offset = getOffset(position);
-	Tile& tile = chunks.find(getChunk(position))->second.tiles[offset.x][offset.y];
+	Tile& tile = chunks.find(chunk)->second.tiles[offset.x][offset.y];
 
 	tile.sprites.clear();
 	for (int i = 0; i < sprites.size(); i++) {
@@ -381,13 +420,17 @@ void ChunkManager::reballance(World* world) {
 		EntitySet set = chunk.entities;
 		for (const Entity& entity: set) {
 			if (!world->ecs.hasComponent<PositionComponent>(entity)) continue;
-			PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(entity);
+			PositionComponent& positionComponent = world->ecs.getComponent<PositionComponent>(entity);			
+			vec middle = vec(CHUNK_SIZE * c.first) + vec(CHUNK_SIZE - 1, CHUNK_SIZE - 1) / 2;
 			vec pos = positionComponent.position;
-			vec offset = positionComponent.position - CHUNK_SIZE * c.first;
-			if (std::abs(offset.x) >= CHUNK_REACH || std::abs(offset.y) >= CHUNK_REACH) {
+			vec offset = pos - middle;
+			int buffer = CHUNK_REACH + CHUNK_SIZE / 2;
+			if (std::abs(offset.x) >= buffer || std::abs(offset.y) >= buffer) {
 				pair newChunk = getChunk(pos);
-				chunk.entities.erase(entity);
-				chunks.at(newChunk).entities.insert(entity);
+				auto it = chunks.find(newChunk);
+				if (it == chunks.end() || it->second.stage != ChunkStage::LOADED) continue;
+				detach(entity);
+				attach(entity, newChunk);
 			}			
 		}
 	}

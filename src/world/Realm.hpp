@@ -17,13 +17,13 @@ public:
 	Realm(RealmId realmId, uint seed);
 	Realm(std::fstream& stream);
 
-	void generate(RealmType::value realmType, WorldParameters params);
+	// void generate(RealmType::value realmType, WorldParameters params);
 
-	void generateWorld(pair size, WorldParameters params);
-	void generateHouse(pair size);
-	void generateCave(int count, int length);
-	void generateFlat(pair size);
-	void generateDungeon();
+	void generate(WorldParameters params);
+	void generateHouse();
+	// void generateCave(int count, int length);
+	void generateFlat();
+	// void generateDungeon();
 
 	ChunkManager chunkManager;
 

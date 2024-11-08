@@ -38,6 +38,7 @@ void World::init() {
 	BuildKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates();
 	GroundTemplate::setTemplates();
+	WallTemplate::setTemplates();
 	AnimalTemplate::setTemplates();
 	StructureTemplate::setTemplates();
 	Cluster::setTemplates();
@@ -50,17 +51,22 @@ World::World(std::string name, uint seed, WorldParameters params) : name(name), 
 	init();
 
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
-	spawnRealm->generate(RealmType::WORLD, params);
+	spawnRealm->generate(params);
 
 	spawn = pair(50,50);
 	pair spawnChunk = spawnRealm->chunkManager.getChunk(spawn);
 
 	spawnRealm->chunkManager.generateChunk(spawnChunk, ChunkStage::LOADED, spawnRealm->environment.get());
-
 	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
 
 	guiManager.add(std::make_unique<HotbarGui>(player));
 	guiManager.add(std::make_unique<HealthBarGui>(player));
+
+	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
+	house->generateHouse();
+
+	Realm* otherRealm = realmManager.addRealm(this, noise::UInt(seed + 2));
+	otherRealm->generateFlat();
 
 	// if (debug) {
 	// 	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
@@ -300,8 +306,12 @@ void World::update(uint dt) {
 	for (int x = -updateDistance; x <= updateDistance; x++) {
 		for (int y = -updateDistance; y <= updateDistance; y++) {
 			pair chunk = playerChunk + pair(x, y);
-			EntitySet& set = playerRealm->chunkManager.chunks.at(chunk).entities;
-        	updateSet.insert(set.begin(), set.end());
+
+			auto it =  playerRealm->chunkManager.chunks.find(chunk);
+			if (it != playerRealm->chunkManager.chunks.end()) {
+				EntitySet& set = (*it).second.entities;
+				updateSet.insert(set.begin(), set.end());
+			}
 		}
 	}
 
@@ -331,6 +341,8 @@ void World::update(uint dt) {
 	itemModSystem->update();
 
 	creatureMovementSystem->update(dt, realmManager);
+
+	playerRealm->chunkManager.reballance(this);
 
 	EntityMap collisions;
 	collisionSystem->update(collisions, updateSet);
@@ -390,8 +402,11 @@ void World::draw() {
 	for (int x = -renderDistance; x <= renderDistance; x++) {
 		for (int y = -renderDistance; y <= renderDistance; y++) {
 			pair chunk = cameraChunk + pair(x, y);
-			EntitySet& set = cameraRealm->chunkManager.chunks.at(chunk).entities;
-			drawSet.insert(set.begin(), set.end());
+			auto it =  playerRealm->chunkManager.chunks.find(chunk);
+			if (it != playerRealm->chunkManager.chunks.end()) {
+				EntitySet& set = (*it).second.entities;
+				drawSet.insert(set.begin(), set.end());
+			}
 		}
 	}
 
@@ -493,20 +508,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		pair chunk = vec::round(position / CHUNK_SIZE);
 		playerRealm->attach(activeItemContainer.item, chunk);
 		activeItemContainer.clear();
-	} else if (event.id == InputEventId::SELECT_1) {
-		playerComponent.activeSlot = 0;
-	} else if (event.id == InputEventId::SELECT_2) {
-		playerComponent.activeSlot = 1;
-	} else if (event.id == InputEventId::SELECT_3) {
-		playerComponent.activeSlot = 2;
-	} else if (event.id == InputEventId::SELECT_4) {
-		playerComponent.activeSlot = 3;
-	} else if (event.id == InputEventId::SELECT_5) {
-		playerComponent.activeSlot = 4;
-	} else if (event.id == InputEventId::SELECT_6) {
-		playerComponent.activeSlot = 5;
-	} else if (event.id == InputEventId::SELECT_7) {
-		playerComponent.activeSlot = 6;
+	} else if (12 <= event.id && event.id <= 18) {
+		playerComponent.activeSlot = event.id - 12;
 	} else if (event.id == InputEventId::ROTATE_LEFT) {
 		playerComponent.activeSlot = (playerComponent.activeSlot + 6) % 7;
 	} else if (event.id == InputEventId::ROTATE_RIGHT) {
@@ -615,8 +618,6 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		// 	}
 		// }
 	} else if (event.id == InputEventId::INSPECT) {
-
-		
 		if (hover) {
 			inspect = hover;
 			return true;
