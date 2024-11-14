@@ -23,7 +23,7 @@ public:
 	void generateHouse();
 	// void generateCave(int count, int length);
 	void generateFlat();
-	// void generateDungeon();
+	void generateDungeon();
 
 	ChunkManager chunkManager;
 

@@ -53,7 +53,7 @@ World::World(std::string name, uint seed, WorldParameters params) : name(name), 
 	spawnRealm = realmManager.addRealm(this, noise::UInt(seed + 1));
 	spawnRealm->generate(params);
 
-	spawn = pair(50,50);
+	spawn = pair(5,5);
 	pair spawnChunk = spawnRealm->chunkManager.getChunk(spawn);
 
 	spawnRealm->chunkManager.generateChunk(spawnChunk, ChunkStage::LOADED, spawnRealm->environment.get());
@@ -65,8 +65,13 @@ World::World(std::string name, uint seed, WorldParameters params) : name(name), 
 	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
 	house->generateHouse();
 
+	EntityFactory::createPortal(spawnRealm->realmId, spawn, house->realmId, pair(8,8));
+
 	Realm* otherRealm = realmManager.addRealm(this, noise::UInt(seed + 2));
 	otherRealm->generateFlat();
+
+	Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + 3));
+	dungeon->generateDungeon();
 
 	// if (debug) {
 	// 	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));

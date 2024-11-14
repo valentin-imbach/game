@@ -3,7 +3,7 @@
 #include "Generation.hpp"
 
 #include "EntityFactory.hpp"
-#include "Dungeon.hpp"
+#include "Dungeon2.hpp"
 
 Realm::Realm(RealmId realmId, uint seed) : realmId(realmId), seed(seed), chunkManager(seed + 1) {
 	chunkManager.realm = this;
@@ -147,6 +147,57 @@ void Realm::generateHouse() {
 
 	chunk.stage = ChunkStage::LOADED;
 
+}
+
+
+void Realm::generateDungeon() {
+
+	WorldParameters params;
+	params.elevation = pair(500, 500);
+	params.temperature = pair(20, 20);
+	params.percipitation = pair(100, 100);
+
+	pair vegetation = pair(0, 0);
+	pair variation = pair(0, 0);
+
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
+
+	chunkManager.fixed = true;
+
+	for (int x = -5; x <= 5; x++) {
+		for (int y = -5; y <= 5; y++) {
+			pair pos(x, y);
+			chunkManager.chunks.emplace(pos, pos);
+			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+			chunk.biome = Biome::RAINFOREST;
+			chunk.stage = ChunkStage::LOADED;
+		}
+	}
+
+	pair size(40, 40);
+	Dungeon dungeon(-size/2, size/2, 0);
+
+	for (auto& s : dungeon.layout) {
+		chunkManager.setGround(s, GroundId::ROCK);
+	}
+
+	for (int x = -5; x <= 5; x++) {
+		for (int y = -5; y <= 5; y++) {
+			pair pos(x, y);
+			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+			chunk.refreshMap(environment.get());
+		}
+	}
+
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			pair position(x, y);
+			chunkManager.updateStyle(position);
+		}
+	}
+	
+
+	
 }
 
 void Realm::generateFlat() {
