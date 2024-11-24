@@ -41,3 +41,5 @@ class ItemModSystem;
 class ShovingSystem;
 class ProcessingSystem;
 class FuelSystem;
+class SpawnerSystem;
+class AiLureSystem;

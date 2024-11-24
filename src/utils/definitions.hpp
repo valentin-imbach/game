@@ -78,7 +78,7 @@ ENUM(ActionState,
 IDLE,
 EAT,
 ATTACK,
-CHARGE,
+WIND_UP,
 USE)
 
 ENUM(StationId,
@@ -97,7 +97,8 @@ MELEE,
 RANGED,
 FLEE,
 EAT,
-POST)
+POST,
+LURE)
 
 ENUM(EntityTag,
 PLAYER,
@@ -185,3 +186,7 @@ MOUNTAIN)
 
 ENUM(Liquid,
 WATER)
+
+ENUM(ProjectileId,
+ARROW,
+FIRE_BALL)

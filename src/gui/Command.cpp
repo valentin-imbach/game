@@ -229,5 +229,33 @@ void Console::setCommands() {
 		if (rest) ecs->addComponent<DeathComponent>({}, rest);
 		return true;
 	});
+
+	commands["spawner"] = std::make_unique<Command<std::string>>([this](std::string str){
+		if (!player) return false;
+		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(player);
+		pair position = vec::round(positionComponent.position);
+		EnemyId::value enemyId = EnemyId::from_string(str);
+		if (!enemyId) return false;
+		EntityFactory::createSpawner(positionComponent.realmId, position, enemyId);
+		return true;
+	});
+
+	commands["boom"] = std::make_unique<Command<>>([this](){
+		if (!player) return false;
+		Entity boom = EntityFactory::createBoomerang();
+		if (!boom) return false;
+		InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(player);
+		Entity rest = inventoryComponent.inventory.add(boom);
+		return true;
+	});
+
+	commands["staff"] = std::make_unique<Command<>>([this](){
+		if (!player) return false;
+		Entity staff = EntityFactory::createStaff();
+		if (!staff) return false;
+		InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(player);
+		Entity rest = inventoryComponent.inventory.add(staff);
+		return true;
+	});
 }
 

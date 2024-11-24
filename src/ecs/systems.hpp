@@ -41,3 +41,5 @@
 #include "ShovingSystem.hpp"
 #include "ProcessingSystem.hpp"
 #include "FuelSystem.hpp"
+#include "SpawnerSystem.hpp"
+#include "AiLureSystem.hpp"

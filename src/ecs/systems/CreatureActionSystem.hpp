@@ -39,26 +39,32 @@ public:
 				}
 			}
 
-			if (actionComponent.actionState == ActionState::CHARGE) {
+			if (actionComponent.actionState == ActionState::WIND_UP) {
 				Entity item = actionComponent.item;
-				if (!item || !ecs->hasComponent<LauncherComponent>(item)) return;
-				LauncherComponent& launcherComponent = ecs->getComponent<LauncherComponent>(item);
+				if (!item || !ecs->hasComponent<WindUpComponent>(item)) return;
+				WindUpComponent& windUpComponent = ecs->getComponent<WindUpComponent>(item);
 
 				uint past = ticks - actionComponent.start;
-				float t = float(past) / launcherComponent.chargeTime;
-				float charge = launcherComponent.maxForce * std::min(t, 1.0f);
+				float t = std::min(1.0f, float(past) / windUpComponent.chargeTime);
+				int stage = 2 * t;
 
-				if (actionComponent.trigger && ticks > actionComponent.trigger) {				
-					if (charge > launcherComponent.minForce) {
-						PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
-						vec target = actionComponent.position;
+				if (actionComponent.trigger && ticks > actionComponent.trigger) {	
 
-						vec direction = {1.0f, 0};
-						if (vec::dist(target, positionComponent.position) > 0.001f) {
-							direction = vec::normalise(target - positionComponent.position);
+					if (ecs->hasComponent<LauncherComponent>(item)) {
+						LauncherComponent& launcherComponent = ecs->getComponent<LauncherComponent>(item);
+						
+						float charge = launcherComponent.force * t;
+						if (stage > 0) {
+							PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+							vec target = actionComponent.position;
+
+							vec direction = {1.0f, 0};
+							if (vec::dist(target, positionComponent.position) > 0.001f) {
+								direction = vec::normalise(target - positionComponent.position);
+							}
+
+							EntityFactory::createProjectile(ProjectileId::ARROW, positionComponent.realmId, positionComponent.position, charge * direction, entity);
 						}
-
-						EntityFactory::createProjectile(positionComponent.realmId, positionComponent.position, charge * direction, entity);
 					}
 
 					actionComponent.actionState = ActionState::IDLE;
@@ -67,16 +73,10 @@ public:
 					actionComponent.trigger = 0;
 					actionComponent.end = 0;
 
-					ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(3, 4)));
-					ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(3, 5)));
+					ecs->getComponent<SpriteComponent>(item).spriteStack = windUpComponent.sprites[0];
+					
 				} else {
-					if (past > launcherComponent.chargeTime) {
-						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(5, 4)));
-						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(5, 5)));
-					} else if (charge > launcherComponent.minForce) {
-						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(4, 4)));
-						ecs->getComponent<SpriteComponent>(item).spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(4, 5)));
-					}
+					ecs->getComponent<SpriteComponent>(item).spriteStack = windUpComponent.sprites[stage];
 				}
 			}
 

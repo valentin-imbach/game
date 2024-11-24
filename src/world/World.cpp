@@ -182,6 +182,9 @@ void World::rosterComponents() {
 	ecs.rosterComponent<ProcessingComponent>(ComponentId::PROCESSING);
 	ecs.rosterComponent<FuelComponent>(ComponentId::FUEL);
 	ecs.rosterComponent<TankComponent>(ComponentId::TANK);
+	ecs.rosterComponent<SpawnerComponent>(ComponentId::SPAWNER);
+	ecs.rosterComponent<AiLureComponent>(ComponentId::AI_LURE);
+	ecs.rosterComponent<WindUpComponent>(ComponentId::WIND_UP);
 
 	LOG("Components rostered");
 }
@@ -269,6 +272,10 @@ void World::rosterSystems() {
 		{ComponentId::PROCESSING, ComponentId::SPRITE});
 	fuelSystem = ecs.rosterSystem<FuelSystem>(SystemId::FUEL,
 		{ComponentId::FUEL});
+	spawnerSystem = ecs.rosterSystem<SpawnerSystem>(SystemId::SPAWNER, 
+		{ComponentId::SPAWNER, ComponentId::POSITION});
+	aiLureSystem = ecs.rosterSystem<AiLureSystem>(SystemId::AI_LURE, 
+		{ComponentId::AI, ComponentId::AI_LURE});
 
 	LOG("Systems rostered")
 }
@@ -320,6 +327,8 @@ void World::update(uint dt) {
 		}
 	}
 
+	spawnerSystem->update(ticks, updateSet, particleSystem);
+
 	sensorSystem->update(updateSet, ticks, realmManager);
 
 	//aiMoveSystem->update(ticks, realmManager);
@@ -328,6 +337,7 @@ void World::update(uint dt) {
 	aiChaseSystem->score(ticks);
 	aiMeleeSystem->score(ticks);
 	aiPostSystem->score(ticks);
+	aiLureSystem->score(ticks);
 
 	aiSystem->update(ticks);
 	//aiMoveSystem->move(ticks);
@@ -336,6 +346,7 @@ void World::update(uint dt) {
 	aiChaseSystem->update(ticks, realmManager);
 	aiMeleeSystem->update(ticks, realmManager);
 	aiPostSystem->update(ticks, realmManager);
+	aiLureSystem->update(ticks, realmManager);
 
 	creatureActionSystem->update(ticks, forageSystem, updateSet);
 
@@ -521,8 +532,19 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		playerComponent.activeSlot = (playerComponent.activeSlot + 1) % 7;
 	} else if (event.id == InputEventId::PRIMARY) {
 		vec position = camera.worldPosition(event.mousePosition);
-
 		ActionComponent& actionComponent = ecs.getComponent<ActionComponent>(player);
+
+		if (activeItemContainer.item) {
+			if (ecs.hasComponent<LauncherComponent>(activeItemContainer.item)) {
+				LauncherComponent& launcherComponent = ecs.getComponent<LauncherComponent>(activeItemContainer.item);
+				vec position = camera.worldPosition(event.mousePosition);
+				vec playerPosition = ecs.getComponent<PositionComponent>(player).position;
+				vec direction = vec::normalise(position - playerPosition);
+				EntityFactory::createProjectile(ProjectileId::FIRE_BALL, playerRealm->realmId, playerPosition, launcherComponent.force * direction, player);
+				return true;
+			}
+		}
+
 		if (actionComponent.actionState == ActionState::IDLE) {
 			actionComponent.actionState = ActionState::ATTACK;
 			actionComponent.position = position;
@@ -553,6 +575,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 		
 		if (activeItemContainer.item) {
 			ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
+			if (!ecs.hasComponent<ItemKindComponent>(activeItemContainer.item)) return false;
 			ItemKindComponent& itemKindComponent = ecs.getComponent<ItemKindComponent>(activeItemContainer.item);
 
 			if (hasItemKind(activeItemContainer.item, ItemKind::HOE)) {
@@ -592,8 +615,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 
 		if (actionComponent.actionState == ActionState::IDLE && inputState[InputStateId::SECONDARY]) {
 			Entity item = activeItemContainer.item;
-			if (ecs.hasComponent<LauncherComponent>(item)) {
-				actionComponent.actionState = ActionState::CHARGE;
+			if (ecs.hasComponent<WindUpComponent>(item)) {
+				actionComponent.actionState = ActionState::WIND_UP;
 				actionComponent.start = ticks;
 				actionComponent.trigger = 0;
 				actionComponent.end = 0;
@@ -601,7 +624,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			}
 		}
 
-		if (actionComponent.actionState == ActionState::CHARGE && !inputState[InputStateId::SECONDARY]) {
+		if (actionComponent.actionState == ActionState::WIND_UP && !inputState[InputStateId::SECONDARY]) {
 			actionComponent.position = camera.worldPosition(event.mousePosition);
 			actionComponent.trigger = ticks;
 		}

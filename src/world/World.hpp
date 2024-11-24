@@ -105,6 +105,8 @@ private:
 	ShovingSystem* shovingSystem;
 	ProcessingSystem* processingSystem;
 	FuelSystem* fuelSystem;
+	SpawnerSystem* spawnerSystem;
+	AiLureSystem* aiLureSystem;
 
 	GuiManager guiManager;
 	std::string name;

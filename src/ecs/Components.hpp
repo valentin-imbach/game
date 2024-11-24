@@ -160,6 +160,7 @@ struct SensorComponent {
 	bool engaged = false;
 	vec position = {0, 0};
 	uint lastSeen = 0;
+	Entity item = 0;
 };
 
 struct ProjectileComponent {
@@ -167,11 +168,17 @@ struct ProjectileComponent {
 	bool grounded = false;
 };
 
-struct LauncherComponent {
-	float maxForce = 0.75f;
-	float minForce = 0.3f;
+#define WIND_UP_COUNT 3
+
+struct WindUpComponent {
+	SpriteStack sprites[WIND_UP_COUNT];
 	float chargeTime = 2000;
 	float charge = 0;
+};
+
+struct LauncherComponent {
+	float force = 0.75f;
+	ProjectileId::value projectileId = ProjectileId::ARROW;
 };
 
 // struct ChunkComponent {};
@@ -227,9 +234,9 @@ struct MaturityComponent {
 };
 
 struct DamageComponent {
-	int damage;
-	uint startTime;
-	uint duration;
+	int damage = 0;
+	uint startTime = 0;
+	uint duration = 0;
 	vec force = {0, 0};
 	Entity imune = 0;
 };
@@ -309,4 +316,17 @@ struct TankComponent {
 
 	ushort content = 0;
 	Liquid::value liquid = Liquid::NONE;
+};
+
+struct SpawnerComponent {
+	EnemyId::value enemyId;
+	uint lastSpawn = 0;
+	ushort radius = 5;
+	uint dealy = 5000;
+	ParticleId::value particleId = ParticleId::SMOKE;
+};
+
+struct AiLureComponent {
+	ItemId::value itemId;
+	vec target;
 };

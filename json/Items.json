@@ -408,5 +408,13 @@
             "hardness": 2
         },
         "value": 40
+    },
+    "wheat": {
+        "name": "Wheat",
+        "kinds": [
+        ],
+        "properties": {
+        },
+        "value": 2
     }
 }

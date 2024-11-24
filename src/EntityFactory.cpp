@@ -220,7 +220,8 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, ve
 	world->ecs.addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
-	world->ecs.addComponent<AiFleeComponent>({80}, animal);
+	world->ecs.addComponent<AiFleeComponent>({50}, animal);
+	world->ecs.addComponent<AiLureComponent>({ItemId::WHEAT}, animal);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::ANIMAL);
@@ -311,9 +312,17 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 		itemKindComponent.itemProperties[ItemProperty::PARRY] = 10;
 	} else if (itemKind == ItemKind::BOW) {
 		world->ecs.addComponent<NameComponent>({Textblock("Bow")}, tool);
-		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(3, 4)));
-		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(3, 5)));
+		WindUpComponent windUpComponent;
+		windUpComponent.sprites[0].setSprite(0, Sprite(SpriteSheet::TOOLS, pair(3, 4)));
+		windUpComponent.sprites[0].setSprite(1, Sprite(SpriteSheet::TOOLS, pair(3, 5)));
+		windUpComponent.sprites[1].setSprite(0, Sprite(SpriteSheet::TOOLS, pair(4, 4)));
+		windUpComponent.sprites[1].setSprite(1, Sprite(SpriteSheet::TOOLS, pair(4, 5)));
+		windUpComponent.sprites[2].setSprite(0, Sprite(SpriteSheet::TOOLS, pair(5, 4)));
+		windUpComponent.sprites[2].setSprite(1, Sprite(SpriteSheet::TOOLS, pair(5, 5)));
+		spriteComponent.spriteStack = windUpComponent.sprites[0];
+
 		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
+		world->ecs.addComponent<WindUpComponent>(windUpComponent, tool);
 		world->ecs.addComponent<LauncherComponent>({}, tool);
 	} else if (itemKind == ItemKind::AXE) {
 		world->ecs.addComponent<NameComponent>({Textblock("Axe")}, tool);
@@ -422,19 +431,28 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 	return station;
 }
 
-Entity EntityFactory::createProjectile(RealmId realmId, vec position, vec direction, Entity imune) {
+Entity EntityFactory::createProjectile( ProjectileId::value projectileId, RealmId realmId, vec position, vec direction, Entity imune) {
 	Entity projectile = createDynamicEntity(realmId, position);
 	if (!projectile) return 0;
 
-	SpriteStack spriteStack;
-	spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, {0, 9}, {1, 1}));
-	SpriteComponent spriteComponent = {spriteStack};
-	spriteComponent.angle = vec::angle(direction) - M_PI/4;
+	SpriteComponent spriteComponent = {};
+	DamageComponent damageComponent = {};
+	damageComponent.imune = imune;
+
+	if (projectileId == ProjectileId::ARROW) {
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, {0, 9}, {1, 1}));
+		spriteComponent.angle = vec::angle(direction) - M_PI/4;
+		damageComponent.damage = 3;
+		damageComponent.force = direction / 10;
+	} else if (projectileId == ProjectileId::FIRE_BALL) {
+		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::FIRE_BALL));
+		damageComponent.damage = 5;
+		damageComponent.force = direction / 20;
+	}
+	
 	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
-
 	world->ecs.addComponent<HitboxComponent>({Shape(0.2f)}, projectile);
-	world->ecs.addComponent<DamageComponent>({1, 0, 0, direction/10, imune}, projectile);
-
+	world->ecs.addComponent<DamageComponent>(damageComponent, projectile);
 	world->ecs.addComponent<ProjectileComponent>({direction * 70}, projectile);
 
 	return projectile;
@@ -469,4 +487,66 @@ Entity EntityFactory::createPortal(RealmId realmId, pair position, RealmId other
 	world->ecs.addComponent<SpriteComponent>({portalSprites}, portal);
 	world->ecs.addComponent<PortalComponent>({otherRealmId, entry}, portal);
 	return portal;
+}
+
+Entity EntityFactory::createSpawner(RealmId realmId, pair position, EnemyId::value enemyId) {
+	Entity spawner = createStaticEntity(realmId, position, pair(1,1), true, true);
+	SpriteStack spawnerSprites;
+	spawnerSprites.setSprite(0, Sprite(SpriteSheet::SPAWNER, pair(0,0), pair(1,2)), pair(0, -1));
+	world->ecs.addComponent<SpriteComponent>({spawnerSprites}, spawner);
+	world->ecs.addComponent<SpawnerComponent>({enemyId, world->ticks}, spawner);
+	return spawner;
+}
+
+
+
+Entity EntityFactory::createBoomerang() {
+	Entity tool = createItem(ItemId::NONE, 1, true);
+	if (!tool) return 0;
+
+	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
+
+	ItemKindComponent itemKindComponent = {};
+	// itemKindComponent.itemKinds[itemKind] = true;
+
+	SpriteComponent spriteComponent = {{}, 0.5f};
+	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
+
+	world->ecs.addComponent<NameComponent>({Textblock("Boomerang")}, tool);
+	spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(0, 0)));
+	itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
+
+	WindUpComponent winduUpComponent;
+	winduUpComponent.sprites[0].setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(0, 0)));
+	winduUpComponent.sprites[1].setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(1, 0)));
+	winduUpComponent.sprites[2].setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(2, 0)));
+	world->ecs.addComponent<WindUpComponent>(winduUpComponent, tool);
+	
+	world->ecs.addComponent<SpriteComponent>(spriteComponent, tool);
+	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
+
+	return tool;
+}
+
+
+
+Entity EntityFactory::createStaff() {
+	Entity tool = createItem(ItemId::NONE, 1, true);
+	if (!tool) return 0;
+
+	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
+
+	ItemKindComponent itemKindComponent = {};
+	SpriteComponent spriteComponent = {{}, 0.5f};
+	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
+
+	world->ecs.addComponent<NameComponent>({Textblock("Fire Staff")}, tool);
+	spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::STAFF, pair(0, 0)));
+	itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
+
+	world->ecs.addComponent<SpriteComponent>(spriteComponent, tool);
+	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
+	world->ecs.addComponent<LauncherComponent>({0.4f}, tool);
+
+	return tool;
 }

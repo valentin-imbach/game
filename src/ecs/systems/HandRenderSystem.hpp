@@ -45,7 +45,7 @@ public:
 				uint totalTime = actionComponent.end - actionComponent.start;
 				float t = float(timePassed)/totalTime;
 				style.angle += std::sin(2 * t*t * M_PI) * M_PI * (1-t);
-			} else if (actionComponent.actionState == ActionState::CHARGE) {
+			} else if (actionComponent.actionState == ActionState::WIND_UP) {
 				offset.x = 0.2f;
 				style.pivot = pair(0, 0);
 				style.angle += M_PI_4;

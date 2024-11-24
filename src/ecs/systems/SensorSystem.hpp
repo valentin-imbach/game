@@ -34,6 +34,13 @@ public:
 				sensorComponent.position = entPositionComponent.position;
 				sensorComponent.lastSeen = ticks;
 				sensorComponent.engaged = true;
+				if (ecs->hasComponent<PlayerComponent>(ent)) {
+					PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(ent);
+					sensorComponent.item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot]->item;
+				} else {
+					sensorComponent.item = 0;
+				}
+
 				break;
 			}
 		}
