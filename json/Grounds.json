@@ -45,5 +45,9 @@
 		"sprite": "sand",
 		"colour": [217, 199, 113, 255],
 		"speed": 0.8
+	},
+	"tiles": {
+		"sprite": "tiles",
+		"colour": [123, 123, 123, 255]
 	}
 }

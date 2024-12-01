@@ -101,7 +101,7 @@ void Chunk::setBiome(ChunkManager* manager, Environment* environment) {
 	pair chunkUp = position + pair(0, -1);
 	auto it = manager->chunks.find(chunkUp);
 	float gap = it->second.elevation - elevation;
-	cliff = (!ocean && gap > CLIFF_GAP);
+	cliff = true; //(!ocean && gap > CLIFF_GAP);
 
 }
 
@@ -216,14 +216,16 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 					}
 				}
 			}
-
-			if (environment->cliffs && cliff) {
-				if (CHUNK_SIZE/2 - 3 < y && y < CHUNK_SIZE/2 + 3) {
-					tiles[x][y].wallId = WallId::DIRT;
-				}
-			}
-
 		}
+	}
+
+	if (environment->cliffs && cliff) {
+		for (int x = CHUNK_SIZE/2 - 4; x < CHUNK_SIZE/2 + 4; x++) {
+			tiles[x][CHUNK_SIZE/2 - 1].wallId = WallId::DIRT;
+			tiles[x][CHUNK_SIZE/2].wallId = WallId::DIRT;
+		}
+		tiles[CHUNK_SIZE/2 - 5][CHUNK_SIZE/2 - 1].wallId = WallId::DIRT;
+		tiles[CHUNK_SIZE/2 + 4][CHUNK_SIZE/2 - 1].wallId = WallId::DIRT;
 	}
 
 	// tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;
@@ -261,7 +263,7 @@ void Chunk::setObjects(ChunkManager* manager, Environment* environment) {
 			pair offset(x, y);
 			pair pos = CHUNK_SIZE * position + offset;
 
-			if (tiles[x][y].groundId == GroundId::WATER) continue;
+			if (tiles[x][y].groundId == GroundId::WATER || tiles[x][y].wallId) continue;
 			
 			// if (!free(position)) continue;
 			float variation = environment->variationMap->get(pos);

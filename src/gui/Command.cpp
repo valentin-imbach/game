@@ -86,7 +86,7 @@ void Console::setCommands() {
 
 	commands["tile"] = std::make_unique<Command<std::string>>([this](std::string str){
 		GroundId::value groundId = GroundId::from_string(str);
-		if (!player || !groundId) return false;
+		if (!player) return false;
 		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(player);
 		pair position = vec::round(positionComponent.position);
 		world->playerRealm->chunkManager.setGround(position, groundId);
@@ -95,7 +95,7 @@ void Console::setCommands() {
 
 	commands["wall"] = std::make_unique<Command<std::string>>([this](std::string str){
 		WallId::value wallId = WallId::from_string(str);
-		if (!player || !wallId) return false;
+		if (!player) return false;
 		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(player);
 		pair position = vec::round(positionComponent.position);
 		world->playerRealm->chunkManager.setWall(position, wallId);

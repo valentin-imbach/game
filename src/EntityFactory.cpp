@@ -57,7 +57,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	world->ecs.addComponent<ControllerComponent>({}, player);
 	world->ecs.addComponent<HandComponent>({}, player);
 
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, player);
+	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.8f, 0.4f))}, player);
 	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
 
 	world->ecs.addComponent<HealthComponent>({20, 20}, player);

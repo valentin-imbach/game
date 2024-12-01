@@ -4,6 +4,7 @@
 
 #include "EntityFactory.hpp"
 #include "Dungeon2.hpp"
+#include "Dungeon3.hpp"
 
 Realm::Realm(RealmId realmId, uint seed) : realmId(realmId), seed(seed), chunkManager(seed + 1) {
 	chunkManager.realm = this;
@@ -27,8 +28,8 @@ Realm::Realm(std::fstream& stream) : chunkManager(0) {
 
 void Realm::generate(WorldParameters params) {
 	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
-	environment->rivers = false;
-	environment->cliffs = false;
+	environment->rivers = params.rivers;
+	environment->cliffs = params.cliffs;
 
 	// for (int x = 0; x < size.x; x++) {
 	// 	for (int y = 0; y < size.y; y++) {
@@ -195,6 +196,108 @@ void Realm::generateDungeon() {
 			chunkManager.updateStyle(position);
 		}
 	}
+	
+
+	
+}
+
+
+void Realm::generateDungeon2() {
+
+	WorldParameters params;
+	params.elevation = pair(500, 500);
+	params.temperature = pair(20, 20);
+	params.percipitation = pair(100, 100);
+	pair vegetation = pair(0, 0);
+	pair variation = pair(0, 0);
+	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
+	chunkManager.fixed = true;
+	
+	for (int x = -6; x <= 6; x++) {
+		for (int y = -6; y <= 6; y++) {
+			pair pos(x, y);
+			chunkManager.chunks.emplace(pos, pos);
+			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+			chunk.biome = Biome::RAINFOREST;
+			chunk.stage = ChunkStage::LOADED;
+		}
+	}
+
+	DungeonGraph dungeon(seed, 5);
+
+	for (auto& r : dungeon.map) {
+		pair pos = r.first;
+		DungeonRoom& room = r.second;
+		Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+
+		for (int x = 2; x < CHUNK_SIZE - 2; x++) {
+			for (int y = 2; y < CHUNK_SIZE - 2; y++) {
+				pair offset = CHUNK_SIZE * pos;
+				chunk.tiles[x][y] = Tile(GroundId::TILES, WallId::NONE);
+			}
+			chunk.tiles[x][1] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[x][0] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[x][CHUNK_SIZE - 2] = Tile(GroundId::NONE, WallId::DUNGEON);
+		}
+
+		for (int y = 0; y < CHUNK_SIZE - 1; y++) {
+			chunk.tiles[1][y] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[CHUNK_SIZE - 2][y] = Tile(GroundId::NONE, WallId::DUNGEON);
+		}
+		
+		if (room.doors[0]) {
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 1] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE - 2][CHUNK_SIZE/2] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE - 2][CHUNK_SIZE/2 - 1] = Tile(GroundId::TILES);
+
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 + 1] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 2] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 3] = Tile(GroundId::NONE, WallId::DUNGEON);
+		}
+		if (room.doors[2]) {
+			chunk.tiles[0][CHUNK_SIZE/2] = Tile(GroundId::TILES);
+			chunk.tiles[0][CHUNK_SIZE/2 - 1] = Tile(GroundId::TILES);
+			chunk.tiles[1][CHUNK_SIZE/2] = Tile(GroundId::TILES);
+			chunk.tiles[1][CHUNK_SIZE/2 - 1] = Tile(GroundId::TILES);
+
+			chunk.tiles[0][CHUNK_SIZE/2 + 1] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[0][CHUNK_SIZE/2 - 2] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[0][CHUNK_SIZE/2 - 3] = Tile(GroundId::NONE, WallId::DUNGEON);
+		}
+		if (room.doors[1]) {
+			chunk.tiles[CHUNK_SIZE/2][0] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE/2 - 1][0] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE/2][1] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE/2 - 1][1] = Tile(GroundId::TILES);
+		}
+		if (room.doors[3]) {
+			chunk.tiles[CHUNK_SIZE/2][CHUNK_SIZE - 1] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE/2 - 1][CHUNK_SIZE - 1] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE/2][CHUNK_SIZE - 2] = Tile(GroundId::TILES);
+			chunk.tiles[CHUNK_SIZE/2 - 1][CHUNK_SIZE - 2] = Tile(GroundId::TILES);
+
+			chunk.tiles[CHUNK_SIZE/2 - 2][CHUNK_SIZE - 1] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[CHUNK_SIZE/2 + 1][CHUNK_SIZE - 1] = Tile(GroundId::NONE, WallId::DUNGEON);
+		}
+	}
+
+	for (int x = -5; x <= 5; x++) {
+		for (int y = -5; y <= 5; y++) {
+			pair pos(x, y);
+			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+			chunk.refreshMap(environment.get());
+
+			for (int x = 0; x < CHUNK_SIZE; x++) {
+				for (int y = 0; y < CHUNK_SIZE; y++) {
+					pair position(x, y);
+					chunkManager.updateStyle(pos * CHUNK_SIZE + position);
+				}
+			}
+		}
+	}
+
+	
 	
 
 	

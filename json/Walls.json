@@ -3,12 +3,15 @@
 		"sprite": "rock_wall"
 	},
 	"dirt": {
-		"sprite": "wall3"
+		"sprite": "dirt_wall"
 	},
 	"brick": {
 		"sprite": "brick_wall"
 	},
 	"plaster": {
 		"sprite": "plaster_wall"
+	},
+	"dungeon": {
+		"sprite": "dungeon_wall"
 	}
 }

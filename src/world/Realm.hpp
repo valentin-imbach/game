@@ -24,6 +24,7 @@ public:
 	// void generateCave(int count, int length);
 	void generateFlat();
 	void generateDungeon();
+	void generateDungeon2();
 
 	ChunkManager chunkManager;
 

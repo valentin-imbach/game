@@ -8,6 +8,7 @@
 #include "Window.hpp"
 #include "utils.hpp"
 #include <filesystem>
+#include "Dungeon3.hpp"
 
 #define DEBUG_MODE false
 
@@ -26,6 +27,11 @@ Game::Game() : trackMix(1), console(this) {
 	// 	createWorld("Test World", arc4random(), true);
 	// 	return;
 	// }
+
+
+	DungeonGraph dun(time(0), 5);
+	dun.print();
+
 }
 
 Game::~Game() {

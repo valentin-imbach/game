@@ -71,7 +71,7 @@ World::World(std::string name, uint seed, WorldParameters params) : name(name), 
 	otherRealm->generateFlat();
 
 	Realm* dungeon = realmManager.addRealm(this, noise::UInt(seed + 3));
-	dungeon->generateDungeon();
+	dungeon->generateDungeon2();
 
 	// if (debug) {
 	// 	Realm* house = realmManager.addRealm(this, noise::UInt(seed + 2));
