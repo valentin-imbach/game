@@ -14,6 +14,7 @@ public:
 	void draw(Camera camera, uint ticks);
 
 	void updateStyle(pair position, bool propagate = false);
+	void updateStyle2(pair position, bool propagate = false);
 
 	void serialise2(std::filesystem::path path);
 

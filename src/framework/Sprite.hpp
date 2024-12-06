@@ -64,7 +64,8 @@ BOOMERANG,
 STAFF,
 FIRE_BALL,
 DUNGEON_WALL,
-TILES)
+TILES,
+GRASS_OFFSET)
 
 class Sprite {
 public:

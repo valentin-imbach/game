@@ -24,6 +24,7 @@ void GroundTemplate::setTemplates() {
 		}
 
 		if (value["sprite"]) templates[groundId].spriteSheet = SpriteSheet::from_string(std::string(value["sprite"]));
+		if (value["sprite2"]) templates[groundId].spriteSheet2 = SpriteSheet::from_string(std::string(value["sprite2"]));
 		if (value["colour"]) {
 			uint r = int(value["colour"][0]);
 			uint g = int(value["colour"][1]);

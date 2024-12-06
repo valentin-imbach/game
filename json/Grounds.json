@@ -5,6 +5,7 @@
 	},
 	"grass": {
 		"sprite": "grass",
+		"sprite2": "grass_offset",
 		"colour": [77, 179, 73, 255],
 		"speed": 0.9
 	},

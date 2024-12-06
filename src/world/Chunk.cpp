@@ -250,7 +250,7 @@ void Chunk::setTiles(ChunkManager* manager) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			pair offset(x, y);
 			pair pos = CHUNK_SIZE * position + offset;
-			manager->updateStyle(pos);
+			manager->updateStyle2(pos);
 		}
 	}
 	// LOG("Tiles set at", position);
@@ -299,8 +299,8 @@ void Chunk::drawTiles(Camera camera, uint ticks) {
 	for (int a = 0; a < CHUNK_SIZE; a++) {
 		for (int b = 0; b < CHUNK_SIZE; b++) {
 			pair offset(a, b);
-			pair pos = CHUNK_SIZE * position + offset;
-			pair screenPosition = camera.screenPosition(pos);
+			vec pos = CHUNK_SIZE * position + offset;
+			pair screenPosition = camera.screenPosition(pos + vec(0.5f, 0.5f));
 			tiles[a][b].sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
 		}
 	}
