@@ -20,7 +20,7 @@ SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
 	return tex;
 }
 
-void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style) {
+void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, vec spos, vec ssize, vec dpos, vec dsize, TextureStyle style) {
 	if (!src) return;
 	if (style.centered) dpos -= dsize / 2;
 	SDL_FRect srect = {float(spos.x), float(spos.y), float(ssize.x), float(ssize.y)};
@@ -32,13 +32,13 @@ void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, 
 	SDL_RenderTextureRotated(Window::instance->renderer, src, &srect, &drect, -style.angle * 180 / M_PI, &pivot, style.flip);
 }
 
-bool TextureManager::ison(pair point, SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style) {
+bool TextureManager::ison(vec point, SDL_Texture* src, SDL_Texture* dst, vec spos, vec ssize, vec dpos, vec dsize, TextureStyle style) {
 	if (!src) return false;
 	if (style.centered) dpos -= dsize / 2;
-	return pair::inside(point, dpos, dsize, false);
+	return vec::inside(point, dpos, dsize, false);
 }
 
-void TextureManager::drawRect(pair position, pair size, Colour colour, bool centered, bool filled) {
+void TextureManager::drawRect(vec position, vec size, Colour colour, bool centered, bool filled) {
 	if (centered) position -= size / 2;
 	SDL_FRect rect = {float(position.x), float(position.y), float(size.x), float(size.y)};
 	SDL_SetRenderTarget(Window::instance->renderer, NULL);
@@ -47,7 +47,7 @@ void TextureManager::drawRect(pair position, pair size, Colour colour, bool cent
 	filled ? SDL_RenderFillRect(Window::instance->renderer, &rect) : SDL_RenderRect(Window::instance->renderer, &rect);
 }
 
-void TextureManager::drawCirc(pair position, int radius, Colour colour) {
+void TextureManager::drawCirc(vec position, int radius, Colour colour) {
 	SDL_SetRenderTarget(Window::instance->renderer, NULL);
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);

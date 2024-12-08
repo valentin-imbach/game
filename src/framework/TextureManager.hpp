@@ -21,10 +21,10 @@ class TextureManager {
 public:
 	TextureManager() = delete;
 	static SDL_Texture* loadTexture(std::string path, bool outline = false);
-	static void drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style = TextureStyle());
-	static bool ison(pair point, SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style = TextureStyle());
-	static void drawRect(pair position, pair size, Colour colour = {255, 0, 0, 255}, bool centered = true, bool filled = false);
-	static void drawCirc(pair position, int radius, Colour colour = {255, 0, 0, 255});
+	static void drawTexture(SDL_Texture* src, SDL_Texture* dst, vec spos, vec ssize, vec dpos, vec dsize, TextureStyle style = TextureStyle());
+	static bool ison(vec point, SDL_Texture* src, SDL_Texture* dst, vec spos, vec ssize, vec dpos, vec dsize, TextureStyle style = TextureStyle());
+	static void drawRect(vec position, vec size, Colour colour = {255, 0, 0, 255}, bool centered = true, bool filled = false);
+	static void drawCirc(vec position, int radius, Colour colour = {255, 0, 0, 255});
 
 	// static void saveTexture(SDL_Texture* texture, std::filesystem::path path);
 

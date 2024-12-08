@@ -42,7 +42,7 @@ pair TextManager::getTextSize(const std::string& text) {
 	return size;
 }
 
-void TextManager::drawText(std::string& text, pair position, bool centred, Colour colour) {
+void TextManager::drawText(std::string& text, vec position, bool centred, Colour colour) {
 	if (!font || text.empty()) return;
 	std::vector<std::string> lines;
 	std::istringstream iss(text);
@@ -91,7 +91,7 @@ void TextManager::drawText(std::string& text, pair position, bool centred, Colou
 	SDL_DestroyTexture(texture);
 }
 
-void TextManager::drawText(Text& text, pair position, bool centred) {
+void TextManager::drawText(Text& text, vec position, bool centred) {
 	TTF_SetFontStyle(font, text.style);
 	drawText(text.text, position, centred, text.colour);
 	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);

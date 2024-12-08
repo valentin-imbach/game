@@ -499,7 +499,7 @@ void Selector::draw() {
 		pair pos = screenPosition - screenSize / 2 + offset * index + pair(offset / 2, offset / 2);
 		(selected == i ? slot2 : slot).draw(pos, GuiManager::scale);
 		sprites[i].draw(pos, GuiManager::scale);
-		if (Game::settings.showGuiBox) TextureManager::drawRect(pos, {offset, offset});
+		if (Game::settings.showGuiBox) TextureManager::drawRect(pos, vec(offset, offset));
 	}
 }
 
@@ -616,7 +616,7 @@ bool SliderGui::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::STATE) {
 		if (event.state[InputStateId::PRIMARY] && active) {
 			int range = (sprite.size.x - 1) * BIT * GuiManager::scale;
-			int offset = event.mousePosition.x - screenPosition.x + range / 2;
+			int offset = int(event.mousePosition.x - screenPosition.x) + range / 2;
 			int nv = min + (offset * (max - min) / range);
 			*value = std::max(min, std::min(max, nv));
 		} else {
@@ -668,7 +668,7 @@ bool RangeSliderGui::handleEvent(InputEvent event) {
 	} else if (event.id == InputEventId::STATE) {
 		int width = (sprite.size.x - 1) * BIT * GuiManager::scale;
 		int buffer = leftHead->screenSize.x;
-		int offset = event.mousePosition.x - screenPosition.x + width / 2;
+		int offset = int(event.mousePosition.x - screenPosition.x) + width / 2;
 		if (event.state[InputStateId::PRIMARY] && leftActive) {
 			int nv = range.x + (offset * (range.y - range.x) / (width - buffer));
 			value->x = std::max(range.x, std::min(value->y, nv));

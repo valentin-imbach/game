@@ -406,7 +406,7 @@ void World::draw() {
 	// drawTiles()
 
 	if (state) {
-		pair gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
+		vec gridPosition = camera.screenPosition(vec::round(camera.worldPosition(Window::instance->mousePosition)));
 		TextureManager::drawRect(gridPosition, pair(camera.zoom * BIT, camera.zoom * BIT), {0, 0, 255, 255});
 	}
 

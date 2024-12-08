@@ -23,7 +23,7 @@ public:
 	static void cleanup();
 	static pair getTextSize(const std::string& text);
 
-	static void drawText(std::string& text, pair position, bool centred = false, Colour colour = {255, 255, 255, 255});
-	static void drawText(Text& text, pair position, bool centred = false);
+	static void drawText(std::string& text, vec position, bool centred = false, Colour colour = {255, 255, 255, 255});
+	static void drawText(Text& text, vec position, bool centred = false);
 	static void loadFont(std::string path, int size);
 };

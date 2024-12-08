@@ -6,7 +6,7 @@ std::array<SDL_Texture*, SpriteSheet::count> Sprite::outlineSpriteSheets = {};
 
 Sprite::Sprite(SpriteSheet::value spriteSheet, pair source, pair size, uchar frameCount, uint frameDuration, uint animationStart, pair animationOffset) : spriteSheet(spriteSheet), source(source), size(size), frameCount(frameCount), frameDuration(frameDuration), animationStart(animationStart), animationOffset(animationOffset) {}
 
-void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
+void Sprite::draw(vec position, float scale, TextureStyle style, uint ticks) {
 	if (!spriteSheet) return;
 	uint past = ticks - animationStart;
 	int frame = frameCount > 1 ? ((past / frameDuration) % frameCount) : 0;
@@ -17,7 +17,7 @@ void Sprite::draw(pair position, float scale, TextureStyle style, uint ticks) {
 	TextureManager::drawTexture(texture, nullptr, BIT * (source + offset), BIT * size, position, dsize, style);
 }
 
-bool Sprite::ison(pair point, pair position, float scale, TextureStyle style, uint ticks) {
+bool Sprite::ison(vec point, vec position, float scale, TextureStyle style, uint ticks) {
 	if (!spriteSheet) return false;
 	uint past = ticks - animationStart;
 	int frame = frameCount > 1 ? ((past / frameDuration) % frameCount) : 0;
@@ -48,16 +48,16 @@ void SpriteStack::setSprite(uchar index, Sprite sprite, pair offset) {
 	stack[index] = {sprite, offset};
 }
 
-void SpriteStack::draw(pair position, float scale, TextureStyle style, uint ticks) {
+void SpriteStack::draw(vec position, float scale, TextureStyle style, uint ticks) {
 	for (int layer = 0; layer < SPRITE_LAYER_COUNT; layer++) {
 		if (!stack[layer].sprite.spriteSheet) continue;
-		pair offset = vec::round(scale * BIT * vec(stack[layer].offset));
+		vec offset = scale * BIT * vec(stack[layer].offset);
 		if (style.centered) offset /= 2;
 		stack[layer].sprite.draw(position + offset, scale, style, ticks);
 	}
 }
 
-bool SpriteStack::ison(pair point, pair position, float scale, TextureStyle style, uint ticks) {
+bool SpriteStack::ison(vec point, vec position, float scale, TextureStyle style, uint ticks) {
 	for (int layer = 0; layer < SPRITE_LAYER_COUNT; layer++) {
 		if (!stack[layer].sprite.spriteSheet) continue;
 		pair offset = vec::round(scale * BIT * vec(stack[layer].offset));

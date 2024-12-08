@@ -13,7 +13,7 @@ Console::Console(Game* game) : game(game) {
 
 void Console::draw() {
 	if (!active) return;
-	pair windowSize = Window::instance->size;
+	vec windowSize = Window::instance->size;
 	TextureManager::drawRect({20, windowSize.y / 2 + 10}, {300, windowSize.y / 2 - 30}, {0, 0, 0, 100}, false, true);
 	for (uint i = 0; i < history.size(); i++) {
 		pair position(40, windowSize.y - 60 - (history.size() - i) * 30);
@@ -22,7 +22,7 @@ void Console::draw() {
 	std::string indexText = "-";
 	pair position(25, windowSize.y - 60 - (history.size() - index) * 30);
 	TextManager::drawText(indexText, position);
-	TextManager::drawText(input, {40, windowSize.y - 60});
+	TextManager::drawText(input, pair(40, windowSize.y - 60));
 }
 
 bool Console::handleEvent(InputEvent event) {

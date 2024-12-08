@@ -72,8 +72,8 @@ ROCK_OFFSET)
 class Sprite {
 public:
 	Sprite(SpriteSheet::value spriteSheet = SpriteSheet::NONE, pair source = {0, 0}, pair size = {1, 1}, uchar frameCount = 1, uint frameDuration = 0, uint animationStart = 0, pair animationOffset = {1,0});
-	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
-	bool ison(pair point, pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
+	void draw(vec position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
+	bool ison(vec point, vec position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	static void loadSpriteSheets();
 
 	SpriteSheet::value spriteSheet;
@@ -107,8 +107,8 @@ struct SpriteLayer {
 class SpriteStack {
 public:
 	void setSprite(uchar index, Sprite sprite, pair offset = {0, 0});
-	void draw(pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
-	bool ison(pair point, pair position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
+	void draw(vec position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
+	bool ison(vec point, vec position, float scale = 1, TextureStyle style = TextureStyle(), uint ticks = 0);
 	void clear();
 	std::pair<pair, pair> bounds();
 
@@ -135,7 +135,7 @@ struct SpriteTemplate {
 
 struct DrawCall {
 	SpriteStack spriteStack;
-	pair position;
+	vec position;
 	float z;
 	int scale;
 	TextureStyle style;

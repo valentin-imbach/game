@@ -300,7 +300,7 @@ void Chunk::drawTiles(Camera camera, uint ticks) {
 		for (int b = 0; b < CHUNK_SIZE; b++) {
 			pair offset(a, b);
 			vec pos = CHUNK_SIZE * position + offset;
-			pair screenPosition = camera.screenPosition(pos + vec(0.5f, 0.5f));
+			vec screenPosition = camera.screenPosition(pos + vec(0.5f, 0.5f));
 			tiles[a][b].sprites.draw(screenPosition, camera.zoom, TextureStyle(), ticks);
 		}
 	}

@@ -50,7 +50,7 @@ void ItemContainer::clear(bool destroy) {
 	item = 0;
 }
 
-void ItemContainer::draw(pair position, uint scale) {
+void ItemContainer::draw(vec position, uint scale) {
 	if (!item) {
 		if (itemKind) {
 			pair source((itemKind - 1) % 8, (itemKind - 1) / 8);
@@ -70,15 +70,15 @@ void ItemContainer::draw(pair position, uint scale) {
 	TextManager::drawText(text, position);
 }
 
-void ItemContainer::drawInfo(pair position, bool elaborate) {
+void ItemContainer::drawInfo(vec position, bool elaborate) {
 	if (!item) return;
 	ItemComponent& itemComponent = EntityFactory::world->ecs.getComponent<ItemComponent>(item);
 
 	int spacing = 30;
 
-	std::vector<std::pair<Text, pair>> texts;
-	std::vector<std::pair<pair, pair>> icons;
-	pair pos = position;
+	std::vector<std::pair<Text, vec>> texts;
+	std::vector<std::pair<pair, vec>> icons;
+	vec pos = position;
 
 	if (!itemComponent.itemId) {
 		std::string name = "No Name";
@@ -166,7 +166,7 @@ void ItemContainer::drawInfo(pair position, bool elaborate) {
 
 	pair size(0, texts.size() * spacing);
 	for (auto& text : texts) size.x = std::max(size.x, TextManager::getTextSize(text.first.text).x);
-	TextureManager::drawRect({position.x - 10, position.y}, {size.x + 20, size.y}, {0, 0, 0, 150}, false, true);
+	TextureManager::drawRect({position.x - 10, position.y}, vec(size.x + 20, size.y), {0, 0, 0, 150}, false, true);
 
 	for (auto& text : texts) {
 		TextManager::drawText(text.first, text.second);

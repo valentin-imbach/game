@@ -29,8 +29,8 @@ struct Camera {
 		offset = vec::round(amp * lerp::shake(ticks));
 	}
 
-	pair screenPosition(vec pos) {
-		return vec::round(BIT * zoom * (pos  - position) + (Window::instance->size) / 2) - offset;
+	vec screenPosition(vec pos) {
+		return BIT * zoom * (pos  - position) + (Window::instance->size)/2 - offset;
 	}
 
 	vec worldPosition(vec pos) {

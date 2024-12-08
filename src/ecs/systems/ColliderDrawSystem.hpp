@@ -17,7 +17,7 @@ public:
 			if (entities.find(entity) == entities.end()) continue;
 			ColliderComponent& colliderComponent = ecs -> getComponent<ColliderComponent>(entity);
 			PositionComponent& positionComponent = ecs -> getComponent<PositionComponent>(entity);
-			pair screenPosition = camera.screenPosition(positionComponent.position + colliderComponent.collider.offset);
+			vec screenPosition = camera.screenPosition(positionComponent.position + colliderComponent.collider.offset);
 
 			if (screenPosition.x + border < 0 || screenPosition.y + border < 0) continue;
 			if (screenPosition.x > screenSize.x + border || screenPosition.y > screenSize.y + border) continue;

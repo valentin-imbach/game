@@ -29,7 +29,7 @@ public:
 
 			if (ecs->hasComponent<PlayerComponent>(entity)) {
 				vec mpos = Window::instance->mousePosition;
-				pair epos = camera.screenPosition(positionComponent.position);
+				vec epos = camera.screenPosition(positionComponent.position);
 				if (mpos.x > epos.x) {
 					style.angle = vec::angle(mpos - epos);
 				} else {
@@ -63,7 +63,7 @@ public:
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 
-			pair screenPosition = camera.screenPosition(positionComponent.position + offset);
+			vec screenPosition = camera.screenPosition(positionComponent.position + offset);
 			SpriteStack& itemSprites = ecs->getComponent<SpriteComponent>(item).spriteStack;
 			drawQueue.push_back({itemSprites, screenPosition, 1, int(camera.zoom), style});
 		}

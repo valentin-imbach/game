@@ -53,9 +53,9 @@ void MainMenu::draw(uint ticks) {
 	TextureStyle style;
 	style.centered = false;
 	TextureManager::drawTexture(parallax[0], nullptr, {0, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-	TextureManager::drawTexture(parallax[1], nullptr, {int(ticks / 140) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-	TextureManager::drawTexture(parallax[2], nullptr, {int(ticks / 60) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
-	TextureManager::drawTexture(parallax[3], nullptr, {int(ticks/ 20) % 576, 0}, {576, 324}, {0, 0}, Window::instance->size, style);
+	TextureManager::drawTexture(parallax[1], nullptr, vec((ticks / 140) % 576, 0), {576, 324}, {0, 0}, Window::instance->size, style);
+	TextureManager::drawTexture(parallax[2], nullptr, vec((ticks / 60) % 576, 0), {576, 324}, {0, 0}, Window::instance->size, style);
+	TextureManager::drawTexture(parallax[3], nullptr, vec((ticks/ 20) % 576, 0), {576, 324}, {0, 0}, Window::instance->size, style);
 	Menu::draw(ticks);
 }
 

@@ -21,9 +21,9 @@ public:
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			vec entityPosition = positionComponent.position;
 
-			pair roughScreenPosition = camera.screenPosition(entityPosition);
-			if (roughScreenPosition.x + border < 0 || roughScreenPosition.y + border < 0) continue;
-			if (roughScreenPosition.x > screenSize.x + border || roughScreenPosition.y > screenSize.y + border) continue;
+			// vec roughScreenPosition = camera.screenPosition(entityPosition);
+			// if (roughScreenPosition.x + border < 0 || roughScreenPosition.y + border < 0) continue;
+			// if (roughScreenPosition.x > screenSize.x + border || roughScreenPosition.y > screenSize.y + border) continue;
 
 			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 
@@ -73,7 +73,7 @@ public:
 			// }
 
 			vec offset(0.5f, 0.5f);
-			pair screenPosition = camera.screenPosition(entityPosition - spriteComponent.scale * offset);
+			vec screenPosition = camera.screenPosition(entityPosition - spriteComponent.scale * offset);
 
 			drawQueue.push_back({spriteComponent.spriteStack, screenPosition, BIT * camera.zoom * spriteComponent.z, int(spriteComponent.scale * camera.zoom), style, entity});
 		}

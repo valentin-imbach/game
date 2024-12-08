@@ -23,13 +23,13 @@ public:
 			if (!lightComponent.active) continue;
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 
-			pair screenPosition = camera.screenPosition(positionComponent.position);
+			vec screenPosition = camera.screenPosition(positionComponent.position);
 			float radius = lightComponent.intensity + lightComponent.flickerAmplitude * lerp::flicker(lightComponent.flickerSpeed * ticks / 1000);
 			int size  = 2 * BIT * camera.zoom * radius;
 
 			TextureStyle style;
 			style.tint = lightComponent.tint;
-			TextureManager::drawTexture(TextureManager::lightTexture, texture, {0,0}, {255, 255}, screenPosition, {size, size}, style);
+			TextureManager::drawTexture(TextureManager::lightTexture, texture, {0,0}, {255, 255}, screenPosition, vec(size, size), style);
 		}
 
 		TextureStyle style;
