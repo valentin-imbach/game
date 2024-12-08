@@ -28,7 +28,7 @@ public:
 			style.angle = 0;
 
 			if (ecs->hasComponent<PlayerComponent>(entity)) {
-				pair mpos = Window::instance->mousePosition;
+				vec mpos = Window::instance->mousePosition;
 				pair epos = camera.screenPosition(positionComponent.position);
 				if (mpos.x > epos.x) {
 					style.angle = vec::angle(mpos - epos);

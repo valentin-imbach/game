@@ -58,8 +58,8 @@ bool GuiElement::handleEvent(InputEvent event) {
 	return false;
 }
 
-bool GuiElement::inside(pair pos) {
-	return pair::inside(pos, screenPosition, screenSize);
+bool GuiElement::inside(vec pos) {
+	return vec::inside(pos, screenPosition, screenSize);
 }
 
 //* Widget
@@ -478,7 +478,7 @@ void Selector::addSelection(SpriteStack sprite) {
 bool Selector::handleEvent(InputEvent event) {
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
 		int offset = screenSize.x / columns;
-		pair index = (event.mousePosition - screenPosition + screenSize / 2) / offset;
+		pair index = vec::floor((event.mousePosition - screenPosition + screenSize / 2) / offset);
 		uint n = index.x + columns * index.y;
 		if (n < sprites.size()) {
 			callback(n);
@@ -506,7 +506,7 @@ void Selector::draw() {
 //* TextGui
 
 TextGui::TextGui(pair position, std::string text, bool centered, Direction::value alignment) : GuiElement(position, {0,0}, alignment), text(text) {
-	size = TextManager::textSize(text) / GuiManager::scale + pair(2, 2);
+	size = TextManager::getTextSize(text) / GuiManager::scale + pair(2, 2);
 	if (!centered) this->position.x += size.x / 2;
 }
 
@@ -692,7 +692,7 @@ ValueGui::ValueGui(pair position, int* value, Direction::value alignment) : GuiE
 	
 void ValueGui::draw() {
 	std::string text = std::to_string(*value);
-	size = TextManager::textSize(text) / GuiManager::scale + pair(2, 2);
+	size = TextManager::getTextSize(text) / GuiManager::scale + pair(2, 2);
 	GuiElement::draw();
 	TextManager::drawText(text, screenPosition, true);
 }

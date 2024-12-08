@@ -20,7 +20,7 @@ public:
 				if (inputState[InputStateId::MOVE_WEST]) sum.x -= 1;
 				if (inputState[InputStateId::MOVE_SOUTH]) sum.y += 1;
 
-				pair mpos = Window::instance->mousePosition;
+				vec mpos = Window::instance->mousePosition;
 				if (mpos.x > Window::instance->size.x / 2) {
 					movementComponent.facing = Direction::EAST;
 				} else {

@@ -27,7 +27,7 @@ public:
 	void addBanner(std::string text);
 
 	World* world;
-	pair mousePosition;
+	vec mousePosition;
 	ItemContainer mouseItemContainer;
 
 	Entity buildMode = 0;

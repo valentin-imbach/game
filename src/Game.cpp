@@ -1,24 +1,25 @@
 
 #include "Game.hpp"
 #include "Events.hpp"
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_scancode.h"
+#include <SDL3/SDL.h>
+// #include "SDL2/SDL_scancode.h"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
 #include <filesystem>
 #include "Dungeon3.hpp"
+#include "SoundManager.hpp"
 
 #define DEBUG_MODE false
 
 GameSettings Game::settings = {};
 
-Game::Game() : trackMix(1), console(this) {
+Game::Game() : console(this) {
 	framesPerSecond = 0;
 	Sprite::loadSpriteSheets();
 	TextManager::Init();
-	//SoundManager::Init();
+	SoundManager::Init();
 
 	gameState = GameState::MENU;
 	buildMenus();
@@ -162,9 +163,9 @@ bool Game::handleEvent(InputEvent event, uint dt) {
 }
 
 void Game::pollEvents(uint dt) {
-	pair mousePosition;
-	const uchar* keyState = SDL_GetKeyboardState(NULL);
-	const uint mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	vec mousePosition;
+	const bool* keyState = SDL_GetKeyboardState(NULL);
+	const SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
 	InputState inputState;
 
@@ -191,12 +192,12 @@ void Game::pollEvents(uint dt) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		InputEvent inputEvent = {InputEventId::NONE, mousePosition, inputState};
-		if (event.type == SDL_QUIT) {
+		if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
 			inputEvent.id = InputEventId::QUIT;
-		} else if (event.type == SDL_TEXTINPUT) {
+		} else if (event.type == SDL_EVENT_TEXT_INPUT) {
 			inputEvent.id = InputEventId::TEXT;
 			inputEvent.text = event.text.text;
-		} else if (event.type == SDL_MOUSEWHEEL) {
+		} else if (event.type == SDL_EVENT_MOUSE_WHEEL) {
 			if (event.wheel.y > 0) {
 				inputEvent.id = InputEventId::ROTATE_LEFT;
 			} else if (event.wheel.y < 0) {
@@ -204,56 +205,56 @@ void Game::pollEvents(uint dt) {
 			} else {
 				continue;
 			}
-		} else if (event.type == SDL_KEYDOWN) {
+		} else if (event.type == SDL_EVENT_KEY_DOWN) {
 
-			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
+			if (event.key.scancode == SDL_SCANCODE_BACKSPACE) {
 				inputEvent.id = InputEventId::BACKSPACE;
 			} else if (event.key.repeat) continue;
 
-			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE) {
 				inputEvent.id = InputEventId::ESCAPE;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_E) {
+			} else if (event.key.scancode == SDL_SCANCODE_E) {
 				inputEvent.id = InputEventId::INVENTORY;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_Q) {
+			} else if (event.key.scancode == SDL_SCANCODE_Q) {
 				inputEvent.id = InputEventId::THROW;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_1) {
+			} else if (event.key.scancode == SDL_SCANCODE_1) {
 				inputEvent.id = InputEventId::SELECT_1;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_2) {
+			} else if (event.key.scancode == SDL_SCANCODE_2) {
 				inputEvent.id = InputEventId::SELECT_2;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_3) {
+			} else if (event.key.scancode == SDL_SCANCODE_3) {
 				inputEvent.id = InputEventId::SELECT_3;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_4) {
+			} else if (event.key.scancode == SDL_SCANCODE_4) {
 				inputEvent.id = InputEventId::SELECT_4;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_5) {
+			} else if (event.key.scancode == SDL_SCANCODE_5) {
 				inputEvent.id = InputEventId::SELECT_5;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_6) {
+			} else if (event.key.scancode == SDL_SCANCODE_6) {
 				inputEvent.id = InputEventId::SELECT_6;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_7) {
+			} else if (event.key.scancode == SDL_SCANCODE_7) {
 				inputEvent.id = InputEventId::SELECT_7;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_TAB) {
+			} else if (event.key.scancode == SDL_SCANCODE_TAB) {
 				inputEvent.id = InputEventId::CONSOLE;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+			} else if (event.key.scancode == SDL_SCANCODE_RETURN) {
 				inputEvent.id = InputEventId::RETURN;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
+			} else if (event.key.scancode == SDL_SCANCODE_BACKSPACE) {
 				inputEvent.id = InputEventId::BACKSPACE;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_F1) {
+			} else if (event.key.scancode == SDL_SCANCODE_F1) {
 				inputEvent.id = InputEventId::DEBUG;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_I) {
+			} else if (event.key.scancode == SDL_SCANCODE_I) {
 				inputEvent.id = InputEventId::INSPECT;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_UP) {
+			} else if (event.key.scancode == SDL_SCANCODE_UP) {
 				inputEvent.id = InputEventId::UP;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+			} else if (event.key.scancode == SDL_SCANCODE_DOWN) {
 				inputEvent.id = InputEventId::DOWN;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_M) {
+			} else if (event.key.scancode == SDL_SCANCODE_M) {
 				inputEvent.id = InputEventId::MAP;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_COMMA) {
+			} else if (event.key.scancode == SDL_SCANCODE_COMMA) {
 				inputEvent.id = InputEventId::ZOOM_OUT;
-			} else if (event.key.keysym.scancode == SDL_SCANCODE_PERIOD) {
+			} else if (event.key.scancode == SDL_SCANCODE_PERIOD) {
 				inputEvent.id = InputEventId::ZOOM_IN;
 			} else {
 				continue;
 			}
-		} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+		} else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 			if (event.button.button == SDL_BUTTON_LEFT) {
 				inputEvent.id = InputEventId::PRIMARY;
 			} else if (event.button.button == SDL_BUTTON_RIGHT) {

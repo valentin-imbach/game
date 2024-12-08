@@ -49,7 +49,7 @@ public:
 		//* Tile
 		std::string tileText = "Tile Info\n";
 
-		pair mPos = Window::instance->mousePosition;
+		vec mPos = Window::instance->mousePosition;
 		vec pos = world->camera.worldPosition(mPos);
 		pair tile = vec::round(pos);
 

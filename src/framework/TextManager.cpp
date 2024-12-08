@@ -9,7 +9,7 @@ Text::Text(std::string text, int style, Colour colour)
 	: text(text), style(style), colour(colour) {}
 
 void TextManager::Init() {
-	if (TTF_Init() != 0) {
+	if (!TTF_Init()) {
 		ERROR("Failed to initialize TTF");
 		return;
 	}
@@ -32,9 +32,10 @@ void TextManager::loadFont(std::string path, int size) {
 	LOG("Font loaded from", path);
 }
 
-pair TextManager::textSize(std::string& text) {
+pair TextManager::getTextSize(const std::string& text) {
 	pair size(0, 0);
-	if (TTF_SizeText(font, text.c_str(), &size.x, &size.y)) {
+	TTF_Text* t = TTF_CreateText(NULL, font, text.c_str(), text.size());
+	if (!TTF_GetTextSize(t, &size.x, &size.y)) {
 		ERROR("Failed to determine size of string", text);
 		return {};
 	}
@@ -48,46 +49,45 @@ void TextManager::drawText(std::string& text, pair position, bool centred, Colou
 	std::string line;
 	while (std::getline(iss, line)) lines.push_back(line);
 
-	pair textSize = pair(0, lines.size() * TTF_FontLineSkip(font));
+	pair textSize = pair(0, lines.size() * TTF_GetFontLineSkip(font));
 	for (const auto& line : lines) {
-		int lineWidth;
-		TTF_SizeText(font, line.c_str(), &lineWidth, nullptr);
-		textSize.x = std::max(textSize.x, lineWidth);
+		pair s = getTextSize(line);;
+		textSize.x = std::max(textSize.x, s.x);
 	}
 
-	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, textSize.x, textSize.y, 32, SDL_PIXELFORMAT_RGBA32);
+	SDL_Surface* surface = SDL_CreateSurface(textSize.x, textSize.y, SDL_PIXELFORMAT_RGBA32);
 	if (!surface) {
 		ERROR("Failed to create surface:", SDL_GetError());
 		return;
 	}
 
-	Uint32 colourKey = SDL_MapRGBA(surface->format, 0, 0, 0, 0);
-    SDL_SetColorKey(surface, SDL_TRUE, colourKey);
+	Uint32 colourKey = SDL_MapRGBA(SDL_GetPixelFormatDetails(surface->format), NULL, 0, 0, 0, 0);
+    SDL_SetSurfaceColorKey(surface, true, colourKey);
 
 	SDL_Rect textRect = {0, 0, 0, 0};
 	for (const auto& line : lines) {
-		SDL_Surface* textSurface = TTF_RenderText_Solid(font, line.c_str(), {colour.r, colour.g, colour.b, colour.a});
+		SDL_Surface* textSurface = TTF_RenderText_Solid(font, line.c_str(), line.size(), {colour.r, colour.g, colour.b, colour.a});
 		if (!textSurface) {
-			ERROR("Failed to render text:", TTF_GetError());
+			ERROR("Failed to render text:", SDL_GetError());
 			continue;
 		}
 		textRect.w = textSurface->w;
 		textRect.h = textSurface->h;
 		SDL_BlitSurface(textSurface, nullptr, surface, &textRect);
-		SDL_FreeSurface(textSurface);
-		textRect.y += TTF_FontLineSkip(font);
+		SDL_DestroySurface(textSurface);
+		textRect.y += TTF_GetFontLineSkip(font);
 	}
 
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(Window::instance->renderer, surface);
-	SDL_FreeSurface(surface);
+	SDL_DestroySurface(surface);
 	if (!texture) {
 		ERROR("Failed to create texture:", SDL_GetError());
 		return;
 	}
 
 	if (centred) position -= textSize/2;
-	SDL_Rect dstRect = {position.x, position.y, textSize.x, textSize.y};
-	SDL_RenderCopy(Window::instance->renderer, texture, NULL, &dstRect);
+	SDL_FRect dstRect = {float(position.x), float(position.y), float(textSize.x), float(textSize.y)};
+	SDL_RenderTexture(Window::instance->renderer, texture, NULL, &dstRect);
 	SDL_DestroyTexture(texture);
 }
 

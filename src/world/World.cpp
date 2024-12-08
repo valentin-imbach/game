@@ -440,7 +440,7 @@ void World::draw() {
 	std::sort(drawQueue.begin(), drawQueue.end(), lambda);
 
 	hover = 0;
-	pair mpos = Window::instance->mousePosition;
+	pair mpos = vec::round(Window::instance->mousePosition);
 	for (auto& p : drawQueue) {
 		if (p.spriteStack.ison(mpos, p.position, p.scale, p.style, ticks) && p.entity) hover = p.entity;
 		p.spriteStack.draw(p.position, p.scale, p.style, ticks);

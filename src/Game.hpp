@@ -25,7 +25,7 @@ public:
 	Game();
 	~Game();
 
-	TrackMix trackMix;
+	// TrackMix trackMix;
 
 	void update(uint dt);
 	void draw();

@@ -33,7 +33,7 @@ protected:
 	bool keys;
 	bool absorbHover = true;
 	bool absorbKeys = false;
-	bool inside(pair position);
+	bool inside(vec position);
 
 	friend class GuiManager;
 };

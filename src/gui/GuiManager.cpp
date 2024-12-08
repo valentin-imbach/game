@@ -49,7 +49,7 @@ void GuiManager::draw() {
 	if (primary) {
 		if (secondary) secondary->draw();
 		primary->draw();
-		mouseItemContainer.draw(mousePosition, GuiManager::scale);
+		mouseItemContainer.draw(vec::round(mousePosition), GuiManager::scale);
 	}
 
 	if (!banners.empty()) {

@@ -1,12 +1,13 @@
 
 #pragma once
 #include "utils.hpp"
-#include <SDL2_ttf/SDL_ttf.h>
+
+#include <SDL3_ttf/SDL_ttf.h>
 
 #define FONT_PATH "../assets/fonts/"
 
 struct Text {
-	Text(std::string text, int style = TTF_STYLE_NORMAL, Colour colour = {255, 255, 255, 255});
+	Text(std::string text, int style = 0, Colour colour = {255, 255, 255, 255});
 	std::string text;
 	int style;
 	Colour colour;	
@@ -20,7 +21,7 @@ public:
 
 	static void Init();
 	static void cleanup();
-	static pair textSize(std::string& text);
+	static pair getTextSize(const std::string& text);
 
 	static void drawText(std::string& text, pair position, bool centred = false, Colour colour = {255, 255, 255, 255});
 	static void drawText(Text& text, pair position, bool centred = false);

@@ -1,6 +1,6 @@
 
 #pragma once
-#include "SDL2/SDL_pixels.h"
+#include <SDL3/SDL_pixels.h>
 #include <cstdint>
 
 struct Colour {
@@ -11,7 +11,7 @@ struct Colour {
 		return Colour(r * other.r / 255, g * other.g / 255, b * other.b / 255);
 	}
 
-	operator SDL_Colour() const {
+	operator SDL_Color() const {
 		return {r,g,b,a};
 	}
 };

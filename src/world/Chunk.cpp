@@ -124,10 +124,10 @@ void Chunk::setRiver(ChunkManager* manager, Environment* environment) {
 }
 
 void Chunk::refreshMap(Environment* environment) {
-	SDL_Surface* mapSurface = SDL_CreateRGBSurfaceWithFormat(0, CHUNK_SIZE, CHUNK_SIZE, 32, SDL_PIXELFORMAT_RGBA8888);
+	SDL_Surface* mapSurface = SDL_CreateSurface(CHUNK_SIZE, CHUNK_SIZE, SDL_PIXELFORMAT_RGBA8888);
 	Uint32 *mapPixels = (Uint32 *)mapSurface->pixels;
 
-	SDL_Surface* tempSurface = SDL_CreateRGBSurfaceWithFormat(0, CHUNK_SIZE, CHUNK_SIZE, 32, SDL_PIXELFORMAT_RGBA8888);
+	SDL_Surface* tempSurface = SDL_CreateSurface(CHUNK_SIZE, CHUNK_SIZE, SDL_PIXELFORMAT_RGBA8888);
 	Uint32 *tempPixels = (Uint32 *)tempSurface->pixels;
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
@@ -147,10 +147,10 @@ void Chunk::refreshMap(Environment* environment) {
 	}
 	
 	mapTexture = SDL_CreateTextureFromSurface(Window::instance->renderer, mapSurface);
-	SDL_FreeSurface(mapSurface);
+	SDL_DestroySurface(mapSurface);
 
 	tempTexture = SDL_CreateTextureFromSurface(Window::instance->renderer, tempSurface);
-	SDL_FreeSurface(tempSurface);
+	SDL_DestroySurface(tempSurface);
 }
 
 void Chunk::setGround(ChunkManager* manager, Environment* environment) {

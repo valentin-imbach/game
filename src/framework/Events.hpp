@@ -1,7 +1,7 @@
 
 #pragma once
 #include <bitset>
-#include "pair.hpp"
+#include "vec.hpp"
 #include "enum.hpp"
 
 ENUM(InputEventId,
@@ -56,7 +56,7 @@ typedef std::bitset<InputStateId::count> InputState;
 
 struct InputEvent {
 	InputEventId::value id;
-	pair mousePosition;
+	vec mousePosition;
 	InputState state;
 	std::string text;
 };

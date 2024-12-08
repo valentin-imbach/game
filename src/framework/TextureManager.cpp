@@ -1,7 +1,8 @@
 
 #include "TextureManager.hpp"
 #include "Window.hpp"
-#include <SDL2_image/SDL_image.h>
+
+#include "SDL3_image/SDL_image.h"
 
 SDL_Texture* TextureManager::lightTexture = nullptr;
 
@@ -13,7 +14,8 @@ SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
 	}
 	if (outline) outlineSurface(tmpSurface);
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::instance->renderer, tmpSurface);
-	SDL_FreeSurface(tmpSurface);
+	SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_NEAREST);
+	SDL_DestroySurface(tmpSurface);
 	LOG("Texture loaded from", path, outline ? "(outlined)" : "");
 	return tex;
 }
@@ -21,13 +23,13 @@ SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
 void TextureManager::drawTexture(SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style) {
 	if (!src) return;
 	if (style.centered) dpos -= dsize / 2;
-	SDL_Rect srect = {spos.x, spos.y, ssize.x, ssize.y};
-	SDL_Rect drect = {dpos.x, dpos.y, dsize.x, dsize.y};
-	SDL_Point pivot = {dsize.x / 2 + style.pivot.x, dsize.y / 2 + style.pivot.y};
+	SDL_FRect srect = {float(spos.x), float(spos.y), float(ssize.x), float(ssize.y)};
+	SDL_FRect drect = {float(dpos.x), float(dpos.y), float(dsize.x), float(dsize.y)};
+	SDL_FPoint pivot = {float(dsize.x) / 2 + style.pivot.x, float(dsize.y) / 2 + style.pivot.y};
 	SDL_SetRenderTarget(Window::instance->renderer, dst);
 	SDL_SetTextureAlphaMod(src, style.alpha * 255);
 	SDL_SetTextureColorMod(src, style.tint.r, style.tint.g, style.tint.b);
-	SDL_RenderCopyEx(Window::instance->renderer, src, &srect, &drect, -style.angle * 180 / M_PI, &pivot, style.flip);
+	SDL_RenderTextureRotated(Window::instance->renderer, src, &srect, &drect, -style.angle * 180 / M_PI, &pivot, style.flip);
 }
 
 bool TextureManager::ison(pair point, SDL_Texture* src, SDL_Texture* dst, pair spos, pair ssize, pair dpos, pair dsize, TextureStyle style) {
@@ -38,11 +40,11 @@ bool TextureManager::ison(pair point, SDL_Texture* src, SDL_Texture* dst, pair s
 
 void TextureManager::drawRect(pair position, pair size, Colour colour, bool centered, bool filled) {
 	if (centered) position -= size / 2;
-	SDL_Rect rect = {position.x, position.y, size.x, size.y};
+	SDL_FRect rect = {float(position.x), float(position.y), float(size.x), float(size.y)};
 	SDL_SetRenderTarget(Window::instance->renderer, NULL);
 	SDL_SetRenderDrawColor(Window::instance->renderer, colour.r, colour.g, colour.b, colour.a);
 	SDL_SetRenderDrawBlendMode(Window::instance->renderer, SDL_BLENDMODE_BLEND);
-	filled ? SDL_RenderFillRect(Window::instance->renderer, &rect) : SDL_RenderDrawRect(Window::instance->renderer, &rect);
+	filled ? SDL_RenderFillRect(Window::instance->renderer, &rect) : SDL_RenderRect(Window::instance->renderer, &rect);
 }
 
 void TextureManager::drawCirc(pair position, int radius, Colour colour) {
@@ -57,14 +59,14 @@ void TextureManager::drawCirc(pair position, int radius, Colour colour) {
 	int error = (tx - 2 * radius);
 
 	while (x >= y) {
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x + x, position.y - y);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x + x, position.y + y);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x - x, position.y - y);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x - x, position.y + y);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x + y, position.y - x);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x + y, position.y + x);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x - y, position.y - x);
-		SDL_RenderDrawPoint(Window::instance->renderer, position.x - y, position.y + x);
+		SDL_RenderPoint(Window::instance->renderer, position.x + x, position.y - y);
+		SDL_RenderPoint(Window::instance->renderer, position.x + x, position.y + y);
+		SDL_RenderPoint(Window::instance->renderer, position.x - x, position.y - y);
+		SDL_RenderPoint(Window::instance->renderer, position.x - x, position.y + y);
+		SDL_RenderPoint(Window::instance->renderer, position.x + y, position.y - x);
+		SDL_RenderPoint(Window::instance->renderer, position.x + y, position.y + x);
+		SDL_RenderPoint(Window::instance->renderer, position.x - y, position.y - x);
+		SDL_RenderPoint(Window::instance->renderer, position.x - y, position.y + x);
 
 		if (error <= 0) {
 			++y;
@@ -92,7 +94,7 @@ SDL_Texture* TextureManager::createTexture(pair size, Colour colour) {
 
 void TextureManager::outlineSurface(SDL_Surface* surface) {
 	if (!surface) return;
-	if (SDL_LockSurface(surface)) {
+	if (!SDL_LockSurface(surface)) {
 		ERROR("Failed to lock surface");
 		return;
 	}

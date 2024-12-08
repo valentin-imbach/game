@@ -1,6 +1,6 @@
 
 #pragma once
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include "utils.hpp"
 
 #define SPRITE_PATH "../assets/sprites/"
@@ -10,7 +10,7 @@ constexpr int BIT = 16;
 struct TextureStyle {
 	bool centered = true;
 	float alpha = 1;
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	SDL_FlipMode flip = SDL_FLIP_NONE;
 	Colour tint;
 	bool outline = false;
 	float angle = 0;

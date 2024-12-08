@@ -1,6 +1,8 @@
 
 #pragma once
-#include <SDL2/SDL.h>
+
+#include "SDL3/SDL.h"
+// #include <SDL2/SDL.h>
 #include "utils.hpp"
 
 class Window {
@@ -17,7 +19,7 @@ public:
 	SDL_Renderer* renderer;
 
 	pair size;
-	pair mousePosition;
+	vec mousePosition;
 
 	std::filesystem::path root;
 

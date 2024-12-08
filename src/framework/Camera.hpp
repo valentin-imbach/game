@@ -33,7 +33,7 @@ struct Camera {
 		return vec::round(BIT * zoom * (pos  - position) + (Window::instance->size) / 2) - offset;
 	}
 
-	vec worldPosition(pair pos) {
+	vec worldPosition(vec pos) {
 		return position + vec(pos - Window::instance->size / 2 + offset) / (zoom * BIT);
 	}
 };

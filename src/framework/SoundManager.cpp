@@ -9,7 +9,8 @@ std::array<Mix_Chunk*, TrackId::count> SoundManager::tracks = {};
 int SoundManager::volume = 0;
 
 void SoundManager::Init() {
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) == -1) {
+	SDL_AudioSpec spec = {MIX_DEFAULT_FORMAT, 2, 22050};
+	if (!Mix_OpenAudio(0, &spec)) {
 		ERROR("Failed to initialize Mixer");
 		return;
 	}

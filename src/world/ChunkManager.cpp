@@ -156,7 +156,7 @@ void ChunkManager::updateStyle2(pair position, bool propagate) {
 
 	if (ids[0] && ids[0] == ids[1] && ids[0] == ids[2] && ids[0] == ids[3]) {
 		const GroundTemplate& temp = GroundTemplate::templates[ids[0]];
-		Sprite baseSprite = Sprite(temp.spriteSheet2, pair(2,1), pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+		Sprite baseSprite = Sprite(temp.spriteSheet, pair(2,1), pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 		sprites.emplace_back(baseSprite, ids[0]);
 	}
 
@@ -169,17 +169,17 @@ void ChunkManager::updateStyle2(pair position, bool propagate) {
 		const GroundTemplate& temp = GroundTemplate::templates[ids[i]];
 
 		if (ids[i + 1] == ids[i] && ids[i + 2] == ids[i] &&  ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet2, threes[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			Sprite sprite = Sprite(temp.spriteSheet, threes[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 
 		if (ids[i + 1] == ids[i] && ids[i + 2] != ids[i] &&  ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet2, twos[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			Sprite sprite = Sprite(temp.spriteSheet, twos[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 
 		if (ids[i + 1] != ids[i] && ids[i + 2] != ids[i] && ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet2, ones[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			Sprite sprite = Sprite(temp.spriteSheet, ones[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 	}
@@ -191,7 +191,7 @@ void ChunkManager::updateStyle2(pair position, bool propagate) {
 		const GroundTemplate& temp = GroundTemplate::templates[ids[i]];
 
 		if (ids[i + 1] != ids[i] && ids[i + 2] == ids[i] && ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet2, diag[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			Sprite sprite = Sprite(temp.spriteSheet, diag[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 	}
