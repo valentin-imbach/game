@@ -23,13 +23,14 @@ struct GameSettings {
 class Game {
 public:
 	Game();
-	~Game();
 
 	// TrackMix trackMix;
 
 	void update(uint dt);
 	void draw();
 	void pollEvents(uint dt);
+
+	void cleanup();
 
 	GameState::value gameState;
 	Console console;

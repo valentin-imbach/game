@@ -51,6 +51,7 @@ int main() {
 	}
 
 	window.cleanup();
+	game.cleanup();
 	SDL_Quit();
 	return 0;
 }

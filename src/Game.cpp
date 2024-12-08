@@ -35,7 +35,7 @@ Game::Game() : console(this) {
 
 }
 
-Game::~Game() {
+void Game::cleanup() {
 	TextManager::cleanup();
 	SoundManager::cleanup();
 }
@@ -190,7 +190,7 @@ void Game::pollEvents(uint dt) {
 	handleEvent({InputEventId::HOVER, mousePosition, inputState}, dt);
 
 	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
+	while (SDL_PollEvent(&event) && gameState) {
 		InputEvent inputEvent = {InputEventId::NONE, mousePosition, inputState};
 		if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) {
 			inputEvent.id = InputEventId::QUIT;
