@@ -6,7 +6,7 @@ Window* Window::instance = nullptr;
 Window::Window(const char* title, pair size, bool fullscreen) : title(title), size(size) {
 
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
-		ERROR("Failed to inizialize SDL", SDL_GetError());
+		ERROR("Failed to inizialize SDL:", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 	LOG("SDL initialized");
@@ -14,23 +14,16 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
 	root = std::filesystem::path(SDL_GetBasePath()).parent_path().parent_path();
 	LOG("Root path is", root.string());
 
-	int flags = fullscreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
-	window = SDL_CreateWindow(title, size.x, size.y, flags);
-	if (!window) {
-		ERROR("Failed to create Window");
+	Uint64 flags = fullscreen ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
+
+	if (!SDL_CreateWindowAndRenderer(title, size.x, size.y, flags, &window, &renderer)) {
+		ERROR("Failed to create Window: or Renderer:", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	SDL_StartTextInput(window);
-	LOG("Window created");
 
 	SDL_SetWindowMinimumSize(window, 1024, 640);
-	renderer = SDL_CreateRenderer(window, NULL);
-	if (!renderer) {
-		ERROR("Failed to create Renderer");
-		exit(EXIT_FAILURE);
-	}
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	LOG("Renderer created");
+	SDL_StartTextInput(window);
+	LOG("Window and Renderer created");
 
 	instance = this;
 }
@@ -41,13 +34,14 @@ void Window::cleanup() {
 }
 
 void Window::clear() {
-	SDL_SetRenderDrawColor(Window::renderer, 20, 20, 20, 255);
-	SDL_RenderClear(Window::renderer);
+	SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
+	SDL_RenderClear(renderer);
 }
 
 void Window::update() {
 	SDL_GetWindowSize(window, &size.x, &size.y);
-	SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	keyState = SDL_GetKeyboardState(NULL);
 }
 
 void Window::draw() {

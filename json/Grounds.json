@@ -4,7 +4,7 @@
 		"colour": [184, 155, 101, 255]
 	},
 	"grass": {
-		"sprite": "grass_offset",
+		"sprite": "grass",
 		"colour": [77, 179, 73, 255],
 		"speed": 0.9
 	},
@@ -15,7 +15,7 @@
 		"soil": true
 	},
 	"dirt": {
-		"sprite": "dirt_offset",
+		"sprite": "dirt",
 		"colour": [120, 97, 70, 255],
 		"speed": 0.9
 	},
@@ -25,7 +25,7 @@
 		"speed": 0.7
 	},
 	"rock": {
-		"sprite": "rock_offset",
+		"sprite": "rock",
 		"colour": [99, 95, 90, 255]
 	},
 	"gravel": {

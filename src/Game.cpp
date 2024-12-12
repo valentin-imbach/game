@@ -10,6 +10,7 @@
 #include <filesystem>
 #include "Dungeon3.hpp"
 #include "SoundManager.hpp"
+#include "FileWatcher.hpp"
 
 #define DEBUG_MODE false
 
@@ -28,10 +29,6 @@ Game::Game() : console(this) {
 	// 	createWorld("Test World", arc4random(), true);
 	// 	return;
 	// }
-
-
-	DungeonGraph dun(time(0), 5);
-	dun.print();
 
 }
 
@@ -98,6 +95,7 @@ void Game::saveWorld() {
 void Game::update(uint dt) {
 	ticks += dt;
 	Window::instance->update();
+	FileWatcher::update(ticks);
 	//trackMix.update();
 	if (gameState == GameState::MENU) {
 		mainMenu.update();
@@ -163,9 +161,8 @@ bool Game::handleEvent(InputEvent event, uint dt) {
 }
 
 void Game::pollEvents(uint dt) {
-	vec mousePosition;
-	const bool* keyState = SDL_GetKeyboardState(NULL);
-	const SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	vec mousePosition = Window::instance->mousePosition;
+	const bool* keyState = Window::instance->keyState;
 
 	InputState inputState;
 
@@ -177,8 +174,8 @@ void Game::pollEvents(uint dt) {
 	inputState.set(InputStateId::INFO, keyState[SDL_SCANCODE_TAB]);
 	inputState.set(InputStateId::ALTER, keyState[SDL_SCANCODE_LSHIFT]);
 
-	inputState.set(InputStateId::PRIMARY, mouseState & SDL_BUTTON_LMASK);
-	inputState.set(InputStateId::SECONDARY, mouseState & SDL_BUTTON_RMASK);
+	inputState.set(InputStateId::PRIMARY, Window::instance->mouseState & SDL_BUTTON_LMASK);
+	inputState.set(InputStateId::SECONDARY, Window::instance->mouseState & SDL_BUTTON_RMASK);
 
 	if (world) {
 		world->guiManager.mousePosition = mousePosition;

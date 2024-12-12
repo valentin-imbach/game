@@ -83,7 +83,7 @@ void ChunkManager::setGround(pair position, GroundId::value groundId) {
 	if (!checkStage(chunk, ChunkStage::GROUND)) return;
 	pair offset = getOffset(position);
 	chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId = groundId;
-	updateStyle2(position, true);
+	updateStyle(position, true);
 }
 
 void ChunkManager::setWall(pair position, WallId::value wallId) {
@@ -140,19 +140,14 @@ void ChunkManager::unlink(pair position, Entity entity) {
 	c.opaque[offset.x][offset.y] = false;
 }
 
-void ChunkManager::updateStyle2(pair position, bool propagate) {
+void ChunkManager::updateStyle(pair position, bool propagate) {
 	std::vector<std::pair<Sprite, int>> sprites;
 
-	GroundId::value ids[8] = {
-		getGround(position + pair(1, 0)),
-		getGround(position),
-		getGround(position + pair(0, 1)),
-		getGround(position + pair(1, 1)),
-		getGround(position + pair(1, 0)),
-		getGround(position),
-		getGround(position + pair(0, 1)),
-		getGround(position + pair(1, 1))
-	};
+	GroundId::value ids[8];
+	for (int i = 0; i < 8; i++) {
+		pair offset = pair((i+3) % 4 > 1, i % 4 > 1);
+		ids[i] = getGround(position + offset);
+	}
 
 	if (ids[0] && ids[0] == ids[1] && ids[0] == ids[2] && ids[0] == ids[3]) {
 		const GroundTemplate& temp = GroundTemplate::templates[ids[0]];
@@ -215,203 +210,203 @@ void ChunkManager::updateStyle2(pair position, bool propagate) {
 
 	if (propagate) {
 		for (int dir = 1; dir < Direction::count; dir++) {
-			updateStyle2(position + Direction::taxi[dir]);
-		}
-	}
-
-}
-
-void ChunkManager::updateStyle(pair position, bool propagate) {
-	// for (int i = 0; i < Direction::count; i++) {
-	// 	pair pos = position + Direction::taxi[i];
-	// 	pair chunk = getChunk(pos);
-	// 	if (!checkStage(chunk, ChunkStage::GROUND)) return;
-	// }
-
-	// if (!getGround(position)) return;
-
-	uint s = hash(42, seed, position);
-
-	std::vector<std::pair<Sprite, int>> sprites;
-
-	GroundId::value groundId = getGround(position);
-	GroundId::value top = getGround(position + pair(0, -1));
-	GroundId::value bottom = getGround(position + pair(0, 1));
-	GroundId::value bb = getGround(position + pair(0, 2));
-	GroundId::value left = getGround(position + pair(-1, 0));
-	GroundId::value right = getGround(position + pair(1, 0));
-	GroundId::value bl = getGround(position + pair(-1, 1));
-	GroundId::value br = getGround(position + pair(1, 1));
-	GroundId::value bbl = getGround(position + pair(-1, 2));
-	GroundId::value bbr = getGround(position + pair(1, 2));
-	GroundId::value tl = getGround(position + pair(-1, -1));
-	GroundId::value tr = getGround(position + pair(1, -1));
-
-	WallId::value wallId = getWall(position);
-	WallId::value lw = getWall(position + pair(-1, 0));
-	WallId::value rw = getWall(position + pair(1, 0));
-	WallId::value tw = getWall(position + pair(0, -1));
-	WallId::value ttw = getWall(position + pair(0, -2));
-	WallId::value bw = getWall(position + pair(0, 1));
-	WallId::value tlw = getWall(position + pair(-1, -1));
-	WallId::value trw = getWall(position + pair(1, -1));
-	WallId::value blw = getWall(position + pair(-1, 1));
-	WallId::value brw = getWall(position + pair(1, 1));
-
-	//* Walls
-
-	if (wallId && (bottom || bb)) {
-		pair source(11, 0);
-	
-		if (lw == wallId && rw == wallId) {
-			source = (tw == wallId && bottom) ? pair(1, 1) : pair(1, 0);
-		} else if (lw == wallId) {
-			if (bw == wallId) {
-				source = (tw == wallId && bottom) ? pair(4, 1) : pair(4, 0);
-			} else {
-				source = (tw == wallId) ? pair(4, 2) : pair(7, 0);
-			}
-		} else if (rw == wallId) {
-			if (bw == wallId) {
-				source = (tw == wallId && bottom) ? pair(3, 1) : pair(3, 0);
-			} else {
-				source = (tw == wallId) ? pair(3, 2) : pair(6, 0);
-			}
-		} else {
-			source = (tw == wallId && bottom) ? pair(9, 1) : pair(9, 0);
-		}
-		sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, source), 0);
-	}
-
-	if (wallId && !bottom && !bb) {
-		if (left || bl || bbl) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(2, 0)), -1);
-		if (right || br || bbr) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(0, 0)), -1);
-		if (top) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(1, 3)), 0);
-		if (!left && !bl && !bbl && !right && !br && !bbr && !top) {
-			if (tr) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(0, 3)), 0);
-			if (tl) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(2, 3)), 0);
-		}
-	}
-
-	if (!wallId && groundId && tw) {
-		pair source(11, 0);
-		if (trw == tw && tlw == tw) {
-			source = pair(1, 2);
-		} else if (trw == tw) {
-			source = pair(3, 3);
-		} else if (tlw == tw) {
-			source = pair(4, 3);
-		} else {
-			source = pair(9, 2);
-		}
-		sprites.emplace_back(Sprite(WallTemplate::templates[tw].spriteSheet, source), 0);
-	}
-
-	//* Wall Overlap
-
-	// if (top && !tw && wallId) {
-	// 	std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-	// 	Sprite sprite = Sprite(GroundTemplate::templates[top].spriteSheet, noise::choice<pair>(s++, variants[1]), pair(1,1), GroundTemplate::templates[top].frames, TILE_FRAME_TIME, 0, pair(6,0));
-	// 	sprites.emplace_back(sprite, top - 10);
-	// }
-
-	//* Ground
-
-	if (groundId) {
-		pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
-		Sprite baseSprite = Sprite(GroundTemplate::templates[groundId].spriteSheet, baseVariant, pair(1,1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
-		sprites.emplace_back(baseSprite, groundId);
-	} else {
-		groundId = GroundId::MAX;
-	}
-
-	if (!wallId) {
-
-		for (int dir = 1; dir < Direction::count; dir += 2) {
-			GroundId::value id = getGround(position + Direction::taxi[dir]);
-			if (id == GroundId::NONE || id >= groundId) continue;
-
-			GroundId::value left = getGround(position + Direction::taxi[Direction::rotate(dir, 2)]);
-			GroundId::value right = getGround(position + Direction::taxi[Direction::rotate(dir, -2)]);
-			GroundId::value opposite = getGround(position + Direction::taxi[Direction::rotate(dir, 4)]);
-
-			//* Straights
-			if (left != id && right != id) {
-				std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
-				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, noise::choice<pair>(s++, variants[dir / 2]), pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
-				sprites.emplace_back(sprite, id);
-			}
-
-			//* Us
-			if (left == id && right == id && opposite != id) {
-				pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
-				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, variants[dir / 2], pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
-				sprites.emplace_back(sprite, id);
-			}
-		}
-
-		for (int dir = 2; dir < Direction::count; dir += 2) {
-			GroundId::value id = getGround(position + Direction::taxi[dir]);
-			if (!id) continue;
-
-			GroundId::value left = getGround(position + Direction::taxi[Direction::rotate(dir, 1)]);
-			GroundId::value left2 = getGround(position + Direction::taxi[Direction::rotate(dir, 3)]);
-			GroundId::value right = getGround(position + Direction::taxi[Direction::rotate(dir, -1)]);
-			GroundId::value right2 = getGround(position + Direction::taxi[Direction::rotate(dir, -3)]);
-
-			//* Curves
-			GroundId::value curve = GroundId::MAX;
-			if (left < groundId && left == right && left2 != left && right2 != right) {
-				pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
-				Sprite sprite = Sprite(GroundTemplate::templates[left].spriteSheet, variants[dir / 2 - 1], pair(1,1), GroundTemplate::templates[left].frames, TILE_FRAME_TIME, 0, pair(6,0));
-				sprites.emplace_back(sprite, left);
-				curve = left;
-			}
-
-			//* Corners
-			if (id < groundId && left != id && right != id && id < curve) {
-				pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
-				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, variants[dir / 2 - 1], pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
-				sprites.emplace_back(sprite, id);
-			}
-		}
-
-		//* Os
-		GroundId::value id1 = getGround(position + Direction::taxi[1]);
-		GroundId::value id2 = getGround(position + Direction::taxi[3]);
-		GroundId::value id3 = getGround(position + Direction::taxi[5]);
-		GroundId::value id4 = getGround(position + Direction::taxi[7]);
-
-		if (id1 < groundId && id1 != GroundId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
-			Sprite sprite = Sprite(GroundTemplate::templates[id1].spriteSheet, {4, 4}, pair(1,1), GroundTemplate::templates[id1].frames, TILE_FRAME_TIME, 0, pair(6,0));
-			sprites.emplace_back(sprite, id1);
-		}
-	}
-
-	auto lambda = [](const auto left, const auto right) {
-		return left.second > right.second;
-	};
-
-	std::sort(sprites.begin(), sprites.end(), lambda);
-
-	assert(sprites.size() <= SPRITE_LAYER_COUNT);
-
-	pair chunk = getChunk(position);
-	pair offset = getOffset(position);
-	Tile& tile = chunks.find(chunk)->second.tiles[offset.x][offset.y];
-
-	tile.sprites.clear();
-	for (int i = 0; i < sprites.size(); i++) {
-		tile.sprites.setSprite(i, sprites[i].first);
-	}
-
-	if (propagate) {
-		for (int dir = 1; dir < Direction::count; dir++) {
 			updateStyle(position + Direction::taxi[dir]);
 		}
 	}
 
 }
+
+// void ChunkManager::updateStyle(pair position, bool propagate) {
+// 	// for (int i = 0; i < Direction::count; i++) {
+// 	// 	pair pos = position + Direction::taxi[i];
+// 	// 	pair chunk = getChunk(pos);
+// 	// 	if (!checkStage(chunk, ChunkStage::GROUND)) return;
+// 	// }
+
+// 	// if (!getGround(position)) return;
+
+// 	uint s = hash(42, seed, position);
+
+// 	std::vector<std::pair<Sprite, int>> sprites;
+
+// 	GroundId::value groundId = getGround(position);
+// 	GroundId::value top = getGround(position + pair(0, -1));
+// 	GroundId::value bottom = getGround(position + pair(0, 1));
+// 	GroundId::value bb = getGround(position + pair(0, 2));
+// 	GroundId::value left = getGround(position + pair(-1, 0));
+// 	GroundId::value right = getGround(position + pair(1, 0));
+// 	GroundId::value bl = getGround(position + pair(-1, 1));
+// 	GroundId::value br = getGround(position + pair(1, 1));
+// 	GroundId::value bbl = getGround(position + pair(-1, 2));
+// 	GroundId::value bbr = getGround(position + pair(1, 2));
+// 	GroundId::value tl = getGround(position + pair(-1, -1));
+// 	GroundId::value tr = getGround(position + pair(1, -1));
+
+// 	WallId::value wallId = getWall(position);
+// 	WallId::value lw = getWall(position + pair(-1, 0));
+// 	WallId::value rw = getWall(position + pair(1, 0));
+// 	WallId::value tw = getWall(position + pair(0, -1));
+// 	WallId::value ttw = getWall(position + pair(0, -2));
+// 	WallId::value bw = getWall(position + pair(0, 1));
+// 	WallId::value tlw = getWall(position + pair(-1, -1));
+// 	WallId::value trw = getWall(position + pair(1, -1));
+// 	WallId::value blw = getWall(position + pair(-1, 1));
+// 	WallId::value brw = getWall(position + pair(1, 1));
+
+// 	//* Walls
+
+// 	if (wallId && (bottom || bb)) {
+// 		pair source(11, 0);
+	
+// 		if (lw == wallId && rw == wallId) {
+// 			source = (tw == wallId && bottom) ? pair(1, 1) : pair(1, 0);
+// 		} else if (lw == wallId) {
+// 			if (bw == wallId) {
+// 				source = (tw == wallId && bottom) ? pair(4, 1) : pair(4, 0);
+// 			} else {
+// 				source = (tw == wallId) ? pair(4, 2) : pair(7, 0);
+// 			}
+// 		} else if (rw == wallId) {
+// 			if (bw == wallId) {
+// 				source = (tw == wallId && bottom) ? pair(3, 1) : pair(3, 0);
+// 			} else {
+// 				source = (tw == wallId) ? pair(3, 2) : pair(6, 0);
+// 			}
+// 		} else {
+// 			source = (tw == wallId && bottom) ? pair(9, 1) : pair(9, 0);
+// 		}
+// 		sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, source), 0);
+// 	}
+
+// 	if (wallId && !bottom && !bb) {
+// 		if (left || bl || bbl) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(2, 0)), -1);
+// 		if (right || br || bbr) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(0, 0)), -1);
+// 		if (top) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(1, 3)), 0);
+// 		if (!left && !bl && !bbl && !right && !br && !bbr && !top) {
+// 			if (tr) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(0, 3)), 0);
+// 			if (tl) sprites.emplace_back(Sprite(WallTemplate::templates[wallId].spriteSheet, pair(2, 3)), 0);
+// 		}
+// 	}
+
+// 	if (!wallId && groundId && tw) {
+// 		pair source(11, 0);
+// 		if (trw == tw && tlw == tw) {
+// 			source = pair(1, 2);
+// 		} else if (trw == tw) {
+// 			source = pair(3, 3);
+// 		} else if (tlw == tw) {
+// 			source = pair(4, 3);
+// 		} else {
+// 			source = pair(9, 2);
+// 		}
+// 		sprites.emplace_back(Sprite(WallTemplate::templates[tw].spriteSheet, source), 0);
+// 	}
+
+// 	//* Wall Overlap
+
+// 	// if (top && !tw && wallId) {
+// 	// 	std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
+// 	// 	Sprite sprite = Sprite(GroundTemplate::templates[top].spriteSheet, noise::choice<pair>(s++, variants[1]), pair(1,1), GroundTemplate::templates[top].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 	// 	sprites.emplace_back(sprite, top - 10);
+// 	// }
+
+// 	//* Ground
+
+// 	if (groundId) {
+// 		pair baseVariant = noise::choice<pair>(s++, {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {1, 2}, {1, 3}, {1, 4}});
+// 		Sprite baseSprite = Sprite(GroundTemplate::templates[groundId].spriteSheet, baseVariant, pair(1,1), GroundTemplate::templates[groundId].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 		sprites.emplace_back(baseSprite, groundId);
+// 	} else {
+// 		groundId = GroundId::MAX;
+// 	}
+
+// 	if (!wallId) {
+
+// 		for (int dir = 1; dir < Direction::count; dir += 2) {
+// 			GroundId::value id = getGround(position + Direction::taxi[dir]);
+// 			if (id == GroundId::NONE || id >= groundId) continue;
+
+// 			GroundId::value left = getGround(position + Direction::taxi[Direction::rotate(dir, 2)]);
+// 			GroundId::value right = getGround(position + Direction::taxi[Direction::rotate(dir, -2)]);
+// 			GroundId::value opposite = getGround(position + Direction::taxi[Direction::rotate(dir, 4)]);
+
+// 			//* Straights
+// 			if (left != id && right != id) {
+// 				std::vector<pair> variants[4] = {{{0, 2}, {0, 3}}, {{2, 5}, {3, 5}}, {{5, 2}, {5, 3}}, {{2, 0}, {3, 0}}};
+// 				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, noise::choice<pair>(s++, variants[dir / 2]), pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 				sprites.emplace_back(sprite, id);
+// 			}
+
+// 			//* Us
+// 			if (left == id && right == id && opposite != id) {
+// 				pair variants[4] = {{3, 4}, {4, 2}, {2, 4}, {4, 3}};
+// 				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, variants[dir / 2], pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 				sprites.emplace_back(sprite, id);
+// 			}
+// 		}
+
+// 		for (int dir = 2; dir < Direction::count; dir += 2) {
+// 			GroundId::value id = getGround(position + Direction::taxi[dir]);
+// 			if (!id) continue;
+
+// 			GroundId::value left = getGround(position + Direction::taxi[Direction::rotate(dir, 1)]);
+// 			GroundId::value left2 = getGround(position + Direction::taxi[Direction::rotate(dir, 3)]);
+// 			GroundId::value right = getGround(position + Direction::taxi[Direction::rotate(dir, -1)]);
+// 			GroundId::value right2 = getGround(position + Direction::taxi[Direction::rotate(dir, -3)]);
+
+// 			//* Curves
+// 			GroundId::value curve = GroundId::MAX;
+// 			if (left < groundId && left == right && left2 != left && right2 != right) {
+// 				pair variants[4] = {{3, 2}, {2, 2}, {2, 3}, {3, 3}};
+// 				Sprite sprite = Sprite(GroundTemplate::templates[left].spriteSheet, variants[dir / 2 - 1], pair(1,1), GroundTemplate::templates[left].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 				sprites.emplace_back(sprite, left);
+// 				curve = left;
+// 			}
+
+// 			//* Corners
+// 			if (id < groundId && left != id && right != id && id < curve) {
+// 				pair variants[4] = {{0, 5}, {5, 5}, {5, 0}, {0, 0}};
+// 				Sprite sprite = Sprite(GroundTemplate::templates[id].spriteSheet, variants[dir / 2 - 1], pair(1,1), GroundTemplate::templates[id].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 				sprites.emplace_back(sprite, id);
+// 			}
+// 		}
+
+// 		//* Os
+// 		GroundId::value id1 = getGround(position + Direction::taxi[1]);
+// 		GroundId::value id2 = getGround(position + Direction::taxi[3]);
+// 		GroundId::value id3 = getGround(position + Direction::taxi[5]);
+// 		GroundId::value id4 = getGround(position + Direction::taxi[7]);
+
+// 		if (id1 < groundId && id1 != GroundId::NONE && id1 == id2 && id1 == id3 && id1 == id4) {
+// 			Sprite sprite = Sprite(GroundTemplate::templates[id1].spriteSheet, {4, 4}, pair(1,1), GroundTemplate::templates[id1].frames, TILE_FRAME_TIME, 0, pair(6,0));
+// 			sprites.emplace_back(sprite, id1);
+// 		}
+// 	}
+
+// 	auto lambda = [](const auto left, const auto right) {
+// 		return left.second > right.second;
+// 	};
+
+// 	std::sort(sprites.begin(), sprites.end(), lambda);
+
+// 	assert(sprites.size() <= SPRITE_LAYER_COUNT);
+
+// 	pair chunk = getChunk(position);
+// 	pair offset = getOffset(position);
+// 	Tile& tile = chunks.find(chunk)->second.tiles[offset.x][offset.y];
+
+// 	tile.sprites.clear();
+// 	for (int i = 0; i < sprites.size(); i++) {
+// 		tile.sprites.setSprite(i, sprites[i].first);
+// 	}
+
+// 	if (propagate) {
+// 		for (int dir = 1; dir < Direction::count; dir++) {
+// 			updateStyle(position + Direction::taxi[dir]);
+// 		}
+// 	}
+
+// }
 
 void ChunkManager::serialise2(std::filesystem::path path) {
 	std::filesystem::create_directory(path / "chunks");

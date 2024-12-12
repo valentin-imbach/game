@@ -18,6 +18,7 @@ src/framework/TextureManager.cpp
 src/framework/TextManager.cpp
 src/framework/SoundManager.cpp
 src/framework/Sprite.cpp
+src/framework/FileWatcher.cpp
 src/world/RealmManager.cpp
 src/world/World.cpp
 src/world/Tile.cpp

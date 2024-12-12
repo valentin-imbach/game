@@ -250,7 +250,7 @@ void Chunk::setTiles(ChunkManager* manager) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			pair offset(x, y);
 			pair pos = CHUNK_SIZE * position + offset;
-			manager->updateStyle2(pos);
+			manager->updateStyle(pos);
 		}
 	}
 	// LOG("Tiles set at", position);

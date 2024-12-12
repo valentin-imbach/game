@@ -13,8 +13,8 @@ public:
 	void generateChunk(pair position, ChunkStage::value target, Environment* environment);
 	void draw(Camera camera, uint ticks);
 
+	// void updateStyle(pair position, bool propagate = false);
 	void updateStyle(pair position, bool propagate = false);
-	void updateStyle2(pair position, bool propagate = false);
 
 	void serialise2(std::filesystem::path path);
 

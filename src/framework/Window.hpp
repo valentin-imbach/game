@@ -20,6 +20,8 @@ public:
 
 	pair size;
 	vec mousePosition;
+	SDL_MouseButtonFlags mouseState;
+	const bool* keyState;
 
 	std::filesystem::path root;
 

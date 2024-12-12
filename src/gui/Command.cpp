@@ -17,7 +17,7 @@ void Console::setCommands() {
 		return true;
 	});
 
-	commands["refresh"] = std::make_unique<Command<>>([this](){
+	commands["hotload"] = std::make_unique<Command<>>([this](){
 		Sprite::loadSpriteSheets();
 		ItemPropertyTemplate::setTemplates();
 		ItemKindTemplate::setTemplates();
