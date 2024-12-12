@@ -7,8 +7,8 @@ project(Game)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
-set(CMAKE_FIND_FRAMEWORK NEVER) 
+# set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+# set(CMAKE_FIND_FRAMEWORK NEVER) 
 
 # add executables
 set(SOURCES
@@ -64,8 +64,9 @@ src/main.cpp)
 #find_package(SDL2_image REQUIRED)
 
 add_executable(Game ${SOURCES})
+# add_library(Game ${SOURCES})
 
-set_target_properties(Game PROPERTIES INSTALL_RPATH "@executable_path")
+# set_target_properties(Game PROPERTIES INSTALL_RPATH "@executable_path")
 
 target_include_directories(Game PRIVATE include src src/utils src/gui src/framework src/ecs src/ecs/systems src/world src/item src/templates)
 

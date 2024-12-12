@@ -55,7 +55,7 @@ private:
 
 	EntitySet updateSet;
 
-	std::unique_ptr<GuiElement> makeInventory();
+	std::unique_ptr<GuiElement> makeInventory(InventorySlice link = {});
 	std::unique_ptr<GuiElement> makeMenu();
 	std::unique_ptr<GuiElement> makeDeathScreen();
 

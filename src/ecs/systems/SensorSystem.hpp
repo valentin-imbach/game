@@ -36,7 +36,8 @@ public:
 				sensorComponent.engaged = true;
 				if (ecs->hasComponent<PlayerComponent>(ent)) {
 					PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(ent);
-					sensorComponent.item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot]->item;
+					InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(ent);
+					sensorComponent.item = inventoryComponent.inventory.itemContainers[playerComponent.activeSlot][0].item;
 				} else {
 					sensorComponent.item = 0;
 				}

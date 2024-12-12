@@ -6,7 +6,7 @@
 #include "Item_types.hpp"
 
 #define INV_WIDTH 7
-#define INV_HEIGHT 5
+#define INV_HEIGHT 6
 
 struct ItemContainer {
 	Entity item = 0;
@@ -26,7 +26,7 @@ public:
 	
 	ItemContainer itemContainers[INV_WIDTH][INV_HEIGHT];
 
-	[[nodiscard]] Entity add(Entity item);
+	[[nodiscard]] Entity add(Entity item, pair range = pair(0, INV_HEIGHT));
 
 	int count();
 	void clear(bool destroy = false);

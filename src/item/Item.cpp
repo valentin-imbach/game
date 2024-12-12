@@ -187,8 +187,10 @@ Inventory::Inventory(pair size) : size(size) {
 	assert(0 <= size.y && size.y <= INV_HEIGHT);
 }
 
-Entity Inventory::add(Entity item) {
-	for (int y = 0; y < size.y; y++) {
+Entity Inventory::add(Entity item, pair range) {
+	int y1 = range.x;
+	int y2 = std::min(size.y, range.y);
+	for (int y = y1; y < y2; y++) {
 		for (int x = 0; x < size.x; x++) {
 			item = itemContainers[x][y].add(item);
 		}

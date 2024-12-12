@@ -65,7 +65,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 
 	world->ecs.addComponent<EffectComponent>({}, player);
 
-	world->ecs.addComponent<InventoryComponent>({Inventory(pair(7, 5))}, player);
+	world->ecs.addComponent<InventoryComponent>({Inventory(pair(7, 6))}, player);
 
 	Inventory equipment({3,4});
 	equipment.itemContainers[0][0].itemKind = ItemKind::CLOTHING_HEAD;
@@ -78,7 +78,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	equipment.itemContainers[1][3].itemKind = ItemKind::ARMOR_FEET;
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	
-	world->ecs.addComponent<PlayerComponent>({Inventory(pair(7, 1)), equipment, 0}, player);
+	world->ecs.addComponent<PlayerComponent>({equipment, 0}, player);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::PLAYER);
@@ -161,6 +161,8 @@ Entity EntityFactory::createCrop(CropId::value cropId, RealmId realmId, pair pos
 Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec position) {
 	Entity enemy = createDynamicEntity(realmId, position);
 	if (!enemy) return 0;
+
+	world->ecs.addComponent<InventoryComponent>({Inventory(pair(1,1))}, enemy);
 	
 	world->ecs.addComponent<ActionComponent>({}, enemy);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, enemy);

@@ -9,10 +9,11 @@ public:
 	void update() {
 		for (Entity entity : entities) {
 			HandComponent& handComonent = ecs->getComponent<HandComponent>(entity);
+			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
 			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
 
 			uchar sel = playerComponent.activeSlot;
-			Entity item = playerComponent.hotbar.itemContainers[sel]->item;
+			Entity item = inventoryComponent.inventory.itemContainers[sel][0].item;
 			handComonent.item = item;
 		}
 	}

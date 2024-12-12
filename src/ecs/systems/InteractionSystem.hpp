@@ -8,7 +8,7 @@
 
 class InteractionSystem : public System {
 public:
-	std::unique_ptr<GuiElement> update(vec position, EntitySet& set, uint ticks) {
+	std::unique_ptr<GuiElement> update(vec position, EntitySet& set, uint ticks, InventorySlice link = {}, InventorySlice* out = nullptr) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
 			StationComponent& stationComponent = ecs->getComponent<StationComponent>(entity);
@@ -19,7 +19,8 @@ public:
 				Sprite sprite = Sprite(SpriteSheet::CHEST, {0, 0}, {10, 10});
 				std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 				InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
-				gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20));
+				gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, link));
+				if (out) *out = &inventoryComponent.inventory;
 				return gui;
 				
 			} else if (stationComponent.stationId == StationId::TOOL_STATION) {

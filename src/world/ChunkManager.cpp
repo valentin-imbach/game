@@ -142,6 +142,7 @@ void ChunkManager::unlink(pair position, Entity entity) {
 
 void ChunkManager::updateStyle(pair position, bool propagate) {
 	std::vector<std::pair<Sprite, int>> sprites;
+	uint s = hash(position, 2324);
 
 	GroundId::value ids[8];
 	for (int i = 0; i < 8; i++) {
@@ -149,37 +150,40 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 		ids[i] = getGround(position + offset);
 	}
 
+	pair base[8] = { pair(2,1), pair(3,1), pair(1,2), pair(2,2), pair(1,3), pair(2,3), pair(2,4), pair(3,4) };
+	pair corners[4][2] = { {pair(0,4), pair(1,5)}, {pair(4,5), pair(5,3)}, {pair(4,0), pair(5,2)}, {pair(1,0), pair(0,1)} };
+	pair straights[4][2] = { {pair(2,5), pair(3,5)}, {pair(4,1), pair(4,4)}, {pair(2,0), pair(3,0)}, {pair(0,2), pair(0,3)} };
+	pair wedges[4] = { pair(3,2), pair(3,3), pair(1,1), pair(1,4) };
+	pair diag[2] = { pair(4,3), pair(4,2) };
+
 	if (ids[0] && ids[0] == ids[1] && ids[0] == ids[2] && ids[0] == ids[3]) {
 		const GroundTemplate& temp = GroundTemplate::templates[ids[0]];
-		Sprite baseSprite = Sprite(temp.spriteSheet, pair(2,1), pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+		int variant = noise::Int(s++, 8);
+		Sprite baseSprite = Sprite(temp.spriteSheet, base[variant], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 		sprites.emplace_back(baseSprite, ids[0]);
 	}
-
-	pair ones[4] = { pair(1,5), pair(4,5), pair(4,0), pair(1,0) };
-	pair twos[4] = { pair(2,5), pair(4,1), pair(2,0), pair(0,2) };
-	pair threes[4] = { pair(3,2), pair(3,3), pair(1,1), pair(1,4) };
 
 	for (int i = 0; i < 4; i++) {
 		if (!ids[0]) continue;
 		const GroundTemplate& temp = GroundTemplate::templates[ids[i]];
 
 		if (ids[i + 1] == ids[i] && ids[i + 2] == ids[i] &&  ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet, threes[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			Sprite sprite = Sprite(temp.spriteSheet, wedges[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 
 		if (ids[i + 1] == ids[i] && ids[i + 2] != ids[i] &&  ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet, twos[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			int variant = noise::Bool(s++);
+			Sprite sprite = Sprite(temp.spriteSheet, straights[i][variant], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 
 		if (ids[i + 1] != ids[i] && ids[i + 2] != ids[i] && ids[i + 3] != ids[i]) {
-			Sprite sprite = Sprite(temp.spriteSheet, ones[i], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
+			int variant = noise::Bool(s++);
+			Sprite sprite = Sprite(temp.spriteSheet, corners[i][variant], pair(1,1), temp.frames, TILE_FRAME_TIME, 0, pair(6,0));
 			sprites.emplace_back(sprite, ids[i]);
 		}
 	}
-
-	pair diag[2] = { pair(4,3), pair(4,2) };
 
 	for (int i = 0; i < 2; i++) {
 		if (!ids[0]) continue;
@@ -191,12 +195,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 		}
 	}
 
-	auto lambda = [](const auto left, const auto right) {
-		return left.second > right.second;
-	};
-
-	std::sort(sprites.begin(), sprites.end(), lambda);
-
+	std::sort(sprites.begin(), sprites.end(), [](const auto left, const auto right) { return left.second > right.second; });
 	assert(sprites.size() <= SPRITE_LAYER_COUNT);
 
 	pair chunk = getChunk(position);
@@ -204,16 +203,11 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 	Tile& tile = chunks.find(chunk)->second.tiles[offset.x][offset.y];
 
 	tile.sprites.clear();
-	for (int i = 0; i < sprites.size(); i++) {
-		tile.sprites.setSprite(i, sprites[i].first);
-	}
+	for (int i = 0; i < sprites.size(); i++) tile.sprites.setSprite(i, sprites[i].first);
 
 	if (propagate) {
-		for (int dir = 1; dir < Direction::count; dir++) {
-			updateStyle(position + Direction::taxi[dir]);
-		}
+		for (int dir = 1; dir < Direction::count; dir++) updateStyle(position + Direction::taxi[dir]);
 	}
-
 }
 
 // void ChunkManager::updateStyle(pair position, bool propagate) {

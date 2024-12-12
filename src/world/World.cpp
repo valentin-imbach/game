@@ -201,7 +201,7 @@ void World::rosterSystems() {
 	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION,
 		{ComponentId::COLLIDER, ComponentId::POSITION});
 	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,
-		{ComponentId::PLAYER, ComponentId::INVENTORY});
+		{ComponentId::COLLIDER, ComponentId::INVENTORY});
 	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE,
 		{ComponentId::RESOURCE, ComponentId::GRID, ComponentId::HEALTH});
 	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH,
@@ -462,14 +462,17 @@ void World::draw() {
 	state = false;
 }
 
-std::unique_ptr<GuiElement> World::makeInventory() {
+std::unique_ptr<GuiElement> World::makeInventory(InventorySlice link) {
 	if (!player) return nullptr;
 	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
 	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
 	std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), &playerComponent.hotbar, 20, &inventoryComponent.inventory));
-	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), &inventoryComponent.inventory, 20, &playerComponent.hotbar));
+
+	InventorySlice hotbar = InventorySlice(&inventoryComponent.inventory, pair(0, 1));
+	InventorySlice main = InventorySlice(&inventoryComponent.inventory, pair(1, 7));
+	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), hotbar, 20, link.inventory ? link : main));
+	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), main, 20, link.inventory ? link : hotbar));
 	return gui;
 }
 
@@ -511,7 +514,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	if (!player) return false;
 	
 	PlayerComponent& playerComponent = ecs.getComponent<PlayerComponent>(player);
-	ItemContainer& activeItemContainer = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0];
+	InventoryComponent& inventoryComponent = ecs.getComponent<InventoryComponent>(player);
+	ItemContainer& activeItemContainer = inventoryComponent.inventory.itemContainers[playerComponent.activeSlot][0];
 
 	if (event.id == InputEventId::INVENTORY) {
 		guiManager.open(makeInventory(), makeMenu());
@@ -551,7 +555,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			actionComponent.start = ticks;
 			actionComponent.trigger = ticks + 150;
 			actionComponent.end = ticks + 300;
-			actionComponent.item = playerComponent.hotbar.itemContainers[playerComponent.activeSlot][0].item;
+			actionComponent.item = activeItemContainer.item;
 		}
 
 	} else if (event.id == InputEventId::SECONDARY) {
@@ -606,8 +610,9 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			}
 		}
 		
-		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet, ticks);
-		if (gui) guiManager.open(makeInventory(), std::move(gui));
+		InventorySlice link;
+		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet, ticks, &inventoryComponent.inventory, &link);
+		if (gui) guiManager.open(makeInventory(link), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
 		state = true;
 

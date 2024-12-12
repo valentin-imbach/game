@@ -88,13 +88,19 @@ private:
 	uint index;
 };
 
+struct InventorySlice {
+	InventorySlice(Inventory* inventory = nullptr, pair range = {0, INV_HEIGHT}) : inventory(inventory), range(range) {}
+	Inventory* inventory;
+	pair range;
+};
+
 class ItemSlot : public GuiElement {
 public:
-	ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link = nullptr);
+	ItemSlot(pair position, ItemContainer& itemContainer, InventorySlice link = {});
 	~ItemSlot() override = default;
 	void draw() override;
 	bool handleEvent(InputEvent event) override;
-	Inventory* link;
+	InventorySlice link;
 
 private:
 	ItemContainer& itemContainer;
@@ -128,12 +134,12 @@ private:
 
 class InventoryGui : public Widget {
 public:
-	InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link = nullptr);
+	InventoryGui(pair position, InventorySlice slice, int spacing, InventorySlice link = {});
 	~InventoryGui() override = default;
-	Inventory* link;
+	InventorySlice link;
 
 private:
-	Inventory* inventory;
+	InventorySlice slice;
 	int spacing;
 };
 
@@ -151,27 +157,27 @@ private:
 
 class CraftingGrid : public Widget {
 public:
-	CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inventory* link = nullptr);
+	CraftingGrid(pair position, CraftingRecipeId::value recipeId, InventorySlice link = {});
 	~CraftingGrid() override;
 	void craft();
 
 private:
 	CraftingRecipeId::value recipeId;
 	uint arity;
-	Inventory* link;
+	InventorySlice link;
 	std::vector<ItemContainer> inputs;
 	ItemContainer output;
 };
 
 class CraftingGui : public Widget {
 public:
-	CraftingGui(pair position, Inventory* link = nullptr);
+	CraftingGui(pair position, InventorySlice link = {});
 	~CraftingGui() = default;
 	void select(int n);
 
 private:
 	CraftingGrid* craftingGrid = nullptr;
-	Inventory* link;
+	InventorySlice link;
 };
 
 class Selector : public GuiElement {
@@ -192,27 +198,27 @@ private:
 
 class BuildGrid : public Widget {
 public:
-	BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* link = nullptr);
+	BuildGrid(pair position, BuildRecipeId::value recipeId, InventorySlice link = {});
 	~BuildGrid() override;
 	void build();
 
 private:
 	BuildRecipeId::value recipeId;
 	uint arity;
-	Inventory* link;
+	InventorySlice link;
 	std::vector<ItemContainer> inputs;
 };
 
 class BuildGui : public Widget {
 public:
-	BuildGui(pair position, Inventory* link = nullptr);
+	BuildGui(pair position, InventorySlice link = {});
 	~BuildGui() = default;
 	void select(int n);
 	void build();
 
 private:
 	BuildGrid* buildGrid = nullptr;
-	Inventory* link;
+	InventorySlice link;
 };
 
 class TextGui : public GuiElement {

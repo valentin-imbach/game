@@ -32,16 +32,16 @@ public:
 
 				if (ecs->hasComponent<PlayerComponent>(entity)) {
 					PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);
-					for (int y = 0; y < playerComponent.hotbar.size.y; y++) {
-						for (int x = 0; x < playerComponent.hotbar.size.x; x++) {
-							Entity item = playerComponent.hotbar.itemContainers[x][y].item;
+					for (int y = 0; y < playerComponent.equipment.size.y; y++) {
+						for (int x = 0; x < playerComponent.equipment.size.x; x++) {
+							Entity item = playerComponent.equipment.itemContainers[x][y].item;
 							if (item) {
 								vec offset;
 								offset.x = noise::Float(seed++, -0.3f, 0.3f);
 								offset.y = noise::Float(seed++, -0.3f, 0.3f);
 								vec position = positionComponent.position + offset;
 								ecs->addComponent<PositionComponent>({position, positionComponent.realmId}, item);
-								playerComponent.hotbar.itemContainers[x][y].clear();
+								playerComponent.equipment.itemContainers[x][y].clear();
 							}
 						}
 					}

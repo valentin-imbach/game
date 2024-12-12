@@ -151,7 +151,7 @@ bool TabWidget::handleEvent(InputEvent event) {
 
 //* ItemSlot
 
-ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, Inventory* link)
+ItemSlot::ItemSlot(pair position, ItemContainer& itemContainer, InventorySlice link)
 	: GuiElement(position, pair(18, 18)), link(link), itemContainer(itemContainer) {
 	sprite = Sprite(SpriteSheet::SLOT, pair(0, 0), pair(2, 2));
 	hoverSprite = Sprite(SpriteSheet::SLOT, pair(2, 0), pair(2, 2));
@@ -169,8 +169,8 @@ void ItemSlot::draw() {
 bool ItemSlot::handleEvent(InputEvent event) {
 	ItemContainer& mouseItemContainer = guiManager->mouseItemContainer;
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
-		if (guiManager->world->inputState[InputStateId::ALTER] && link) {
-			itemContainer.item = link->add(itemContainer.item);
+		if (guiManager->world->inputState[InputStateId::ALTER] && link.inventory) {
+			itemContainer.item = link.inventory->add(itemContainer.item, link.range);
 			return true;
 		}
 		if (itemContainer.itemKind && mouseItemContainer.item && !hasItemKind(mouseItemContainer.item, itemContainer.itemKind)) return false;
@@ -219,7 +219,7 @@ void HotbarGui::update(GuiManager* manager) {
 void HotbarGui::draw() {
 	if (guiManager->active() || !player) return;
 	GuiElement::draw();
-	Inventory& inventory = guiManager->world->ecs.getComponent<PlayerComponent>(player).hotbar;
+	Inventory& inventory = guiManager->world->ecs.getComponent<InventoryComponent>(player).inventory;
 	uint activeSlot = guiManager->world->ecs.getComponent<PlayerComponent>(player).activeSlot;
 	int spacing = 20 * GuiManager::scale;
 	for (uint x = 0; x < inventory.size.x; x++) {
@@ -263,19 +263,22 @@ void HealthBarGui::draw() {
 
 //* InventoryGui
 
-InventoryGui::InventoryGui(pair position, Inventory* inventory, int spacing, Inventory* link)
-	: Widget(position, spacing * inventory->size), inventory(inventory), link(link), spacing(spacing) {
-	for (int x = 0; x < inventory->size.x; x++) {
-		for (int y = 0; y < inventory->size.y; y++) {
-			pair position(spacing * x - spacing * (inventory->size.x - 1) / 2, spacing * y - spacing * (inventory->size.y - 1) / 2);
-			addGuiElement(std::make_unique<ItemSlot>(position, inventory->itemContainers[x][y], link));
+InventoryGui::InventoryGui(pair position, InventorySlice slice, int spacing, InventorySlice link)
+	: Widget(position, pair()), slice(slice), link(link), spacing(spacing) {
+	int y1 = slice.range.x;
+	int y2 = std::min(slice.inventory->size.y, slice.range.y);
+	size = spacing * pair(slice.inventory->size.x, y2 - y1);
+	for (int x = 0; x < slice.inventory->size.x; x++) {
+		for (int y = y1; y < y2; y++) {
+			pair position(spacing * x - spacing * (slice.inventory->size.x - 1) / 2, spacing * (y - y1) - spacing * (y2 - y1 - 1) / 2);
+			addGuiElement(std::make_unique<ItemSlot>(position, slice.inventory->itemContainers[x][y], link));
 		}
 	}
 }
 
 //* CraftingGui
 
-CraftingGui::CraftingGui(pair position, Inventory* link)
+CraftingGui::CraftingGui(pair position, InventorySlice link)
 	: Widget(position, {144, 128}), link(link) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&CraftingGui::select, this, std::placeholders::_1), 3, Direction::WEST);
 	for (uint n = 1; n < CraftingRecipeId::count; n++) {
@@ -295,7 +298,7 @@ void CraftingGui::select(int n) {
 
 //* CraftingGrid
 
-CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inventory* link)
+CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, InventorySlice link)
 	: Widget(position, {40, 0}), recipeId(recipeId), link(link) {
 
 	CraftingKindRecipe& recipe = CraftingKindRecipe::recipes[recipeId];
@@ -319,9 +322,9 @@ CraftingGrid::CraftingGrid(pair position, CraftingRecipeId::value recipeId, Inve
 }
 
 CraftingGrid::~CraftingGrid() {
-	if (link) {
-		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
-		output.item = link->add(output.item);
+	if (link.inventory) {
+		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link.inventory->add(inputs[i].item);
+		output.item = link.inventory->add(output.item);
 	}
 	PositionComponent& positionComponent = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player);
 	for (uint i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({positionComponent.position, positionComponent.realmId}, inputs[i].item);
@@ -378,7 +381,7 @@ void CraftingGrid::craft() {
 
 //* BuildGui
 
-BuildGui::BuildGui(pair position, Inventory* link) : Widget(position, pair(144, 128)), link(link) {
+BuildGui::BuildGui(pair position, InventorySlice link) : Widget(position, pair(144, 128)), link(link) {
 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&BuildGui::select, this, std::placeholders::_1), 3, Direction::WEST);
 
 	for (uint n = 1; n < BuildRecipeId::count; n++) {
@@ -396,7 +399,7 @@ void BuildGui::select(int n) {
 	addGuiElement(std::move(grid));
 }
 
-BuildGrid::BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* link) : Widget(position, {40, 0}), recipeId(recipeId), link(link) {
+BuildGrid::BuildGrid(pair position, BuildRecipeId::value recipeId, InventorySlice link) : Widget(position, {40, 0}), recipeId(recipeId), link(link) {
 
 	BuildKindRecipe& recipe = BuildKindRecipe::recipes[recipeId];
 	arity = recipe.ingredients.size();
@@ -417,8 +420,8 @@ BuildGrid::BuildGrid(pair position, BuildRecipeId::value recipeId, Inventory* li
 }
 
 BuildGrid::~BuildGrid() {
-	if (link) {
-		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link->add(inputs[i].item);
+	if (link.inventory) {
+		for (uint i = 0; i < inputs.size(); i++) inputs[i].item = link.inventory->add(inputs[i].item);
 	}
 	PositionComponent& positionComponent = guiManager->world->ecs.getComponent<PositionComponent>(guiManager->world->player);
 	for (uint i = 0; i < inputs.size(); i++) guiManager->world->ecs.addComponent<PositionComponent>({positionComponent.position, positionComponent.realmId}, inputs[i].item);
