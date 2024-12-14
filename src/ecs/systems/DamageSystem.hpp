@@ -16,7 +16,7 @@ public:
 					HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 					if (ticks - healthComponent.lastDamage < 500) continue;
 
-					healthComponent.health = std::max(0, healthComponent.health - damageComponent.damage);
+					healthComponent.health = std::max(0, int(healthComponent.health) - damageComponent.damage);
 					healthComponent.lastDamage = ticks;
 				}
 

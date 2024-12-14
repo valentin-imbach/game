@@ -31,11 +31,18 @@ public:
 			if (aiComponent.state != AiState::MELEE) continue;
 			
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+			HandComponent& handComponent = ecs->getComponent<HandComponent>(entity);
 			AiMeleeComponent& aiMeleeComponent = ecs->getComponent<AiMeleeComponent>(entity);
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 
 			if (ticks - aiMeleeComponent.lastHit < aiMeleeComponent.cooldown) continue;
+
+			Entity weapon = 0;
+			if (ecs->hasComponent<InventoryComponent>(entity)) {
+				weapon = ecs->getComponent<InventoryComponent>(entity).inventory.itemContainers[0][0].item;
+			}
+			handComponent.item = weapon;
 
 			if (actionComponent.actionState == ActionState::IDLE) {
 				actionComponent.actionState = ActionState::ATTACK;
@@ -43,7 +50,7 @@ public:
 				actionComponent.start = ticks;
 				actionComponent.trigger = ticks + 150;
 				actionComponent.end = ticks + 300;
-				actionComponent.item = aiMeleeComponent.item;
+				actionComponent.item = weapon;
 				aiMeleeComponent.lastHit = ticks;
 			}
 		}

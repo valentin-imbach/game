@@ -80,6 +80,8 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	
 	world->ecs.addComponent<PlayerComponent>({equipment, 0}, player);
 
+	world->ecs.addComponent<FacingComponent>({}, player);
+
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::PLAYER);
 	world->ecs.addComponent<TagComponent>(tagComponent, player);
@@ -161,8 +163,6 @@ Entity EntityFactory::createCrop(CropId::value cropId, RealmId realmId, pair pos
 Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec position) {
 	Entity enemy = createDynamicEntity(realmId, position);
 	if (!enemy) return 0;
-
-	world->ecs.addComponent<InventoryComponent>({Inventory(pair(1,1))}, enemy);
 	
 	world->ecs.addComponent<ActionComponent>({}, enemy);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, enemy);
@@ -183,9 +183,15 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 
 	world->ecs.addComponent<AiPostComponent>({position, 10}, enemy);
 
+	world->ecs.addComponent<FacingComponent>({}, enemy);
+
 	Entity weapon = createTool(ItemKind::SWORD);
-	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0, weapon}, enemy);
-	world->ecs.addComponent<HandComponent>({weapon}, enemy);
+	InventoryComponent inventoryComponent = {Inventory(pair(1,1))};
+	Entity rest = inventoryComponent.inventory.add(weapon);
+	world->ecs.addComponent<InventoryComponent>(inventoryComponent, enemy);
+
+	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, enemy);
+	world->ecs.addComponent<HandComponent>({}, enemy);
 
 	world->ecs.addComponent<SpriteComponent>({}, enemy);
 	CreatureAnimationComponent creatureAnimationComponent = {};
@@ -309,8 +315,8 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
 		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(0, 0)));
 		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(1, 7)));	
-		world->ecs.addComponent<MeleeItemComponent>({1}, tool);
-		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
+		world->ecs.addComponent<MeleeItemComponent>({5}, tool);
+		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 5;
 		itemKindComponent.itemProperties[ItemProperty::PARRY] = 10;
 	} else if (itemKind == ItemKind::BOW) {
 		world->ecs.addComponent<NameComponent>({Textblock("Bow")}, tool);
@@ -473,12 +479,12 @@ Entity EntityFactory::createExplosive(RealmId realmId, vec position) {
 	return  explosive;
 }
 
-Entity EntityFactory::createDamageArea(RealmId realmId, vec position, Shape shape, uint start, uint duration, vec force, Entity imune) {
+Entity EntityFactory::createDamageArea(RealmId realmId, vec position, Shape shape, uint start, uint duration, int damage, vec force, Entity imune) {
 	Entity damageArea = createDynamicEntity(realmId, position);
 	if (!damageArea) return 0;
 
 	world->ecs.addComponent<HitboxComponent>({shape}, damageArea);
-	world->ecs.addComponent<DamageComponent>({1, start, duration, force, imune}, damageArea);
+	world->ecs.addComponent<DamageComponent>({damage, start, duration, force, imune}, damageArea);
 	return damageArea;
 }
 

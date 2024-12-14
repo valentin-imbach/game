@@ -46,7 +46,9 @@ void Console::setCommands() {
 	commands["summon"] = std::make_unique<Command<std::string>>([this](std::string str){
 		if (!player) return false;
 		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(player);
-		vec position = positionComponent.position;
+		
+		vec offset = vec::polar(noise::Float(ticks, 2*M_PI), 0.01f);
+		vec position = positionComponent.position + offset;
 
 		AnimalId::value animalId = AnimalId::from_string(str);
 		EnemyId::value enemyId = EnemyId::from_string(str);

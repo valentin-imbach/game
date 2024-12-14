@@ -5,6 +5,7 @@
 #include "SDL3_image/SDL_image.h"
 
 SDL_Texture* TextureManager::lightTexture = nullptr;
+SDL_Texture* TextureManager::fogTexture = nullptr;
 
 SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
 	SDL_Surface* tmpSurface = IMG_Load((SPRITE_PATH + path).c_str());

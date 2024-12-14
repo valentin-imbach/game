@@ -75,7 +75,7 @@ Biome::value Environment::getBiome(pair position, bool ocean, bool coast) {
 	// return Biome::RAINFOREST;
 }
 
-void Environment::draw(uint ticks) {
+void Environment::draw(Camera camera, uint ticks) {
 	uint s = ticks;
 	if (weatherId == WeatherId::RAIN) {
 		for (int i = 0; i < intensity; i++) {
@@ -95,6 +95,10 @@ void Environment::draw(uint ticks) {
 
 			rainSprite.draw(pair(dx, dy), 4);
 		}
+	} else if (weatherId == WeatherId::FOG) {
+		vec offset = camera.position * camera.zoom * BIT;
+		vec size = Window::instance->size;
+		TextureManager::drawTexture(TextureManager::fogTexture, nullptr, vec(), vec(1600, 640), size/2, size);
 	}
 
 }

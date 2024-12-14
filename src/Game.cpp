@@ -96,6 +96,7 @@ void Game::update(uint dt) {
 	ticks += dt;
 	Window::instance->update();
 	FileWatcher::update(ticks);
+	console.update(ticks);
 	//trackMix.update();
 	if (gameState == GameState::MENU) {
 		mainMenu.update();

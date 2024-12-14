@@ -16,7 +16,7 @@ public:
 			if (!explosiveComponent.trigger) return;
 
 			if (explosiveComponent.trigger < ticks) {
-				EntityFactory::createDamageArea(positionComponent.realmId, positionComponent.position, Shape(2.0f), ticks, 50);
+				EntityFactory::createDamageArea(positionComponent.realmId, positionComponent.position, Shape(2.0f), ticks, 1, 50);
 				camera.shake = ticks;
 				ecs->addComponent<DeathComponent>({}, entity);
 				return;

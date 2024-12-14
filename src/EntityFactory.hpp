@@ -28,7 +28,7 @@ public:
 
 	static Entity createProjectile(ProjectileId::value projectileId, RealmId realmId, vec position, vec direction, Entity imune = 0);
 	static Entity createExplosive(RealmId realmId, vec position);
-	static Entity createDamageArea(RealmId realmId, vec position, Shape shape, uint start, uint duration, vec force = {0,0}, Entity imune = 0);
+	static Entity createDamageArea(RealmId realmId, vec position, Shape shape, uint start, uint duration, int damage, vec force = {0,0}, Entity imune = 0);
 
 	static Entity createBoomerang();
 	static Entity createStaff();

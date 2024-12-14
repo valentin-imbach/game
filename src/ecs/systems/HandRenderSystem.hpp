@@ -14,28 +14,19 @@ public:
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);
 			HandComponent& handComponent = ecs->getComponent<HandComponent>(entity);
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
+			FacingComponent& facingComponent = ecs->getComponent<FacingComponent>(entity);
 
-			Entity item = handComponent.item;
-			if (actionComponent.actionState != ActionState::IDLE) {
-				item = actionComponent.item;
-			}
-
+			Entity item = actionComponent.actionState == ActionState::IDLE ? handComponent.item : actionComponent.item;
 			if (!item) continue;
+
 			ItemComponent& itemComponent = ecs->getComponent<ItemComponent>(item);
 			if (!itemComponent.show) continue;
 
 			TextureStyle style;
 			style.angle = 0;
 
-			if (ecs->hasComponent<PlayerComponent>(entity)) {
-				vec mpos = Window::instance->mousePosition;
-				vec epos = camera.screenPosition(positionComponent.position);
-				if (mpos.x > epos.x) {
-					style.angle = vec::angle(mpos - epos);
-				} else {
-					style.angle = M_PI - vec::angle(mpos - epos);
-				}
-			}
+			float ang = vec::angle(facingComponent.facing);
+			style.angle = (facingComponent.facing.x > 0) ? ang : M_PI - ang;
 
 			vec offset = vec(0.5f, -0.5f);
 			style.pivot = pair(-8 * camera.zoom, 0);
@@ -51,7 +42,7 @@ public:
 				style.angle += M_PI_4;
 			}
 
-			if (movementComponent.facing == Direction::WEST) {
+			if (facingComponent.facing.x <= 0) {
 				offset.x *= -1;
 				style.angle *= -1;
 				style.pivot.x *= -1;

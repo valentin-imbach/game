@@ -11,6 +11,10 @@ Console::Console(Game* game) : game(game) {
 	setCommands();
 }
 
+void Console::update(uint ticks) {
+	this->ticks = ticks;
+}
+
 void Console::draw() {
 	if (!active) return;
 	vec windowSize = Window::instance->size;

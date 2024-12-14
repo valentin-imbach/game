@@ -185,6 +185,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<SpawnerComponent>(ComponentId::SPAWNER);
 	ecs.rosterComponent<AiLureComponent>(ComponentId::AI_LURE);
 	ecs.rosterComponent<WindUpComponent>(ComponentId::WIND_UP);
+	ecs.rosterComponent<FacingComponent>(ComponentId::FACING);
 
 	LOG("Components rostered");
 }
@@ -225,7 +226,7 @@ void World::rosterSystems() {
 	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
 		{ComponentId::PARTICLE, ComponentId::MOVEMENT});
 	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
-		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT, ComponentId::HAND});
+		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT, ComponentId::HAND, ComponentId::FACING});
 	// chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
 	// 	{ComponentId::POSITION, ComponentId::CHUNK});
 	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
@@ -310,8 +311,8 @@ void World::update(uint dt) {
 	playerRealm->minimap.update(playerPosition, playerRealm);
 
 	guiManager.update(dt);
-	controllerSystem->update(inputState, state, ticks);
-	playerSystem->update();
+	controllerSystem->update(inputState, camera, state, ticks);
+	playerSystem->update(camera);
 
 	updateSet.clear();
 	const uchar updateDistance = 1;
@@ -451,7 +452,7 @@ void World::draw() {
 
 	particleSystem.draw(camera);
 	lightSystem->update(camera, time, ticks, drawSet);
-	playerRealm->environment->draw(ticks);
+	playerRealm->environment->draw(camera, ticks);
 
 	guiManager.draw();
 
@@ -522,8 +523,8 @@ bool World::handleEvent(InputEvent event, uint dt) {
 	} else if (event.id == InputEventId::THROW) {
 		if (!activeItemContainer.item) return true;
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
-		MovementComponent& movementComponent = ecs.getComponent<MovementComponent>(player);
-		vec position = positionComponent.position + Direction::unit[movementComponent.facing];
+		FacingComponent& facingComponent = ecs.getComponent<FacingComponent>(player);
+		vec position = positionComponent.position + facingComponent.facing;
 		ecs.addComponent<PositionComponent>({position, positionComponent.realmId}, activeItemContainer.item);
 		pair chunk = vec::round(position / CHUNK_SIZE);
 		playerRealm->attach(activeItemContainer.item, chunk);

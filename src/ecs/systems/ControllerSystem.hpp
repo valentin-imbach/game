@@ -8,10 +8,12 @@
 
 class ControllerSystem : public System {
 public:
-	void update(InputState& inputState, bool active, uint ticks) {
+	void update(InputState& inputState, Camera camera, bool active, uint ticks) {
 		for (Entity entity : entities) {
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);
 			DirectionComponent& directionComponent = ecs -> getComponent<DirectionComponent>(entity);
+			FacingComponent& facingComponent = ecs -> getComponent<FacingComponent>(entity);
+			PositionComponent& positionComponent = ecs -> getComponent<PositionComponent>(entity);
 
 			pair sum(1, 1);
 			if (active) {
@@ -20,12 +22,9 @@ public:
 				if (inputState[InputStateId::MOVE_WEST]) sum.x -= 1;
 				if (inputState[InputStateId::MOVE_SOUTH]) sum.y += 1;
 
-				vec mpos = Window::instance->mousePosition;
-				if (mpos.x > Window::instance->size.x / 2) {
-					movementComponent.facing = Direction::EAST;
-				} else {
-					movementComponent.facing = Direction::WEST;
-				}
+				vec mpos = camera.worldPosition(Window::instance->mousePosition);
+				vec ppos = positionComponent.position;
+				facingComponent.facing = vec::normalise(mpos - ppos);
 			}
 
 			if (sum.x == 2 && sum.y == 1) directionComponent.direction = Direction::from_int(1);

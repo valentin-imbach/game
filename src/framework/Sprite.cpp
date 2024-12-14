@@ -46,6 +46,7 @@ void Sprite::loadSpriteSheets() {
 		FileWatcher::add(SPRITE_PATH + fileName, lambda);
 	}
 	TextureManager::lightTexture = TextureManager::loadTexture("light.png");
+	TextureManager::fogTexture = TextureManager::loadTexture("fog.png");
 }
 
 //* SpriteStack

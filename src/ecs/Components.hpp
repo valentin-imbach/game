@@ -46,6 +46,10 @@ struct CreatureAnimationComponent {
 	std::array<std::pair<SpriteStack, SpriteStack>, MovementState::count> sprites;
 };
 
+struct FacingComponent {
+	vec facing = vec(1, 0);
+};
+
 struct ControllerComponent {};
 
 struct DirectionComponent {
@@ -212,7 +216,6 @@ struct AiMeleeComponent {
 	int damage;
 	uint cooldown;
 	uint lastHit;
-	Entity item;
 };
 
 struct AiPostComponent {

@@ -23,7 +23,7 @@ public:
 						if (vec::dist(actionComponent.position, positionComponent.position) > 0.001f) {
 							force = vec::normalise(actionComponent.position - positionComponent.position) / 10;
 						}
-						EntityFactory::createDamageArea(positionComponent.realmId, actionComponent.position, vec(0.2f, 0.2f), ticks, 1, force, entity);	
+						EntityFactory::createDamageArea(positionComponent.realmId, actionComponent.position, vec(0.2f, 0.2f), ticks, 1, damageComponent.damage, force, entity);	
 					} else {
 						forageSystem->update(actionComponent.position, item, ticks, updateSet);
 					}

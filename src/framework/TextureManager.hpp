@@ -31,4 +31,5 @@ public:
 	static SDL_Texture* createTexture(pair size, Colour colour = {0, 0, 0, 0});
 	static void outlineSurface(SDL_Surface* surface);
 	static SDL_Texture* lightTexture;
+	static SDL_Texture* fogTexture;
 };

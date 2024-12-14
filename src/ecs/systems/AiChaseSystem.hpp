@@ -35,6 +35,7 @@ public:
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiChaseComponent& aiChaseComponent = ecs->getComponent<AiChaseComponent>(entity);
+			FacingComponent& facingComponent = ecs->getComponent<FacingComponent>(entity);
 
 			MovementState::value oldState = movementComponent.movementState;
 			Direction::value oldFacing = movementComponent.facing;
@@ -45,9 +46,10 @@ public:
 			pair end = vec::round(aiChaseComponent.target);
 			vec offset = positionComponent.position - start;
 
+			vec v = aiChaseComponent.target - positionComponent.position;
+
 			Direction::value dir;
 			if (start == end) {
-				vec v = aiChaseComponent.target - positionComponent.position;
 				if (vec::norm(v) > 0.1f) {
 					dir = Direction::from_vec(v);
 				}
@@ -69,22 +71,26 @@ public:
 				}
 			}
 
-			if (Direction::taxi[directionComponent.direction].x == 1) {
-				movementComponent.facing = Direction::EAST;
-			} else if (Direction::taxi[directionComponent.direction].x == -1) {
-				movementComponent.facing = Direction::WEST;
-			} else {
-				if (aiChaseComponent.target.x > positionComponent.position.x) {
-					movementComponent.facing = Direction::EAST;
-				} else if (aiChaseComponent.target.x < positionComponent.position.x) {
-					movementComponent.facing = Direction::WEST;
-				}
-			}
+			facingComponent.facing = vec::normalise(v);
+
+			// if (Direction::taxi[directionComponent.direction].x == 1) {
+			// 	movementComponent.facing = Direction::EAST;
+			// } else if (Direction::taxi[directionComponent.direction].x == -1) {
+			// 	movementComponent.facing = Direction::WEST;
+			// } else {
+			// 	if (aiChaseComponent.target.x > positionComponent.position.x) {
+			// 		movementComponent.facing = Direction::EAST;
+			// 	} else if (aiChaseComponent.target.x < positionComponent.position.x) {
+			// 		movementComponent.facing = Direction::WEST;
+			// 	}
+			// }
 			movementComponent.movementState = dir ? MovementState::RUN : MovementState::IDLE;
 			
-			if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
-				movementComponent.movementStart = ticks;
-			}	
+			// if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
+			// 	movementComponent.movementStart = ticks;
+			// }	
+
+			
 
 		}
 	}

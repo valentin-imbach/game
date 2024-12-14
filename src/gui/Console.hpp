@@ -14,6 +14,7 @@ class Console {
 public:
 	Console(Game* game);
 
+	void update(uint ticks);
 	void draw();
 	bool handleEvent(InputEvent event);
 	bool active = false;
@@ -24,6 +25,8 @@ private:
 	ECS* ecs;
 	Camera* camera;
 	Entity player;
+
+	uint ticks;
 
 	std::string input;
 	std::vector<std::string> history;

@@ -2,12 +2,13 @@
 #pragma once
 #include "utils.hpp"
 #include "Generation.hpp"
+#include "Camera.hpp"
 
 class Environment {
 public:
 	Environment(uint seed, WorldParameters params);
 
-	void draw(uint ticks);
+	void draw(Camera camera, uint ticks);
 	WeatherId::value weatherId = WeatherId::NONE;
 	int intensity = 50;
 
