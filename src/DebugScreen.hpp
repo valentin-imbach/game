@@ -39,7 +39,7 @@ public:
 		if (world) {
 			debugText += "Ticks: " + std::to_string(world->ticks) + '\n';
 			debugText += "Time: " + world->time.string() + '\n';
-			debugText += "Entity Count: " + std::to_string(world->ecs.entityCount()) + '\n';
+			debugText += "Entity Count: " + std::to_string(world->ecs.entityCount) + '\n';
 			int particleCount = world->particleSystem.activeCount;
 			debugText += "Particles: " + std::to_string(particleCount) + '\n';
 		}

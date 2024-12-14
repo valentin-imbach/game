@@ -6,7 +6,7 @@
 class IComponentArray {
 public:
 	virtual ~IComponentArray() = default;
-	virtual void destroyEntity(Entity entity) = 0;
+	virtual void remove(Entity entity) = 0;
 	// virtual void serialise(std::fstream& stream) = 0;
 	// virtual void deserialise(std::fstream& stream) = 0;
 
@@ -22,13 +22,8 @@ protected:
 template <typename T>
 class ComponentArray : public IComponentArray {
 public:
-
 	void add(Entity entity, T component) {
-		if (has(entity)) {
-			WARNING("Component added to same entity more than once");
-			return;
-		}
-
+		if (has(entity)) ERROR("Component added to same entity more than once");
 		uint size = components.size();
 		entityToIndex[entity] = size;
 		indexToEntity[size] = entity;
@@ -36,10 +31,7 @@ public:
 	}
 
 	void remove(Entity entity) {
-		if (!has(entity)) {
-			WARNING("Trying to remove non-existent component");
-			return;
-		}
+		if (!has(entity)) return;
 
 		uint index = entityToIndex[entity];
 
@@ -57,10 +49,6 @@ public:
 
 	T& get(Entity entity) {
 		return components[entityToIndex[entity]];
-	}
-
-	void destroyEntity(Entity entity) override {
-		if (has(entity)) remove(entity);
 	}
 
 	// void serialise(std::fstream& stream) override {

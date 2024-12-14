@@ -1,88 +1,90 @@
 
 #pragma once
-#include "ComponentManager.hpp"
 #include "ECS_types.hpp"
-#include "EntityManager.hpp"
-#include "SystemManager.hpp"
+#include "ComponentArray.hpp"
+#include "System.hpp"
 
 class ECS {
 public:
 	Entity createEntity() {
-		return entityManager.createEntity();
-	}
-
-	int entityCount() {
-		return entityManager.entityCount;
+		static uint s = 1;
+		Entity entity = noise::UInt(s++); //TODO collision? 0?
+		entitySignatures[entity];
+		entityCount += 1;
+		return entity;
 	}
 
 	void destroyEntity(Entity entity) {
-		entityManager.destroyEntity(entity);
-		componentManager.destroyEntity(entity);
-		systemManager.destroyEntity(entity);
+		if (!entity) return;
+		// LOG("destroyed", entity);
+		entitySignatures.erase(entity);
+		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->remove(entity);
+		for (int i = 1; i < SystemId::count; i++) systems[i]->entities.erase(entity);
+		entityCount -= 1;
+		// activeEntityCount -= 1;
 	}
 
-	// void serialise(std::fstream& stream) {
-	// 	entityManager.serialise(stream);
-	// 	componentManager.serialise(stream);
-	// 	LOG("ECS serialized");
+	// void addEntity(Entity entity) {
 	// }
 
-	// void deserialise(std::fstream& stream) {
-	// 	entityManager.deserialise(stream);
-	// 	componentManager.deserialise(stream);
-	// 	for (auto& iter : entityManager.signatures) {
-	// 		Entity entity = iter.first;
-	// 		for (int comp = 1; comp < ComponentId::count; comp++) {
-	// 			if (componentManager.has(entity, ComponentId::from_int(comp))) {
-	// 				entityManager.signatures[entity].set(comp, true);
-	// 			}
-	// 		}
-	// 		systemManager.signatureChange(entity, entityManager.signatures[entity]);
-	// 	}
-	// 	LOG("ECS deserialized");
+	// void removeEntity(Entity entity) {
+	// 	if (!entity) return;
+	// 	activeEntityCount -= 1;
+	// 	LOG("removed", entity);
+	// 	entitySignatures.erase(entity);
 	// }
 
 	template <typename T>
-	ComponentId::value rosterComponent(ComponentId::value type = ComponentId::NONE) {
-		ComponentId::value res = componentManager.roster<T>(type);
-		return res;
+	ComponentId::value rosterComponent(ComponentId::value id = ComponentId::NONE) {
+		static ComponentId::value componentId = id;
+		if (id) componentArrays[id] = std::make_unique<ComponentArray<T>>();
+		return componentId;
 	}
 
 	template <typename T>
 	void addComponent(T component, Entity entity) {
 		if (!entity) return;
-		componentManager.add<T>(component, entity);
-		auto signature = entityManager.signatures[entity];
-		signature.set(componentManager.roster<T>(), true);
-		entityManager.signatures[entity] = signature;
-		systemManager.signatureChange(entity, signature);
+		ComponentId::value id = rosterComponent<T>();
+		if (!id) ERROR("Trying to add unrostered component");
+		static_cast<ComponentArray<T>*>(componentArrays[id].get())->add(entity, component);
+		Signature& signature = entitySignatures[entity];
+		signature.set(id, true);
+		signatureChange(entity, signature);
 	}
 
 	template <typename T>
 	void removeComponent(Entity entity) {
-		componentManager.remove<T>(entity);
-		auto signature = entityManager.signatures[entity];
-		signature.set(componentManager.roster<T>(), false);
-		entityManager.signatures[entity] = signature;
-		systemManager.signatureChange(entity, signature);
+		if (!entity) return;
+		ComponentId::value id = rosterComponent<T>();
+		if (!id) ERROR("Trying to remove unrostered component");
+		static_cast<ComponentArray<T>*>(componentArrays[id].get())->remove(entity);
+		Signature& signature = entitySignatures[entity];
+		signature.set(id, false);
+		signatureChange(entity, signature);
 	}
 
 	template <typename T>
 	bool hasComponent(Entity entity) {
-		if (!entity) return false;
-		return componentManager.has<T>(entity);
+		ComponentId::value id = rosterComponent<T>();
+		return componentArrays[id]->has(entity);
 	}
 
 	template <typename T>
 	T& getComponent(Entity entity) {
-		return componentManager.get<T>(entity);
+		ComponentId::value id = rosterComponent<T>();
+		if (!id) ERROR("Trying to get unrostered component");
+		return static_cast<ComponentArray<T>*>(componentArrays[id].get())->get(entity);
 	}
 
 	template <typename T>
 	T* rosterSystem(SystemId::value id, std::vector<ComponentId::value>&& ids) {
-		T* system = systemManager.roster<T>(id, makeSiganture(std::move(ids)));
+		Signature sig = makeSiganture(std::move(ids));
+		systemSignatures[id] = sig;
+		std::unique_ptr<T> system = std::make_unique<T>();
+		T* res = system.get();
 		system->ecs = this;
-		return system;
+		systems[id] = std::move(system);
+		return res;
 	}
 
 	static Signature makeSiganture(std::vector<ComponentId::value>&& ids) {
@@ -91,10 +93,29 @@ public:
 		return signature;
 	}
 
-	void update() {}
+	void signatureChange(Entity entity, Signature& signature) {
+		for (int i = 1; i < SystemId::count; i++) {
+			if ((signature & systemSignatures[i]) == systemSignatures[i]) {
+				systems[i]->entities.insert(entity);
+			} else {
+				systems[i]->entities.erase(entity);
+			}
+		}
+	}
 
 private:
-	EntityManager entityManager;
-	ComponentManager componentManager;
-	SystemManager systemManager;
+	std::unordered_map<Entity, Signature> entitySignatures;
+	uint entityCount = 0;
+	uint activeEntityCount = 0;
+
+	std::array<Signature, SystemId::count> systemSignatures;
+	std::array<std::unique_ptr<System>, SystemId::count> systems;
+
+	std::array<std::unique_ptr<IComponentArray>, ComponentId::count> componentArrays;
+
+	// template <typename T>
+	// ComponentArray<T>* getComponentArray() {
+	// 	return static_cast<ComponentArray<T>*>(componentArrays[roster<T>()].get());
+	// }
+friend class DebugScreen;
 };
