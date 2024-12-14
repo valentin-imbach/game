@@ -13,12 +13,13 @@ public:
 			CreatureAnimationComponent& creatureAnimationComponent = ecs -> getComponent<CreatureAnimationComponent>(entity);
 			SpriteComponent& spriteComponent = ecs -> getComponent<SpriteComponent>(entity);
 
-			auto spritePair = creatureAnimationComponent.sprites[movementComponent.movementState];
-			SpriteStack spriteStack = (facingComponent.facing.x > 0) ? spritePair.first : spritePair.second;
+			auto spritePair = creatureAnimationComponent.movements[movementComponent.movementState];
 			for (int i = 0; i < SPRITE_LAYER_COUNT; i++) {
-				spriteStack.stack[i].sprite.animationStart = movementComponent.movementStart;
+				spritePair.stack[i].sprite.animationStart = movementComponent.movementStart;
 			}
-			spriteComponent.spriteStack = spriteStack;
+			
+			spriteComponent.spriteStack = spritePair;
+			spriteComponent.flip = (facingComponent.facing.x <= 0);
 		}
 	}
 };

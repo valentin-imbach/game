@@ -30,6 +30,8 @@ public:
 			TextureStyle style;
 			style.centered = false;
 			style.angle = spriteComponent.angle;
+
+			if (spriteComponent.flip) style.flip = SDL_FLIP_HORIZONTAL;
 			
 			if (spriteComponent.effects[SpriteEffectId::SHAKE].first) {
 				uint past = ticks - spriteComponent.effects[SpriteEffectId::SHAKE].second;

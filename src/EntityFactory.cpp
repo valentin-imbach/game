@@ -90,13 +90,13 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	CreatureAnimationComponent creatureAnimationComponent = {};
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(3, 2*i-2), pair(1, 2)), pair(0, -1));
-		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(3, 16 + 2*i-2), pair(1, 2)), pair(0, -1));
+		creatureAnimationComponent.movements[MovementState::IDLE].setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(3, 2*i-2), pair(1, 2)), pair(0, -1));
+		// creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(3, 16 + 2*i-2), pair(1, 2)), pair(0, -1));
 	}
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
-		creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 16 + 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
+		creatureAnimationComponent.movements[MovementState::WALK].setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
+		// creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 16 + 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
 	}
 
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);
@@ -197,18 +197,18 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 	CreatureAnimationComponent creatureAnimationComponent = {};
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {3, 2*i-2}, {1, 2}), {0, -1});
-		creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {3, 16 + 2*i-2}, {1, 2}), {0, -1});
+		creatureAnimationComponent.movements[MovementState::IDLE].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {3, 2*i-2}, {1, 2}), {0, -1});
+		// creatureAnimationComponent.actions[MovementState::IDLE].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {3, 16 + 2*i-2}, {1, 2}), {0, -1});
 	}
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
-		creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		creatureAnimationComponent.movements[MovementState::WALK].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		// creatureAnimationComponent.actions[MovementState::WALK].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
 	}
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
-		creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
-		creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		creatureAnimationComponent.movements[MovementState::RUN].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 2*i-2}, {1, 2}, 8, 100), {0, -1});
+		// creatureAnimationComponent.actions[MovementState::RUN].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
 	}
 
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, enemy);
@@ -218,9 +218,10 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 
 
 Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, vec position) {
+	if (!animalId) return 0;
 	Entity animal = createDynamicEntity(realmId, position);
 	if (!animal) return 0;
-	
+
 	world->ecs.addComponent<ActionComponent>({}, animal);
 	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
 	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
@@ -229,40 +230,49 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, ve
 	world->ecs.addComponent<AiComponent>({}, animal);
 	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
 	world->ecs.addComponent<AiFleeComponent>({50}, animal);
-	world->ecs.addComponent<AiLureComponent>({ItemId::WHEAT}, animal);
-
-	TagComponent tagComponent = {};
-	tagComponent.tags.set(EntityTag::ANIMAL);
-	world->ecs.addComponent<TagComponent>(tagComponent, animal);
+	world->ecs.addComponent<SpriteComponent>({}, animal);
+	world->ecs.addComponent<FacingComponent>({}, animal);
 
 	AnimalTemplate& animalTemplate = AnimalTemplate::templates[animalId];
-
 	world->ecs.addComponent<MovementComponent>({animalTemplate.speed.x, animalTemplate.speed.y}, animal);
 	world->ecs.addComponent<ColliderComponent>({animalTemplate.collider}, animal);	
 	world->ecs.addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
 	world->ecs.addComponent<LootComponent>({animalTemplate.lootTable}, animal);
 	world->ecs.addComponent<HealthComponent>({animalTemplate.health, animalTemplate.health}, animal);
-	
-	world->ecs.addComponent<SpriteComponent>({}, animal);
-	CreatureAnimationComponent creatureAnimationComponent = {};
-	
-	creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {3, 0}, {1, 2}), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {3, 2}, {1, 2}), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {3, 4}, {1, 2}), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {3, 6}, {1, 2}), {0, -1});
 
-	creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 150), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 150), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 4}, {1, 2}, 8, 150), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 6}, {1, 2}, 8, 150), {0, -1});
 
-	creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 4}, {1, 2}, 8, 100), {0, -1});
-	creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 6}, {1, 2}, 8, 100), {0, -1});
 
+	TagComponent tagComponent = {};
+	tagComponent.tags.set(EntityTag::ANIMAL);
+	world->ecs.addComponent<TagComponent>(tagComponent, animal);
+
+	if (animalId == AnimalId::COW) {
+		world->ecs.addComponent<AiLureComponent>({ItemId::WHEAT}, animal);
+	}
+
+	CreatureAnimationComponent creatureAnimationComponent = { animalTemplate.sprites };
+	// for (int i = 1; i < MovementState::count; i++) {
+	// 	creatureAnimationComponent.movements[i].setSprite(CreatureLayer::BODY, animalTemplate.movements[i]);	
+	// }
+	// for (int i = 1; i < ActionState::count; i++) {
+	// 	creatureAnimationComponent.actions[i].setSprite(CreatureLayer::HEAD, animalTemplate.actions[i]);	
+	// }
+	// creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {3, 0}, {1, 2}), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::IDLE].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {3, 2}, {1, 2}), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {3, 4}, {1, 2}), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::IDLE].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {3, 6}, {1, 2}), {0, -1});
+
+	// creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 150), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::WALK].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 150), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 4}, {1, 2}, 8, 150), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 6}, {1, 2}, 8, 150), {0, -1});
+
+	// creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 0}, {1, 2}, 8, 100), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 4}, {1, 2}, 8, 100), {0, -1});
+	// creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 6}, {1, 2}, 8, 100), {0, -1});
 	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, animal);
-
+	
 	return animal;
 }
 

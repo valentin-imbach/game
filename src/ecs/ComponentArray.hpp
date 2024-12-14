@@ -22,12 +22,9 @@ protected:
 template <typename T>
 class ComponentArray : public IComponentArray {
 public:
-	bool hasComponent(Entity entity) {
-		return (entityToIndex.find(entity) != entityToIndex.end());
-	}
 
-	void addComponent(Entity entity, T component) {
-		if (hasComponent(entity)) {
+	void add(Entity entity, T component) {
+		if (has(entity)) {
 			WARNING("Component added to same entity more than once");
 			return;
 		}
@@ -36,18 +33,15 @@ public:
 		entityToIndex[entity] = size;
 		indexToEntity[size] = entity;
 		components.push_back(component);
-
-		if (start) start(entity, component);
 	}
 
-	void removeComponent(Entity entity) {
-		if (!hasComponent(entity)) {
+	void remove(Entity entity) {
+		if (!has(entity)) {
 			WARNING("Trying to remove non-existent component");
 			return;
 		}
 
 		uint index = entityToIndex[entity];
-		if (end) end(entity, components[index]);
 
 		uint size = components.size();
 		components[index] = components[size - 1];
@@ -61,12 +55,12 @@ public:
 		components.pop_back();
 	}
 
-	T& getComponent(Entity entity) {
+	T& get(Entity entity) {
 		return components[entityToIndex[entity]];
 	}
 
 	void destroyEntity(Entity entity) override {
-		if (hasComponent(entity)) removeComponent(entity);
+		if (has(entity)) remove(entity);
 	}
 
 	// void serialise(std::fstream& stream) override {
@@ -96,13 +90,7 @@ public:
 	// 	}
 	// }
 
-	void setCallbacks(std::function<void(Entity, T&)> start, std::function<void(Entity, T&)> end) {
-		this->start = start;
-		this->end = end;
-	}
 
 private:
 	std::vector<T> components;
-	std::function<void(Entity, T&)> start;
-	std::function<void(Entity, T&)> end;
 };

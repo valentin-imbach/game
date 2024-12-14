@@ -159,15 +159,12 @@ void World::rosterComponents() {
 	ecs.rosterComponent<SensorComponent>(ComponentId::SENSOR);
 	ecs.rosterComponent<ProjectileComponent>(ComponentId::PROJECTILE);
 	ecs.rosterComponent<LauncherComponent>(ComponentId::LAUNCHER);
-	// ecs.rosterComponent<ChunkComponent>(ComponentId::CHUNK);
 	ecs.rosterComponent<AiComponent>(ComponentId::AI);
 	ecs.rosterComponent<AiWanderComponent>(ComponentId::AI_WANDER);
-	// ecs.rosterComponent<AiMoveComponent>(ComponentId::AI_MOVE);
 	ecs.rosterComponent<AiFleeComponent>(ComponentId::AI_FLEE);
 	ecs.rosterComponent<AiChaseComponent>(ComponentId::AI_CHASE);
 	ecs.rosterComponent<AiMeleeComponent>(ComponentId::AI_MELEE);
 	ecs.rosterComponent<AiPostComponent>(ComponentId::AI_POST);
-
 	ecs.rosterComponent<PortalComponent>(ComponentId::PORTAL);
 	ecs.rosterComponent<MaturityComponent>(ComponentId::MATURITY);
 	ecs.rosterComponent<HitboxComponent>(ComponentId::HITBOX);
@@ -244,7 +241,7 @@ void World::rosterSystems() {
 	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE,
 		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_FLEE, ComponentId::HEALTH});
 	aiChaseSystem = ecs.rosterSystem<AiChaseSystem>(SystemId::AI_CHASE,
-		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_CHASE});
+		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_CHASE, ComponentId::POSITION, ComponentId::MOVEMENT, ComponentId::DIRECTION, ComponentId::FACING});
 	aiMeleeSystem = ecs.rosterSystem<AiMeleeSystem>(SystemId::AI_MELEE,
 		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_MELEE});
 	aiPostSystem = ecs.rosterSystem<AiPostSystem>(SystemId::AI_POST,

@@ -54,9 +54,11 @@ public:
 			// 	entityPosition.y += 0.05 * sin(float(past) / 100);
 			// }
 
+			float z = (facingComponent.facing.y) > 0 ? 1 : -1;
+
 			vec screenPosition = camera.screenPosition(positionComponent.position + offset);
 			SpriteStack& itemSprites = ecs->getComponent<SpriteComponent>(item).spriteStack;
-			drawQueue.push_back({itemSprites, screenPosition, 1, int(camera.zoom), style});
+			drawQueue.push_back({itemSprites, screenPosition, z, int(camera.zoom), style});
 		}
 	}
 };

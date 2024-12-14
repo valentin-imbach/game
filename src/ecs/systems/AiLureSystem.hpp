@@ -38,9 +38,7 @@ public:
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiLureComponent& aiLureComponent = ecs->getComponent<AiLureComponent>(entity);
-
-			MovementState::value oldState = movementComponent.movementState;
-			Direction::value oldFacing = movementComponent.facing;
+			FacingComponent& facingComponent = ecs->getComponent<FacingComponent>(entity);
 
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
@@ -72,23 +70,9 @@ public:
 				}
 			}
 
-			if (Direction::taxi[directionComponent.direction].x == 1) {
-				movementComponent.facing = Direction::EAST;
-			} else if (Direction::taxi[directionComponent.direction].x == -1) {
-				movementComponent.facing = Direction::WEST;
-			} else {
-				if (aiLureComponent.target.x > positionComponent.position.x) {
-					movementComponent.facing = Direction::EAST;
-				} else if (aiLureComponent.target.x < positionComponent.position.x) {
-					movementComponent.facing = Direction::WEST;
-				}
-			}
+			vec to = vec::normalise(aiLureComponent.target - positionComponent.position);
+			facingComponent.facing = to;
 			movementComponent.movementState = dir ? MovementState::RUN : MovementState::IDLE;
-			
-			if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
-				movementComponent.movementStart = ticks;
-			}	
-
 
 		}
 	}

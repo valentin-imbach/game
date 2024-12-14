@@ -12,7 +12,6 @@ public:
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);
 			AiFleeComponent& aiFleeComponent = ecs->getComponent<AiFleeComponent>(entity);
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);
-
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 			float relHealth = float(healthComponent.health)/healthComponent.maxHealth;
 
@@ -34,14 +33,13 @@ public:
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			AiFleeComponent& aiFleeComponent = ecs->getComponent<AiFleeComponent>(entity);
-
-			MovementState::value oldState = movementComponent.movementState;
-			Direction::value oldFacing = movementComponent.facing;
+			FacingComponent& facingComponent = ecs->getComponent<FacingComponent>(entity);
 
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
 			pair start = vec::round(positionComponent.position);
 			pair avoid = vec::round(aiFleeComponent.avoid);
+			
 			auto lambda = [realm](pair pos){ return realm->walkable(pos); };
 			Direction::value dir = ai::avoid(start, avoid, lambda, true);
 	
@@ -61,17 +59,9 @@ public:
 				continue;
 			}
 
-			if (Direction::taxi[directionComponent.direction].x == 1) {
-				movementComponent.facing = Direction::EAST;
-			} else if (Direction::taxi[directionComponent.direction].x == -1) {
-				movementComponent.facing = Direction::WEST;
-			}
 			movementComponent.movementState = dir ? MovementState::RUN : MovementState::IDLE;
-			
-			if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
-				movementComponent.movementStart = ticks;
-			}	
-
+			vec away = vec::normalise(positionComponent.position - aiFleeComponent.avoid);
+			facingComponent.facing = away;
 		}
 	}
 };

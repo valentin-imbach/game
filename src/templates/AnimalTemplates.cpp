@@ -6,10 +6,6 @@
 std::array<AnimalTemplate, AnimalId::count> AnimalTemplate::templates = {};
 
 void AnimalTemplate::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/Animals.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-	// file.close();
 
 	json::Value data = json::parseFile(Window::instance->root / "json/Animals.json");
 
@@ -22,21 +18,37 @@ void AnimalTemplate::setTemplates() {
 			continue;
 		}
 
-		SpriteSheet::value spriteSheet = SpriteSheet::from_string(std::string(value["sheet"]));
+		auto sprites = value["sprites"];
+
+		SpriteSheet::value spriteSheet = SpriteSheet::from_string(std::string(sprites["sheet"]));
+		pair size = parsePair(sprites["size"]);
+		pair offset = parsePair(sprites["offset"]);
 		
-		for (auto &[key, value] : value["sprites"].get<json::Object>()) {
+		for (auto &[key, value] : sprites["stack"].get<json::Object>()) {
 			MovementState::value movementState = MovementState::from_string(key);
 			if (!movementState) {
 				WARNING("Unrecognised MovementState:", key);
 				continue;
 			}
-			pair source1 = parsePair(value["source"][0]);
-			pair source2 = parsePair(value["source"][1]);
-			pair size = parsePair(value["size"]);
+
 			uchar frames = int(value["frames"]);
-			templates[animalId].sprites[movementState].first = Sprite(spriteSheet, source1, size, frames, 100);
-			templates[animalId].sprites[movementState].second = Sprite(spriteSheet, source2, size, frames, 100);
+			for (auto &[l, src] : value["layers"].get<json::Object>()) {
+				pair source = parsePair(src);
+				CreatureLayer::value layer = CreatureLayer::from_string(l);
+				templates[animalId].sprites[movementState].setSprite(layer, Sprite(spriteSheet, source, size, frames, 100), offset);
+			}
 		}
+
+		// for (auto &[key, value] : sprites["actions"].get<json::Object>()) {
+		// 	ActionState::value actionState = ActionState::from_string(key);
+		// 	if (!actionState) {
+		// 		WARNING("Unrecognised ActionState:", key);
+		// 		continue;
+		// 	}
+		// 	pair source = parsePair(value["source"]);
+		// 	uchar frames = int(value["frames"]);
+		// 	templates[animalId].actions[actionState] = Sprite(spriteSheet, source, size, frames, 100);
+		// }
 
 		auto col = value["collider"];
 		templates[animalId].collider = Shape(parseVec(col["size"]));

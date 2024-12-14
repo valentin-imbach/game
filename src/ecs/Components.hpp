@@ -22,6 +22,7 @@ struct SpriteComponent {
 	float z = 0;
 	float angle = 0;
 	std::array<std::pair<bool, uint>, SpriteEffectId::count> effects = {};
+	bool flip = false;
 };
 
 struct MovementComponent {
@@ -43,7 +44,8 @@ struct ActionComponent {
 };
 
 struct CreatureAnimationComponent {
-	std::array<std::pair<SpriteStack, SpriteStack>, MovementState::count> sprites;
+	std::array<SpriteStack, MovementState::count> movements;
+	// std::array<SpriteStack, ActionState::count> actions;
 };
 
 struct FacingComponent {

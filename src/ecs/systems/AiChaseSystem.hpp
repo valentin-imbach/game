@@ -37,9 +37,6 @@ public:
 			AiChaseComponent& aiChaseComponent = ecs->getComponent<AiChaseComponent>(entity);
 			FacingComponent& facingComponent = ecs->getComponent<FacingComponent>(entity);
 
-			MovementState::value oldState = movementComponent.movementState;
-			Direction::value oldFacing = movementComponent.facing;
-
 			Realm* realm = realmManager.getRealm(positionComponent.realmId);
 
 			pair start = vec::round(positionComponent.position);
@@ -72,26 +69,7 @@ public:
 			}
 
 			facingComponent.facing = vec::normalise(v);
-
-			// if (Direction::taxi[directionComponent.direction].x == 1) {
-			// 	movementComponent.facing = Direction::EAST;
-			// } else if (Direction::taxi[directionComponent.direction].x == -1) {
-			// 	movementComponent.facing = Direction::WEST;
-			// } else {
-			// 	if (aiChaseComponent.target.x > positionComponent.position.x) {
-			// 		movementComponent.facing = Direction::EAST;
-			// 	} else if (aiChaseComponent.target.x < positionComponent.position.x) {
-			// 		movementComponent.facing = Direction::WEST;
-			// 	}
-			// }
 			movementComponent.movementState = dir ? MovementState::RUN : MovementState::IDLE;
-			
-			// if (movementComponent.facing != oldFacing || movementComponent.movementState != oldState) {
-			// 	movementComponent.movementStart = ticks;
-			// }	
-
-			
-
 		}
 	}
 };

@@ -7,26 +7,15 @@
 class ComponentManager {
 public:
 	template <typename T>
-	ComponentId::value roster(ComponentId::value type = ComponentId::NONE) {
-		bool rostered = (rosteredSet.find(&typeid(T)) != rosteredSet.end());
-		static ComponentId::value s_type = ComponentId::NONE;
-		if (type == ComponentId::NONE) {
-			if (!rostered) ERROR("Using non-registered component", typeid(T).name());
-			return rosteredSet[&typeid(T)];
-		}
-		if (rostered) WARNING("Component registered twice");
-		componentArrays[type] = std::make_unique<ComponentArray<T>>();
-		return rosteredSet[&typeid(T)] = type;
-	}
-
-	template <typename T>
-	void setCallbacks(std::function<void(Entity, T&)> start, std::function<void(Entity, T&)> end) {
-		getComponentArray<T>()->setCallbacks(start, end);
+	ComponentId::value roster(ComponentId::value id = ComponentId::NONE) {
+		static ComponentId::value componentId = id;
+		if (id) componentArrays[id] = std::make_unique<ComponentArray<T>>();
+		return componentId;
 	}
 
 	template <typename T>
 	bool has(Entity entity) {
-		return getComponentArray<T>()->hasComponent(entity);
+		return getComponentArray<T>()->has(entity);
 	}
 
 	bool has(Entity entity, ComponentId::value comp) {
@@ -35,20 +24,20 @@ public:
 
 	template <typename T>
 	void add(T component, Entity entity) {
-		getComponentArray<T>()->addComponent(entity, component);
+		getComponentArray<T>()->add(entity, component);
 	}
 
 	template <typename T>
 	void remove(Entity entity) {
-		getComponentArray<T>()->removeComponent(entity);
+		getComponentArray<T>()->remove(entity);
 	}
 
 	template <typename T>
 	T& get(Entity entity) {
-		if (!getComponentArray<T>()->hasComponent(entity)) {
+		if (!getComponentArray<T>()->has(entity)) {
 			ERROR("Trying to access non-existent component of type", ComponentId::strings[roster<T>()]);
 		}
-		return getComponentArray<T>()->getComponent(entity);
+		return getComponentArray<T>()->get(entity);
 	}
 
 	void destroyEntity(Entity entity) {
@@ -67,7 +56,6 @@ public:
 
 private:
 	std::array<std::unique_ptr<IComponentArray>, ComponentId::count> componentArrays = {};
-	std::unordered_map<const std::type_info*, ComponentId::value> rosteredSet;
 
 	template <typename T>
 	ComponentArray<T>* getComponentArray() {
