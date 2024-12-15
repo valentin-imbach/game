@@ -6,7 +6,9 @@
 #include "ECS.hpp"
 
 class AiLureSystem : public System {
-public:
+
+	ROSTER(AI, AI_LURE, SENSOR, MOVEMENT, DIRECTION, POSITION, FACING)
+
 	void score(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);

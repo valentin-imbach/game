@@ -6,7 +6,9 @@
 #include "ECS.hpp"
 
 class AiChaseSystem : public System {
-public:
+
+	ROSTER(AI, AI_CHASE, SENSOR, POSITION, MOVEMENT, DIRECTION, FACING)
+
 	void score(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);

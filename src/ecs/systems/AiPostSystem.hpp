@@ -6,7 +6,9 @@
 #include "ECS.hpp"
 
 class AiPostSystem : public System {
-public:
+
+	ROSTER(AI, AI_POST, POSITION, MOVEMENT, DIRECTION, FACING)
+
 	void score(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);

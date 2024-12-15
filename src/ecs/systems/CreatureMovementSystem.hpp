@@ -5,7 +5,9 @@
 #include "ECS.hpp"
 
 class CreatureMovementSystem : public System {
-public:
+
+	ROSTER(DIRECTION, MOVEMENT, POSITION, COLLIDER)
+
 	void update(uint dt, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			DirectionComponent& directionComponent = ecs->getComponent<DirectionComponent>(entity);

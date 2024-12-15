@@ -7,7 +7,9 @@
 #include "Item.hpp"
 
 class ItemPickupSystem : public System {
-public:
+
+	ROSTER(INVENTORY)
+
 	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);

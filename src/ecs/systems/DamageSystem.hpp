@@ -5,7 +5,9 @@
 #include "Components.hpp"
 
 class DamageSystem : public System {
-public:
+
+	ROSTER(POSITION, DAMAGE)
+
 	void update(std::unordered_map<Entity,std::vector<Entity>>& hits, uint ticks) {
 		for (Entity damageArea : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(damageArea);

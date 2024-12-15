@@ -9,7 +9,7 @@ public:
 	Entity createEntity() {
 		static uint s = 1;
 		Entity entity = noise::UInt(s++); //TODO collision? 0?
-		entitySignatures[entity];
+		signatures[entity];
 		entityCount += 1;
 		return entity;
 	}
@@ -17,9 +17,12 @@ public:
 	void destroyEntity(Entity entity) {
 		if (!entity) return;
 		// LOG("destroyed", entity);
-		entitySignatures.erase(entity);
+		signatures.erase(entity);
 		for (int i = 1; i < ComponentId::count; i++) componentArrays[i]->remove(entity);
-		for (int i = 1; i < SystemId::count; i++) systems[i]->entities.erase(entity);
+		for (int i = 1; i < SystemId::count; i++) {
+			if (!systems[i]) continue;
+			systems[i]->entities.erase(entity);
+		}
 		entityCount -= 1;
 		// activeEntityCount -= 1;
 	}
@@ -47,7 +50,7 @@ public:
 		ComponentId::value id = rosterComponent<T>();
 		if (!id) ERROR("Trying to add unrostered component");
 		static_cast<ComponentArray<T>*>(componentArrays[id].get())->add(entity, component);
-		Signature& signature = entitySignatures[entity];
+		Signature& signature = signatures[entity];
 		signature.set(id, true);
 		signatureChange(entity, signature);
 	}
@@ -58,7 +61,7 @@ public:
 		ComponentId::value id = rosterComponent<T>();
 		if (!id) ERROR("Trying to remove unrostered component");
 		static_cast<ComponentArray<T>*>(componentArrays[id].get())->remove(entity);
-		Signature& signature = entitySignatures[entity];
+		Signature& signature = signatures[entity];
 		signature.set(id, false);
 		signatureChange(entity, signature);
 	}
@@ -77,25 +80,19 @@ public:
 	}
 
 	template <typename T>
-	T* rosterSystem(SystemId::value id, std::vector<ComponentId::value>&& ids) {
-		Signature sig = makeSiganture(std::move(ids));
-		systemSignatures[id] = sig;
+	T* rosterSystem(SystemId::value id) {
 		std::unique_ptr<T> system = std::make_unique<T>();
-		T* res = system.get();
+		system->roster();
 		system->ecs = this;
+		T* res = system.get();
 		systems[id] = std::move(system);
 		return res;
 	}
 
-	static Signature makeSiganture(std::vector<ComponentId::value>&& ids) {
-		Signature signature;
-		for (ComponentId::value id : ids) signature.set(id, true);
-		return signature;
-	}
-
 	void signatureChange(Entity entity, Signature& signature) {
 		for (int i = 1; i < SystemId::count; i++) {
-			if ((signature & systemSignatures[i]) == systemSignatures[i]) {
+			if (!systems[i]) continue;
+			if ((signature & systems[i]->signature) == systems[i]->signature) {
 				systems[i]->entities.insert(entity);
 			} else {
 				systems[i]->entities.erase(entity);
@@ -104,11 +101,11 @@ public:
 	}
 
 private:
-	std::unordered_map<Entity, Signature> entitySignatures;
+	std::unordered_map<Entity, Signature> signatures;
 	uint entityCount = 0;
 	uint activeEntityCount = 0;
 
-	std::array<Signature, SystemId::count> systemSignatures;
+	// std::array<Signature, SystemId::count> systemSignatures;
 	std::array<std::unique_ptr<System>, SystemId::count> systems;
 
 	std::array<std::unique_ptr<IComponentArray>, ComponentId::count> componentArrays;

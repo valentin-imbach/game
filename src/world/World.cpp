@@ -130,7 +130,7 @@ World::World(std::fstream& stream) : particleSystem(1000), realmManager(10) {
 	guiManager.add(std::make_unique<HealthBarGui>(player));
 
 	gridSystem->rebuild(realmManager);
-	positionSystem->rebuild(realmManager);
+	// positionSystem->rebuild(realmManager);
 }
 
 void World::rosterComponents() {
@@ -151,7 +151,7 @@ void World::rosterComponents() {
 	ecs.rosterComponent<MeleeItemComponent>(ComponentId::MELEE_ITEM);
 	ecs.rosterComponent<ForceComponent>(ComponentId::FORCE);
 	ecs.rosterComponent<GridComponent>(ComponentId::GRID);
-	ecs.rosterComponent<StationComponent>(ComponentId::INTERACTION);
+	ecs.rosterComponent<StationComponent>(ComponentId::STATION);
 	ecs.rosterComponent<NameComponent>(ComponentId::NAME);
 	ecs.rosterComponent<DeathComponent>(ComponentId::DEATH);
 	ecs.rosterComponent<ParticleComponent>(ComponentId::PARTICLE);
@@ -188,92 +188,46 @@ void World::rosterComponents() {
 }
 
 void World::rosterSystems() {
-	entityDrawSystem = ecs.rosterSystem<EntityDrawSystem>(SystemId::ENTITY_DRAW,
-		{ComponentId::SPRITE, ComponentId::POSITION});
-	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT,
-		{ComponentId::MOVEMENT, ComponentId::POSITION, ComponentId::COLLIDER});
-	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER,
-		{ComponentId::CONTROLLER, ComponentId::MOVEMENT, ComponentId::DIRECTION});
-	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION,
-		{ComponentId::MOVEMENT, ComponentId::SPRITE, ComponentId::DIRECTION, ComponentId::CREATURE_ANIMATION});
-	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION,
-		{ComponentId::COLLIDER, ComponentId::POSITION});
-	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP,
-		{ComponentId::COLLIDER, ComponentId::INVENTORY});
-	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE,
-		{ComponentId::RESOURCE, ComponentId::GRID, ComponentId::HEALTH});
-	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH,
-		{ComponentId::HEALTH});
-	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT,
-		{ComponentId::LOOT, ComponentId::DEATH, ComponentId::POSITION});
-	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER,
-		{ComponentId::PLAYER, ComponentId::HAND});
-	colliderDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW,
-		{ComponentId::COLLIDER, ComponentId::POSITION});
-	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID,
-		{ComponentId::GRID});
-	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION,
-		{ComponentId::INTERACTION});
-	deathSystem = ecs.rosterSystem<DeathSystem>(SystemId::DEATH,
-		{ComponentId::DEATH});
-	inventoryDeathSystem = ecs.rosterSystem<InventoryDeathSystem>(SystemId::INVENTORY_DEATH,
-		{ComponentId::DEATH, ComponentId::INVENTORY});
-	particleEmitSystem = ecs.rosterSystem<ParticleEmitSystem>(SystemId::PARTICLE_EMIT,
-		{ComponentId::PARTICLE, ComponentId::POSITION});
-	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE,
-		{ComponentId::PARTICLE, ComponentId::MOVEMENT});
-	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER,
-		{ComponentId::POSITION, ComponentId::ACTION, ComponentId::MOVEMENT, ComponentId::HAND, ComponentId::FACING});
-	// chunkSystem = ecs.rosterSystem<ChunkSystem>(SystemId::CHUNK,
-	// 	{ComponentId::POSITION, ComponentId::CHUNK});
-	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT,
-		{ComponentId::POSITION, ComponentId::LIGHT});
-	sensorSystem = ecs.rosterSystem<SensorSystem>(SystemId::SENSOR,
-		{ComponentId::POSITION, ComponentId::SENSOR});
-	projectileSystem = ecs.rosterSystem<ProjectileSystem>(SystemId::PROJECTILE,
-		{ComponentId::POSITION, ComponentId::PROJECTILE});
-	aiSystem = ecs.rosterSystem<AiSystem>(SystemId::AI,
-		{ComponentId::AI});
-	aiWanderSystem = ecs.rosterSystem<AiWanderSystem>(SystemId::AI_WANDER,
-		{ComponentId::AI, ComponentId::AI_WANDER});
-	// aiMoveSystem = ecs.rosterSystem<AiMoveSystem>(SystemId::AI_MOVE,
-	// 	{ComponentId::AI, ComponentId::AI_MOVE});
-	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE,
-		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_FLEE, ComponentId::HEALTH});
-	aiChaseSystem = ecs.rosterSystem<AiChaseSystem>(SystemId::AI_CHASE,
-		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_CHASE, ComponentId::POSITION, ComponentId::MOVEMENT, ComponentId::DIRECTION, ComponentId::FACING});
-	aiMeleeSystem = ecs.rosterSystem<AiMeleeSystem>(SystemId::AI_MELEE,
-		{ComponentId::AI, ComponentId::SENSOR, ComponentId::AI_MELEE});
-	aiPostSystem = ecs.rosterSystem<AiPostSystem>(SystemId::AI_POST,
-		{ComponentId::AI, ComponentId::AI_POST});
-	positionSystem = ecs.rosterSystem<PositionSystem>(SystemId::POSITION,
-		{ComponentId::POSITION});
-	maturitySystem = ecs.rosterSystem<MaturitySystem>(SystemId::MATURITY,
-		{ComponentId::MATURITY});
-	hitboxDrawSystem = ecs.rosterSystem<HitboxDrawSystem>(SystemId::HITBOX_DRAW,
-		{ComponentId::HITBOX});
-	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE,
-		{ComponentId::POSITION, ComponentId::HITBOX, ComponentId::DAMAGE});
-	hitboxSystem = ecs.rosterSystem<HitboxSystem>(SystemId::HITBOX,
-		{ComponentId::POSITION, ComponentId::HITBOX});
-	creatureActionSystem = ecs.rosterSystem<CreatureActionSystem>(SystemId::CREATURE_ACTION,
-		{ComponentId::ACTION});
-	effectSystem = ecs.rosterSystem<EffectSystem>(SystemId::EFFECT,
-		{ComponentId::EFFECT});
-	explosiveSystem = ecs.rosterSystem<ExplosiveSystem>(SystemId::EXPLOSIVE,
-		{ComponentId::EXPLOSIVE, ComponentId::POSITION});
-	itemModSystem = ecs.rosterSystem<ItemModSystem>(SystemId::ITEM_MOD,
-		{ComponentId::PLAYER, ComponentId::MOVEMENT});
-	shovingSystem = ecs.rosterSystem<ShovingSystem>(SystemId::SHOVING,
-		{ComponentId::POSITION, ComponentId::COLLIDER, ComponentId::FORCE});
-	processingSystem = ecs.rosterSystem<ProcessingSystem>(SystemId::PROCESSING,
-		{ComponentId::PROCESSING, ComponentId::SPRITE});
-	fuelSystem = ecs.rosterSystem<FuelSystem>(SystemId::FUEL,
-		{ComponentId::FUEL});
-	spawnerSystem = ecs.rosterSystem<SpawnerSystem>(SystemId::SPAWNER, 
-		{ComponentId::SPAWNER, ComponentId::POSITION});
-	aiLureSystem = ecs.rosterSystem<AiLureSystem>(SystemId::AI_LURE, 
-		{ComponentId::AI, ComponentId::AI_LURE});
+	entityDrawSystem = ecs.rosterSystem<EntityDrawSystem>(SystemId::ENTITY_DRAW);
+	creatureMovementSystem = ecs.rosterSystem<CreatureMovementSystem>(SystemId::CREATURE_MOVEMENT);
+	controllerSystem = ecs.rosterSystem<ControllerSystem>(SystemId::CONTROLLER);
+	collisionSystem = ecs.rosterSystem<CollisionSystem>(SystemId::COLLISION);
+	itemPickupSystem = ecs.rosterSystem<ItemPickupSystem>(SystemId::ITEM_PICKUP);
+	forageSystem = ecs.rosterSystem<ForageSystem>(SystemId::FORAGE);
+	healthSystem = ecs.rosterSystem<HealthSystem>(SystemId::HEALTH);
+	lootSystem = ecs.rosterSystem<LootSystem>(SystemId::LOOT);
+	playerSystem = ecs.rosterSystem<PlayerSystem>(SystemId::PLAYER);
+	colliderDrawSystem = ecs.rosterSystem<ColliderDrawSystem>(SystemId::COLLIDER_DRAW);
+	gridSystem = ecs.rosterSystem<GridSystem>(SystemId::GRID);
+	interactionSystem = ecs.rosterSystem<InteractionSystem>(SystemId::INTERACTION);
+	deathSystem = ecs.rosterSystem<DeathSystem>(SystemId::DEATH);
+	inventoryDeathSystem = ecs.rosterSystem<InventoryDeathSystem>(SystemId::INVENTORY_DEATH);
+	particleEmitSystem = ecs.rosterSystem<ParticleEmitSystem>(SystemId::PARTICLE_EMIT);
+	creatureParticleSystem = ecs.rosterSystem<CreatureParticleSystem>(SystemId::CREATURE_PARTICLE);
+	handRenderSystem = ecs.rosterSystem<HandRenderSystem>(SystemId::HAND_RENDER);
+	lightSystem = ecs.rosterSystem<LightSystem>(SystemId::LIGHT);
+	sensorSystem = ecs.rosterSystem<SensorSystem>(SystemId::SENSOR);
+	projectileSystem = ecs.rosterSystem<ProjectileSystem>(SystemId::PROJECTILE);
+	aiSystem = ecs.rosterSystem<AiSystem>(SystemId::AI);
+	aiWanderSystem = ecs.rosterSystem<AiWanderSystem>(SystemId::AI_WANDER);
+	aiFleeSystem = ecs.rosterSystem<AiFleeSystem>(SystemId::AI_FLEE);
+	aiChaseSystem = ecs.rosterSystem<AiChaseSystem>(SystemId::AI_CHASE);
+	aiMeleeSystem = ecs.rosterSystem<AiMeleeSystem>(SystemId::AI_MELEE);
+	aiPostSystem = ecs.rosterSystem<AiPostSystem>(SystemId::AI_POST);
+	maturitySystem = ecs.rosterSystem<MaturitySystem>(SystemId::MATURITY);
+	hitboxDrawSystem = ecs.rosterSystem<HitboxDrawSystem>(SystemId::HITBOX_DRAW);
+	damageSystem = ecs.rosterSystem<DamageSystem>(SystemId::DAMAGE);
+	hitboxSystem = ecs.rosterSystem<HitboxSystem>(SystemId::HITBOX);
+	creatureActionSystem = ecs.rosterSystem<CreatureActionSystem>(SystemId::CREATURE_ACTION);
+	effectSystem = ecs.rosterSystem<EffectSystem>(SystemId::EFFECT);
+	explosiveSystem = ecs.rosterSystem<ExplosiveSystem>(SystemId::EXPLOSIVE);
+	itemModSystem = ecs.rosterSystem<ItemModSystem>(SystemId::ITEM_MOD);
+	shovingSystem = ecs.rosterSystem<ShovingSystem>(SystemId::SHOVING);
+	processingSystem = ecs.rosterSystem<ProcessingSystem>(SystemId::PROCESSING);
+	fuelSystem = ecs.rosterSystem<FuelSystem>(SystemId::FUEL);
+	spawnerSystem = ecs.rosterSystem<SpawnerSystem>(SystemId::SPAWNER);
+	aiLureSystem = ecs.rosterSystem<AiLureSystem>(SystemId::AI_LURE);
+	creatureAnimationSystem = ecs.rosterSystem<CreatureAnimationSystem>(SystemId::CREATURE_ANIMATION);
 
 	LOG("Systems rostered")
 }

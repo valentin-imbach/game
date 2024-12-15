@@ -6,7 +6,9 @@
 #include "pathfinding.hpp"
 
 class SensorSystem : public System {
-public:
+
+	ROSTER(SENSOR, POSITION)
+
 	void update(EntitySet& ents, uint ticks, RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			SensorComponent& sensorComponent = ecs->getComponent<SensorComponent>(entity);

@@ -6,7 +6,9 @@
 #include "EntityFactory.hpp"
 
 class AiMeleeSystem : public System {
-public:
+
+	ROSTER(AI, AI_MELEE, SENSOR, POSITION, HAND, ACTION)
+
 	void score(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);

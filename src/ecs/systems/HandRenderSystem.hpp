@@ -7,7 +7,9 @@
 #include "Window.hpp"
 
 class HandRenderSystem : public System {
-public:
+
+	ROSTER(POSITION, ACTION, HAND, MOVEMENT, FACING)
+
 	void update(Camera camera, std::vector<DrawCall>& drawQueue, uint ticks) {
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);

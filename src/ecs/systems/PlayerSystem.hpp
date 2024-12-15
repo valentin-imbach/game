@@ -5,7 +5,9 @@
 #include "ECS.hpp"
 
 class PlayerSystem : public System {
-public:
+
+	ROSTER(PLAYER, HAND, INVENTORY)
+
 	void update(Camera camera) {
 		for (Entity entity : entities) {
 			HandComponent& handComonent = ecs->getComponent<HandComponent>(entity);

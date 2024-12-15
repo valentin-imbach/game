@@ -5,7 +5,9 @@
 #include "ECS.hpp"
 
 class ItemModSystem : public System {
-public:
+
+	ROSTER(PLAYER, MOVEMENT)
+
 	void update() {
 		for (Entity entity : entities) {
 			PlayerComponent& playerComponent = ecs->getComponent<PlayerComponent>(entity);

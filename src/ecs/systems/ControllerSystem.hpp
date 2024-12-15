@@ -7,7 +7,9 @@
 #include "Components.hpp"
 
 class ControllerSystem : public System {
-public:
+
+	ROSTER(MOVEMENT, DIRECTION, FACING, POSITION)
+
 	void update(InputState& inputState, Camera camera, bool active, uint ticks) {
 		for (Entity entity : entities) {
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);

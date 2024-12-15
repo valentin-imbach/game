@@ -6,7 +6,9 @@
 #include "ECS.hpp"
 
 class AiWanderSystem : public System {
-public:
+
+	ROSTER(AI, MOVEMENT, DIRECTION, FACING, POSITION, AI_WANDER)
+
 	void score(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);

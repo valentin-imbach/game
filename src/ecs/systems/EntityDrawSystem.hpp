@@ -11,7 +11,9 @@
 #define PIXEL_PERFECT false
 
 class EntityDrawSystem : public System {
-public:
+
+	ROSTER(POSITION, SPRITE);
+
 	void update(Camera camera, std::vector<DrawCall>& drawQueue, bool active, Entity player, uint ticks, EntitySet& set) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;
@@ -19,14 +21,15 @@ public:
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
+			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
+
 			vec entityPosition = positionComponent.position;
 
 			// vec roughScreenPosition = camera.screenPosition(entityPosition);
 			// if (roughScreenPosition.x + border < 0 || roughScreenPosition.y + border < 0) continue;
 			// if (roughScreenPosition.x > screenSize.x + border || roughScreenPosition.y > screenSize.y + border) continue;
 
-			SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
-
+		
 			TextureStyle style;
 			style.centered = false;
 			style.angle = spriteComponent.angle;

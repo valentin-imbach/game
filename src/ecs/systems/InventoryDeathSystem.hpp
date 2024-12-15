@@ -6,7 +6,9 @@
 #include "ECS.hpp"
 
 class InventoryDeathSystem : public System {
-public:
+
+	ROSTER(INVENTORY, DEATH)
+
 	void update(uint ticks, RealmManager& realmManager) {
 		uint seed = ticks;
 		for (Entity entity : entities) {

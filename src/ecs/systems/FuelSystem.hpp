@@ -6,7 +6,9 @@
 #include "utils.hpp"
 
 class FuelSystem : public System {
-public:
+
+	ROSTER(FUEL, SPRITE)
+
 	LightComponent lightComponent = {true, 3, {255, 0, 0, 255}, 3, 0.2f};
 	void update(uint ticks, uint dt) {
 		for (Entity entity : entities) {

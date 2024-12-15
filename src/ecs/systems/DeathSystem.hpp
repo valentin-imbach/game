@@ -5,7 +5,9 @@
 #include "Components.hpp"
 
 class DeathSystem : public System {
-public:
+
+	ROSTER(DEATH)
+
 	void update(RealmManager& realmManager, ParticleSystem& particleSystem) {
 		EntitySet copy(entities);
 		for (Entity entity : copy) {
@@ -28,7 +30,7 @@ public:
 				Realm* realm = realmManager.getRealm(positionComponent.realmId);
 				realm->unlink(entity, gridComponent.anker, gridComponent.size);
 			}
-			ecs -> destroyEntity(entity);
+			ecs->destroyEntity(entity);
 		}
 	}
 };

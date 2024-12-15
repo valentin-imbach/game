@@ -8,7 +8,9 @@
 #include "Time.hpp"
 
 class LightSystem : public System {
-public:
+
+	ROSTER(LIGHT, POSITION)
+
 	void update(Camera camera, Time time, uint ticks, EntitySet& set) {
 		uchar ambient = lerp::smooth(std::abs(time.mins() - 720.0f) / 720, 0, 200);
 

@@ -5,7 +5,9 @@
 #include "ECS.hpp"
 
 class CreatureAnimationSystem : public System {
-public:
+
+	ROSTER(MOVEMENT, FACING, CREATURE_ANIMATION, SPRITE)
+
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			MovementComponent& movementComponent = ecs->getComponent<MovementComponent>(entity);

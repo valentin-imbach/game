@@ -7,7 +7,9 @@
 #include "EntityFactory.hpp"
 
 class ProcessingSystem : public System {
-public:
+
+	ROSTER(PROCESSING, FUEL)
+
 	void update(uint ticks, uint dt) {
 		for (Entity entity : entities) {
 			ProcessingComponent& processingComponent = ecs->getComponent<ProcessingComponent>(entity);

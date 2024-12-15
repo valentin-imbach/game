@@ -5,7 +5,9 @@
 #include "Components.hpp"
 
 class ShovingSystem : public System {
-public:
+
+	ROSTER(FORCE, POSITION)
+
 	void update(EntityMap& collisions) {
 		for (Entity entity : entities) {
 			ForceComponent& forceComponent = ecs->getComponent<ForceComponent>(entity);

@@ -5,7 +5,9 @@
 #include "Components.hpp"
 
 class ParticleEmitSystem : public System {
-public:
+
+	ROSTER(PARTICLE, POSITION)
+
 	void update(ParticleSystem& particleSystem, uint ticks) {
 		for (Entity entity : entities) {
 			ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);

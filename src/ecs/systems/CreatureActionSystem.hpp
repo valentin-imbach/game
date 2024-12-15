@@ -7,7 +7,9 @@
 #include "ForageSystem.hpp"
 
 class CreatureActionSystem : public System {
-public:
+
+	ROSTER(ACTION, POSITION)
+
 	void update(uint ticks, ForageSystem* forageSystem, EntitySet& updateSet) {
 		for (Entity entity : entities) {
 			ActionComponent& actionComponent = ecs->getComponent<ActionComponent>(entity);

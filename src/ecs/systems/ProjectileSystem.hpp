@@ -5,7 +5,9 @@
 #include "Components.hpp"
 
 class ProjectileSystem : public System {
-public:
+
+	ROSTER(PROJECTILE, POSITION, DAMAGE)
+
 	void update(uint ticks, uint dt) {
 		for (Entity entity : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);

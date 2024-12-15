@@ -8,7 +8,9 @@
 #define BURNING_PERIOD 800
 
 class EffectSystem : public System {
-public:
+
+	ROSTER(EFFECT)
+
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			EffectComponent& effectComponent = ecs->getComponent<EffectComponent>(entity);

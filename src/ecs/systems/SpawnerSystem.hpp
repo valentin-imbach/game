@@ -6,7 +6,9 @@
 #include "EntityFactory.hpp"
 
 class SpawnerSystem : public System {
-public:
+
+	ROSTER(SPAWNER, POSITION)
+
 	void update(uint ticks, EntitySet& set, ParticleSystem& particleSystem) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;

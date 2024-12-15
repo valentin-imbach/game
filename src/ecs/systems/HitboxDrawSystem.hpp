@@ -8,7 +8,9 @@
 #include "Camera.hpp"
 
 class HitboxDrawSystem : public System {
-public:
+
+	ROSTER(HITBOX, POSITION)
+
 	void update(Camera camera, uint ticks, EntitySet& set) {
 		pair screenSize = Window::instance->size;
 		int border = 5 * BIT * camera.zoom;

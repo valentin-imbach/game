@@ -5,7 +5,9 @@
 #include "Components.hpp"
 
 class CreatureParticleSystem : public System {
-public:
+
+	ROSTER(PARTICLE, MOVEMENT)
+
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			ParticleComponent& particleComponent = ecs->getComponent<ParticleComponent>(entity);

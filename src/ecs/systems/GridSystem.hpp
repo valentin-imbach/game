@@ -6,7 +6,9 @@
 #include "utils.hpp"
 
 class GridSystem : public System {
-public:
+
+	ROSTER(GRID)
+
 	void rebuild(RealmManager& realmManager) {
 		for (Entity entity : entities) {
 			GridComponent& gridComponent = ecs->getComponent<GridComponent>(entity);

@@ -88,12 +88,11 @@ private:
 	ProjectileSystem* projectileSystem;
 	AiSystem* aiSystem;
 	AiWanderSystem* aiWanderSystem;
-	// AiMoveSystem* aiMoveSystem;
 	AiFleeSystem* aiFleeSystem;
 	AiChaseSystem* aiChaseSystem;
 	AiMeleeSystem* aiMeleeSystem;
 	AiPostSystem* aiPostSystem;
-	PositionSystem* positionSystem;
+	// PositionSystem* positionSystem;
 	MaturitySystem* maturitySystem;
 	HitboxDrawSystem* hitboxDrawSystem;
 	DamageSystem* damageSystem;

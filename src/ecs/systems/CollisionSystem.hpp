@@ -6,7 +6,9 @@
 #include "TextureManager.hpp"
 
 class CollisionSystem : public System {
-public:
+
+	ROSTER(COLLIDER, POSITION)
+
 	void update(std::unordered_map<Entity,std::vector<Entity>>& collisions, EntitySet& set) {
 		collisions.clear();
 

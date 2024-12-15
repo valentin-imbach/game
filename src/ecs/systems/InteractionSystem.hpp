@@ -7,7 +7,9 @@
 #include "GuiElement.hpp"
 
 class InteractionSystem : public System {
-public:
+
+	ROSTER(STATION, POSITION)
+
 	std::unique_ptr<GuiElement> update(vec position, EntitySet& set, uint ticks, InventorySlice link = {}, InventorySlice* out = nullptr) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;

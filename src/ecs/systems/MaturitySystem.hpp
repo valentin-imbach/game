@@ -5,7 +5,9 @@
 #include "ECS.hpp"
 
 class MaturitySystem : public System {
-public:
+
+	ROSTER(MATURITY)
+
 	void update(uint ticks, EntitySet& set) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;

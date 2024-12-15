@@ -5,12 +5,14 @@
 #include "ECS.hpp"
 
 class HealthSystem : public System {
-public:
+
+	ROSTER(HEALTH)
+
 	void update(uint ticks, EntitySet& set) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;
 			HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
-			if (ecs->hasComponent<ActionComponent>(entity)) {
+			if (ecs->hasComponent<SpriteComponent>(entity)) {
 				SpriteComponent& spriteComponent = ecs->getComponent<SpriteComponent>(entity);
 				if (healthComponent.lastDamage && ticks < healthComponent.lastDamage + 200) {
 					spriteComponent.effects[SpriteEffectId::HURT] = {true, ticks};

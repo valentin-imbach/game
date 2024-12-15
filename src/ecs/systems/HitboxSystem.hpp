@@ -6,7 +6,9 @@
 #include "TextureManager.hpp"
 
 class HitboxSystem : public System {
-public:
+
+	ROSTER(HITBOX, POSITION)
+
 	void update(std::unordered_map<Entity,std::vector<Entity>>& hits, EntitySet& set) {
 		hits.clear();
 

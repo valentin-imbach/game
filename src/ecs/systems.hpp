@@ -29,7 +29,7 @@
 #include "AiChaseSystem.hpp"
 #include "AiMeleeSystem.hpp"
 #include "AiPostSystem.hpp"
-#include "PositionSystem.hpp"
+// #include "PositionSystem.hpp"
 #include "MaturitySystem.hpp"
 #include "HitboxDrawSystem.hpp"
 #include "DamageSystem.hpp"

@@ -6,7 +6,9 @@
 #include "EntityFactory.hpp"
 
 class ExplosiveSystem : public System {
-public:
+
+	ROSTER(EXPLOSIVE, POSITION, SPRITE)
+
 	void update(uint ticks, Camera& camera) {
 		for (Entity entity : entities) {
 			ExplosiveComponent& explosiveComponent = ecs->getComponent<ExplosiveComponent>(entity);

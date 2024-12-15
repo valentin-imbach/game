@@ -8,7 +8,9 @@
 #include "SoundManager.hpp"
 
 class ForageSystem : public System {
-public:
+
+	ROSTER(GRID, RESOURCE, HEALTH, SPRITE)
+
 	bool update(vec position, Entity item, uint ticks, EntitySet& set) {
 		for (Entity entity : set) {
 			if (entities.find(entity) == entities.end()) continue;

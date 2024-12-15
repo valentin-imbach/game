@@ -5,7 +5,9 @@
 #include "ECS.hpp"
 
 class AiSystem : public System {
-public:
+
+	ROSTER(AI)
+
 	void update(uint ticks) {
 		for (Entity entity : entities) {
 			AiComponent& aiComponent = ecs->getComponent<AiComponent>(entity);

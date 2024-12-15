@@ -29,7 +29,7 @@ class AiFleeSystem;
 class AiChaseSystem;
 class AiMeleeSystem;
 class AiPostSystem;
-class PositionSystem;
+// class PositionSystem;
 class MaturitySystem;
 class HitboxDrawSystem;
 class DamageSystem;

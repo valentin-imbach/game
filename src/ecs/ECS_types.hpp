@@ -24,7 +24,7 @@ CONTROLLER,
 
 //* Static
 GRID,
-INTERACTION,
+STATION,
 RESOURCE,
 
 //* Dynamic

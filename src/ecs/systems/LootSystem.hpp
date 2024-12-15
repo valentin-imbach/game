@@ -6,7 +6,9 @@
 #include "ECS.hpp"
 
 class LootSystem : public System {
-public:
+
+	ROSTER(LOOT, POSITION, DEATH)
+
 	void update(uint ticks) {
 		uint seed = ticks;
 		for (Entity entity : entities) {
