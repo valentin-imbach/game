@@ -38,7 +38,7 @@ void AnimalTemplate::setTemplates(std::filesystem::path root) {
 					WARNING("Unrecognised Layer:", l);
 					continue;
 				}
-				LOG(layer, source, int(frames));
+				// LOG(layer, source, int(frames));
 				templates[animalId].sprites[movementState].setSprite(layer, Sprite(spriteSheet, source, size, frames, 100), offset);
 			}
 		}

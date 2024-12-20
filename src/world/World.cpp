@@ -45,6 +45,7 @@ void World::init() {
 
 	guiManager.world = this;
 	EntityFactory::world = this;
+	EntityFactory::ecs = &ecs;
 }
 
 World::World(std::string name, uint seed, WorldParameters params) : name(name), seed(seed), ticks(0), particleSystem(1000), realmManager(10) {
@@ -239,12 +240,6 @@ void World::update(uint dt) {
 	ticks += tickSpeed * dt;
 	time.update(tickSpeed * dt);
 
-	if (player && ecs.hasComponent<DeathComponent>(player)) {
-		player = 0;
-		guiManager.add(makeDeathScreen());
-		LOG("Player Died");
-	}
-
 	if (player) {
 		PositionComponent& positionComponent = ecs.getComponent<PositionComponent>(player);
 		playerRealm = realmManager.getRealm(positionComponent.realmId);
@@ -324,8 +319,6 @@ void World::update(uint dt) {
 	fuelSystem->update(ticks, dt);
 	processingSystem->update(ticks, dt);
 
-	// chunkSystem->update(realmManager);
-
 	itemPickupSystem->update(collisions, realmManager);
 
 	updateCamera(player);
@@ -335,6 +328,12 @@ void World::update(uint dt) {
 	lootSystem->update(ticks);
 
 	creatureAnimationSystem->update(ticks);
+
+	if (player && ecs.hasComponent<DeathComponent>(player)) {
+		player = 0;
+		guiManager.open(makeDeathScreen());
+		LOG("Player Died");
+	}
 
 	inventoryDeathSystem->update(ticks, realmManager);
 	deathSystem->update(realmManager, particleSystem);
@@ -449,7 +448,8 @@ std::unique_ptr<GuiElement> World::makeMenu() {
 }
 
 void World::respawn() {
-	Entity player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
+	player = EntityFactory::createPlayer(spawnRealm->realmId, spawn);
+	guiManager.close();
 	LOG("Player Respawned");
 }
 
