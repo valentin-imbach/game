@@ -16,6 +16,6 @@ struct AnimalTemplate {
 	LootTable lootTable;
 
 	static std::array<AnimalTemplate, AnimalId::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };
 

@@ -1,13 +1,12 @@
 
 #include "AnimalTemplates.hpp"
 #include "json.hpp"
-#include "Window.hpp"
 
 std::array<AnimalTemplate, AnimalId::count> AnimalTemplate::templates = {};
 
-void AnimalTemplate::setTemplates() {
+void AnimalTemplate::setTemplates(std::filesystem::path root) {
 
-	json::Value data = json::parseFile(Window::instance->root / "json/Animals.json");
+	json::Value data = json::parseFile(root / "json/Animals.json");
 
 	AnimalTemplate::templates = {};
 
@@ -35,6 +34,11 @@ void AnimalTemplate::setTemplates() {
 			for (auto &[l, src] : value["layers"].get<json::Object>()) {
 				pair source = parsePair(src);
 				CreatureLayer::value layer = CreatureLayer::from_string(l);
+				if (!layer) {
+					WARNING("Unrecognised Layer:", l);
+					continue;
+				}
+				LOG(layer, source, int(frames));
 				templates[animalId].sprites[movementState].setSprite(layer, Sprite(spriteSheet, source, size, frames, 100), offset);
 			}
 		}

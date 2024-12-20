@@ -9,7 +9,8 @@ class ProjectileSystem : public System {
 	ROSTER(PROJECTILE, POSITION, DAMAGE)
 
 	void update(uint ticks, uint dt) {
-		for (Entity entity : entities) {
+		EntitySet copy(entities);
+		for (Entity entity : copy) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(entity);
 			ProjectileComponent& projectileComponent = ecs->getComponent<ProjectileComponent>(entity);
 

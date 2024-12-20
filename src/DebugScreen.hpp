@@ -111,11 +111,6 @@ public:
 			entityText += "Ai State: " + AiState::to_string(aiComponent.state) + '\n';
 		}
 
-		// if (world->ecs.hasComponent<AiWanderComponent>(entity)) {
-		// 	vec pos = world->ecs.getComponent<AiWanderComponent>(entity).position;
-		// 	entityText += "Wander Position:\n" + std::to_string(pos.x) + ",\n" + std::to_string(pos.y) + '\n';
-		// }
-
 		if (world->ecs.hasComponent<SensorComponent>(entity)) {
 			vec pos = world->ecs.getComponent<SensorComponent>(entity).position;
 			entityText += "Sensor Position:\n" + std::to_string(pos.x) + ",\n" + std::to_string(pos.y) + '\n';

@@ -1,6 +1,7 @@
 
 #include "Sprite.hpp"
 #include "FileWatcher.hpp"
+#include "Window.hpp"
 
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::spriteSheets = {};
 std::array<SDL_Texture*, SpriteSheet::count> Sprite::outlineSpriteSheets = {};
@@ -36,14 +37,13 @@ void Sprite::animationReset(uint ticks) {
 void Sprite::loadSpriteSheets() {
 	for (uint i = 1; i < SpriteSheet::count; i++) {
 		std::string fileName = SpriteSheet::strings[i] + ".png";
-
 		std::function<void()> lambda = [fileName, i]() {
 			spriteSheets[i] = TextureManager::loadTexture(fileName);
 			outlineSpriteSheets[i] = TextureManager::loadTexture(fileName, true);
 		};
 
 		lambda();
-		FileWatcher::add(SPRITE_PATH + fileName, lambda);
+		FileWatcher::add(Window::instance->root / TextureManager::spritePath / fileName, lambda);
 	}
 	TextureManager::lightTexture = TextureManager::loadTexture("light.png");
 	TextureManager::fogTexture = TextureManager::loadTexture("fog.png");

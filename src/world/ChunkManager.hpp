@@ -4,7 +4,6 @@
 #include "Chunk.hpp"
 #include "Camera.hpp"
 class World;
-
 class Realm;
 
 class ChunkManager {

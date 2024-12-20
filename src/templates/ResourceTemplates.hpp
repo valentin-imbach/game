@@ -24,6 +24,6 @@ struct ResourceTemplate {
 	LootTable lootTable;
 
 	static std::array<ResourceTemplate, ResourceId::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };
 

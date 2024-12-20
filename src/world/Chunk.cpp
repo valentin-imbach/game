@@ -4,6 +4,7 @@
 #include "Environment.hpp"
 #include "Generation.hpp"
 #include "EntityFactory.hpp"
+#include "ResourceTemplates.hpp"
 
 #define CLIFF_GAP 200
 

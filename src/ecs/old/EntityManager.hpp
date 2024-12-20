@@ -28,7 +28,7 @@ public:
 
 	void destroyEntity(Entity entity) {
 		if (!entity) return;
-		LOG("destroyed", entity);
+		// LOG("Destroyed", entity);
 		signatures.erase(entity);
 		entityCount -= 1;
 		activeEntityCount -= 1;

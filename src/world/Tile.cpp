@@ -1,7 +1,6 @@
 
 #include "Tile.hpp"
 #include "Sprite.hpp"
-#include "Window.hpp"
 #include "json.hpp"
 
 std::array<GroundTemplate, GroundId::count> GroundTemplate::templates = {};
@@ -11,8 +10,8 @@ Tile::Tile(GroundId::value groundId, WallId::value wallId) : groundId(groundId),
 	sprites = {};
 }
 
-void GroundTemplate::setTemplates() {
-	json::Value data = json::parseFile(Window::instance->root / "json/Grounds.json");
+void GroundTemplate::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Grounds.json");
 
 	GroundTemplate::templates = {};
 
@@ -40,8 +39,8 @@ void GroundTemplate::setTemplates() {
 	}
 }
 
-void WallTemplate::setTemplates() {
-	json::Value data = json::parseFile(Window::instance->root / "json/Walls.json");
+void WallTemplate::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Walls.json");
 
 	WallTemplate::templates = {};
 

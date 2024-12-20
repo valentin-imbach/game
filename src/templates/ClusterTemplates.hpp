@@ -14,7 +14,7 @@ struct Cluster {
 	virtual bool generate(uint seed, Realm* realm, pair position) = 0;
 	virtual ~Cluster() = default;
 	static std::array<std::unique_ptr<Cluster>, ClusterId::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };
 
 struct ResourceCluster : public Cluster {

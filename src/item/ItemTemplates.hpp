@@ -11,7 +11,7 @@ struct ItemPropertyTemplate {
 	std::string name = "?";
 
 	static std::array<ItemPropertyTemplate, ItemProperty::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };
 
 struct ItemKindTemplate {
@@ -19,7 +19,7 @@ struct ItemKindTemplate {
 	ItemPropertyBitset properties;
 
 	static std::array<ItemKindTemplate, ItemKind::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };
 
 struct ItemTemplate {
@@ -29,5 +29,5 @@ struct ItemTemplate {
 	uint value = 1;
 
 	static std::array<ItemTemplate, ItemId::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };

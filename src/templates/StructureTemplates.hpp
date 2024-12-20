@@ -10,6 +10,6 @@ struct StructureTemplate {
 	std::vector<SpriteTemplate> spriteTemplates;
 
 	static std::array<StructureTemplate, StructureId::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };
 

@@ -8,7 +8,7 @@
 
 class ControllerSystem : public System {
 
-	ROSTER(MOVEMENT, DIRECTION, FACING, POSITION)
+	ROSTER(PLAYER, MOVEMENT, DIRECTION, FACING, POSITION)
 
 	void update(InputState& inputState, Camera camera, bool active, uint ticks) {
 		for (Entity entity : entities) {

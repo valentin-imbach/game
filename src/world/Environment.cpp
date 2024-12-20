@@ -1,6 +1,5 @@
 
 #include "Environment.hpp"
-#include "Window.hpp"
 #include "Sprite.hpp"
 
 Environment::Environment(uint seed, WorldParameters params) : seed(seed) {

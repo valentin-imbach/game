@@ -1,10 +1,9 @@
 
 #include "ParticleSystem.hpp"
 #include "TextureManager.hpp"
-#include "ECS.hpp"
-#include "Window.hpp"
 #include "random.hpp"
 #include "json.hpp"
+#include "TextManager.hpp"
 
 std::array<ParticleStyle, ParticleId::count> ParticleStyle::templates = {};
 
@@ -20,18 +19,20 @@ void Particle::draw(Camera camera) {
 	if (realmId != camera.realmId) return;
 	float t = float(age) / lifeSpan;
 	float alpha = (1-t) * alphaStart + t * alphaEnd;
-	TextureStyle style;
-	style.alpha = alpha;
-	sprite.draw(camera.screenPosition(position), camera.zoom * scale, style);
+	vec screenPos = camera.screenPosition(position);
+
+	if (text.empty()) {
+		TextureStyle style;
+		style.alpha = alpha;
+		sprite.draw(screenPos, camera.zoom * scale, style);
+	} else {
+		Text t(text);
+		TextManager::drawText(t, screenPos, true);
+	}
 }
 
-void ParticleStyle::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/Particles.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-	// file.close();
-
-	json::Value data = json::parseFile(Window::instance->root / "json/Particles.json");
+void ParticleStyle::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Particles.json");
 
 	ParticleStyle::templates = {};
 
@@ -58,7 +59,6 @@ void ParticleStyle::setTemplates() {
 
 ParticleSystem::ParticleSystem(int number) : number(number), index(number - 1), seed(123) {
 	pool.resize(number);
-	ParticleStyle::setTemplates();
 }
 
 void ParticleSystem::update(uint dt) {

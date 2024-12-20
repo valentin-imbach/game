@@ -1,20 +1,13 @@
 
 #include "ItemTemplates.hpp"
 #include "json.hpp"
-#include "Window.hpp"
-#include <fstream>
 
 std::array<ItemPropertyTemplate, ItemProperty::count> ItemPropertyTemplate::templates = {};
 std::array<ItemKindTemplate, ItemKind::count> ItemKindTemplate::templates = {};
 std::array<ItemTemplate, ItemId::count> ItemTemplate::templates = {};
 
-void ItemPropertyTemplate::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/ItemProperties.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-    // file.close();
-
-    json::Value data = json::parseFile(Window::instance->root / "json/ItemProperties.json");
+void ItemPropertyTemplate::setTemplates(std::filesystem::path root) {
+    json::Value data = json::parseFile(root / "json/ItemProperties.json");
 
     ItemPropertyTemplate::templates = {};
 
@@ -29,13 +22,8 @@ void ItemPropertyTemplate::setTemplates() {
     }
 }
 
-void ItemKindTemplate::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/ItemKinds.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-    // file.close();
-
-    json::Value data = json::parseFile(Window::instance->root / "json/ItemKinds.json");
+void ItemKindTemplate::setTemplates(std::filesystem::path root) {
+    json::Value data = json::parseFile(root / "json/ItemKinds.json");
 
     ItemKindTemplate::templates = {};
 
@@ -58,13 +46,8 @@ void ItemKindTemplate::setTemplates() {
     }
 }
 
-void ItemTemplate::setTemplates() {	
-	// std::ifstream file(Window::instance->root / "json/Items.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-    // file.close();
-
-    json::Value data = json::parseFile(Window::instance->root / "json/Items.json");
+void ItemTemplate::setTemplates(std::filesystem::path root) {	
+    json::Value data = json::parseFile(root / "json/Items.json");
 
     ItemTemplate::templates = {};
 

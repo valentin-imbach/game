@@ -1,18 +1,11 @@
 
 #include "ClusterTemplates.hpp"
 #include "json.hpp"
-#include "Window.hpp"
 
 std::array<std::unique_ptr<Cluster>, ClusterId::count> Cluster::templates = {};
 
-void Cluster::setTemplates() {
-
-	// std::ifstream file(Window::instance->root / "json/Clusters.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-	// file.close();
-
-	json::Value data = json::parseFile(Window::instance->root / "json/Clusters.json");
+void Cluster::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Clusters.json");
 
 	std::function<std::unique_ptr<Cluster>(json::Value)> parse;
 	parse = [&parse](json::Value value) -> std::unique_ptr<Cluster> {

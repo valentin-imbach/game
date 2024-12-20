@@ -1,9 +1,6 @@
 
 #include "Realm.hpp"
 #include "Generation.hpp"
-
-#include "EntityFactory.hpp"
-#include "Dungeon2.hpp"
 #include "Dungeon3.hpp"
 
 Realm::Realm(RealmId realmId, uint seed) : realmId(realmId), seed(seed), chunkManager(seed + 1) {
@@ -17,50 +14,10 @@ Realm::Realm(std::fstream& stream) : chunkManager(0) {
 	environment = std::make_unique<Environment>(seed + 2, WorldParameters());
 }
 
-// void Realm::generate(RealmType::value realmType, WorldParameters params) {
-// 	if (realmType == RealmType::WORLD) generate(params);
-// 	// if (realmType == RealmType::HOUSE) generateHouse(pair(10, 7));
-// 	// if (realmType == RealmType::CAVE) generateCave(3, 500);
-
-// 	// if (realmType == RealmType::DUNGEON) generateDungeon();
-// 	if (realmType == RealmType::TEST) generateFlat();
-// }
-
 void Realm::generate(WorldParameters params) {
 	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
 	environment->rivers = params.rivers;
 	environment->cliffs = params.cliffs;
-
-	// for (int x = 0; x < size.x; x++) {
-	// 	for (int y = 0; y < size.y; y++) {
-	// 		pair position(x, y);
-	// 		Biome::value biome = environment->getBiome(position);
-	// 		int variation = environment->variationMap->get(position);
-	// 		BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
-	// 		// map->tiles[x][y] = std::make_unique<Tile>(ground.groundId);
-	// 	}
-	// }
-
-	// uint s = seed;
-	// for (int x = 0; x < map->size.x; x++) {
-	// 	for (int y = 0; y < map->size.y; y++) {
-	// 		pair position(x, y);
-	// 		if (!free(position)) continue;
-	// 		Biome::value biome = environment->getBiome(position);
-	// 		int variation = environment->variationMap->get(position);
-	// 		int vegetation = environment->vegetationMap->get(position);
-	// 		int choice = noise::Int(s++, 0, 50 + vegetation);
-	// 		BiomeGroundTemplate& ground = BiomeTemplate::templates[biome].getGround(variation);
-	// 		for (auto& p : ground.resources) {
-	// 			choice -= p.second;
-	// 			if (choice < 0) {
-	// 				Entity resource = EntityFactory::createResource(p.first, realmId, position);
-	// 				break;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	spawn = pair(0, 0);
 }
 
@@ -151,55 +108,55 @@ void Realm::generateHouse() {
 }
 
 
-void Realm::generateDungeon() {
+// void Realm::generateDungeon() {
 
-	WorldParameters params;
-	params.elevation = pair(500, 500);
-	params.temperature = pair(20, 20);
-	params.percipitation = pair(100, 100);
+// 	WorldParameters params;
+// 	params.elevation = pair(500, 500);
+// 	params.temperature = pair(20, 20);
+// 	params.percipitation = pair(100, 100);
 
-	pair vegetation = pair(0, 0);
-	pair variation = pair(0, 0);
+// 	pair vegetation = pair(0, 0);
+// 	pair variation = pair(0, 0);
 
-	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
+// 	environment = std::make_unique<Environment>(noise::UInt(seed + 2), params);
 
-	chunkManager.fixed = true;
+// 	chunkManager.fixed = true;
 
-	for (int x = -5; x <= 5; x++) {
-		for (int y = -5; y <= 5; y++) {
-			pair pos(x, y);
-			chunkManager.chunks.emplace(pos, pos);
-			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
-			chunk.biome = Biome::RAINFOREST;
-			chunk.stage = ChunkStage::LOADED;
-		}
-	}
+// 	for (int x = -5; x <= 5; x++) {
+// 		for (int y = -5; y <= 5; y++) {
+// 			pair pos(x, y);
+// 			chunkManager.chunks.emplace(pos, pos);
+// 			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+// 			chunk.biome = Biome::RAINFOREST;
+// 			chunk.stage = ChunkStage::LOADED;
+// 		}
+// 	}
 
-	pair size(40, 40);
-	Dungeon dungeon(-size/2, size/2, 0);
+// 	pair size(40, 40);
+// 	Dungeon dungeon(-size/2, size/2, 0);
 
-	for (auto& s : dungeon.layout) {
-		chunkManager.setGround(s, GroundId::ROCK);
-	}
+// 	for (auto& s : dungeon.layout) {
+// 		chunkManager.setGround(s, GroundId::ROCK);
+// 	}
 
-	for (int x = -5; x <= 5; x++) {
-		for (int y = -5; y <= 5; y++) {
-			pair pos(x, y);
-			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
-			chunk.refreshMap(environment.get());
-		}
-	}
+// 	for (int x = -5; x <= 5; x++) {
+// 		for (int y = -5; y <= 5; y++) {
+// 			pair pos(x, y);
+// 			Chunk& chunk = (*chunkManager.chunks.find(pos)).second;
+// 			chunk.refreshMap(environment.get());
+// 		}
+// 	}
 
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		for (int y = 0; y < CHUNK_SIZE; y++) {
-			pair position(x, y);
-			chunkManager.updateStyle(position);
-		}
-	}
+// 	for (int x = 0; x < CHUNK_SIZE; x++) {
+// 		for (int y = 0; y < CHUNK_SIZE; y++) {
+// 			pair position(x, y);
+// 			chunkManager.updateStyle(position);
+// 		}
+// 	}
 	
 
 	
-}
+// }
 
 
 void Realm::generateDungeon2() {
@@ -304,9 +261,7 @@ void Realm::generateDungeon2() {
 }
 
 void Realm::generateFlat() {
-
-	// map = std::make_unique<Map>(size, noise::UInt(seed + 1));
-	
+		
 	WorldParameters params;
 	params.elevation = pair(500, 500);
 	params.temperature = pair(20, 20);

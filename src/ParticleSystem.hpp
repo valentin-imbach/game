@@ -8,7 +8,8 @@ ENUM(ParticleId,
 	DIRT,
 	SMOKE,
 	DEATH,
-	FIRE
+	FIRE,
+	HEALTH
 );
 
 struct ParticleEmitter {
@@ -29,7 +30,9 @@ struct ParticleStyle {
 	float scaleVariance = 0;
 	uint lifeSpan = 1000;
 
-	static void setTemplates();
+	std::string text;
+
+	static void setTemplates(std::filesystem::path root);
 	static std::array<ParticleStyle, ParticleId::count> templates;
 };
 
@@ -45,6 +48,8 @@ struct Particle {
 	bool active = false;
 	float alphaStart;
 	float alphaEnd;
+
+	std::string text;
 
 	void update(uint dt);
 	void draw(Camera camera);

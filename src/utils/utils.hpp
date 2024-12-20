@@ -13,6 +13,7 @@
 #include <variant>
 #include <fstream>
 #include <functional>
+#include <filesystem>
 
 #include <cassert>
 #include <cmath>

@@ -38,6 +38,8 @@ public:
     static std::array<Mix_Chunk*, SoundId::count> sounds;
     static std::array<Mix_Chunk*, TrackId::count> tracks;
     static int volume;
+    static std::filesystem::path soundPath;
+    static std::filesystem::path trackPath;
 };
 
 struct TrackMix {
@@ -59,7 +61,7 @@ struct TrackMix {
             if (activeTracks[i]) {
                 TrackId::value trackId = TrackId::from_int(i);
                 SoundManager::playTrack(trackId, i + parity * TrackId::count, loops);
-                LOG(TrackId::to_string(trackId));
+                // LOG(TrackId::to_string(trackId));
             }
         }
         lastChange = ticks;

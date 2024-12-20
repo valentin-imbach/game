@@ -4,6 +4,7 @@
 #include <sstream>
 
 TTF_Font* TextManager::font = nullptr;
+std::filesystem::path TextManager::fontPath = "assets/fonts";
 
 Text::Text(std::string text, int style, Colour colour)
 	: text(text), style(style), colour(colour) {}
@@ -13,23 +14,24 @@ void TextManager::Init() {
 		ERROR("Failed to initialize TTF");
 		return;
 	}
-	LOG("TextManager initialized");
+	LOG("Text Manager initialized");
 	TextManager::loadFont("font.ttf", 32);
 }
 
 void TextManager::cleanup() {
 	if (font) TTF_CloseFont(font);
 	TTF_Quit();
-	LOG("TextManager cleaned up");
+	LOG("Text Manager cleaned up");
 }
 
-void TextManager::loadFont(std::string path, int size) {
-	font = TTF_OpenFont((FONT_PATH + path).c_str(), size);
+void TextManager::loadFont(std::string name, int size) {
+	auto path = Window::instance->root / fontPath / name;
+	font = TTF_OpenFont(path.c_str(), size);
 	if (!font) {
 		ERROR("Failed to load font", path)
 		return;
 	}
-	LOG("Font loaded from", path);
+	LOG("Font", name, "loaded");
 }
 
 pair TextManager::getTextSize(const std::string& text) {
@@ -37,7 +39,7 @@ pair TextManager::getTextSize(const std::string& text) {
 	TTF_Text* t = TTF_CreateText(NULL, font, text.c_str(), text.size());
 	if (!TTF_GetTextSize(t, &size.x, &size.y)) {
 		ERROR("Failed to determine size of string", text);
-		return {};
+		return pair(0, 0);
 	}
 	return size;
 }

@@ -9,7 +9,6 @@
 #include "ParticleSystem.hpp"
 
 #include "Camera.hpp"
-#include "Minimap.hpp"
 #include "Time.hpp"
 
 class World {
@@ -82,7 +81,6 @@ private:
 	ParticleEmitSystem* particleEmitSystem;
 	CreatureParticleSystem* creatureParticleSystem;
 	HandRenderSystem* handRenderSystem;
-	// ChunkSystem* chunkSystem;
 	LightSystem* lightSystem;
 	SensorSystem* sensorSystem;
 	ProjectileSystem* projectileSystem;
@@ -92,7 +90,6 @@ private:
 	AiChaseSystem* aiChaseSystem;
 	AiMeleeSystem* aiMeleeSystem;
 	AiPostSystem* aiPostSystem;
-	// PositionSystem* positionSystem;
 	MaturitySystem* maturitySystem;
 	HitboxDrawSystem* hitboxDrawSystem;
 	DamageSystem* damageSystem;

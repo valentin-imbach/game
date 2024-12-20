@@ -1,6 +1,6 @@
 
 #pragma once
-#include "ResourceTemplates.hpp"
+#include "utils.hpp"
 
 struct WorldParameters {
 	pair elevation = pair(-500, 1500);
@@ -38,5 +38,5 @@ struct BiomeTemplate {
 	BiomeGroundTemplate& getGround(int variation);
 
 	static std::array<BiomeTemplate, Biome::count> templates;
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 };

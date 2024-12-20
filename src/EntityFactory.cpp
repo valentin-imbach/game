@@ -1,7 +1,6 @@
 
 #include "EntityFactory.hpp"
 #include "ECS.hpp"
-#include "ECS_types.hpp"
 #include "Item.hpp"
 #include "Components.hpp"
 #include "World.hpp"
@@ -10,11 +9,12 @@
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
 
+ECS* EntityFactory::ecs = nullptr;
 World* EntityFactory::world = nullptr;
 uint EntityFactory::seed = 1729;
 
 Entity EntityFactory::createStaticEntity(RealmId realmId, pair position, pair size, bool solid, bool opaque) {
-	Entity entity = world->ecs.createEntity();
+	Entity entity = ecs->createEntity();
 	if (!entity) return 0;
 
 	Realm* realm = world->realmManager.getRealm(realmId);
@@ -25,8 +25,8 @@ Entity EntityFactory::createStaticEntity(RealmId realmId, pair position, pair si
 		return 0;
 	}
 
-	world->ecs.addComponent<PositionComponent>({position, realmId}, entity);
-	world->ecs.addComponent<GridComponent>({position, realmId, size, solid, opaque}, entity);
+	ecs->addComponent<PositionComponent>({position, realmId}, entity);
+	ecs->addComponent<GridComponent>({position, realmId, size, solid, opaque}, entity);
 
 	realm->attach(entity, chunk);
 	realm->link(entity, position, size, solid, opaque);
@@ -34,14 +34,13 @@ Entity EntityFactory::createStaticEntity(RealmId realmId, pair position, pair si
 }
 
 Entity EntityFactory::createDynamicEntity(RealmId realmId, vec position) {
-	Entity entity = world->ecs.createEntity();
+	Entity entity = ecs->createEntity();
 	if (!entity) return 0;
 
 	Realm* realm = world->realmManager.getRealm(realmId);
 	pair chunk = realm->chunkManager.getChunk(position);
 
-	world->ecs.addComponent<PositionComponent>({position, realmId}, entity);
-	// world->ecs.addComponent<ChunkComponent>({}, entity);
+	ecs->addComponent<PositionComponent>({position, realmId}, entity);
 	realm->attach(entity, chunk);
 	return entity;
 }
@@ -50,22 +49,22 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	Entity player = createDynamicEntity(realmId, position);
 	if (!player) return 0;
 
-	world->ecs.addComponent<ActionComponent>({}, player);
-	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, player);
-	world->ecs.addComponent<MovementComponent>({2, 3}, player);
-	world->ecs.addComponent<ForceComponent>({vec(0, 0)}, player);
-	world->ecs.addComponent<ControllerComponent>({}, player);
-	world->ecs.addComponent<HandComponent>({}, player);
+	ecs->addComponent<ActionComponent>({}, player);
+	ecs->addComponent<DirectionComponent>({Direction::EAST}, player);
+	ecs->addComponent<MovementComponent>({2, 3}, player);
+	ecs->addComponent<ForceComponent>({vec(0, 0)}, player);
+	ecs->addComponent<ControllerComponent>({}, player);
+	ecs->addComponent<HandComponent>({}, player);
 
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.8f, 0.4f))}, player);
-	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
+	ecs->addComponent<ColliderComponent>({Shape(vec(0.8f, 0.4f))}, player);
+	ecs->addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, player);
 
-	world->ecs.addComponent<HealthComponent>({20, 20}, player);
-	world->ecs.addComponent<ParticleComponent>({}, player);
+	ecs->addComponent<HealthComponent>({20, 20}, player);
+	ecs->addComponent<ParticleComponent>({}, player);
 
-	world->ecs.addComponent<EffectComponent>({}, player);
+	ecs->addComponent<EffectComponent>({}, player);
 
-	world->ecs.addComponent<InventoryComponent>({Inventory(pair(7, 6))}, player);
+	ecs->addComponent<InventoryComponent>({Inventory(pair(7, 6))}, player);
 
 	Inventory equipment({3,4});
 	equipment.itemContainers[0][0].itemKind = ItemKind::CLOTHING_HEAD;
@@ -78,15 +77,15 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 	equipment.itemContainers[1][3].itemKind = ItemKind::ARMOR_FEET;
 	for (int y = 0; y < 4; y++) equipment.itemContainers[2][y].itemKind = ItemKind::ACCESSORY;
 	
-	world->ecs.addComponent<PlayerComponent>({equipment, 0}, player);
+	ecs->addComponent<PlayerComponent>({equipment, 0}, player);
 
-	world->ecs.addComponent<FacingComponent>({}, player);
+	ecs->addComponent<FacingComponent>({}, player);
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::PLAYER);
-	world->ecs.addComponent<TagComponent>(tagComponent, player);
+	ecs->addComponent<TagComponent>(tagComponent, player);
 
-	world->ecs.addComponent<SpriteComponent>({}, player);
+	ecs->addComponent<SpriteComponent>({}, player);
 	CreatureAnimationComponent creatureAnimationComponent = {};
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
@@ -99,7 +98,7 @@ Entity EntityFactory::createPlayer(RealmId realmId, vec position) {
 		// creatureAnimationComponent.sprites[MovementState::WALK].second.setSprite(i, Sprite(SpriteSheet::MODULAR_PLAYER, pair(0, 16 + 2*i-2), pair(1, 2), 8, 100), pair(0, -1));
 	}
 
-	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);
+	ecs->addComponent<CreatureAnimationComponent>(creatureAnimationComponent, player);
 
 	return player;
 }
@@ -118,13 +117,13 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, RealmId realm
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
 		spriteStack.setSprite(i, Sprite(SpriteSheet::RESOURCES, spritePosition, sprite.size), sprite.offset);
 	}
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, resource);
+	ecs->addComponent<SpriteComponent>({spriteStack}, resource);
 
-	world->ecs.addComponent<ResourceComponent>({resourceTemplate.toolId, resourceTemplate.sound, resourceTemplate.level}, resource);
-	world->ecs.addComponent<LootComponent>({resourceTemplate.lootTable}, resource);
-	world->ecs.addComponent<HealthComponent>({resourceTemplate.health, resourceTemplate.health}, resource);
+	ecs->addComponent<ResourceComponent>({resourceTemplate.toolId, resourceTemplate.sound, resourceTemplate.level}, resource);
+	ecs->addComponent<LootComponent>({resourceTemplate.lootTable}, resource);
+	ecs->addComponent<HealthComponent>({resourceTemplate.health, resourceTemplate.health}, resource);
 	// if (6 <= resourceId && resourceId <= 10) {
-	// 	world->ecs.addComponent<MaturityComponent>({world->ticks, 10000, 5}, resource);
+	// 	ecs->addComponent<MaturityComponent>({world->ticks, 10000, 5}, resource);
 	// }
 
 	return resource;
@@ -144,7 +143,7 @@ Entity EntityFactory::createStructure(StructureId::value structureId, RealmId re
 		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
 		spriteStack.setSprite(i, Sprite(structureTemplate.spriteSheet, spritePosition, sprite.size), sprite.offset);
 	}
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, structure);
+	ecs->addComponent<SpriteComponent>({spriteStack}, structure);
 	return structure;
 }
 
@@ -155,8 +154,8 @@ Entity EntityFactory::createCrop(CropId::value cropId, RealmId realmId, pair pos
 
 	SpriteStack spriteStack;
 	spriteStack.setSprite(0, Sprite(SpriteSheet::CROPS, pair(0, 2 * (cropId - 1)), pair(1, 2)), pair(0, -1));
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, crop);
-	world->ecs.addComponent<MaturityComponent>({world->ticks, 5000, 5}, crop);
+	ecs->addComponent<SpriteComponent>({spriteStack}, crop);
+	ecs->addComponent<MaturityComponent>({world->ticks, 5000, 5}, crop);
 	return crop;
 }
 
@@ -164,36 +163,36 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 	Entity enemy = createDynamicEntity(realmId, position);
 	if (!enemy) return 0;
 	
-	world->ecs.addComponent<ActionComponent>({}, enemy);
-	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, enemy);
-	world->ecs.addComponent<ForceComponent>({{0, 0}}, enemy);
-	world->ecs.addComponent<MovementComponent>({0.5f, 1}, enemy);
+	ecs->addComponent<ActionComponent>({}, enemy);
+	ecs->addComponent<DirectionComponent>({Direction::EAST}, enemy);
+	ecs->addComponent<ForceComponent>({{0, 0}}, enemy);
+	ecs->addComponent<MovementComponent>({0.5f, 1}, enemy);
 
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, enemy);
-	world->ecs.addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, enemy);
+	ecs->addComponent<ColliderComponent>({Shape(vec(0.6f, 0.6f))}, enemy);
+	ecs->addComponent<HitboxComponent>({Shape(vec(0.8f, 1.5f), vec(0, -0.6))}, enemy);
 
-	world->ecs.addComponent<HealthComponent>({20, 20}, enemy);
-	world->ecs.addComponent<ParticleComponent>({}, enemy);
+	ecs->addComponent<HealthComponent>({20, 20}, enemy);
+	ecs->addComponent<ParticleComponent>({}, enemy);
 
-	world->ecs.addComponent<SensorComponent>({10, EntityTag::PLAYER}, enemy);
-	world->ecs.addComponent<AiComponent>({}, enemy);
-	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, enemy);
-	world->ecs.addComponent<AiChaseComponent>({}, enemy);
-	world->ecs.addComponent<AiFleeComponent>({10}, enemy);
+	ecs->addComponent<SensorComponent>({10, EntityTag::PLAYER}, enemy);
+	ecs->addComponent<AiComponent>({}, enemy);
+	ecs->addComponent<AiWanderComponent>({position, {1, 0}}, enemy);
+	ecs->addComponent<AiChaseComponent>({}, enemy);
+	ecs->addComponent<AiFleeComponent>({10}, enemy);
 
-	world->ecs.addComponent<AiPostComponent>({position, 10}, enemy);
+	ecs->addComponent<AiPostComponent>({position, 10}, enemy);
 
-	world->ecs.addComponent<FacingComponent>({}, enemy);
+	ecs->addComponent<FacingComponent>({}, enemy);
 
 	Entity weapon = createTool(ItemKind::SWORD);
 	InventoryComponent inventoryComponent = {Inventory(pair(1,1))};
 	Entity rest = inventoryComponent.inventory.add(weapon);
-	world->ecs.addComponent<InventoryComponent>(inventoryComponent, enemy);
+	ecs->addComponent<InventoryComponent>(inventoryComponent, enemy);
 
-	world->ecs.addComponent<AiMeleeComponent>({5, 1000, 0}, enemy);
-	world->ecs.addComponent<HandComponent>({}, enemy);
+	ecs->addComponent<AiMeleeComponent>({5, 1000, 0}, enemy);
+	ecs->addComponent<HandComponent>({}, enemy);
 
-	world->ecs.addComponent<SpriteComponent>({}, enemy);
+	ecs->addComponent<SpriteComponent>({}, enemy);
 	CreatureAnimationComponent creatureAnimationComponent = {};
 
 	for (int i = 1; i < CreatureLayer::count; i++) {
@@ -211,7 +210,7 @@ Entity EntityFactory::createEnemy(EnemyId::value enemyId, RealmId realmId, vec p
 		// creatureAnimationComponent.actions[MovementState::RUN].setSprite(i, Sprite(SpriteSheet::MODULAR_ZOMBIE, {0, 16 + 2*i-2}, {1, 2}, 8, 100), {0, -1});
 	}
 
-	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, enemy);
+	ecs->addComponent<CreatureAnimationComponent>(creatureAnimationComponent, enemy);
 
 	return enemy;
 }
@@ -222,32 +221,32 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, ve
 	Entity animal = createDynamicEntity(realmId, position);
 	if (!animal) return 0;
 
-	world->ecs.addComponent<ActionComponent>({}, animal);
-	world->ecs.addComponent<DirectionComponent>({Direction::EAST}, animal);
-	world->ecs.addComponent<ForceComponent>({{0, 0}}, animal);
-	world->ecs.addComponent<ParticleComponent>({}, animal);
-	world->ecs.addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
-	world->ecs.addComponent<AiComponent>({}, animal);
-	world->ecs.addComponent<AiWanderComponent>({position, {1, 0}}, animal);
-	world->ecs.addComponent<AiFleeComponent>({50}, animal);
-	world->ecs.addComponent<SpriteComponent>({}, animal);
-	world->ecs.addComponent<FacingComponent>({}, animal);
+	ecs->addComponent<ActionComponent>({}, animal);
+	ecs->addComponent<DirectionComponent>({Direction::EAST}, animal);
+	ecs->addComponent<ForceComponent>({{0, 0}}, animal);
+	ecs->addComponent<ParticleComponent>({}, animal);
+	ecs->addComponent<SensorComponent>({5, EntityTag::PLAYER}, animal);
+	ecs->addComponent<AiComponent>({}, animal);
+	ecs->addComponent<AiWanderComponent>({position, {1, 0}}, animal);
+	ecs->addComponent<AiFleeComponent>({50}, animal);
+	ecs->addComponent<SpriteComponent>({}, animal);
+	ecs->addComponent<FacingComponent>({}, animal);
 
 	AnimalTemplate& animalTemplate = AnimalTemplate::templates[animalId];
-	world->ecs.addComponent<MovementComponent>({animalTemplate.speed.x, animalTemplate.speed.y}, animal);
-	world->ecs.addComponent<ColliderComponent>({animalTemplate.collider}, animal);	
-	world->ecs.addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
-	world->ecs.addComponent<LootComponent>({animalTemplate.lootTable}, animal);
-	world->ecs.addComponent<HealthComponent>({animalTemplate.health, animalTemplate.health}, animal);
+	ecs->addComponent<MovementComponent>({animalTemplate.speed.x, animalTemplate.speed.y}, animal);
+	ecs->addComponent<ColliderComponent>({animalTemplate.collider}, animal);	
+	ecs->addComponent<HitboxComponent>({animalTemplate.hitbox}, animal);
+	ecs->addComponent<LootComponent>({animalTemplate.lootTable}, animal);
+	ecs->addComponent<HealthComponent>({animalTemplate.health, animalTemplate.health}, animal);
 
 
 
 	TagComponent tagComponent = {};
 	tagComponent.tags.set(EntityTag::ANIMAL);
-	world->ecs.addComponent<TagComponent>(tagComponent, animal);
+	ecs->addComponent<TagComponent>(tagComponent, animal);
 
 	if (animalId == AnimalId::COW) {
-		world->ecs.addComponent<AiLureComponent>({ItemId::WHEAT}, animal);
+		ecs->addComponent<AiLureComponent>({ItemId::WHEAT}, animal);
 	}
 
 	CreatureAnimationComponent creatureAnimationComponent = { animalTemplate.sprites };
@@ -271,13 +270,13 @@ Entity EntityFactory::createAnimal(AnimalId::value animalId, RealmId realmId, ve
 	// creatureAnimationComponent.sprites[MovementState::RUN].first.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 2}, {1, 2}, 8, 100), {0, -1});
 	// creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(CreatureLayer::BODY, Sprite(SpriteSheet::COW, {0, 4}, {1, 2}, 8, 100), {0, -1});
 	// creatureAnimationComponent.sprites[MovementState::RUN].second.setSprite(CreatureLayer::HEAD, Sprite(SpriteSheet::COW, {0, 6}, {1, 2}, 8, 100), {0, -1});
-	world->ecs.addComponent<CreatureAnimationComponent>(creatureAnimationComponent, animal);
+	ecs->addComponent<CreatureAnimationComponent>(creatureAnimationComponent, animal);
 	
 	return animal;
 }
 
 Entity EntityFactory::createItem(ItemId::value itemId, uchar count, bool show) {
-	Entity item = world->ecs.createEntity();
+	Entity item = ecs->createEntity();
 	if (!item) return 0;
 
 	if (itemId) {
@@ -285,13 +284,11 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, bool show) {
 		spriteStack.setSprite(0, Sprite(SpriteSheet::ITEMS, pair((itemId - 1) % 5, (itemId - 1) / 5)));
 		SpriteComponent spriteComponent = {spriteStack, 0.5f};
 		spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
-		world->ecs.addComponent<SpriteComponent>(spriteComponent, item);
+		ecs->addComponent<SpriteComponent>(spriteComponent, item);
 	}
 
-	world->ecs.addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
-	world->ecs.addComponent<ItemComponent>({itemId, count, show}, item);
-	// world->ecs.addComponent<ChunkComponent>({}, item);
-	
+	ecs->addComponent<ColliderComponent>({Shape(vec(0.4f, 0.4f))}, item);
+	ecs->addComponent<ItemComponent>({itemId, count, show}, item);	
 	return item;
 }
 
@@ -302,9 +299,8 @@ Entity EntityFactory::createItem(ItemId::value itemId, uchar count, RealmId real
 	Realm* realm = world->realmManager.getRealm(realmId); 
 	pair chunk = vec::round(position / CHUNK_SIZE);
 	
-	world->ecs.addComponent<PositionComponent>({position, realmId}, item);
+	ecs->addComponent<PositionComponent>({position, realmId}, item);
 	realm->attach(item, chunk);
-
 	return item;
 }
 
@@ -312,7 +308,7 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 	Entity tool = createItem(ItemId::NONE, 1, true);
 	if (!tool) return 0;
 
-	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
+	ecs->addComponent<DurabilityComponent>({255,255}, tool);
 
 	ItemKindComponent itemKindComponent = {};
 	itemKindComponent.itemKinds[itemKind] = true;
@@ -321,15 +317,15 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
 
 	if (itemKind == ItemKind::SWORD) {
-		world->ecs.addComponent<NameComponent>({Textblock("Sword")}, tool);
+		ecs->addComponent<NameComponent>({Textblock("Sword")}, tool);
 		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
 		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(0, 0)));
 		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(1, 7)));	
-		world->ecs.addComponent<MeleeItemComponent>({5}, tool);
+		ecs->addComponent<MeleeItemComponent>({5}, tool);
 		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 5;
 		itemKindComponent.itemProperties[ItemProperty::PARRY] = 10;
 	} else if (itemKind == ItemKind::BOW) {
-		world->ecs.addComponent<NameComponent>({Textblock("Bow")}, tool);
+		ecs->addComponent<NameComponent>({Textblock("Bow")}, tool);
 		WindUpComponent windUpComponent;
 		windUpComponent.sprites[0].setSprite(0, Sprite(SpriteSheet::TOOLS, pair(3, 4)));
 		windUpComponent.sprites[0].setSprite(1, Sprite(SpriteSheet::TOOLS, pair(3, 5)));
@@ -340,24 +336,24 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 		spriteComponent.spriteStack = windUpComponent.sprites[0];
 
 		itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
-		world->ecs.addComponent<WindUpComponent>(windUpComponent, tool);
-		world->ecs.addComponent<LauncherComponent>({}, tool);
+		ecs->addComponent<WindUpComponent>(windUpComponent, tool);
+		ecs->addComponent<LauncherComponent>({}, tool);
 	} else if (itemKind == ItemKind::AXE) {
-		world->ecs.addComponent<NameComponent>({Textblock("Axe")}, tool);
+		ecs->addComponent<NameComponent>({Textblock("Axe")}, tool);
 		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 4)));
 		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(2, 0)));
 		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 7)));
 		itemKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 10;
 		itemKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
 	} else if (itemKind == ItemKind::HOE) {
-		world->ecs.addComponent<NameComponent>({Textblock("Hoe")}, tool);
+		ecs->addComponent<NameComponent>({Textblock("Hoe")}, tool);
 		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 5)));
 		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(4, 2)));
 		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 5)));
 		itemKindComponent.itemProperties[ItemProperty::EFFICIENCY] = 10;
 		itemKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
 	} else if (itemKind == ItemKind::PICK_AXE) {
-		world->ecs.addComponent<NameComponent>({Textblock("Pick Axe")}, tool);
+		ecs->addComponent<NameComponent>({Textblock("Pick Axe")}, tool);
 		spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::TOOLS, pair(0, 7)));
 		spriteComponent.spriteStack.setSprite(1, Sprite(SpriteSheet::TOOLS, pair(1, 1)));
 		spriteComponent.spriteStack.setSprite(2, Sprite(SpriteSheet::TOOLS, pair(2, 4)));
@@ -365,8 +361,8 @@ Entity EntityFactory::createTool(ItemKind::value itemKind) {
 		itemKindComponent.itemProperties[ItemProperty::LEVEL] = 10;
 	}
 
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, tool);
-	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
+	ecs->addComponent<SpriteComponent>(spriteComponent, tool);
+	ecs->addComponent<ItemKindComponent>(itemKindComponent, tool);
 
 	return tool;
 }
@@ -375,22 +371,22 @@ Entity EntityFactory::createBucket() {
 	Entity bucket = createItem(ItemId::NONE, 1, true);
 	if (!bucket) return 0;
 
-	world->ecs.addComponent<NameComponent>({Textblock("Bucket")}, bucket);
+	ecs->addComponent<NameComponent>({Textblock("Bucket")}, bucket);
 
 	SpriteStack emptySprite;
 	emptySprite.setSprite(0, Sprite(SpriteSheet::BUCKET, pair(0, 0)));
 	SpriteStack fullSprite;
 	fullSprite.setSprite(0, Sprite(SpriteSheet::BUCKET, pair(1, 0)));
-	world->ecs.addComponent<TankComponent>({10, emptySprite, fullSprite}, bucket);
+	ecs->addComponent<TankComponent>({10, emptySprite, fullSprite}, bucket);
 
 	ItemKindComponent itemKindComponent = {};
 	itemKindComponent.itemKinds[ItemKind::TANK] = true;
-	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, bucket);
+	ecs->addComponent<ItemKindComponent>(itemKindComponent, bucket);
 
 	SpriteComponent spriteComponent = {{}, 0.5f};
 	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
 	spriteComponent.spriteStack = emptySprite;
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, bucket);
+	ecs->addComponent<SpriteComponent>(spriteComponent, bucket);
 
 	return bucket;
 }
@@ -400,7 +396,7 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 	Entity station = createStaticEntity(realmId, position, pair(1, 1), true, false);
 	if (!station) return 0;
 
-	world->ecs.addComponent<StationComponent>({stationId}, station);
+	ecs->addComponent<StationComponent>({stationId}, station);
 
 	if (stationId == StationId::CAMP_FIRE) {
 		FuelComponent fuelComponent;
@@ -409,13 +405,13 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 		fuelComponent.input.itemKind = ItemKind::FUEL;
 		fuelComponent.light = true;
 		fuelComponent.particle = ParticleId::SMOKE;
-		world->ecs.addComponent<FuelComponent>(fuelComponent, station);
-		world->ecs.addComponent<SpriteComponent>({fuelComponent.coldSprites}, station);
+		ecs->addComponent<FuelComponent>(fuelComponent, station);
+		ecs->addComponent<SpriteComponent>({fuelComponent.coldSprites}, station);
 
 		ProcessingComponent processingComponent;
 		processingComponent.input.itemKind = ItemKind::ORE;
 		processingComponent.output.output = true;
-		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
+		ecs->addComponent<ProcessingComponent>(processingComponent, station);
 		
 		return station;
 	} else if (stationId == StationId::FURNACE) {
@@ -425,8 +421,8 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 		fuelComponent.input.itemKind = ItemKind::FUEL;
 		fuelComponent.light = true;
 		fuelComponent.particle = ParticleId::SMOKE;
-		world->ecs.addComponent<FuelComponent>(fuelComponent, station);
-		world->ecs.addComponent<SpriteComponent>({fuelComponent.coldSprites}, station);
+		ecs->addComponent<FuelComponent>(fuelComponent, station);
+		ecs->addComponent<SpriteComponent>({fuelComponent.coldSprites}, station);
 
 		ProcessingComponent processingComponent;
 		processingComponent.input.itemKind = ItemKind::ORE;
@@ -434,17 +430,17 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 		processingComponent.map[ItemId::SILVER_ORE] = ItemId::SILVER_INGOT;
 		processingComponent.map[ItemId::GOLD_ORE] = ItemId::GOLD_INGOT;
 		processingComponent.output.output = true;
-		world->ecs.addComponent<ProcessingComponent>(processingComponent, station);
+		ecs->addComponent<ProcessingComponent>(processingComponent, station);
 		
 		return station;
 	}
 
 	SpriteStack spriteStack;
 	spriteStack.setSprite(0, Sprite(SpriteSheet::STATIONS, pair(int(stationId) - 1, 0), pair(1, 2)), pair(0, -1));
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, station);
+	ecs->addComponent<SpriteComponent>({spriteStack}, station);
 
 	if (stationId == StationId::CHEST) {
-		 world->ecs.addComponent<InventoryComponent>({Inventory({7, 5})}, station);
+		 ecs->addComponent<InventoryComponent>({Inventory({7, 5})}, station);
 	}
 	return station;
 }
@@ -468,10 +464,10 @@ Entity EntityFactory::createProjectile( ProjectileId::value projectileId, RealmI
 		damageComponent.force = direction / 20;
 	}
 	
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, projectile);
-	world->ecs.addComponent<HitboxComponent>({Shape(0.2f)}, projectile);
-	world->ecs.addComponent<DamageComponent>(damageComponent, projectile);
-	world->ecs.addComponent<ProjectileComponent>({direction * 70}, projectile);
+	ecs->addComponent<SpriteComponent>(spriteComponent, projectile);
+	ecs->addComponent<HitboxComponent>({Shape(0.2f)}, projectile);
+	ecs->addComponent<DamageComponent>(damageComponent, projectile);
+	ecs->addComponent<ProjectileComponent>({direction * 70}, projectile);
 
 	return projectile;
 }
@@ -482,9 +478,9 @@ Entity EntityFactory::createExplosive(RealmId realmId, vec position) {
 
 	SpriteStack spriteStack;
 	spriteStack.setSprite(0, Sprite(SpriteSheet::BOMB, {0, 0}, {1, 1}));
-	world->ecs.addComponent<SpriteComponent>({spriteStack}, explosive);
+	ecs->addComponent<SpriteComponent>({spriteStack}, explosive);
 
-	world->ecs.addComponent<ExplosiveComponent>({world->ticks + 5000}, explosive);
+	ecs->addComponent<ExplosiveComponent>({world->ticks + 5000}, explosive);
 
 	return  explosive;
 }
@@ -493,8 +489,8 @@ Entity EntityFactory::createDamageArea(RealmId realmId, vec position, Shape shap
 	Entity damageArea = createDynamicEntity(realmId, position);
 	if (!damageArea) return 0;
 
-	world->ecs.addComponent<HitboxComponent>({shape}, damageArea);
-	world->ecs.addComponent<DamageComponent>({damage, start, duration, force, imune}, damageArea);
+	ecs->addComponent<HitboxComponent>({shape}, damageArea);
+	ecs->addComponent<DamageComponent>({damage, start, duration, force, imune}, damageArea);
 	return damageArea;
 }
 
@@ -502,8 +498,8 @@ Entity EntityFactory::createPortal(RealmId realmId, pair position, RealmId other
 	Entity portal = createStaticEntity(realmId, position, {1, 1}, true, true);
 	SpriteStack portalSprites;
 	portalSprites.setSprite(0, Sprite(SpriteSheet::CAVE, pair(0, 0), pair(1, 1)));
-	world->ecs.addComponent<SpriteComponent>({portalSprites}, portal);
-	world->ecs.addComponent<PortalComponent>({otherRealmId, entry}, portal);
+	ecs->addComponent<SpriteComponent>({portalSprites}, portal);
+	ecs->addComponent<PortalComponent>({otherRealmId, entry}, portal);
 	return portal;
 }
 
@@ -511,8 +507,8 @@ Entity EntityFactory::createSpawner(RealmId realmId, pair position, EnemyId::val
 	Entity spawner = createStaticEntity(realmId, position, pair(1,1), true, true);
 	SpriteStack spawnerSprites;
 	spawnerSprites.setSprite(0, Sprite(SpriteSheet::SPAWNER, pair(0,0), pair(1,2)), pair(0, -1));
-	world->ecs.addComponent<SpriteComponent>({spawnerSprites}, spawner);
-	world->ecs.addComponent<SpawnerComponent>({enemyId, world->ticks}, spawner);
+	ecs->addComponent<SpriteComponent>({spawnerSprites}, spawner);
+	ecs->addComponent<SpawnerComponent>({enemyId, world->ticks}, spawner);
 	return spawner;
 }
 
@@ -522,7 +518,7 @@ Entity EntityFactory::createBoomerang() {
 	Entity tool = createItem(ItemId::NONE, 1, true);
 	if (!tool) return 0;
 
-	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
+	ecs->addComponent<DurabilityComponent>({255,255}, tool);
 
 	ItemKindComponent itemKindComponent = {};
 	// itemKindComponent.itemKinds[itemKind] = true;
@@ -530,7 +526,7 @@ Entity EntityFactory::createBoomerang() {
 	SpriteComponent spriteComponent = {{}, 0.5f};
 	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
 
-	world->ecs.addComponent<NameComponent>({Textblock("Boomerang")}, tool);
+	ecs->addComponent<NameComponent>({Textblock("Boomerang")}, tool);
 	spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(0, 0)));
 	itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
 
@@ -538,10 +534,10 @@ Entity EntityFactory::createBoomerang() {
 	winduUpComponent.sprites[0].setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(0, 0)));
 	winduUpComponent.sprites[1].setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(1, 0)));
 	winduUpComponent.sprites[2].setSprite(0, Sprite(SpriteSheet::BOOMERANG, pair(2, 0)));
-	world->ecs.addComponent<WindUpComponent>(winduUpComponent, tool);
+	ecs->addComponent<WindUpComponent>(winduUpComponent, tool);
 	
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, tool);
-	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
+	ecs->addComponent<SpriteComponent>(spriteComponent, tool);
+	ecs->addComponent<ItemKindComponent>(itemKindComponent, tool);
 
 	return tool;
 }
@@ -552,19 +548,19 @@ Entity EntityFactory::createStaff() {
 	Entity tool = createItem(ItemId::NONE, 1, true);
 	if (!tool) return 0;
 
-	world->ecs.addComponent<DurabilityComponent>({255,255}, tool);
+	ecs->addComponent<DurabilityComponent>({255,255}, tool);
 
 	ItemKindComponent itemKindComponent = {};
 	SpriteComponent spriteComponent = {{}, 0.5f};
 	spriteComponent.effects[SpriteEffectId::BOUNCE] = {true, 0};
 
-	world->ecs.addComponent<NameComponent>({Textblock("Fire Staff")}, tool);
+	ecs->addComponent<NameComponent>({Textblock("Fire Staff")}, tool);
 	spriteComponent.spriteStack.setSprite(0, Sprite(SpriteSheet::STAFF, pair(0, 0)));
 	itemKindComponent.itemProperties[ItemProperty::DAMAGE] = 10;
 
-	world->ecs.addComponent<SpriteComponent>(spriteComponent, tool);
-	world->ecs.addComponent<ItemKindComponent>(itemKindComponent, tool);
-	world->ecs.addComponent<LauncherComponent>({0.4f}, tool);
+	ecs->addComponent<SpriteComponent>(spriteComponent, tool);
+	ecs->addComponent<ItemKindComponent>(itemKindComponent, tool);
+	ecs->addComponent<LauncherComponent>({0.4f}, tool);
 
 	return tool;
 }

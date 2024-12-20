@@ -6,7 +6,7 @@
 
 #include "Components.hpp"
 
-class World;
+class ECS;
 
 class EntityFactory {
 public:
@@ -35,6 +35,7 @@ public:
 
 	static Entity createSpawner(RealmId realmId, pair position, EnemyId::value enemyId);
 
+	static ECS* ecs;
 	static World* world;
 
 private:

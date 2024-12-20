@@ -1,6 +1,5 @@
 
 #include "Generation.hpp"
-#include "Window.hpp"
 #include "json.hpp"
 
 std::array<BiomeTemplate, Biome::count> BiomeTemplate::templates = {};
@@ -10,9 +9,8 @@ BiomeGroundTemplate& BiomeTemplate::getGround(int variation) {
 	return grounds[0];
 }
 
-
-void BiomeTemplate::setTemplates() {
-	json::Value data = json::parseFile(Window::instance->root / "json/Generation.json");
+void BiomeTemplate::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Generation.json");
 
 	templates = {};
 

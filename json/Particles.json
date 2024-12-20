@@ -43,5 +43,16 @@
 		"velocityVariance": [0, 0.3],
 		"lifespan": 700,
 		"alphaEnd": 0
+	},
+
+	"health": {
+		"velocity": [0, -1],
+		"scale": 0.5,
+		"scaleVariance": 0.2,
+		"positionVariance": [0.2, 0.1],
+		"velocityVariance": [0, 0.1],
+		"lifespan": 700,
+		"alphaEnd": 0,
+		"positionOffset": [0, -0.5]
 	}
 }

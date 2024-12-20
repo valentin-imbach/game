@@ -3,7 +3,6 @@
 #include "utils.hpp"
 #include "ECS_types.hpp"
 #include "Item_types.hpp"
-#include "ItemTemplates.hpp"
 
 #define LOOT_SIZE 5
 

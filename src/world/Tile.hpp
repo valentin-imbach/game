@@ -13,7 +13,7 @@ struct GroundTemplate {
 	bool walk = true;
 	bool liquid = false;
 
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 	static std::array<GroundTemplate, GroundId::count> templates;
 };
 
@@ -26,7 +26,7 @@ struct WallTemplate {
 	bool climb = false;
 	bool liquid = false;
 
-	static void setTemplates();
+	static void setTemplates(std::filesystem::path root);
 	static std::array<WallTemplate, WallId::count> templates;
 };
 

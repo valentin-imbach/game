@@ -66,7 +66,7 @@ void CraftingKindRecipe::setRecipes() {
 			ItemKind::value itemKind = ItemKind::from_string(kind);
 			if (!itemKind) {
 				WARNING("Unrecognised item kind:", kind);
-				LOG(props.print());
+				// LOG(props.print());
 				continue;
 			}
 			recipes[recipeId].product.productKinds.push_back(itemKind);

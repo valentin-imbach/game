@@ -1,8 +1,9 @@
 
 #include "SoundManager.hpp"
+#include "Window.hpp"
 
-#define SOUND_PATH "../assets/sounds/"
-#define TRACK_PATH "../assets/tracks/"
+std::filesystem::path SoundManager::soundPath = "assets/sounds";
+std::filesystem::path SoundManager::trackPath = "assets/tracks";
 
 std::array<Mix_Chunk*, SoundId::count> SoundManager::sounds = {};
 std::array<Mix_Chunk*, TrackId::count> SoundManager::tracks = {};
@@ -55,13 +56,13 @@ void SoundManager::playTrack(TrackId::value trackId, int channel, int count) {
 void SoundManager::loadSounds() {
 	for (uint i = 1; i < SoundId::count; i++) {
 		SoundId::value soundId = SoundId::from_int(i);
-		std::string path = SOUND_PATH + SoundId::to_string(soundId) + ".wav";
+		auto path = Window::instance->root / SoundManager::soundPath / SoundId::to_string(soundId) += ".wav";
 		Mix_Chunk* sound = Mix_LoadWAV(path.c_str());
 		if (!sound) {
 			ERROR("Failed to load sound from", path);
 			continue;
 		}
-		LOG("Sound loaded from", path);
+		// LOG("Sound loaded from", path);
 		sounds[i] = sound;
 	}
 }
@@ -69,13 +70,13 @@ void SoundManager::loadSounds() {
 void SoundManager::loadTracks() {
 	for (uint i = 1; i < TrackId::count; i++) {
 		TrackId::value trackId = TrackId::from_int(i);
-		std::string path = TRACK_PATH + TrackId::to_string(trackId) + ".wav";
+		auto path = Window::instance->root / SoundManager::trackPath / TrackId::to_string(trackId) += ".wav";
 		Mix_Chunk* track = Mix_LoadWAV(path.c_str());
 		if (!track) {
 			ERROR("Failed to load track from", path);
 			continue;
 		}
-		LOG("Track loaded from", path);
+		// LOG("Track loaded from", path);
 		tracks[i] = track;
 	}
 }

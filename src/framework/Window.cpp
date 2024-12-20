@@ -31,6 +31,7 @@ Window::Window(const char* title, pair size, bool fullscreen) : title(title), si
 void Window::cleanup() {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	LOG("Window and Renderer cleaned up")
 }
 
 void Window::clear() {

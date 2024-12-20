@@ -2,13 +2,10 @@
 #include "Game.hpp"
 #include "Events.hpp"
 #include <SDL3/SDL.h>
-// #include "SDL2/SDL_scancode.h"
 #include "TextManager.hpp"
 #include "TextureManager.hpp"
 #include "Window.hpp"
 #include "utils.hpp"
-#include <filesystem>
-#include "Dungeon3.hpp"
 #include "SoundManager.hpp"
 #include "FileWatcher.hpp"
 
@@ -48,14 +45,14 @@ void Game::createWorld(std::string name, uint seed, WorldParameters params) {
 		WARNING("World name can't be empty");
 		return;
 	}
-	auto path = Window::instance->root / "saves" / name;
+	std::filesystem::path path = Window::instance->root / "saves" / name;
 	if (std::filesystem::exists(path)) {
 		WARNING("Trying to create duplicate world", name);
 		return;
 	}
 
 	world = std::make_unique<World>(name, seed, params);
-	LOG("World", name, "created");
+	LOG("World created with name", name);
 	gameState = GameState::RUNNING;
 }
 
@@ -133,7 +130,6 @@ void Game::draw() {
 
 bool Game::handleEvent(InputEvent event, uint dt) {
 	if (event.id == InputEventId::QUIT) {
-		LOG("Window closed");
 		gameState = GameState::NONE;
 		return true;
 	}

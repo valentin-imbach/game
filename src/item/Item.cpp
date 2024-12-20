@@ -1,6 +1,5 @@
 
 #include "Item.hpp"
-#include <string>
 #include "Components.hpp"
 #include "ECS.hpp"
 #include "Sprite.hpp"

@@ -1,17 +1,11 @@
 
 #include "ResourceTemplates.hpp"
-#include "Window.hpp"
 #include "json.hpp"
 
 std::array<ResourceTemplate, ResourceId::count> ResourceTemplate::templates = {};
 
-void ResourceTemplate::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/Resources.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-	// file.close();
-
-	json::Value data = json::parseFile(Window::instance->root / "json/Resources.json");
+void ResourceTemplate::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Resources.json");
 	// LOG(data.print());
 	ResourceTemplate::templates = {};
 

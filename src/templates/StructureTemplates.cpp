@@ -1,17 +1,11 @@
 
 #include "StructureTemplates.hpp"
-#include "Window.hpp"
 #include "json.hpp"
 
 std::array<StructureTemplate, StructureId::count> StructureTemplate::templates = {};
 
-void StructureTemplate::setTemplates() {
-	// std::ifstream file(Window::instance->root / "json/Structures.json");
-	// if (!file) ERROR("File not found");
-	// nlohmann::json data = nlohmann::json::parse(file);
-	// file.close();
-
-	json::Value data = json::parseFile(Window::instance->root / "json/Structures.json");
+void StructureTemplate::setTemplates(std::filesystem::path root) {
+	json::Value data = json::parseFile(root / "json/Structures.json");
 
 	StructureTemplate::templates = {};
 

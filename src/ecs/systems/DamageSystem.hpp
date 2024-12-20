@@ -8,7 +8,7 @@ class DamageSystem : public System {
 
 	ROSTER(POSITION, DAMAGE)
 
-	void update(std::unordered_map<Entity,std::vector<Entity>>& hits, uint ticks) {
+	void update(std::unordered_map<Entity,std::vector<Entity>>& hits, uint ticks, ParticleSystem& particleSystem) {
 		for (Entity damageArea : entities) {
 			PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(damageArea);
 			DamageComponent& damageComponent = ecs->getComponent<DamageComponent>(damageArea);
@@ -18,8 +18,13 @@ class DamageSystem : public System {
 					HealthComponent& healthComponent = ecs->getComponent<HealthComponent>(entity);
 					if (ticks - healthComponent.lastDamage < 500) continue;
 
-					healthComponent.health = std::max(0, int(healthComponent.health) - damageComponent.damage);
+					uint damage = damageComponent.damage;
+					if (damage > healthComponent.health) damage = healthComponent.health;
+					healthComponent.health -= damage;
 					healthComponent.lastDamage = ticks;
+					ParticleStyle style = ParticleStyle::templates[ParticleId::HEALTH];
+					style.text = std::to_string(-damage);
+					particleSystem.emit(style, positionComponent.position, positionComponent.realmId);
 				}
 
 				if (ecs->hasComponent<ForceComponent>(entity)) {

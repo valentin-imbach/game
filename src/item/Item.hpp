@@ -1,6 +1,5 @@
 
 #pragma once
-#include <vector>
 #include "utils.hpp"
 #include "ECS_types.hpp"
 #include "Item_types.hpp"

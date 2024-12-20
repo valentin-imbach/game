@@ -1,9 +1,9 @@
 
 #pragma once
-#include "ECS.hpp"
 #include "Tile.hpp"
 #include "Camera.hpp"
 #include "definitions.hpp"
+#include "ECS_types.hpp"
 
 #define CHUNK_SIZE 16
 

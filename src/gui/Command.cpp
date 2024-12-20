@@ -17,14 +17,14 @@ void Console::setCommands() {
 		return true;
 	});
 
-	commands["hotload"] = std::make_unique<Command<>>([this](){
-		Sprite::loadSpriteSheets();
-		ItemPropertyTemplate::setTemplates();
-		ItemKindTemplate::setTemplates();
-		ItemTemplate::setTemplates();
-		ResourceTemplate::setTemplates();
-		return true;
-	});
+	// commands["hotload"] = std::make_unique<Command<>>([this](){
+	// 	Sprite::loadSpriteSheets();
+	// 	ItemPropertyTemplate::setTemplates();
+	// 	ItemKindTemplate::setTemplates();
+	// 	ItemTemplate::setTemplates();
+	// 	ResourceTemplate::setTemplates();
+	// 	return true;
+	// });
 
 	commands["kill"] = std::make_unique<Command<>>([this](){
 		if (!player) return false;

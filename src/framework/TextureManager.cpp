@@ -7,17 +7,20 @@
 SDL_Texture* TextureManager::lightTexture = nullptr;
 SDL_Texture* TextureManager::fogTexture = nullptr;
 
-SDL_Texture* TextureManager::loadTexture(std::string path, bool outline) {
-	SDL_Surface* tmpSurface = IMG_Load((SPRITE_PATH + path).c_str());
+std::filesystem::path TextureManager::spritePath = "assets/sprites";
+
+SDL_Texture* TextureManager::loadTexture(std::string name, bool outline) {
+	auto path = Window::instance->root / spritePath / name;
+	SDL_Surface* tmpSurface = IMG_Load(path.c_str());
 	if (!tmpSurface) {
-		ERROR("Failed to load SDL_Texture from", path)
+		ERROR("Failed to load SDL_Texture", name)
 		return nullptr;
 	}
 	if (outline) outlineSurface(tmpSurface);
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(Window::instance->renderer, tmpSurface);
 	SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_NEAREST);
 	SDL_DestroySurface(tmpSurface);
-	LOG("Texture loaded from", path, outline ? "(outlined)" : "");
+	// LOG("Texture loaded from", path, outline ? "(outlined)" : "");
 	return tex;
 }
 

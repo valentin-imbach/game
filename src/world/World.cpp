@@ -20,28 +20,28 @@
 
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
-
 #include "ClusterTemplates.hpp"
 
-#include <thread>
+// #include <thread>
 
 void World::init() {
 	rosterComponents();
 	rosterSystems();
 
-	ItemPropertyTemplate::setTemplates();
-	ItemKindTemplate::setTemplates();
-	ItemTemplate::setTemplates();
-	ResourceTemplate::setTemplates();
+	ItemPropertyTemplate::setTemplates(Window::instance->root);
+	ItemKindTemplate::setTemplates(Window::instance->root);
+	ItemTemplate::setTemplates(Window::instance->root);
+	ResourceTemplate::setTemplates(Window::instance->root);
 	CraftingRecipe::setRecipes();
 	CraftingKindRecipe::setRecipes();
 	BuildKindRecipe::setRecipes();
-	BiomeTemplate::setTemplates();
-	GroundTemplate::setTemplates();
-	WallTemplate::setTemplates();
-	AnimalTemplate::setTemplates();
-	StructureTemplate::setTemplates();
-	Cluster::setTemplates();
+	BiomeTemplate::setTemplates(Window::instance->root);
+	GroundTemplate::setTemplates(Window::instance->root);
+	WallTemplate::setTemplates(Window::instance->root);
+	AnimalTemplate::setTemplates(Window::instance->root);
+	StructureTemplate::setTemplates(Window::instance->root);
+	Cluster::setTemplates(Window::instance->root);
+	ParticleStyle::setTemplates(Window::instance->root);
 
 	guiManager.world = this;
 	EntityFactory::world = this;
@@ -242,7 +242,7 @@ void World::update(uint dt) {
 	if (player && ecs.hasComponent<DeathComponent>(player)) {
 		player = 0;
 		guiManager.add(makeDeathScreen());
-		LOG("Death");
+		LOG("Player Died");
 	}
 
 	if (player) {
@@ -319,7 +319,7 @@ void World::update(uint dt) {
 	EntityMap hits;
 	hitboxSystem->update(hits, updateSet);
 
-	damageSystem->update(hits, ticks);
+	damageSystem->update(hits, ticks, particleSystem);
 
 	fuelSystem->update(ticks, dt);
 	processingSystem->update(ticks, dt);
