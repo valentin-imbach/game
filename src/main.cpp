@@ -50,8 +50,8 @@ int main() {
 		game.framesPerSecond = (sampleSum.y * 1000.0f) / sampleSum.x;
 	}
 
-	window.cleanup();
 	game.cleanup();
+	window.cleanup();
 	SDL_Quit();
 	return 0;
 }

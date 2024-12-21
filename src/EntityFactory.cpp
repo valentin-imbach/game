@@ -433,15 +433,21 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 		ecs->addComponent<ProcessingComponent>(processingComponent, station);
 		
 		return station;
+	} else if (stationId == StationId::TOOL_STATION) {
+		Inventory inventory(pair(1, 3));
+		inventory.itemContainers[0][0].itemKind = ItemKind::PLATE;
+		inventory.itemContainers[0][1].itemKind = ItemKind::ROPE;
+		inventory.itemContainers[0][2].itemKind = ItemKind::ROD;
+		ecs->addComponent<InventoryComponent>({inventory}, station);
+	} else if (stationId == StationId::CHEST) {
+		ecs->addComponent<InventoryComponent>({Inventory(pair(7, 5))}, station);
 	}
 
 	SpriteStack spriteStack;
 	spriteStack.setSprite(0, Sprite(SpriteSheet::STATIONS, pair(int(stationId) - 1, 0), pair(1, 2)), pair(0, -1));
 	ecs->addComponent<SpriteComponent>({spriteStack}, station);
 
-	if (stationId == StationId::CHEST) {
-		 ecs->addComponent<InventoryComponent>({Inventory({7, 5})}, station);
-	}
+	
 	return station;
 }
 

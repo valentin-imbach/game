@@ -180,6 +180,15 @@ private:
 	InventorySlice link;
 };
 
+class ToolGui : public Widget {
+public:
+	ToolGui(pair position, InventorySlice link = {});
+	~ToolGui() = default;
+
+private:
+	InventorySlice link;
+};
+
 class Selector : public GuiElement {
 public:
 	Selector(pair position, pair size, std::function<void(int)> callback, int columns = 1, Direction::value alignment = Direction::NONE);

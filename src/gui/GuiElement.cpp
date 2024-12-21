@@ -278,22 +278,28 @@ InventoryGui::InventoryGui(pair position, InventorySlice slice, int spacing, Inv
 
 //* CraftingGui
 
-CraftingGui::CraftingGui(pair position, InventorySlice link)
-	: Widget(position, {144, 128}), link(link) {
-	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&CraftingGui::select, this, std::placeholders::_1), 3, Direction::WEST);
-	for (uint n = 1; n < CraftingRecipeId::count; n++) {
-		SpriteStack sprites;
-		sprites.setSprite(0, Sprite(SpriteSheet::CRAFTING_ICONS, pair(n - 1, 0), pair(1, 1)), pair(0, 0));
-		selector->addSelection(sprites);
-	}
-	addGuiElement(std::move(selector));
-}
+// CraftingGui::CraftingGui(pair position, InventorySlice link)
+// 	: Widget(position, {144, 128}), link(link) {
+// 	std::unique_ptr<Selector> selector = std::make_unique<Selector>(pair(35, 0), pair(60, 100), std::bind(&CraftingGui::select, this, std::placeholders::_1), 3, Direction::WEST);
+// 	for (uint n = 1; n < CraftingRecipeId::count; n++) {
+// 		SpriteStack sprites;
+// 		sprites.setSprite(0, Sprite(SpriteSheet::CRAFTING_ICONS, pair(n - 1, 0), pair(1, 1)), pair(0, 0));
+// 		selector->addSelection(sprites);
+// 	}
+// 	addGuiElement(std::move(selector));
+// }
 
-void CraftingGui::select(int n) {
-	if (craftingGrid) removeGuiElement();
-	std::unique_ptr<CraftingGrid> grid = std::make_unique<CraftingGrid>(pair(40, 0), CraftingRecipeId::from_int(n+1), link);
-	craftingGrid = grid.get();
-	addGuiElement(std::move(grid));
+// void CraftingGui::select(int n) {
+// 	if (craftingGrid) removeGuiElement();
+// 	std::unique_ptr<CraftingGrid> grid = std::make_unique<CraftingGrid>(pair(40, 0), CraftingRecipeId::from_int(n+1), link);
+// 	craftingGrid = grid.get();
+// 	addGuiElement(std::move(grid));
+// }
+
+//* ToolGui
+
+ToolGui::ToolGui(pair position, InventorySlice link)
+	: Widget(position, {144, 128}), link(link) {
 }
 
 //* CraftingGrid

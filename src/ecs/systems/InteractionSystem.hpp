@@ -26,9 +26,22 @@ class InteractionSystem : public System {
 				return gui;
 				
 			} else if (stationComponent.stationId == StationId::TOOL_STATION) {
-				Sprite sprite = Sprite(SpriteSheet::MENU, {0, 0}, {10, 10});
+				Sprite sprite = Sprite(SpriteSheet::TOOL_GUI, {0, 0}, {10, 10});
 				std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
-				gui->addGuiElement(std::make_unique<CraftingGui>(pair(0, 10)));
+				InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
+
+				InventorySlice slice = {&inventoryComponent.inventory};
+				gui->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), slice, 20, link));
+
+				gui->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "2 x"));
+				gui->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "4 x"));
+				gui->addGuiElement(std::make_unique<TextGui>(pair(-60, 40), "4 x"));
+				if (out) *out = &inventoryComponent.inventory;
+
+				Sprite buttonSprite(SpriteSheet::HAMMER, {0,0}, {1,1});
+				Sprite buttonHoverSprite(SpriteSheet::HAMMER, {1,0}, {1,1});
+				gui->addGuiElement(std::make_unique<Button>(pair(40, 40), pair(16, 16), nullptr, buttonSprite, buttonHoverSprite));
+				
 				return gui;
 			} else if (stationComponent.stationId == StationId::CAMP_FIRE) {
 				FuelComponent& fuelComponent = ecs->getComponent<FuelComponent>(entity);

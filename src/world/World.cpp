@@ -539,7 +539,7 @@ bool World::handleEvent(InputEvent event, uint dt) {
 					playerRealm->chunkManager.setGround(gridPos, GroundId::SOIL);
 					return true;
 				}
-			}  
+			}
 
 			if (itemComponent.itemId == ItemId::PARSNIP_SEEDS && groundId == GroundId::SOIL && !gridEntity) {
 				EntityFactory::createCrop(CropId::PARSNIP, playerRealm->realmId, gridPos);
