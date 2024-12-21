@@ -155,39 +155,39 @@ private:
 	std::function<void()> callback;
 };
 
-class CraftingGrid : public Widget {
-public:
-	CraftingGrid(pair position, CraftingRecipeId::value recipeId, InventorySlice link = {});
-	~CraftingGrid() override;
-	void craft();
+// class CraftingGrid : public Widget {
+// public:
+// 	CraftingGrid(pair position, CraftingRecipeId::value recipeId, InventorySlice link = {});
+// 	~CraftingGrid() override;
+// 	void craft();
 
-private:
-	CraftingRecipeId::value recipeId;
-	uint arity;
-	InventorySlice link;
-	std::vector<ItemContainer> inputs;
-	ItemContainer output;
-};
+// private:
+// 	CraftingRecipeId::value recipeId;
+// 	uint arity;
+// 	InventorySlice link;
+// 	std::vector<ItemContainer> inputs;
+// 	ItemContainer output;
+// };
 
-class CraftingGui : public Widget {
-public:
-	CraftingGui(pair position, InventorySlice link = {});
-	~CraftingGui() = default;
-	void select(int n);
+// class CraftingGui : public Widget {
+// public:
+// 	CraftingGui(pair position, InventorySlice link = {});
+// 	~CraftingGui() = default;
+// 	void select(int n);
 
-private:
-	CraftingGrid* craftingGrid = nullptr;
-	InventorySlice link;
-};
+// private:
+// 	CraftingGrid* craftingGrid = nullptr;
+// 	InventorySlice link;
+// };
 
-class ToolGui : public Widget {
-public:
-	ToolGui(pair position, InventorySlice link = {});
-	~ToolGui() = default;
+// class ToolGui : public Widget {
+// public:
+// 	ToolGui(pair position, InventorySlice link = {});
+// 	~ToolGui() = default;
 
-private:
-	InventorySlice link;
-};
+// private:
+// 	InventorySlice link;
+// };
 
 class Selector : public GuiElement {
 public:

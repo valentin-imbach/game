@@ -25,23 +25,41 @@ class InteractionSystem : public System {
 				if (out) *out = &inventoryComponent.inventory;
 				return gui;
 				
-			} else if (stationComponent.stationId == StationId::TOOL_STATION) {
-				Sprite sprite = Sprite(SpriteSheet::TOOL_GUI, {0, 0}, {10, 10});
-				std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+			} else if (stationComponent.stationId == StationId::TOOL_STATION) {				
 				InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(entity);
 
-				InventorySlice slice = {&inventoryComponent.inventory};
-				gui->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), slice, 20, link));
-
-				gui->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "2 x"));
-				gui->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "4 x"));
-				gui->addGuiElement(std::make_unique<TextGui>(pair(-60, 40), "4 x"));
-				if (out) *out = &inventoryComponent.inventory;
 
 				Sprite buttonSprite(SpriteSheet::HAMMER, {0,0}, {1,1});
 				Sprite buttonHoverSprite(SpriteSheet::HAMMER, {1,0}, {1,1});
-				gui->addGuiElement(std::make_unique<Button>(pair(40, 40), pair(16, 16), nullptr, buttonSprite, buttonHoverSprite));
-				
+				// std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
+
+				std::unique_ptr<TabWidget> gui = std::make_unique<TabWidget>(pair(0, 0), pair(150, 150));
+
+				Sprite pickSprite = Sprite(SpriteSheet::PICK_AXE_GUI, {0, 0}, {10, 10});
+				std::unique_ptr<Widget> pickTab = std::make_unique<Widget>(pair(0, 0), pair(150, 150), pickSprite);
+				InventorySlice pickSlice = {&inventoryComponent.inventory};
+				pickTab->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), pickSlice, 20, link));
+				pickTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "4 x"));
+				pickTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "3 x"));
+				pickTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 40), "2 x"));
+				pickTab->addGuiElement(std::make_unique<Button>(pair(40, 40), pair(16, 16), nullptr, buttonSprite, buttonHoverSprite));
+
+				Sprite axeSprite = Sprite(SpriteSheet::AXE_GUI, {0, 0}, {10, 10});
+				std::unique_ptr<Widget> axeTab = std::make_unique<Widget>(pair(0, 0), pair(150, 150), axeSprite);
+				InventorySlice axeSlice = {&inventoryComponent.inventory};
+				axeTab->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), axeSlice, 20, link));
+				axeTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "2 x"));
+				axeTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "3 x"));
+				axeTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 40), "2 x"));
+				axeTab->addGuiElement(std::make_unique<Button>(pair(40, 40), pair(16, 16), nullptr, buttonSprite, buttonHoverSprite));
+
+				std::unique_ptr<Widget> swordTab = std::make_unique<Widget>(pair(0, 0), pair(150, 150), pickSprite);
+
+				gui->addTab(std::move(pickTab));
+				gui->addTab(std::move(axeTab));
+				gui->addTab(std::move(swordTab));
+
+				if (out) *out = &inventoryComponent.inventory;
 				return gui;
 			} else if (stationComponent.stationId == StationId::CAMP_FIRE) {
 				FuelComponent& fuelComponent = ecs->getComponent<FuelComponent>(entity);
