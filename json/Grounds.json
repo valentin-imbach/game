@@ -49,5 +49,20 @@
 	"tiles": {
 		"sprite": "tiles",
 		"colour": [123, 123, 123, 255]
+	},
+	"dirt_wall": {
+		"sprite": "dirt_wall2",
+		"colour": [0, 0, 0, 255],
+		"walk": false
+	},
+	"dungeon_wall": {
+		"sprite": "dungeon_wall2",
+		"colour": [0, 0, 0, 255],
+		"walk": false
+	},
+	"dungeon_roof": {
+		"sprite": "dungeon_roof",
+		"colour": [0, 0, 0, 255],
+		"walk": false
 	}
 }

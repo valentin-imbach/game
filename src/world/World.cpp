@@ -37,7 +37,6 @@ void World::init() {
 	BuildKindRecipe::setRecipes();
 	BiomeTemplate::setTemplates(Window::instance->root);
 	GroundTemplate::setTemplates(Window::instance->root);
-	WallTemplate::setTemplates(Window::instance->root);
 	AnimalTemplate::setTemplates(Window::instance->root);
 	StructureTemplate::setTemplates(Window::instance->root);
 	Cluster::setTemplates(Window::instance->root);
@@ -420,8 +419,10 @@ std::unique_ptr<GuiElement> World::makeInventory(InventorySlice link) {
 	Sprite sprite = Sprite(SpriteSheet::INVENTORY, {0, 0}, {10, 10});
 	std::unique_ptr<Widget> gui = std::make_unique<Widget>(pair(0, 0), pair(150, 150), sprite);
 
-	InventorySlice hotbar = InventorySlice(&inventoryComponent.inventory, pair(0, 1));
-	InventorySlice main = InventorySlice(&inventoryComponent.inventory, pair(1, 7));
+	InventorySlice hotbar = (&inventoryComponent.inventory);
+	hotbar.yrange = pair(0, 1);
+	InventorySlice main = InventorySlice(&inventoryComponent.inventory);
+	main. yrange = pair(1, 7);
 	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, -60), hotbar, 20, link.inventory ? link : main));
 	gui->addGuiElement(std::make_unique<InventoryGui>(pair(0, 20), main, 20, link.inventory ? link : hotbar));
 	return gui;
@@ -528,6 +529,13 @@ bool World::handleEvent(InputEvent event, uint dt) {
 			realm->attach(player, chunk);
 			return true;
 		}
+
+		InventorySlice link;
+		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet, ticks, &inventoryComponent.inventory, &link);
+		if (gui) {
+			guiManager.open(makeInventory(link), std::move(gui));
+			return true;
+		}
 		
 		if (activeItemContainer.item) {
 			ItemComponent& itemComponent = ecs.getComponent<ItemComponent>(activeItemContainer.item);
@@ -559,12 +567,10 @@ bool World::handleEvent(InputEvent event, uint dt) {
 				tankComponent.liquid = Liquid::WATER;
 
 				spriteComponent.spriteStack = tankComponent.fullSprite;
+				return true;
 			}
 		}
 		
-		InventorySlice link;
-		std::unique_ptr<GuiElement> gui = interactionSystem->update(position, updateSet, ticks, &inventoryComponent.inventory, &link);
-		if (gui) guiManager.open(makeInventory(link), std::move(gui));
 	} else if (event.id == InputEventId::STATE) {
 		state = true;
 

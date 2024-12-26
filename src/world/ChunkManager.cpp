@@ -72,26 +72,11 @@ GroundId::value ChunkManager::getGround(pair position) {
 	return chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId;
 }
 
-WallId::value ChunkManager::getWall(pair position) {
-	pair chunk = getChunk(position);
-	if (!checkStage(chunk, ChunkStage::GROUND)) return WallId::NONE;
-	pair offset = getOffset(position);
-	return chunks.find(chunk)->second.tiles[offset.x][offset.y].wallId;
-}
-
 void ChunkManager::setGround(pair position, GroundId::value groundId) {
 	pair chunk = getChunk(position);
 	if (!checkStage(chunk, ChunkStage::GROUND)) return;
 	pair offset = getOffset(position);
 	chunks.find(chunk)->second.tiles[offset.x][offset.y].groundId = groundId;
-	updateStyle(position, true);
-}
-
-void ChunkManager::setWall(pair position, WallId::value wallId) {
-	pair chunk = getChunk(position);
-	if (!checkStage(chunk, ChunkStage::GROUND)) return;
-	pair offset = getOffset(position);
-	chunks.find(chunk)->second.tiles[offset.x][offset.y].wallId = wallId;
 	updateStyle(position, true);
 }
 
@@ -165,7 +150,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 	}
 
 	for (int i = 0; i < 4; i++) {
-		if (!ids[0]) continue;
+		if (!ids[i]) continue;
 		const GroundTemplate& temp = GroundTemplate::templates[ids[i]];
 
 		if (ids[i + 1] == ids[i] && ids[i + 2] == ids[i] &&  ids[i + 3] != ids[i]) {
@@ -187,7 +172,7 @@ void ChunkManager::updateStyle(pair position, bool propagate) {
 	}
 
 	for (int i = 0; i < 2; i++) {
-		if (!ids[0]) continue;
+		if (!ids[i]) continue;
 		const GroundTemplate& temp = GroundTemplate::templates[ids[i]];
 
 		if (ids[i + 1] != ids[i] && ids[i + 2] == ids[i] && ids[i + 3] != ids[i]) {

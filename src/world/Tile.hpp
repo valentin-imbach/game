@@ -17,24 +17,11 @@ struct GroundTemplate {
 	static std::array<GroundTemplate, GroundId::count> templates;
 };
 
-struct WallTemplate {
-	WallId::value wallId = WallId::NONE;
-	SpriteSheet::value spriteSheet = SpriteSheet::NONE;
-	uint colour = 0;
-	uint frames = 1;
-	bool build = false;
-	bool climb = false;
-	bool liquid = false;
-
-	static void setTemplates(std::filesystem::path root);
-	static std::array<WallTemplate, WallId::count> templates;
-};
 
 class Tile {
 public:
-	Tile(GroundId::value groundId = GroundId::NONE, WallId::value wallId = WallId::NONE);
+	Tile(GroundId::value groundId = GroundId::NONE);
 	GroundId::value groundId;
-	WallId::value wallId;
 	SpriteStack sprites;
 };
 

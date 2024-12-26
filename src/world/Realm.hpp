@@ -43,7 +43,7 @@ public:
 	void detach(Entity entity);
 
 	bool free(pair anker, pair size = pair(1, 1));
-	bool walkable(pair pos);
+	bool walkable(pair pos, pair size = pair(1, 1));
 	bool opaque(pair pos);
 
 	GroundId::value ground(pair position);

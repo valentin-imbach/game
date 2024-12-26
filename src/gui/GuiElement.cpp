@@ -170,7 +170,7 @@ bool ItemSlot::handleEvent(InputEvent event) {
 	ItemContainer& mouseItemContainer = guiManager->mouseItemContainer;
 	if (event.id == InputEventId::PRIMARY && inside(event.mousePosition)) {
 		if (guiManager->world->inputState[InputStateId::ALTER] && link.inventory) {
-			itemContainer.item = link.inventory->add(itemContainer.item, link.range);
+			itemContainer.item = link.inventory->add(itemContainer.item, link.yrange);
 			return true;
 		}
 		if (itemContainer.itemKind && mouseItemContainer.item && !hasItemKind(mouseItemContainer.item, itemContainer.itemKind)) return false;
@@ -265,12 +265,17 @@ void HealthBarGui::draw() {
 
 InventoryGui::InventoryGui(pair position, InventorySlice slice, int spacing, InventorySlice link)
 	: Widget(position, pair()), slice(slice), link(link), spacing(spacing) {
-	int y1 = slice.range.x;
-	int y2 = std::min(slice.inventory->size.y, slice.range.y);
-	size = spacing * pair(slice.inventory->size.x, y2 - y1);
-	for (int x = 0; x < slice.inventory->size.x; x++) {
+
+	int x1 = slice.xrange.x;
+	int x2 = std::min(slice.inventory->size.x, slice.xrange.y);
+
+	int y1 = slice.yrange.x;
+	int y2 = std::min(slice.inventory->size.y, slice.yrange.y);
+
+	size = spacing * pair(x2 - x1, y2 - y1);
+	for (int x = x1; x < x2; x++) {
 		for (int y = y1; y < y2; y++) {
-			pair position(spacing * x - spacing * (slice.inventory->size.x - 1) / 2, spacing * (y - y1) - spacing * (y2 - y1 - 1) / 2);
+			pair position(spacing * (x - x1) - spacing * (x2 - x1 - 1) / 2, spacing * (y - y1) - spacing * (y2 - y1 - 1) / 2);
 			addGuiElement(std::make_unique<ItemSlot>(position, slice.inventory->itemContainers[x][y], link));
 		}
 	}

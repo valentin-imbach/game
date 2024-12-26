@@ -83,13 +83,13 @@ void Realm::generateHouse() {
 		for (int y = 0; y < size.y; y++) {
 			chunk.tiles[offset.x + x][offset.y + y] = Tile(GroundId::PLANKS);
 		}
-		chunk.tiles[offset.x + x][offset.y - 1] = Tile(GroundId::PLANKS, WallId::PLASTER);
-		chunk.tiles[offset.x + x][offset.y - 2] = Tile(GroundId::NONE, WallId::PLASTER);
+		chunk.tiles[offset.x + x][offset.y - 1] = Tile(GroundId::PLANKS);
+		chunk.tiles[offset.x + x][offset.y - 2] = Tile(GroundId::NONE);
 	}
 
 	for (int y = -2; y < size.y; y++) {
-		chunk.tiles[offset.x - 1][offset.y + y] = Tile(GroundId::NONE, WallId::PLASTER);
-		chunk.tiles[offset.x + size.x][offset.y + y] = Tile(GroundId::NONE, WallId::PLASTER);
+		chunk.tiles[offset.x - 1][offset.y + y] = Tile(GroundId::NONE);
+		chunk.tiles[offset.x + size.x][offset.y + y] = Tile(GroundId::NONE);
 	}
 
 	chunk.stage = ChunkStage::GROUND;
@@ -190,17 +190,21 @@ void Realm::generateDungeon2() {
 		for (int x = 2; x < CHUNK_SIZE - 2; x++) {
 			for (int y = 2; y < CHUNK_SIZE - 2; y++) {
 				pair offset = CHUNK_SIZE * pos;
-				chunk.tiles[x][y] = Tile(GroundId::TILES, WallId::NONE);
+				chunk.tiles[x][y] = Tile(GroundId::TILES);
 			}
-			chunk.tiles[x][1] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[x][0] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[x][CHUNK_SIZE - 2] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[x][1] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[x][0] = Tile(GroundId::DUNGEON_ROOF);
+			chunk.tiles[x][CHUNK_SIZE - 2] = Tile(GroundId::DUNGEON_ROOF);
+			chunk.tiles[x][CHUNK_SIZE - 1] = Tile(GroundId::DUNGEON_WALL);
 		}
 
 		for (int y = 0; y < CHUNK_SIZE - 1; y++) {
-			chunk.tiles[1][y] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[CHUNK_SIZE - 2][y] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[1][y] = Tile(GroundId::DUNGEON_ROOF);
+			chunk.tiles[CHUNK_SIZE - 2][y] = Tile(GroundId::DUNGEON_ROOF);
 		}
+		chunk.tiles[1][CHUNK_SIZE - 1] = Tile(GroundId::DUNGEON_WALL);
+		chunk.tiles[CHUNK_SIZE - 2][CHUNK_SIZE - 1] = Tile(GroundId::DUNGEON_WALL);
+
 		
 		if (room.doors[0]) {
 			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2] = Tile(GroundId::TILES);
@@ -208,9 +212,11 @@ void Realm::generateDungeon2() {
 			chunk.tiles[CHUNK_SIZE - 2][CHUNK_SIZE/2] = Tile(GroundId::TILES);
 			chunk.tiles[CHUNK_SIZE - 2][CHUNK_SIZE/2 - 1] = Tile(GroundId::TILES);
 
-			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 + 1] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 2] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 3] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 + 1] = Tile(GroundId::DUNGEON_ROOF);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 + 2] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 2] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[CHUNK_SIZE - 2][CHUNK_SIZE/2 - 2] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[CHUNK_SIZE - 1][CHUNK_SIZE/2 - 3] = Tile(GroundId::DUNGEON_ROOF);
 		}
 		if (room.doors[2]) {
 			chunk.tiles[0][CHUNK_SIZE/2] = Tile(GroundId::TILES);
@@ -218,9 +224,11 @@ void Realm::generateDungeon2() {
 			chunk.tiles[1][CHUNK_SIZE/2] = Tile(GroundId::TILES);
 			chunk.tiles[1][CHUNK_SIZE/2 - 1] = Tile(GroundId::TILES);
 
-			chunk.tiles[0][CHUNK_SIZE/2 + 1] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[0][CHUNK_SIZE/2 - 2] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[0][CHUNK_SIZE/2 - 3] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[0][CHUNK_SIZE/2 + 1] = Tile(GroundId::DUNGEON_ROOF);
+			chunk.tiles[0][CHUNK_SIZE/2 + 2] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[0][CHUNK_SIZE/2 - 2] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[1][CHUNK_SIZE/2 - 2] = Tile(GroundId::DUNGEON_WALL);
+			chunk.tiles[0][CHUNK_SIZE/2 - 3] = Tile(GroundId::DUNGEON_ROOF);
 		}
 		if (room.doors[1]) {
 			chunk.tiles[CHUNK_SIZE/2][0] = Tile(GroundId::TILES);
@@ -234,8 +242,8 @@ void Realm::generateDungeon2() {
 			chunk.tiles[CHUNK_SIZE/2][CHUNK_SIZE - 2] = Tile(GroundId::TILES);
 			chunk.tiles[CHUNK_SIZE/2 - 1][CHUNK_SIZE - 2] = Tile(GroundId::TILES);
 
-			chunk.tiles[CHUNK_SIZE/2 - 2][CHUNK_SIZE - 1] = Tile(GroundId::NONE, WallId::DUNGEON);
-			chunk.tiles[CHUNK_SIZE/2 + 1][CHUNK_SIZE - 1] = Tile(GroundId::NONE, WallId::DUNGEON);
+			chunk.tiles[CHUNK_SIZE/2 - 2][CHUNK_SIZE - 1] = Tile(GroundId::DUNGEON_ROOF);
+			chunk.tiles[CHUNK_SIZE/2 + 1][CHUNK_SIZE - 1] = Tile(GroundId::DUNGEON_ROOF);
 		}
 	}
 
@@ -568,11 +576,15 @@ bool Realm::free(pair anker, pair size) {
 	return true;
 }
 
-bool Realm::walkable(pair position) {
-	if (chunkManager.solid(position)) return false;
-	if (chunkManager.getWall(position)) return false;
-	GroundId::value groundId = chunkManager.getGround(position);
-	if (!GroundTemplate::templates[groundId].walk) return false;
+bool Realm::walkable(pair anker, pair size) {
+	for (int x = 0; x < size.x; x++) {
+		for (int y = 0; y < size.y; y++) {
+			pair pos = anker + pair(x, y);
+			if (chunkManager.solid(pos)) return false;
+			GroundId::value groundId = chunkManager.getGround(pos);
+			if (!GroundTemplate::templates[groundId].walk) return false;
+		}
+	}
 	return true;
 }
 

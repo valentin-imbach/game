@@ -37,7 +37,8 @@ class InteractionSystem : public System {
 
 				Sprite pickSprite = Sprite(SpriteSheet::PICK_AXE_GUI, {0, 0}, {10, 10});
 				std::unique_ptr<Widget> pickTab = std::make_unique<Widget>(pair(0, 0), pair(150, 150), pickSprite);
-				InventorySlice pickSlice = {&inventoryComponent.inventory};
+				InventorySlice pickSlice(&inventoryComponent.inventory);
+				pickSlice.xrange = pair(0, 1);
 				pickTab->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), pickSlice, 20, link));
 				pickTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "4 x"));
 				pickTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "3 x"));
@@ -46,7 +47,8 @@ class InteractionSystem : public System {
 
 				Sprite axeSprite = Sprite(SpriteSheet::AXE_GUI, {0, 0}, {10, 10});
 				std::unique_ptr<Widget> axeTab = std::make_unique<Widget>(pair(0, 0), pair(150, 150), axeSprite);
-				InventorySlice axeSlice = {&inventoryComponent.inventory};
+				InventorySlice axeSlice(&inventoryComponent.inventory);
+				axeSlice.xrange = pair(1, 2);
 				axeTab->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), axeSlice, 20, link));
 				axeTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "2 x"));
 				axeTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "3 x"));
@@ -54,6 +56,13 @@ class InteractionSystem : public System {
 				axeTab->addGuiElement(std::make_unique<Button>(pair(40, 40), pair(16, 16), nullptr, buttonSprite, buttonHoverSprite));
 
 				std::unique_ptr<Widget> swordTab = std::make_unique<Widget>(pair(0, 0), pair(150, 150), pickSprite);
+				InventorySlice swordSlice(&inventoryComponent.inventory);
+				swordSlice.xrange = pair(2, 3);
+				swordTab->addGuiElement(std::make_unique<InventoryGui>(pair(-40, 20), swordSlice, 20, link));
+				swordTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 0), "6 x"));
+				swordTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 20), "2 x"));
+				swordTab->addGuiElement(std::make_unique<TextGui>(pair(-60, 40), "4 x"));
+				swordTab->addGuiElement(std::make_unique<Button>(pair(40, 40), pair(16, 16), nullptr, buttonSprite, buttonHoverSprite));
 
 				gui->addTab(std::move(pickTab));
 				gui->addTab(std::move(axeTab));

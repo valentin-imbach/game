@@ -18,13 +18,11 @@ public:
 	void serialise2(std::filesystem::path path);
 
 	GroundId::value getGround(pair position);
-	WallId::value getWall(pair position);
 	bool opaque(pair position);
 	bool solid(pair position);
 	Entity gridEntity(pair position);
 
 	void setGround(pair position, GroundId::value groundId);
-	void setWall(pair position, WallId::value wallId);
 
 	void link(pair position, Entity entity, bool solid, bool opaque);
 	void unlink(pair position, Entity entity);

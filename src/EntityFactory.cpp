@@ -434,10 +434,16 @@ Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId,
 		
 		return station;
 	} else if (stationId == StationId::TOOL_STATION) {
-		Inventory inventory(pair(1, 3));
+		Inventory inventory(pair(3, 3));
 		inventory.itemContainers[0][0].itemKind = ItemKind::PLATE;
 		inventory.itemContainers[0][1].itemKind = ItemKind::ROPE;
 		inventory.itemContainers[0][2].itemKind = ItemKind::ROD;
+		inventory.itemContainers[1][0].itemKind = ItemKind::PLATE;
+		inventory.itemContainers[1][1].itemKind = ItemKind::ROPE;
+		inventory.itemContainers[1][2].itemKind = ItemKind::ROD;
+		inventory.itemContainers[2][0].itemKind = ItemKind::PLATE;
+		inventory.itemContainers[2][1].itemKind = ItemKind::ROPE;
+		inventory.itemContainers[2][2].itemKind = ItemKind::ROD;
 		ecs->addComponent<InventoryComponent>({inventory}, station);
 	} else if (stationId == StationId::CHEST) {
 		ecs->addComponent<InventoryComponent>({Inventory(pair(7, 5))}, station);

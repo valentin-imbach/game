@@ -89,9 +89,10 @@ private:
 };
 
 struct InventorySlice {
-	InventorySlice(Inventory* inventory = nullptr, pair range = {0, INV_HEIGHT}) : inventory(inventory), range(range) {}
-	Inventory* inventory;
-	pair range;
+	InventorySlice(Inventory* inventory = nullptr) : inventory(inventory) {}
+	Inventory* inventory = nullptr;
+	pair xrange = pair(0, INV_WIDTH);
+	pair yrange = pair(0, INV_HEIGHT);
 };
 
 class ItemSlot : public GuiElement {

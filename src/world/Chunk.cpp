@@ -222,11 +222,11 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 
 	if (environment->cliffs && cliff) {
 		for (int x = CHUNK_SIZE/2 - 4; x < CHUNK_SIZE/2 + 4; x++) {
-			tiles[x][CHUNK_SIZE/2 - 1].wallId = WallId::DIRT;
-			tiles[x][CHUNK_SIZE/2].wallId = WallId::DIRT;
+			tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+			tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
 		}
-		tiles[CHUNK_SIZE/2 - 5][CHUNK_SIZE/2 - 1].wallId = WallId::DIRT;
-		tiles[CHUNK_SIZE/2 + 4][CHUNK_SIZE/2 - 1].wallId = WallId::DIRT;
+		tiles[CHUNK_SIZE/2 - 5][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+		tiles[CHUNK_SIZE/2 + 4][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
 	}
 
 	// tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;
@@ -264,7 +264,7 @@ void Chunk::setObjects(ChunkManager* manager, Environment* environment) {
 			pair offset(x, y);
 			pair pos = CHUNK_SIZE * position + offset;
 
-			if (tiles[x][y].groundId == GroundId::WATER || tiles[x][y].wallId) continue;
+			//if (tiles[x][y].groundId == GroundId::WATER || tiles[x][y].wallId) continue;
 			
 			// if (!free(position)) continue;
 			float variation = environment->variationMap->get(pos);
@@ -286,7 +286,7 @@ void Chunk::setObjects(ChunkManager* manager, Environment* environment) {
 				choice -= p.second;
 				if (choice < 0) {
 					pair size = ResourceTemplate::templates[p.first].size;
-					if (!manager->realm->free(pos, size)) break;
+					if (!manager->realm->free(pos, size) || !manager->realm->walkable(pos, size)) break;
 					Entity resource = EntityFactory::createResource(p.first, manager->realm->realmId, pos);
 					break;
 				}
