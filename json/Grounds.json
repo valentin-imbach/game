@@ -64,5 +64,15 @@
 		"sprite": "dungeon_roof",
 		"colour": [0, 0, 0, 255],
 		"walk": false
+	},
+	"plaster_wall": {
+		"sprite": "plaster_wall2",
+		"colour": [0, 0, 0, 255],
+		"walk": false
+	},
+	"plaster_roof": {
+		"sprite": "plaster_roof",
+		"colour": [0, 0, 0, 255],
+		"walk": false
 	}
 }

@@ -1,0 +1,42 @@
+{
+	"tall_shelf": {
+		"sprites": [
+			{"anker": [0, 0], "size": [2, 3], "offset": [0, -2], "variations" : 1}
+		],
+		"size": [2, 1],
+		"opaque": true,
+		"solid" : true
+	},
+	"large_table": {
+		"sprites": [
+			{"anker": [6, 1], "size": [2, 2], "offset": [0, 0], "variations" : 1}
+		],
+		"size": [2, 2],
+		"opaque": true,
+		"solid" : true
+	},
+	"book_shelf": {
+		"sprites": [
+			{"anker": [10, 0], "size": [2, 3], "offset": [0, -2], "variations" : 1}
+		],
+		"size": [2, 1],
+		"opaque": true,
+		"solid" : true
+	},
+	"bed": {
+		"sprites": [
+			{"anker": [12, 1], "size": [1, 2], "offset": [0, 0], "variations" : 1}
+		],
+		"size": [1, 2],
+		"opaque": true,
+		"solid" : true
+	},
+	"pot": {
+		"sprites": [
+			{"anker": [0, 5], "size": [1, 2], "offset": [0, -1], "variations" : 3}
+		],
+		"size": [1, 1],
+		"opaque": true,
+		"solid" : true
+	}
+}

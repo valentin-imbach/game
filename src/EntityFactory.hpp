@@ -19,6 +19,7 @@ public:
 	static Entity createCrop(CropId::value cropId, RealmId realmId, pair position);
 	static Entity createStation(StationId::value stationId, RealmId realmId, pair position, bool link = true);
 	static Entity createPortal(RealmId realmId, pair position, RealmId otherRealmId, pair entry);
+	static Entity createDecor(DecorId::value decorId, RealmId realmId, pair position);
 	
 	static Entity createItem(ItemId::value itemId = ItemId::NONE, uchar count = 1, bool show = false);
 	static Entity createItem(ItemId::value itemId, uchar count, RealmId realmId, vec position);

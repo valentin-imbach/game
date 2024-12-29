@@ -6,7 +6,7 @@
 #include "EntityFactory.hpp"
 #include "ResourceTemplates.hpp"
 
-#define CLIFF_GAP 200
+#define CLIFF_GAP 100
 
 Chunk::Chunk(pair position) : position(position) {
 	seed = hash(69, position);
@@ -102,7 +102,8 @@ void Chunk::setBiome(ChunkManager* manager, Environment* environment) {
 	pair chunkUp = position + pair(0, -1);
 	auto it = manager->chunks.find(chunkUp);
 	float gap = it->second.elevation - elevation;
-	cliff = true; //(!ocean && gap > CLIFF_GAP);
+	// if (!ocean && gap > CLIFF_GAP) 
+	cliff = true;
 
 }
 
@@ -221,12 +222,45 @@ void Chunk::setGround(ChunkManager* manager, Environment* environment) {
 	}
 
 	if (environment->cliffs && cliff) {
-		for (int x = CHUNK_SIZE/2 - 4; x < CHUNK_SIZE/2 + 4; x++) {
-			tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
-			tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
+
+		pair right = position + pair(1, 0);
+		pair left = position - pair(1, 0);
+
+		if (manager->chunks.find(right)->second.cliff) {
+			for (int x = CHUNK_SIZE/2; x < CHUNK_SIZE; x++) {
+				tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+				tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
+			}
+		} else {
+			for (int x = CHUNK_SIZE/2; x < CHUNK_SIZE/2 + 4; x++) {
+				tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+				tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
+			}
+			tiles[CHUNK_SIZE/2 + 4][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
 		}
-		tiles[CHUNK_SIZE/2 - 5][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
-		tiles[CHUNK_SIZE/2 + 4][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+
+		if (manager->chunks.find(left)->second.cliff) {
+			for (int x = 0; x < CHUNK_SIZE/2; x++) {
+				tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+				tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
+			}
+		} else {
+			for (int x = CHUNK_SIZE/2 - 4; x < CHUNK_SIZE/2; x++) {
+				tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+				tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
+			}
+			tiles[CHUNK_SIZE/2 - 5][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+		}
+
+
+
+
+	// 	for (int x = CHUNK_SIZE/2 - 4; x < CHUNK_SIZE/2 + 4; x++) {
+	// 		tiles[x][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+	// 		tiles[x][CHUNK_SIZE/2].groundId = GroundId::DIRT_WALL;
+	// 	}
+	// 	tiles[CHUNK_SIZE/2 - 5][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
+	// 	tiles[CHUNK_SIZE/2 + 4][CHUNK_SIZE/2 - 1].groundId = GroundId::DIRT_WALL;
 	}
 
 	// tiles[nodeOffset.x][nodeOffset.y].groundId = GroundId::PLANKS;

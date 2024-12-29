@@ -21,6 +21,7 @@
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
 #include "ClusterTemplates.hpp"
+#include "DecorTemplates.hpp"
 
 // #include <thread>
 
@@ -41,6 +42,7 @@ void World::init() {
 	StructureTemplate::setTemplates(Window::instance->root);
 	Cluster::setTemplates(Window::instance->root);
 	ParticleStyle::setTemplates(Window::instance->root);
+	DecorTemplate::setTemplates(Window::instance->root);
 
 	guiManager.world = this;
 	EntityFactory::world = this;

@@ -40,6 +40,7 @@ src/templates/ResourceTemplates.cpp
 src/templates/AnimalTemplates.cpp
 src/templates/StructureTemplates.cpp
 src/templates/ClusterTemplates.cpp
+src/templates/DecorTemplates.cpp
 src/EntityFactory.cpp
 src/gui/Command.cpp
 src/ParticleSystem.cpp

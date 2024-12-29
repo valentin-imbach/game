@@ -4,6 +4,7 @@
 #include "Game.hpp"
 #include "EntityFactory.hpp"
 #include "ClusterTemplates.hpp"
+#include "DecorTemplates.hpp"
 
 void Console::setCommands() {
 	commands["tp"] = std::make_unique<Command<float, float>>([this](float x, float y){
@@ -230,6 +231,16 @@ void Console::setCommands() {
 		EnemyId::value enemyId = EnemyId::from_string(str);
 		if (!enemyId) return false;
 		EntityFactory::createSpawner(positionComponent.realmId, position, enemyId);
+		return true;
+	});
+
+	commands["decor"] = std::make_unique<Command<std::string>>([this](std::string str){
+		if (!player) return false;
+		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(player);
+		pair position = vec::round(positionComponent.position);
+		DecorId::value decorId = DecorId::from_string(str);
+		if (!decorId) return false;
+		EntityFactory::createDecor(decorId, positionComponent.realmId, position);
 		return true;
 	});
 

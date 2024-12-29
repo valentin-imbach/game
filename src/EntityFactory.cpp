@@ -8,6 +8,7 @@
 #include "ResourceTemplates.hpp"
 #include "StructureTemplates.hpp"
 #include "AnimalTemplates.hpp"
+#include "DecorTemplates.hpp"
 
 ECS* EntityFactory::ecs = nullptr;
 World* EntityFactory::world = nullptr;
@@ -127,6 +128,25 @@ Entity EntityFactory::createResource(ResourceId::value resourceId, RealmId realm
 	// }
 
 	return resource;
+}
+
+Entity EntityFactory::createDecor(DecorId::value decorId, RealmId realmId, pair position) {
+	if (!decorId) return 0;
+	DecorTemplate& decorTemplate = DecorTemplate::templates[decorId];
+
+	Entity decor = createStaticEntity(realmId, position, decorTemplate.size, true, true);
+	if (!decor) return 0;
+
+	SpriteStack spriteStack;
+	for (int i = 0; i < decorTemplate.spriteTemplates.size(); i++) {
+		SpriteTemplate& sprite = decorTemplate.spriteTemplates[i];
+		uint var = noise::Int(seed++, 0, sprite.variations);
+		pair spritePosition(sprite.anker.x + var * sprite.size.x, sprite.anker.y);
+		spriteStack.setSprite(i, Sprite(SpriteSheet::DECOR, spritePosition, sprite.size), sprite.offset);
+	}
+	ecs->addComponent<SpriteComponent>({spriteStack}, decor);
+
+	return decor;
 }
 
 Entity EntityFactory::createStructure(StructureId::value structureId, RealmId realmId, pair position) {

@@ -83,13 +83,19 @@ void Realm::generateHouse() {
 		for (int y = 0; y < size.y; y++) {
 			chunk.tiles[offset.x + x][offset.y + y] = Tile(GroundId::PLANKS);
 		}
-		chunk.tiles[offset.x + x][offset.y - 1] = Tile(GroundId::PLANKS);
-		chunk.tiles[offset.x + x][offset.y - 2] = Tile(GroundId::NONE);
+		chunk.tiles[offset.x + x][offset.y - 1] = Tile(GroundId::PLASTER_WALL);
+		chunk.tiles[offset.x + x][offset.y - 2] = Tile(GroundId::PLASTER_WALL);
+		chunk.tiles[offset.x + x][offset.y - 3] = Tile(GroundId::PLASTER_ROOF);
 	}
 
-	for (int y = -2; y < size.y; y++) {
-		chunk.tiles[offset.x - 1][offset.y + y] = Tile(GroundId::NONE);
-		chunk.tiles[offset.x + size.x][offset.y + y] = Tile(GroundId::NONE);
+	for (int y = -3; y < size.y - 2; y++) {
+		chunk.tiles[offset.x - 1][offset.y + y] = Tile(GroundId::PLASTER_ROOF);
+		chunk.tiles[offset.x + size.x][offset.y + y] = Tile(GroundId::PLASTER_ROOF);
+	}
+
+	for (int y = size.y - 2; y < size.y; y++) {
+		chunk.tiles[offset.x - 1][offset.y + y] = Tile(GroundId::PLASTER_WALL);
+		chunk.tiles[offset.x + size.x][offset.y + y] = Tile(GroundId::PLASTER_WALL);
 	}
 
 	chunk.stage = ChunkStage::GROUND;
