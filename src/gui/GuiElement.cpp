@@ -447,7 +447,7 @@ void BuildGrid::build() {
 	for (int i = 0; i < arity; i++) inputs[i].item = recipe.ingredients[i].take(inputs[i].item);
 
 	ECS& ecs = guiManager->world->ecs;
-	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(recipe.stationId), guiManager->world->playerRealm->realmId, {0, 0}, false);
+	guiManager->buildMode = EntityFactory::createStation(StationId::from_int(recipe.stationId), guiManager->world->playerRealm->realmId, {0, 0});
 	// ecs.addComponent<ChunkComponent>({}, guiManager->buildMode);
 	ecs.getComponent<SpriteComponent>(guiManager->buildMode).z = 0.5f;
 	guiManager->close();

@@ -5,6 +5,7 @@
 #include "EntityFactory.hpp"
 #include "ClusterTemplates.hpp"
 #include "DecorTemplates.hpp"
+#include "Design.hpp"
 
 void Console::setCommands() {
 	commands["tp"] = std::make_unique<Command<float, float>>([this](float x, float y){
@@ -260,6 +261,24 @@ void Console::setCommands() {
 		InventoryComponent& inventoryComponent = ecs->getComponent<InventoryComponent>(player);
 		Entity rest = inventoryComponent.inventory.add(staff);
 		return true;
+	});
+
+	commands["rock"] = std::make_unique<Command<>>([this](){
+		if (!player) return false;
+		PositionComponent& positionComponent = ecs->getComponent<PositionComponent>(player);
+		pair position = vec::round(positionComponent.position);
+		Realm* realm = world->realmManager.getRealm(positionComponent.realmId);
+
+		using namespace design;
+		std::unique_ptr<Node> node = std::make_unique<Sequence>();
+		node->children.push_back(std::make_unique<Place>(ResourceId::GRANITE_BOULDER));
+		std::unique_ptr<Node> rn = std::make_unique<Repeat>(5);
+		std::unique_ptr<Node> sn = std::make_unique<Spread>(5);
+		sn->children.push_back(std::make_unique<Place>(ResourceId::GRANITE_ROCK));
+		rn->children.push_back(std::move(sn));
+		node->children.push_back(std::move(rn));
+
+		return node->generate(ticks, realm, position);
 	});
 }
 

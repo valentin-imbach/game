@@ -42,6 +42,7 @@ src/templates/StructureTemplates.cpp
 src/templates/ClusterTemplates.cpp
 src/templates/DecorTemplates.cpp
 src/EntityFactory.cpp
+src/Design.cpp
 src/gui/Command.cpp
 src/ParticleSystem.cpp
 src/Distribution.cpp

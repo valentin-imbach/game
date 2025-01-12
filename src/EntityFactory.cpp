@@ -411,7 +411,7 @@ Entity EntityFactory::createBucket() {
 	return bucket;
 }
 
-Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId, pair position, bool link) {
+Entity EntityFactory::createStation(StationId::value stationId, RealmId realmId, pair position) {
 	if (!stationId) return 0;
 	Entity station = createStaticEntity(realmId, position, pair(1, 1), true, false);
 	if (!station) return 0;

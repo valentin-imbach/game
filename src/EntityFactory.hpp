@@ -17,7 +17,7 @@ public:
 	static Entity createResource(ResourceId::value resourceId, RealmId realmId, pair position);
 	static Entity createStructure(StructureId::value structurId, RealmId realmId, pair position);
 	static Entity createCrop(CropId::value cropId, RealmId realmId, pair position);
-	static Entity createStation(StationId::value stationId, RealmId realmId, pair position, bool link = true);
+	static Entity createStation(StationId::value stationId, RealmId realmId, pair position);
 	static Entity createPortal(RealmId realmId, pair position, RealmId otherRealmId, pair entry);
 	static Entity createDecor(DecorId::value decorId, RealmId realmId, pair position);
 	
